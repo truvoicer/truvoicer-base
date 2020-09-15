@@ -17,7 +17,7 @@ export const getState = (key, defaultState) => {
 export const getReducers = (key, defaultReducers) => {
     try {
         const reducerFile = require("../../../library/redux/reducers/" + key);
-        const reducerConfig = stateFile.reducerConfig;
+        const reducerConfig = reducerFile.reducerConfig;
         if (reducerFile) {
             return {
                 ...defaultReducers,

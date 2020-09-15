@@ -9,6 +9,7 @@ import {singlePostQuery} from "../../graphql/queries/single-post";
 import {itemViewTemplateQuery} from "../../graphql/queries/item-view-template";
 import {menuQuery} from "../../graphql/queries/menu";
 import {wpApiConfig} from "../../../config/wp-api-config";
+
 const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
 const API_URL = process.env.NEXT_PUBLIC_WP_GRAPHQL_URL
@@ -116,7 +117,7 @@ export async function getItemViewTemplate(category, type, preview) {
 }
 
 export async function getSinglePage(slug, type, preview) {
-    const data = await fetchAPI(
+    return await fetchAPI(
         singlePageQuery(),
         {
             variables: {
@@ -126,8 +127,7 @@ export async function getSinglePage(slug, type, preview) {
                 preview,
             },
         }
-    )
-    return data?.page
+    );
 }
 
 export async function getSidebar(slug, preview) {

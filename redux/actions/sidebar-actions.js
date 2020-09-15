@@ -10,8 +10,35 @@ import {
     setLeftSidebarData,
     setRightSidebarData, setNavBarData
 } from "../reducers/page-reducer";
+import {isObjectEmpty} from "../../library/utils";
+import {siteConfig} from "../../../config/site-config";
 
-export function setSidebarAction(data, sidebarRequest) {
+export function setBaseSidebarsJson(sidebarsJson) {
+    const sidebars = JSON.parse(sidebarsJson.sidebars_json);
+    if (isObjectEmpty(sidebars)) {
+        return false;
+    }
+    Object.keys(sidebars).map((sidebarKey) => {
+        switch (sidebarKey) {
+            case siteConfig.navBarName:
+                setBaseSidebarAction(sidebars[sidebarKey], NAVBAR_REQUEST);
+                break;
+            case siteConfig.leftSidebarName:
+                setBaseSidebarAction(sidebars[sidebarKey], LEFT_SIDEBAR_REQUEST);
+                break;
+            case siteConfig.rightSidebarName:
+                setBaseSidebarAction(sidebars[sidebarKey], RIGHT_SIDEBAR_REQUEST);
+                break;
+            case siteConfig.footerName:
+                setBaseSidebarAction(sidebars[sidebarKey], FOOTER_REQUEST);
+                break;
+            default:
+                break;
+        }
+    })
+}
+
+export function setBaseSidebarAction(data, sidebarRequest) {
     switch (sidebarRequest) {
         case LEFT_SIDEBAR_REQUEST:
             store.dispatch(setLeftSidebarData(data))

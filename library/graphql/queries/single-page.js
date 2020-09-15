@@ -17,6 +17,21 @@ export const singlePageQuery = () => {
                   modifiedGmt
                   menuOrder
                 }
+                sidebars {
+                  sidebars_json
+                  sidebar_error
+                }
+                allSettings {
+                  generalSettingsTitle
+                  generalSettingsUrl
+                  readingSettingsPostsPerPage
+                  generalSettingsDescription
+                  generalSettingsDateFormat
+                  generalSettingsLanguage
+                  generalSettingsStartOfWeek
+                  generalSettingsTimeFormat
+                  generalSettingsTimezone
+                }
             }
   `;
 }

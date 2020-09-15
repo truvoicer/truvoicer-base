@@ -2,27 +2,23 @@ import store from "../store"
 import React from "react";
 import {
     setBlocksData,
+    setModalComponent,
     setPageData,
     setPageError,
-    setUserAccountMenuData,
     setShowModal,
-    setModalComponent, setSiteSettings,
+    setSiteSettings,
+    setUserAccountMenuData,
 } from "../reducers/page-reducer";
 import {setCategory, setListingsData} from "../reducers/listings-reducer";
 import {isSet} from "../../library/utils";
 import {getListingsProviders} from "../middleware/listings-middleware";
 import {buildWpApiUrl} from "../../library/api/wp/middleware";
 import {siteConfig} from "../../../config/site-config";
-import {setSidebarAction} from "./sidebar-actions";
-import {
-    FOOTER_REQUEST,
-    LEFT_SIDEBAR_REQUEST, NAVBAR_REQUEST,
-    RIGHT_SIDEBAR_REQUEST,
-    TOPBAR_REQUEST
-} from "../constants/sidebar-constants";
+import {setBaseSidebarsJson} from "./sidebar-actions";
 import {componentsConfig} from "../../../config/components-config";
 import {wpApiConfig} from "../../config/wp-api-config";
 
+const sprintf = require("sprintf").sprintf;
 export function setPageErrorAction(error) {
     store.dispatch(setPageError(error))
 }
@@ -57,25 +53,22 @@ export function setSiteSettingsAction(data) {
     store.dispatch(setSiteSettings(data))
 }
 
-export function loadPage(pageData, allSiteSettings, topBar, footerBar = [], navBar = [], leftSidebar = [], rightSidebar = []) {
-    setSiteSettingsAction(allSiteSettings);
-    getPageDataAction(pageData);
+export function getPageTitle(siteTitle, pageTitle) {
+    if (isSet(siteTitle) && isSet(pageTitle)) {
+        return sprintf("%s | %s", siteTitle, pageTitle)
+    }
+    return null;
+}
 
-    if (isSet(navBar.widgets_json) && navBar.widgets_json !== "" && navBar.widgets_json !== null) {
-        setSidebarAction(JSON.parse(navBar.widgets_json), NAVBAR_REQUEST);
-    }
-    if (isSet(topBar.widgets_json) && topBar.widgets_json !== "" && topBar.widgets_json !== null) {
-        setSidebarAction(JSON.parse(topBar.widgets_json), TOPBAR_REQUEST);
-    }
-    if (isSet(footerBar.widgets_json) && footerBar.widgets_json !== "" && footerBar.widgets_json !== null) {
-        setSidebarAction(JSON.parse(footerBar.widgets_json), FOOTER_REQUEST);
-    }
-    if (isSet(leftSidebar.widgets_json) && leftSidebar.widgets_json !== "" && leftSidebar.widgets_json !== null) {
-        setSidebarAction(JSON.parse(leftSidebar.widgets_json), LEFT_SIDEBAR_REQUEST);
-    }
-    if (isSet(rightSidebar.widgets_json) && rightSidebar.widgets_json !== "" && rightSidebar.widgets_json !== null) {
-        setSidebarAction(JSON.parse(rightSidebar.widgets_json), RIGHT_SIDEBAR_REQUEST);
-    }
+export function loadBasePageData({page, allSettings, sidebars}) {
+    const pageData = {...page};
+    pageData.seo_title = getPageTitle(
+        allSettings?.generalSettingsTitle,
+        page?.title
+    );
+    setSiteSettingsAction(allSettings);
+    getPageDataAction(pageData);
+    setBaseSidebarsJson(sidebars)
 }
 
 export function getPageDataAction(data) {
