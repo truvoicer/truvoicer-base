@@ -10,8 +10,9 @@ import {
     SESSION_USER_ID, SESSION_USER_LASTNAME,
     SESSION_USER_NICE_NAME, SESSION_USER_TOKEN
 } from "../constants/session-constants";
+import {getReducers, getState} from "../../library/helpers/redux";
 
-const sessionState = {
+const defaultState = {
     [SESSION_USER]: {
         [SESSION_AUTH_TYPE]: "",
         [SESSION_USER_ID]: null,
@@ -29,25 +30,26 @@ const sessionState = {
         data: {}
     }
 };
+const defaultReducers = {
+    setUser: (state, action) => {
+        state.user = action.payload;
+    },
+    setToken: (state, action) => {
+        state.token = action.payload;
+    },
+    setAuthenticated: (state, action) => {
+        state.authenticated = action.payload;
+    },
+    setSessionError: (state, action) => {
+        state.error = action.payload;
+        console.error(state.error)
+    },
+};
 
 export const sessionSlice = createSlice({
     name: "session",
-    initialState: sessionState,
-    reducers: {
-        setUser: (state, action) => {
-            state.user = action.payload;
-        },
-        setToken: (state, action) => {
-            state.token = action.payload;
-        },
-        setAuthenticated: (state, action) => {
-            state.authenticated = action.payload;
-        },
-        setSessionError: (state, action) => {
-            state.error = action.payload;
-            console.error(state.error)
-        },
-    },
+    initialState: getState("session", defaultState),
+    reducers: getReducers("session", defaultReducers),
 });
 
 export const sessionReducer = sessionSlice.reducer;

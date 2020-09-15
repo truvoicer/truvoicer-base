@@ -1,12 +1,14 @@
 // AUTH STATE
 import {createSlice} from "@reduxjs/toolkit";
+import {getReducers, getState} from "../../library/helpers/redux";
 
-const pageState = {
+const defaultState = {
     pageData: {},
     blocksData: {},
     siteSettings: {},
-    sidebar: [],
-    topBar: [],
+    leftSidebar: [],
+    rightSidebar: [],
+    navBar: [],
     footer: [],
     userAccountMenu: [],
     modal: {
@@ -16,50 +18,54 @@ const pageState = {
     },
     error: {}
 };
+const defaultReducers = {
+    setPageData: (state, action) => {
+        state.pageData = action.payload;
+    },
+    setSiteSettings: (state, action) => {
+        state.siteSettings = action.payload;
+    },
+    setBlocksData: (state, action) => {
+        state.blocksData = action.payload;
+    },
+    setLeftSidebarData: (state, action) => {
+        state.leftSidebar = action.payload;
+    },
+    setRightSidebarData: (state, action) => {
+        state.rightSidebar = action.payload;
+    },
+    setNavBarData: (state, action) => {
+        state.navBar = action.payload;
+    },
+    setFooterData: (state, action) => {
+        state.footer = action.payload;
+    },
+    setShowModal: (state, action) => {
+        state.modal.show = action.payload;
+    },
+    setModalComponent: (state, action) => {
+        state.modal = action.payload;
+    },
+    setUserAccountMenuData: (state, action) => {
+        state.userAccountMenu = action.payload;
+    },
+    setPageError: (state, action) => {
+        state.error = action.payload;
+        console.error(state.error)
+    },
+};
 
 export const pageSlice = createSlice({
     name: "page",
-    initialState: pageState,
-    reducers: {
-        setPageData: (state, action) => {
-            state.pageData = action.payload;
-        },
-        setSiteSettings: (state, action) => {
-            state.siteSettings = action.payload;
-        },
-        setBlocksData: (state, action) => {
-            state.blocksData = action.payload;
-        },
-        setSidebarData: (state, action) => {
-            state.sidebar = action.payload;
-        },
-        setTopBarData: (state, action) => {
-            state.topBar = action.payload;
-        },
-        setFooterData: (state, action) => {
-            state.footer = action.payload;
-        },
-        setShowModal: (state, action) => {
-            state.modal.show = action.payload;
-        },
-        setModalComponent: (state, action) => {
-            state.modal = action.payload;
-        },
-        setUserAccountMenuData: (state, action) => {
-            state.userAccountMenu = action.payload;
-        },
-        setPageError: (state, action) => {
-            state.error = action.payload;
-            console.error(state.error)
-        },
-    },
+    initialState: getState("page", defaultState),
+    reducers: getReducers("page", defaultReducers)
 });
 
 export const pageReducer = pageSlice.reducer;
 export const {
     setPageData, setBlocksData,
-    setSiteSettings,
-    setSidebarData, setTopBarData,
+    setSiteSettings, setRightSidebarData,
+    setLeftSidebarData, setNavBarData,
     setFooterData, setUserAccountMenuData,
     setPageError, setShowModal,
     setModalComponent

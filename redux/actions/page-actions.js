@@ -14,7 +14,12 @@ import {getListingsProviders} from "../middleware/listings-middleware";
 import {buildWpApiUrl} from "../../library/api/wp/middleware";
 import {siteConfig} from "../../../config/site-config";
 import {setSidebarAction} from "./sidebar-actions";
-import {FOOTER_REQUEST, SIDEBAR_REQUEST, TOPBAR_REQUEST} from "../constants/sidebar-constants";
+import {
+    FOOTER_REQUEST,
+    LEFT_SIDEBAR_REQUEST, NAVBAR_REQUEST,
+    RIGHT_SIDEBAR_REQUEST,
+    TOPBAR_REQUEST
+} from "../constants/sidebar-constants";
 import {componentsConfig} from "../../../config/components-config";
 import {wpApiConfig} from "../../config/wp-api-config";
 
@@ -52,18 +57,24 @@ export function setSiteSettingsAction(data) {
     store.dispatch(setSiteSettings(data))
 }
 
-export function loadPage(pageData, allSiteSettings, topBar, footerBar, rightSidebar) {
+export function loadPage(pageData, allSiteSettings, topBar, footerBar = [], navBar = [], leftSidebar = [], rightSidebar = []) {
     setSiteSettingsAction(allSiteSettings);
     getPageDataAction(pageData);
 
+    if (isSet(navBar.widgets_json) && navBar.widgets_json !== "" && navBar.widgets_json !== null) {
+        setSidebarAction(JSON.parse(navBar.widgets_json), NAVBAR_REQUEST);
+    }
     if (isSet(topBar.widgets_json) && topBar.widgets_json !== "" && topBar.widgets_json !== null) {
         setSidebarAction(JSON.parse(topBar.widgets_json), TOPBAR_REQUEST);
     }
     if (isSet(footerBar.widgets_json) && footerBar.widgets_json !== "" && footerBar.widgets_json !== null) {
         setSidebarAction(JSON.parse(footerBar.widgets_json), FOOTER_REQUEST);
     }
+    if (isSet(leftSidebar.widgets_json) && leftSidebar.widgets_json !== "" && leftSidebar.widgets_json !== null) {
+        setSidebarAction(JSON.parse(leftSidebar.widgets_json), LEFT_SIDEBAR_REQUEST);
+    }
     if (isSet(rightSidebar.widgets_json) && rightSidebar.widgets_json !== "" && rightSidebar.widgets_json !== null) {
-        setSidebarAction(JSON.parse(rightSidebar.widgets_json), SIDEBAR_REQUEST);
+        setSidebarAction(JSON.parse(rightSidebar.widgets_json), RIGHT_SIDEBAR_REQUEST);
     }
 }
 

@@ -1,14 +1,26 @@
 import store from "../store"
-import {FOOTER_REQUEST, SIDEBAR_REQUEST, TOPBAR_REQUEST} from "../constants/sidebar-constants";
-import {setFooterData, setPageError, setSidebarData, setTopBarData} from "../reducers/page-reducer";
+import {
+    FOOTER_REQUEST,
+    LEFT_SIDEBAR_REQUEST, NAVBAR_REQUEST,
+    RIGHT_SIDEBAR_REQUEST,
+} from "../constants/sidebar-constants";
+import {
+    setFooterData,
+    setPageError,
+    setLeftSidebarData,
+    setRightSidebarData, setNavBarData
+} from "../reducers/page-reducer";
 
 export function setSidebarAction(data, sidebarRequest) {
     switch (sidebarRequest) {
-        case SIDEBAR_REQUEST:
-            store.dispatch(setSidebarData(data))
+        case LEFT_SIDEBAR_REQUEST:
+            store.dispatch(setLeftSidebarData(data))
             break;
-        case TOPBAR_REQUEST:
-            store.dispatch(setTopBarData(data));
+        case RIGHT_SIDEBAR_REQUEST:
+            store.dispatch(setRightSidebarData(data))
+            break;
+        case NAVBAR_REQUEST:
+            store.dispatch(setNavBarData(data));
             break;
         case FOOTER_REQUEST:
             store.dispatch(setFooterData(data));

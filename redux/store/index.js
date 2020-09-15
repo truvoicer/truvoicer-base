@@ -9,19 +9,21 @@ import {listingsReducer} from "../reducers/listings-reducer";
 import {searchReducer} from "../reducers/search-reducer";
 import {sessionReducer} from "../reducers/session-reducer";
 import {itemReducer} from "../reducers/item-reducer";
+import {getStoreReducers} from "../../library/helpers/redux";
 
 const middleware = [
     ...getDefaultMiddleware(),
     thunk
 ];
-const reducer = {
+const defaultReducers = {
     page: pageReducer,
     listings: listingsReducer,
     search: searchReducer,
     item: itemReducer,
     session: sessionReducer
 }
-
+const reducer = getStoreReducers(defaultReducers);
+// console.log(storeReducers)
 const store = configureStore({
     reducer,
     middleware,
