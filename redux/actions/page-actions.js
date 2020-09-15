@@ -71,6 +71,15 @@ export function loadBasePageData({page, allSettings, sidebars}) {
     setBaseSidebarsJson(sidebars)
 }
 
+export function loadBaseItemPage(pageData) {
+    const data = {
+        page: pageData?.listingsCategory?.itemViewTemplates?.nodes[0],
+        allSettings: pageData?.allSettings,
+        sidebars: pageData?.sidebars
+    }
+    loadBasePageData(data);
+}
+
 export function getPageDataAction(data) {
     // console.log(data)
     store.dispatch(setPageData(data))

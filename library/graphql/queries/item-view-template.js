@@ -21,6 +21,21 @@ export const itemViewTemplateQuery = () => {
               }
             }
           }
+        sidebars {
+          sidebars_json
+          sidebar_error
+        }
+        allSettings {
+          generalSettingsTitle
+          generalSettingsUrl
+          readingSettingsPostsPerPage
+          generalSettingsDescription
+          generalSettingsDateFormat
+          generalSettingsLanguage
+          generalSettingsStartOfWeek
+          generalSettingsTimeFormat
+          generalSettingsTimezone
+        }
         }
   `;
 }

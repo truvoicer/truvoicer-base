@@ -102,7 +102,7 @@ export async function getAllPagesWithUri() {
 }
 
 export async function getItemViewTemplate(category, type, preview) {
-    const data = await fetchAPI(
+    return await fetchAPI(
         itemViewTemplateQuery(),
         {
             variables: {
@@ -112,8 +112,7 @@ export async function getItemViewTemplate(category, type, preview) {
                 preview,
             },
         }
-    )
-    return data?.listingsCategory?.itemViewTemplates?.nodes[0]
+    );
 }
 
 export async function getSinglePage(slug, type, preview) {
