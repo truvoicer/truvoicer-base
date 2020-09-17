@@ -3,10 +3,12 @@ import store from "../store"
 import {createSlice} from "@reduxjs/toolkit";
 import {LISTINGS_GRID_COMPACT} from "../constants/listings-constants";
 import {getReducers, getState} from "../../library/helpers/redux";
+import {isSet} from "../../library/utils";
+import {siteConfig} from "../../../config/site-config";
 
 const defaultState = {
     category: "",
-    listingsGrid: LISTINGS_GRID_COMPACT,
+    listingsGrid: isSet(siteConfig.defaultGridSize)? siteConfig.defaultGridSize : LISTINGS_GRID_COMPACT,
     listingsData: {},
     listingsQueryData: {},
     listingsSearchResults: {},
