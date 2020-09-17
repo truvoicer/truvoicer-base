@@ -25,6 +25,10 @@ export function getItemAction(requestData) {
     fetchData("operation", ["single"], requestData, fetchItemCallback)
 }
 
+export function fetchLoaderDataAction(operation, requestData, callback) {
+    fetchData("operation", [operation], requestData, callback)
+}
+
 export function fetchItemCallback (status, data) {
     const itemDataState = {...store.getState().item.data};
     if (status === 200) {
