@@ -1,5 +1,5 @@
 import {fetchLoaderDataAction} from "../../redux/actions/item-actions";
-import {imageSelector, isSet} from "../../library/utils";
+import {imageSelector, isNotEmpty, isSet} from "../../library/utils";
 import React, {useState} from "react";
 
 const {useEffect} = require("react");
@@ -28,7 +28,9 @@ const ImageLoader = (props) => {
     }
 
     useEffect(() => {
-        if (isSet(props.imageData.request_item) && isSet(props.imageData.request_item.request_operation)) {
+        if (isNotEmpty(props.imageData) &&
+            isSet(props.imageData.request_item) &&
+            isSet(props.imageData.request_item.request_operation)) {
             fetchLoaderDataAction(
                 props.imageData.request_item.request_operation,
                 {

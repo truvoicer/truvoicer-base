@@ -64,11 +64,9 @@ const getApiUrl = (endpoint, operation, queryData = {}) => {
 }
 
 const validateEndpoint = (endpoint) => {
-    if (typeof fetcherApiConfig.endpoints[endpoint] === "undefined") {
-        return false;
-    }
-    return true;
+    return typeof fetcherApiConfig.endpoints[endpoint] !== "undefined";
 }
+
 const buildQueryString = (queryObject = false) => {
     if (queryObject.length === 0) {
         return "";

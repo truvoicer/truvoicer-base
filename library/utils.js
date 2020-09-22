@@ -22,6 +22,11 @@ export const isEmpty = (object) => {
 export const isSet = (item) => {
     return typeof item !== "undefined";
 }
+
+export const isNotEmpty = (item) => {
+    return typeof item !== "undefined" && item !== null;
+}
+
 export const imageSelector = (imageSize = "medium", imageArray = []) => {
     // console.log(imageArray)
 
