@@ -48,7 +48,13 @@ const ImageLoader = (props) => {
 
     return (
         <>
-            <img src={image.url}  alt={props.item.provider}/>
+            {props.background ?
+                <div className={props.className ? props.className : ""}
+                     style={{backgroundImage: "url(" + image.url + ")"}}/>
+                :
+                <img className={props.className ? props.className : ""} src={image.url} alt={props.item.provider}/>
+            }
+
         </>
     );
 }
