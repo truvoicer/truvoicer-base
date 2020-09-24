@@ -26,7 +26,7 @@ const getItemList = (config, data) => {
     if (!isSet(config) || !isSet(data)) {
         return null;
     }
-    if (!Array.isArray(config) || !Array.isArray(data)) {
+    if (!Array.isArray(config.keys) || !Array.isArray(data)) {
         return null;
     }
     return (
