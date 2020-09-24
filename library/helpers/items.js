@@ -1,110 +1,83 @@
 import HtmlParser from "react-html-parser";
 import React from "react";
-import {formatDate} from "../utils";
+import {formatDate, isSet} from "../utils";
 
-const getItemImage = (item, dataItem) => {
+const getItemImage = (url, label) => {
+    return <img src={url} alt={label}/>
+}
+
+const getItemLink = (url, label) => {
+    return <a href={url}>{label}</a>
+}
+
+const getItemDate = (dateString) => {
+    return <div>{formatDate(dateString)}</div>
+}
+
+const getItemText = (text) => {
+    return <div>{HtmlParser(text)}</div>
+}
+
+const getItemPrice = (price) => {
+    return <div>{price}</div>
+}
+
+const getItemList = (config, data) => {
+    if (!isSet(config) || !isSet(data)) {
+        return null;
+    }
+    if (!Array.isArray(config) || !Array.isArray(data)) {
+        return null;
+    }
     return (
-        <>
-            {!Array.isArray(item.dataKey)
-                ?
-                <img src={dataItem[item.dataKey]}  alt={item.label}/>
-                :
-                <>
-                    {item.dataKey.map((dataKeyName, keyIndex) => (
-                        <React.Fragment key={keyIndex.toString()}>
-                            <img src={dataItem[dataKeyName]}  alt={item.label}/>
-                        </React.Fragment>
-                    ))}
-                </>
-            }
-        </>
+     <ul>
+         {data.map((item, index) => (
+             <li key={index}>
+                 {config.keys.map((key, keyIndex) => (
+                     <div key={keyIndex}>
+                         {getItemContentType(key.type, key.name, item, key)}
+                     </div>
+                 ))}
+             </li>
+         ))}
+     </ul>
     )
 }
 
-
-const getItemLink = (item, dataItem) => {
-    return (
-        <>
-            {!Array.isArray(item.dataKey)
-                ?
-                <a href={dataItem[item.dataKey]}>{item.label}</a>
-                :
-                <>
-                    {item.dataKey.map((dataKeyName, keyIndex) => (
-                        <React.Fragment key={keyIndex.toString()}>
-                            <a href={dataItem[dataKeyName]}>{item.label}</a>
-                        </React.Fragment>
-                    ))}
-                </>
-            }
-        </>
-    )
-}
-
-const getItemDate = (item, dataItem) => {
-    return (
-        <>
-            {!Array.isArray(item.dataKey)
-                ?
-                <div>{formatDate(dataItem[item.dataKey])}</div>
-                :
-                <>
-                    {item.dataKey.map((dataKeyName, keyIndex) => (
-                        <React.Fragment key={keyIndex.toString()}>
-                            <div>{formatDate(dataItem[dataKeyName])}</div>
-                        </React.Fragment>
-                    ))}
-                </>
-            }
-        </>
-    )
-}
-
-const getItemPrice = (item, dataItem) => {
-    return (
-        <>
-            {!Array.isArray(item.dataKey)
-                ?
-                <div>{dataItem[item.dataKey]}</div>
-                :
-                <>
-                    {item.dataKey.map((dataKeyName, keyIndex) => (
-                        <React.Fragment key={keyIndex.toString()}>
-                            <div>{dataItem[dataKeyName]}</div>
-                        </React.Fragment>
-                    ))}
-                </>
-            }
-        </>
-    )
+const getItemContentType = (type, key, dataItem, config = null) => {
+    switch (type) {
+        case "image":
+            return getItemImage(dataItem[key], config.label);
+        case "link":
+            return getItemLink(dataItem[key], config.label);
+        case "date":
+            return getItemDate(dataItem[key]);
+        case "price":
+            return getItemPrice(dataItem[key]);
+        case "list":
+            return getItemList(config.config, dataItem[key]);
+        default:
+            return getItemText(dataItem[key]);
+    }
 }
 
 export const getListItemData = (item, dataItem) => {
-    switch (item.type) {
-        case "image":
-            return getItemImage(item, dataItem);
-        case "link":
-            return getItemLink(item, dataItem);
-        case "date":
-            return getItemDate(item, dataItem);
-        case "price":
-            return getItemPrice(item, dataItem);
-        default:
-            return (
+    return (
+        <>
+            {!Array.isArray(item.dataKey)
+                ?
                 <>
-                    {!Array.isArray(item.dataKey)
-                        ?
-                        <div>{HtmlParser(dataItem[item.dataKey])}</div>
-                        :
-                        <>
-                            {item.dataKey.map((dataKeyName, keyIndex) => (
-                                <React.Fragment key={keyIndex.toString()}>
-                                    <div>{HtmlParser(dataItem[dataKeyName])}</div>
-                                </React.Fragment>
-                            ))}
-                        </>
-                    }
+                    {getItemContentType(item.type, item.dataKey, dataItem, item)}
                 </>
-            )
-    }
+                :
+                <>
+                    {item.dataKey.map((dataKeyName, keyIndex) => (
+                        <React.Fragment key={keyIndex.toString()}>
+                            {getItemContentType(item.type, item.dataKey, dataItem, item)}
+                        </React.Fragment>
+                    ))}
+                </>
+            }
+        </>
+    )
 }

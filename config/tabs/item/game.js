@@ -42,11 +42,23 @@ export const GameTabConfig = {
             tabData: [
                 {
                     label: "Genres",
-                    dataKey: "genres"
+                    dataKey: "item_genres"
                 },
                 {
+                    type: "list",
+                    config: {
+                        keys: [
+                            {
+                                name: "name"
+                            },
+                            {
+                                type: "link",
+                                name: "url"
+                            }
+                        ]
+                    },
                     label: "Tags",
-                    dataKey: "Tags"
+                    dataKey: "item_tags"
                 },
             ]
         },
@@ -55,7 +67,7 @@ export const GameTabConfig = {
             tabData: [
                 {
                     label: "",
-                    image: true,
+                    type: "image",
                     dataKey: "item_default_image"
                 }
             ]
