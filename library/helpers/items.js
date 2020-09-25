@@ -1,6 +1,8 @@
 import HtmlParser from "react-html-parser";
 import React from "react";
 import {formatDate, isSet} from "../utils";
+import ImageLoader from "../../components/loaders/ImageLoader";
+import ListLoader from "../../components/loaders/ListLoader";
 
 const getItemImage = (url, label) => {
     return <img src={url} alt={label}/>
@@ -44,7 +46,36 @@ const getItemList = (config, data) => {
     )
 }
 
-const getItemContentType = (type, key, dataItem, config = null) => {
+const getListIds = (data, itemId) => {
+    if (!isSet(data) || data === null || data === "") {
+        return itemId;
+    }
+    if (Array.isArray(data)) {
+        return data.join(",");
+    }
+    return data;
+}
+
+const getItemContentComponent = (type, key, dataItem, config = null) => {
+    switch (type) {
+        case "image":
+            return <ImageLoader
+                item={dataItem}
+                imageData={dataItem[key]}
+            />;
+        case "list":
+            return <ListLoader
+                item={dataItem}
+                listIds={getListIds(dataItem[key]?.data, dataItem?.item_id)}
+                listData={dataItem[key]}
+                listKeys={config.config.keys}
+            />;
+        default:
+            return getItemContentType(type, key, dataItem, config);
+    }
+}
+
+export const getItemContentType = (type, key, dataItem, config = null) => {
     switch (type) {
         case "image":
             return getItemImage(dataItem[key], config.label);
@@ -61,19 +92,26 @@ const getItemContentType = (type, key, dataItem, config = null) => {
     }
 }
 
+const getItemContent = (type, key, dataItem, config = null) => {
+    if (isSet(dataItem[key]) && isSet(dataItem[key].request_item) && isSet(dataItem[key].request_item.request_operation)) {
+        return getItemContentComponent(type, key, dataItem, config)
+    }
+    return getItemContentType(type, key, dataItem, config);
+}
+
 export const getListItemData = (item, dataItem) => {
     return (
         <>
             {!Array.isArray(item.dataKey)
                 ?
                 <>
-                    {getItemContentType(item.type, item.dataKey, dataItem, item)}
+                    {getItemContent(item.type, item.dataKey, dataItem, item)}
                 </>
                 :
                 <>
                     {item.dataKey.map((dataKeyName, keyIndex) => (
                         <React.Fragment key={keyIndex.toString()}>
-                            {getItemContentType(item.type, item.dataKey, dataItem, item)}
+                            {getItemContent(item.type, item.dataKey, dataItem, item)}
                         </React.Fragment>
                     ))}
                 </>

@@ -11,19 +11,24 @@ export const GameTabConfig = {
                     dataKey: "provider"
                 },
                 {
-                    label: "Title",
-                    dataKey: "item_title"
+                    label: "Name",
+                    dataKey: "item_name"
                 },
                 {
-                    label: "Summary:",
-                    dataKey: "item_summary"
+                    type: "date",
+                    label: "Release Date",
+                    dataKey: "item_release_date"
+                },
+                {
+                    label: "Rating",
+                    dataKey: "item_rating"
+                },
+                {
+                    label: "Users Rated",
+                    dataKey: "item_rating_count"
                 },
             ]
         },
-        // {
-        //     label: "Platform/s",
-        //     tabData: "item_platforms"
-        // },
         {
             label: "Description",
             tabData: [
@@ -33,42 +38,119 @@ export const GameTabConfig = {
                 }
             ]
         },
-        // {
-        //     label: "Stores",
-        //     tabData: "stores"
-        // },
+        {
+            label: "Platform/s",
+            tabData: [
+                {
+                    type: "list",
+                    label: "Platforms",
+                    dataKey: "item_platforms",
+                    config: {
+                        keys: [
+                            // {
+                            //     name: "name"
+                            // },
+                            {
+                                type: "link",
+                                name: "url",
+                                label: "name"
+                            }
+                        ]
+                    }
+                },
+            ]
+        },
         {
             label: "Genres & Tags",
             tabData: [
                 {
+                    type: "list",
                     label: "Genres",
-                    dataKey: "item_genres"
+                    dataKey: "item_genres",
+                    config: {
+                        keys: [
+                            // {
+                            //     name: "name"
+                            // },
+                            {
+                                type: "link",
+                                name: "url",
+                                label: "name"
+                            }
+                        ]
+                    }
                 },
                 {
                     type: "list",
+                    label: "Tags",
+                    dataKey: "item_tags",
+                    config: {
+                        keys: [
+                            // {
+                            //     name: "name"
+                            // },
+                            {
+                                type: "link",
+                                name: "url",
+                                label: "name"
+                            }
+                        ]
+                    },
+                }
+            ]
+        },
+        {
+            label: "Developers & Publishers",
+            tabData: [
+                {
+                    type: "list",
+                    label: "Developers",
+                    dataKey: "item_developers",
                     config: {
                         keys: [
                             {
                                 name: "name"
                             },
+                            // {
+                            //     type: "image",
+                            //     name: "image_url"
+                            // }
+                        ]
+                    }
+                },
+                {
+                    type: "list",
+                    label: "Publishers",
+                    dataKey: "item_publishers",
+                    config: {
+                        keys: [
                             {
-                                type: "link",
+                                name: "name"
+                            },
+                            // {
+                            //     type: "image",
+                            //     name: "image_url"
+                            // }
+                        ]
+                    },
+                }
+            ]
+        },
+        {
+            label: "Screenshots",
+            tabData: [
+                {
+                    label: "",
+                    type: "list",
+                    dataKey: "item_screenshots",
+                    config: {
+                        keys: [
+                            {
+                                type: "image",
                                 name: "url"
                             }
                         ]
                     },
-                    label: "Tags",
-                    dataKey: "item_tags"
-                },
-            ]
-        },
-        {
-            label: "Images",
-            tabData: [
-                {
-                    label: "",
-                    type: "image",
-                    dataKey: "item_default_image"
                 }
             ]
         },

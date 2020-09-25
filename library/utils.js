@@ -50,8 +50,9 @@ export const imageSelector = (imageSize = "medium", imageArray = []) => {
     })
     if (image.length > 0) {
         return image[0];
+    } else {
+        return imageArray[0];
     }
-    return false;
 }
 
 export const convertImageObjectsToArray = (imagesArray) => {
