@@ -7,7 +7,7 @@ export const filterHtml = (node, index) => {
             typeof componentsConfig.components[node.attribs.id] !== "undefined")
         {
             const Component = componentsConfig.components[node.attribs.id].component;
-            return <Component key={index}/>;
+            return <Component key={index} data={JSON.parse(node.attribs.data)}/>;
         }
     }
 }

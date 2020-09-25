@@ -80,25 +80,25 @@ export function loadBaseItemPage(pageData) {
     loadBasePageData(data);
 }
 
+export function setListingsBlocksDataAction(data) {
+    if (!isSet(data)) {
+        return false;
+    }
+    if (data !== null) {
+        // store.dispatch(setBlocksData(blocksObject))
+        store.dispatch(setListingsData(data))
+        if (isSet(data.listing_block_category) &&
+            isSet(data.listing_block_category.slug)
+        ) {
+            store.dispatch(setCategory(data.listing_block_category.slug))
+            getListingsProviders(data.listing_block_category.slug)
+        }
+    }
+}
+
 export function getPageDataAction(data) {
     // console.log(data)
     store.dispatch(setPageData(data))
-    if (!isSet(data) || !isSet(data.blocksJSON) || data.blocksJSON === null) {
-        return false;
-    }
-    const blocksObject = JSON.parse(data.blocksJSON)
-    if (blocksObject !== null) {
-        store.dispatch(setBlocksData(blocksObject))
-        store.dispatch(setListingsData(blocksObject.tru_fetcher_listings))
-        if (isSet(blocksObject.tru_fetcher_listings) &&
-            isSet(blocksObject.tru_fetcher_listings.listing_block_category) &&
-            isSet(blocksObject.tru_fetcher_listings.listing_block_category.slug)
-        ) {
-            const category = blocksObject.tru_fetcher_listings.listing_block_category.slug
-            store.dispatch(setCategory(category))
-            getListingsProviders(category)
-        }
-    }
 }
 
 export function isUserAccountPage(pageData) {
