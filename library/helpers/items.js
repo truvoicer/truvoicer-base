@@ -93,7 +93,11 @@ export const getItemContentType = (type, key, dataItem, config = null) => {
 }
 
 const getItemContent = (type, key, dataItem, config = null) => {
-    if (isSet(dataItem[key]) && isSet(dataItem[key].request_item) && isSet(dataItem[key].request_item.request_operation)) {
+    if (isSet(dataItem[key]) &&
+        dataItem[key] !== null &&
+        isSet(dataItem[key].request_item) &&
+        isSet(dataItem[key].request_item.request_operation)
+    ) {
         return getItemContentComponent(type, key, dataItem, config)
     }
     return getItemContentType(type, key, dataItem, config);

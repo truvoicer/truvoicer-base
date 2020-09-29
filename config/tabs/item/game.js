@@ -47,14 +47,14 @@ export const GameTabConfig = {
                     dataKey: "item_platforms",
                     config: {
                         keys: [
-                            // {
-                            //     name: "name"
-                            // },
                             {
-                                type: "link",
-                                name: "url",
-                                label: "name"
-                            }
+                                name: "name"
+                            },
+                            // {
+                            //     type: "link",
+                            //     name: "url",
+                            //     label: "name"
+                            // }
                         ]
                     }
                 },
@@ -69,14 +69,14 @@ export const GameTabConfig = {
                     dataKey: "item_genres",
                     config: {
                         keys: [
-                            // {
-                            //     name: "name"
-                            // },
                             {
-                                type: "link",
-                                name: "url",
-                                label: "name"
-                            }
+                                name: "name"
+                            },
+                            // {
+                            //     type: "link",
+                            //     name: "url",
+                            //     label: "name"
+                            // }
                         ]
                     }
                 },
@@ -86,14 +86,14 @@ export const GameTabConfig = {
                     dataKey: "item_tags",
                     config: {
                         keys: [
-                            // {
-                            //     name: "name"
-                            // },
                             {
-                                type: "link",
-                                name: "url",
-                                label: "name"
-                            }
+                                name: "name"
+                            },
+                            // {
+                            //     type: "link",
+                            //     name: "url",
+                            //     label: "name"
+                            // }
                         ]
                     },
                 }
