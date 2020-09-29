@@ -1,16 +1,16 @@
 import React from "react";
 import store from "../store";
-import {fetchData} from "../../library/api/fetcher/middleware";
 import {
     setListingsData,
     setListingsQueryData,
     setListingsDataProviders,
     setListingsError, setListingsGrid
 } from "../reducers/listings-reducer"
-import {isSet} from "../../library/utils";
 import {initialSearch, runSearch, setSearchRequestOperationAction} from "./search-actions";
+import {isEmpty, isSet} from "../../library/utils";
+import {setSearchError, setSearchOperation} from "../reducers/search-reducer";
 import {NEW_SEARCH_REQUEST} from "../constants/search-constants";
-import {LISTINGS_GRID_COMPACT, LISTINGS_GRID_DETAILED} from "../constants/listings-constants";
+import {fetcherApiConfig} from "../../config/fetcher-api-config";
 
 export function addQueryDataString(key, value, search = false) {
     let listingsQueryData = {...store.getState().listings.listingsQueryData}
@@ -41,4 +41,43 @@ export function addQueryDataObjectAction(queryData, search = false) {
 
 export function setListingsGridAction(listingsGrid) {
     store.dispatch(setListingsGrid(listingsGrid))
+}
+
+export function getListingsInitialLoad() {
+    const listingsDataState = store.getState().listings.listingsData;
+    if (isEmpty(listingsDataState)) {
+        setSearchError("Listings data empty on initial search...")
+        return false;
+    }
+    if (!isSet(listingsDataState.initial_load)) {
+        setSearchError("Initial load data is not set...")
+        return false;
+    }
+    switch (listingsDataState.initial_load) {
+        case "search":
+            initialSearch();
+            break;
+        case "request":
+            initialRequest();
+            break;
+    }
+}
+
+
+export function initialRequest() {
+    store.dispatch(setSearchOperation(NEW_SEARCH_REQUEST));
+    const listingsDataState = store.getState().listings.listingsData;
+    if (!isSet(listingsDataState.initial_request) ||!isSet(listingsDataState.initial_request.request_options)) {
+        setSearchError("Initial request options not set......")
+        return false;
+    }
+    let requestOptions = listingsDataState.initial_request.request_options;
+    if (!isSet(requestOptions.request_name) || requestOptions.request_name === null || requestOptions.request_name === "") {
+        setSearchError("Initial request name not set...")
+        return false;
+    }
+    let queryData = {};
+    queryData[fetcherApiConfig.searchLimitKey] = requestOptions.request_limit;
+    addQueryDataObjectAction(queryData, false);
+    runSearch(requestOptions.request_name)
 }

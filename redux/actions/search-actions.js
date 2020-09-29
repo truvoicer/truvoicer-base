@@ -101,8 +101,8 @@ export function setSearchRequestErrorAction(error) {
 }
 
 export function searchResponseHandler(status, data, completed = false) {
-    // console.log(status, data)
-    if (status === 200) {
+    console.log(status, data)
+    if (status === 200 && data.status === "success") {
         getUserItemsListAction(data.request_data, data.provider, data.category)
         setSearchListDataAction(data.request_data);
         setSearchExtraDataAction(data.extra_data, data.provider, data.request_data)
@@ -142,7 +142,7 @@ function getEndpointOperation() {
     return fetcherApiConfig.defaultOperation
 }
 
-export const runSearch = () => {
+export const runSearch = (operation = false) => {
     setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
     const listingsDataState = store.getState().listings.listingsData;
     const queryDataState = store.getState().listings.listingsQueryData;
@@ -165,7 +165,13 @@ export const runSearch = () => {
             queryData = addPaginationQueryParameters(queryData, provider.provider_name);
             if (queryData) {
                 queryData["provider"] = provider.provider_name;
-                fetchData("operation", [getEndpointOperation()], queryData, searchResponseHandler, (listingsDataState.providers.length === index + 1))
+                fetchData(
+                    "operation",
+                    [operation? operation : getEndpointOperation()],
+                    queryData,
+                    searchResponseHandler,
+                    (listingsDataState.providers.length === index + 1)
+                )
             }
         });
         providers.map((provider) => {
@@ -177,7 +183,12 @@ export const runSearch = () => {
             queryData = addPaginationQueryParameters(queryData, provider.provider_name);
             if (queryData) {
                 queryData["provider"] = provider;
-                fetchData("operation", [getEndpointOperation()], queryData, searchResponseHandler, (queryDataState.providers.length === index + 1))
+                fetchData(
+                    "operation",
+                    [operation? operation : getEndpointOperation()],
+                    queryData, searchResponseHandler,
+                    (queryDataState.providers.length === index + 1)
+                )
             }
         });
     }
@@ -194,10 +205,7 @@ function calculateLimit(providerCount) {
 export function initialSearch() {
     store.dispatch(setSearchOperation(NEW_SEARCH_REQUEST));
     const listingsDataState = store.getState().listings.listingsData;
-    if (isEmpty(listingsDataState)) {
-        setSearchError("Listings data empty on initial search...")
-        return false;
-    }
+
     if (!isSet(listingsDataState.initial_search)) {
         setSearchError("Initial search data is not set on initial search...")
         return false;

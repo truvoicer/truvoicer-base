@@ -16,6 +16,7 @@ import {
 } from "../actions/search-actions";
 import {NEW_SEARCH_REQUEST, PAGE_CONTROL_PAGE_SIZE} from "../constants/search-constants";
 import {getSearchLimit, setPageControlItemAction} from "../actions/pagination-actions";
+import {getListingsInitialLoad} from "../actions/listings-actions";
 
 export function getListingsProviders(category) {
     fetchData("list", [category, "providers"], {}, getProvidersCallback);
@@ -26,7 +27,7 @@ export function getProvidersCallback(status, data) {
         // console.log(data.data)
         store.dispatch(setListingsDataProviders(data.data))
         setPageControlItemAction(PAGE_CONTROL_PAGE_SIZE, getSearchLimit())
-        initialSearch();
+        getListingsInitialLoad();
     } else {
         // console.error(data.message)
         store.dispatch(setListingsError(data.message))
