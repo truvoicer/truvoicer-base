@@ -4,7 +4,12 @@ export const formatDate = (dateString, formatString = "dd mmmm yyyy") => {
     if (!isSet(dateString) || dateString === null || dateString === "") {
         return dateString;
     }
-    let date = new Date(dateString);
+    let date;
+    if (!isNaN(dateString)) {
+        date = new Date(dateString*1000);
+    } else {
+        date = new Date(dateString);
+    }
     if (isSet(date)) {
         return DateFormat(date, formatString);
     }
@@ -24,7 +29,7 @@ export const isSet = (item) => {
 }
 
 export const isNotEmpty = (item) => {
-    return typeof item !== "undefined" && item !== null;
+    return typeof item !== "undefined" && item !== null && item !== "";
 }
 
 export const imageSelector = (imageSize = "medium", imageArray = []) => {
