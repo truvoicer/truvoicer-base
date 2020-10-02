@@ -1,5 +1,5 @@
 import {fetchLoaderDataAction} from "../../redux/actions/item-actions";
-import {isSet} from "../../library/utils";
+import {isNotEmpty, isSet} from "../../library/utils";
 import React, {useState} from "react";
 
 const {useEffect} = require("react");
@@ -16,8 +16,57 @@ const ImageListLoader = (props) => {
         }
     }
 
+    const getUnorderedList = (imageList, provider) => {
+        return (
+            <ul>
+                {imageList.map((item, index) => (
+                    <li key={index}>
+                        <img src={item.url}  alt={provider}/>
+                    </li>
+                ))}
+            </ul>
+        );
+    }
+
+    const getOrderedList = (imageList, provider) => {
+        return (
+            <ol>
+                {imageList.map((item, index) => (
+                    <li key={index}>
+                        <img src={item.url}  alt={provider}/>
+                    </li>
+                ))}
+            </ol>
+        );
+    }
+
+    const getDivList = (imageList, provider) => {
+        return (
+            <>
+                {imageList.map((item, index) => (
+                    <div key={index}>
+                        <img src={item.url}  alt={provider}/>
+                    </div>
+                ))}
+            </>
+        );
+    }
+
+    const getList = (imageList, provider) => {
+        switch (props.listType) {
+            case "div":
+                return getDivList(imageList, provider);
+            case "ol":
+                return getOrderedList(imageList, provider);
+            case "ul":
+            default:
+                return getUnorderedList(imageList, provider);
+        }
+    }
     useEffect(() => {
-        if (isSet(props.imageData.request_item) && isSet(props.imageData.request_item.request_operation)) {
+        if (isNotEmpty(props.imageData) &&
+            isSet(props.imageData.request_item) &&
+            isSet(props.imageData.request_item.request_operation)) {
             fetchLoaderDataAction(
                 props.imageData.request_item.request_operation,
                 {
@@ -30,13 +79,9 @@ const ImageListLoader = (props) => {
     }, [props.imageData])
 
     return (
-        <ul>
-            {imageList.map((item, index) => (
-                <li key={index}>
-                    <img src={item.url}  alt={props.item.provider}/>
-                </li>
-            ))}
-        </ul>
+        <>
+            {getList(imageList, props.item.provider)}
+        </>
     );
 }
 export default ImageListLoader;
