@@ -75,7 +75,7 @@ export function loadBasePageData({page, truFetcherSettings, sidebars}) {
 export function loadBaseItemPage(pageData) {
     const data = {
         page: pageData?.listingsCategory?.itemViewTemplates?.nodes[0],
-        allSettings: pageData?.allSettings,
+        truFetcherSettings: pageData?.truFetcherSettings,
         sidebars: pageData?.sidebars
     }
     loadBasePageData(data);
