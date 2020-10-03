@@ -32,6 +32,9 @@ export const singlePageQuery = () => {
                   generalSettingsTimeFormat
                   generalSettingsTimezone
                 }
+                truFetcherSettings {
+                    settings_json
+                }
             }
   `;
 }

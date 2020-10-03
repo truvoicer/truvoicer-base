@@ -60,13 +60,14 @@ export function getPageTitle(siteTitle, pageTitle) {
     return null;
 }
 
-export function loadBasePageData({page, allSettings, sidebars}) {
+export function loadBasePageData({page, truFetcherSettings, sidebars}) {
     const pageData = {...page};
+    const siteSettings = JSON.parse(truFetcherSettings.settings_json);
     pageData.seo_title = getPageTitle(
-        allSettings?.generalSettingsTitle,
+        siteSettings?.blog_name,
         page?.title
     );
-    setSiteSettingsAction(allSettings);
+    setSiteSettingsAction(siteSettings);
     getPageDataAction(pageData);
     setBaseSidebarsJson(sidebars)
 }

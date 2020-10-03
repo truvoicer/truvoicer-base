@@ -12,6 +12,9 @@ export const siteSettingsQuery = () => {
           generalSettingsTimeFormat
           generalSettingsTimezone
         }
+        truFetcherSettings {
+            settings_json
+        }
       }
   `;
 }
