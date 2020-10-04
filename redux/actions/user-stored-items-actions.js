@@ -82,12 +82,11 @@ export function isSavedItemAction(item_id, provider, category, user_id) {
 
 export function getItemRatingDataAction(item_id, provider, category, user_id) {
     const itemRatingsList = [...store.getState().search.itemRatingsList];
-    // console.log(itemRatingsList)
     const itemRatingData = itemRatingsList.filter(item => {
         if(
             item !== null &&
             parseInt(item.user_id) === parseInt(user_id) &&
-            item.item_id === item_id &&
+            parseInt(item.item_id) === parseInt(item_id) &&
             item.provider_name === provider &&
             item.category === category
         ) {
