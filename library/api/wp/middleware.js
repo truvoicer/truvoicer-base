@@ -9,6 +9,7 @@ import {singlePostQuery} from "../../graphql/queries/single-post";
 import {itemViewTemplateQuery} from "../../graphql/queries/item-view-template";
 import {menuQuery} from "../../graphql/queries/menu";
 import {wpApiConfig} from "../../../config/wp-api-config";
+import {getSessionObject} from "../../../redux/actions/session-actions";
 
 const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
@@ -208,8 +209,14 @@ export async function getSinglePost(slug, preview, previewData) {
 }
 
 
-export function getSavedItemsList(requestData, callback) {
-    axios.post(buildWpApiUrl(wpApiConfig.endpoints.savedItemsList), requestData)
+export function protectedApiRequest(endpoint, requestData, callback) {
+    let config = {
+        url: endpoint,
+        method: "post",
+        data: requestData,
+        headers: {'Authorization': 'Bearer ' + getSessionObject().token}
+    }
+    axios.request(config)
         .then(response => {
             callback(false, response.data);
         })

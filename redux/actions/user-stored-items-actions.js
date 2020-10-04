@@ -1,7 +1,7 @@
 import store from "../store";
 import {SESSION_AUTHENTICATED, SESSION_USER, SESSION_USER_ID} from "../constants/session-constants";
 import {setModalContentAction} from "./page-actions";
-import {buildWpApiUrl, getSavedItemsList} from "../../library/api/wp/middleware";
+import {buildWpApiUrl, protectedApiRequest} from "../../library/api/wp/middleware";
 import produce from "immer";
 import {APPEND_SEARCH_REQUEST, NEW_SEARCH_REQUEST} from "../constants/search-constants";
 import {setItemRatingsList, setSavedItemsList} from "../reducers/search-reducer";
@@ -26,7 +26,11 @@ export function getUserItemsListAction(data, provider, category) {
         id_list: itemsList,
         user_id: userId
     }
-    getSavedItemsList(requestData, getUserItemsListCallback)
+    protectedApiRequest(
+        buildWpApiUrl(wpApiConfig.endpoints.savedItemsList),
+        requestData,
+        getUserItemsListCallback
+    )
 }
 
 export function getUserItemsListCallback(error, data) {
@@ -123,19 +127,12 @@ export function saveItemAction(provider, category, itemId, user_id) {
         item_id: itemId,
         user_id: user_id
     }
-    saveItemRequest(data, saveItemRequestCallback)
+    protectedApiRequest(
+        buildWpApiUrl(wpApiConfig.endpoints.saveItem),
+        data,
+        saveItemRequestCallback
+    )
     updateSavedItemAction(data)
-}
-
-export function saveItemRequest(requestData, callback) {
-    axios.post(buildWpApiUrl(wpApiConfig.endpoints.saveItem), requestData)
-        .then(response => {
-            callback(false, response.data);
-        })
-        .catch(error => {
-            console.error(error)
-            callback(true, error);
-        });
 }
 
 export function updateSavedItemAction(data) {
@@ -177,25 +174,20 @@ export function saveItemRatingAction(provider, category, itemId, user_id, rating
         user_id: user_id,
         rating: rating,
     }
-    saveItemRatingRequest(data)
+    protectedApiRequest(
+        buildWpApiUrl(wpApiConfig.endpoints.saveItemRating),
+        data,
+        updateItemRatingAction
+    )
     updateItemRatingAction(data)
 }
 
-export function saveItemRatingRequest(requestData) {
-    axios.post(buildWpApiUrl(wpApiConfig.endpoints.saveItemRating), requestData)
-        .then(response => {
-            if (isSet(response.data) && isSet(response.data.data) ) {
-                updateItemRatingAction(false, response.data.data);
-            }
-        })
-        .catch(error => {
-            console.error(error)
-        });
-}
-
 export function updateItemRatingAction(status, data) {
-    if (Array.isArray(data) && data.length > 0) {
-        const itemData = data[0];
+    if (!isSet(data) || !isSet(data.data) ) {
+        return;
+    }
+    if (Array.isArray(data.data) && data.data.length > 0) {
+        const itemData = data.data[0];
         const searchState = {...store.getState().search};
         const nextState = produce(searchState.itemRatingsList, (draftState) => {
             if (getItemRatingDataAction(itemData.item_id, itemData.provider_name, itemData.category, itemData.user_id)) {
