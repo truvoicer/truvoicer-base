@@ -6,7 +6,12 @@ import {
     setListingsDataProviders,
     setListingsError, setListingsGrid
 } from "../reducers/listings-reducer"
-import {initialSearch, runSearch, setSearchRequestOperationAction} from "./search-actions";
+import {
+    initialSearch,
+    runSearch,
+    setSearchRequestOperationAction,
+    setSearchRequestServiceAction
+} from "./search-actions";
 import {isEmpty, isSet} from "../../library/utils";
 import {setSearchError, setSearchOperation} from "../reducers/search-reducer";
 import {NEW_SEARCH_REQUEST} from "../constants/search-constants";
@@ -78,6 +83,9 @@ export function initialRequest() {
     }
     let queryData = {};
     queryData[fetcherApiConfig.searchLimitKey] = requestOptions.request_limit;
+    queryData[fetcherApiConfig.pageNumberKey] = 1;
+    queryData[fetcherApiConfig.pageOffsetKey] = 0;
+    setSearchRequestServiceAction(requestOptions.request_name)
     addQueryDataObjectAction(queryData, false);
-    runSearch(requestOptions.request_name)
+    runSearch()
 }

@@ -8,5 +8,7 @@ export const fetcherApiConfig = {
     searchLimitKey: "limit",
     defaultSearchLimit: 20,
     pageNumberKey: "page_number",
-    defaultOperation: "list"
+    pageOffsetKey: "page_offset",
+    defaultOperation: "list",
+    searchOperation: "list"
 }

@@ -102,18 +102,25 @@ export function setHasMoreSearchPages() {
 
 export function addPaginationQueryParameters(queryData, providerName = null) {
     const pageControlsState = {...store.getState().search.pageControls};
-    if (!pageControlsState[PAGE_CONTROL_PAGINATION_REQUEST]) {
-        return queryData;
-    }
+    // if (!pageControlsState[PAGE_CONTROL_PAGINATION_REQUEST]) {
+    //     return queryData;
+    // }
     const extraDataState = {...store.getState().search.extraData};
     const currentPage = pageControlsState[PAGE_CONTROL_CURRENT_PAGE];
     const extraData = extraDataState[providerName];
+
+    if (!isSet(extraData)) {
+        return queryData;
+    }
     if (isSet(extraData.item_count) && parseInt(extraData.item_count) >= parseInt(extraData.total_items)) {
         return false;
     }
-    if (isSet(extraData) && isSet(extraData.page_number)) {
+    if (!isSet(extraData) || !isSet(extraData.pagination_type)) {
+        return queryData;
+    }
+    if (extraData.pagination_type === "page_number") {
         queryData["page_number"] = currentPage;
-    } else if (isSet(extraData.page_offset)) {
+    } else if (extraData.pagination_type === "offset") {
         console.log(extraData.page_offset, pageControlsState[PAGE_CONTROL_PAGE_SIZE], currentPage)
         queryData["page_offset"] = queryData["limit"] * currentPage;
     }

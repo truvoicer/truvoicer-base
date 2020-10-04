@@ -35,6 +35,7 @@ import {
 import {Routes} from "../../config/routes";
 import Router from "next/router";
 import {getUserItemsListAction} from "./user-stored-items-actions";
+import {siteConfig} from "../../../config/site-config";
 
 const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
@@ -135,9 +136,9 @@ function validateSearchParams() {
 }
 
 function getEndpointOperation() {
-    const listingsDataState = store.getState().listings.listingsData;
-    if (isSet(listingsDataState.service_endpoint) && listingsDataState.service_endpoint !== "") {
-        return listingsDataState.service_endpoint;
+    const searchState = store.getState().search;
+    if (isSet(searchState.requestService) && searchState.requestService !== "") {
+        return searchState.requestService;
     }
     return fetcherApiConfig.defaultOperation
 }
@@ -167,7 +168,7 @@ export const runSearch = (operation = false) => {
                 queryData["provider"] = provider.provider_name;
                 fetchData(
                     "operation",
-                    [operation? operation : getEndpointOperation()],
+                    [getEndpointOperation()],
                     queryData,
                     searchResponseHandler,
                     (listingsDataState.providers.length === index + 1)
@@ -180,12 +181,12 @@ export const runSearch = (operation = false) => {
     } else {
         queryData["limit"] = calculateLimit(queryDataState.providers.length);
         queryDataState.providers.map((provider, index) => {
-            queryData = addPaginationQueryParameters(queryData, provider.provider_name);
+            queryData = addPaginationQueryParameters(queryData, provider);
             if (queryData) {
                 queryData["provider"] = provider;
                 fetchData(
                     "operation",
-                    [operation? operation : getEndpointOperation()],
+                    [getEndpointOperation()],
                     queryData, searchResponseHandler,
                     (queryDataState.providers.length === index + 1)
                 )
@@ -218,6 +219,8 @@ export function initialSearch() {
     let queryData = {};
     queryData[initialSearch.parameter_name] = initialSearch.parameter_value;
     queryData[fetcherApiConfig.pageNumberKey] = 1;
+    queryData[fetcherApiConfig.pageOffsetKey] = 0;
+    setSearchRequestServiceAction(fetcherApiConfig.searchOperation)
     addQueryDataObjectAction(queryData, true);
 }
 
