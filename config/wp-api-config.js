@@ -5,11 +5,16 @@ export const wpApiConfig = {
     endpoints: {
         token: "jwt-auth/v1/token",
         validateToken: "jwt-auth/v1/token/validate",
+        menu: publicEndpoint + "/pages/menu/%s",
         createUser: protectedEndpoint + "/users/create",
         updateUser: protectedEndpoint + "/users/update",
         saveItem: protectedEndpoint + "/users/item/save",
         saveItemRating: protectedEndpoint + "/users/item/rating/save",
         savedItemsList: protectedEndpoint + "/users/item/list",
         savedItemsListByUser: protectedEndpoint + "/users/item/list-by-user",
+        commentsByItemId: publicEndpoint + "/comments/list/%(category)s/%(provider)s/%(item_id)s",
+        commentsByUserId: publicEndpoint + "/comments/user/%(data.user_id)d/list",
+        createComment: protectedEndpoint + "/comments/create",
+        updateComment: protectedEndpoint + "/comments/update",
     }
 }

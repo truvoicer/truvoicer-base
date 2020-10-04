@@ -82,6 +82,7 @@ export function getStaticPagePaths(allPages) {
         }
     })
 }
+
 export async function getPreviewPage(id, idType = 'DATABASE_ID') {
     const data = await fetchAPI(
         previewPageQuery(),
@@ -93,12 +94,12 @@ export async function getPreviewPage(id, idType = 'DATABASE_ID') {
 }
 
 export async function getAllPostsWithUri() {
-    const data = await fetchAPI( allPostsUriQuery() )
+    const data = await fetchAPI(allPostsUriQuery())
     return data?.posts
 }
 
 export async function getAllPagesWithUri() {
-    const data = await fetchAPI( allPagesUriQuery() )
+    const data = await fetchAPI(allPagesUriQuery())
     return data?.pages
 }
 
@@ -209,17 +210,39 @@ export async function getSinglePost(slug, preview, previewData) {
 }
 
 
-export function protectedApiRequest(endpoint, requestData, callback) {
+export function protectedApiRequest(endpoint, requestData, callback = false) {
     let config = {
         url: endpoint,
         method: "post",
         data: requestData,
         headers: {'Authorization': 'Bearer ' + getSessionObject().token}
     }
-    axios.request(config)
-        .then(response => {
-            callback(false, response.data);
-        })
+    const getRequest = axios.request(config)
+    if (!callback) {
+        return getRequest;
+    }
+    getRequest.then(response => {
+        callback(false, response.data);
+    })
+    .catch(error => {
+        console.error(error)
+        callback(true, error);
+    });
+}
+
+export function publicApiRequest(endpoint, requestData = {}, callback = false) {
+    let config = {
+        url: endpoint,
+        method: "get",
+        query: requestData,
+    }
+    const getRequest = axios.request(config)
+    if (!callback) {
+        return getRequest;
+    }
+    getRequest.then(response => {
+        callback(false, response.data);
+    })
         .catch(error => {
             console.error(error)
             callback(true, error);
