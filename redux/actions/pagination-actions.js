@@ -102,27 +102,39 @@ export function setHasMoreSearchPages() {
 
 export function addPaginationQueryParameters(queryData, providerName = null) {
     const pageControlsState = {...store.getState().search.pageControls};
-    // if (!pageControlsState[PAGE_CONTROL_PAGINATION_REQUEST]) {
-    //     return queryData;
-    // }
-    const extraDataState = {...store.getState().search.extraData};
+    const extraData = store.getState().search.extraData[providerName];
     const currentPage = pageControlsState[PAGE_CONTROL_CURRENT_PAGE];
-    const extraData = extraDataState[providerName];
 
     if (!isSet(extraData)) {
         return queryData;
     }
-    if (isSet(extraData.item_count) && parseInt(extraData.item_count) >= parseInt(extraData.total_items)) {
-        return false;
-    }
-    if (!isSet(extraData) || !isSet(extraData.pagination_type)) {
-        return queryData;
-    }
-    if (extraData.pagination_type === "page_number") {
-        queryData["page_number"] = currentPage;
-    } else if (extraData.pagination_type === "offset") {
-        console.log(extraData.page_offset, pageControlsState[PAGE_CONTROL_PAGE_SIZE], currentPage)
-        queryData["page_offset"] = queryData["limit"] * currentPage;
-    }
+
+    queryData["page_number"] = currentPage;
+    queryData["page_offset"] = queryData["limit"] * currentPage;
     return queryData;
+}
+
+export function addProviderToSearch(provider) {
+    const pageControlsState = {...store.getState().search.pageControls};
+    const extraData = store.getState().search.extraData[provider];
+    if (!isSet(extraData)) {
+        return true;
+    }
+    else if (pageControlsState[PAGE_CONTROL_CURRENT_PAGE] === 1) {
+        return true;
+    }
+    else if (isSet(extraData.total_items) && !isNaN(extraData.total_items)) {
+        if (providerHasMoreItems(
+            pageControlsState[PAGE_CONTROL_CURRENT_PAGE],
+            pageControlsState[PAGE_CONTROL_PAGE_SIZE],
+            parseInt(extraData.total_items)
+        )) {
+            return true;
+        }
+    }
+    return false;
+}
+
+export function providerHasMoreItems(currentPage, pageSize, providerTotalItems) {
+    return (currentPage * pageSize) < parseInt(providerTotalItems);
 }

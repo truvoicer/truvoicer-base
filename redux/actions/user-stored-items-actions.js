@@ -16,7 +16,11 @@ export function getUserItemsListAction(data, provider, category) {
     if (data.length === 0) {
         return false;
     }
-    const userId = store.getState().session[SESSION_USER][SESSION_USER_ID]
+    const session = {...store.getState().session};
+    if (!session[SESSION_AUTHENTICATED]) {
+        return;
+    }
+    const userId = session[SESSION_USER][SESSION_USER_ID]
     const itemsList = data.map((item) => {
         return item.item_id;
     })
@@ -119,7 +123,7 @@ export function showAuthModal() {
 
 export function saveItemAction(provider, category, itemId, user_id) {
     if (!showAuthModal()) {
-        return false;
+        return;
     }
     const data = {
         provider_name: provider,

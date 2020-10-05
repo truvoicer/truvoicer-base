@@ -27,7 +27,7 @@ import {
     SEARCH_REQUEST_STARTED
 } from "../constants/search-constants";
 import {
-    addPaginationQueryParameters,
+    addPaginationQueryParameters, addProviderToSearch,
     setHasMoreSearchPages,
     setPageControlItemAction,
     setPageControlsAction
@@ -143,10 +143,45 @@ function getEndpointOperation() {
     return fetcherApiConfig.defaultOperation
 }
 
+export function filterSearchProviders(allProviders) {
+    let filteredProviders = [];
+    allProviders.map(provider => {
+        if (addProviderToSearch(provider)) {
+            filteredProviders.push(provider)
+        }
+    })
+    return filteredProviders;
+}
+
+export function getSearchProviders() {
+    const queryDataState = {...store.getState().listings.listingsQueryData};
+    const listingsDataState = {...store.getState().listings.listingsData};
+    let providers = [];
+    if (!isSet(queryDataState.providers) || queryDataState.providers.length === 0) {
+        providers = listingsDataState.providers.map(provider => {
+            return provider.provider_name;
+        });
+        providers.map((provider) => {
+            addArrayItem("providers", provider)
+        });
+    } else {
+        providers = queryDataState.providers.map(provider => {
+            return provider;
+        });
+    }
+    return providers
+}
+
+export function buildQueryData(allProviders, provider) {
+    let queryData = {...store.getState().listings.listingsQueryData};
+    queryData["limit"] = calculateLimit(allProviders.length);
+    queryData = addPaginationQueryParameters(queryData, provider);
+    queryData["provider"] = provider;
+    return queryData;
+}
+
 export const runSearch = (operation = false) => {
     setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
-    const listingsDataState = store.getState().listings.listingsData;
-    const queryDataState = store.getState().listings.listingsQueryData;
     const pageControlsState = store.getState().search.pageControls;
     if (!validateSearchParams()) {
         setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
@@ -156,44 +191,17 @@ export const runSearch = (operation = false) => {
     if (!pageControlsState[PAGE_CONTROL_PAGINATION_REQUEST]) {
         setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, 1);
     }
-
-    let queryData = {...queryDataState};
-    if (!isSet(queryDataState.providers) || queryDataState.providers.length === 0) {
-        let providers = [];
-        queryData["limit"] = calculateLimit(listingsDataState.providers.length);
-        listingsDataState.providers.map((provider, index) => {
-            providers.push(provider.provider_name)
-            queryData = addPaginationQueryParameters(queryData, provider.provider_name);
-            if (queryData) {
-                queryData["provider"] = provider.provider_name;
-                fetchData(
-                    "operation",
-                    [getEndpointOperation()],
-                    queryData,
-                    searchResponseHandler,
-                    (listingsDataState.providers.length === index + 1)
-                )
-            }
-        });
-        providers.map((provider) => {
-            addArrayItem("providers", provider)
-        })
-    } else {
-        queryData["limit"] = calculateLimit(queryDataState.providers.length);
-        queryDataState.providers.map((provider, index) => {
-            queryData = addPaginationQueryParameters(queryData, provider);
-            if (queryData) {
-                queryData["provider"] = provider;
-                fetchData(
-                    "operation",
-                    [getEndpointOperation()],
-                    queryData, searchResponseHandler,
-                    (queryDataState.providers.length === index + 1)
-                )
-            }
-        });
-    }
-
+    const providers = getSearchProviders();
+    const filterProviders = filterSearchProviders(providers);
+    filterProviders.map((provider, index) => {
+        fetchData(
+            "operation",
+            [getEndpointOperation()],
+            buildQueryData(filterProviders, provider),
+            searchResponseHandler,
+            (filterProviders.length === index + 1)
+        )
+    })
 }
 
 function calculateLimit(providerCount) {
