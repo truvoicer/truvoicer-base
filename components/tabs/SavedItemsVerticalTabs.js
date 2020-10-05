@@ -4,7 +4,11 @@ import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
 import {convertImageObjectsToArray, isSet} from "../../library/utils";
 import {defaultListingsGrid, listingsGridConfig} from "../../../config/listings-grid-config";
-import {LISTINGS_GRID_COMPACT, LISTINGS_GRID_LIST} from "../../redux/constants/listings-constants";
+import {
+    LISTINGS_GRID_COMPACT,
+    LISTINGS_GRID_DETAILED,
+    LISTINGS_GRID_LIST
+} from "../../redux/constants/listings-constants";
 import {fetchData} from "../../library/api/fetcher/middleware";
 import Grid from "@material-ui/core/Grid";
 import {getItemRatingDataAction, isSavedItemAction} from "../../redux/actions/user-stored-items-actions";
@@ -177,11 +181,23 @@ const SavedItemsVerticalTabs = (props) => {
     }
 
     const getItemList = (data) => {
+        let gridItemSize = 12;
+        switch (listingsGrid) {
+            case LISTINGS_GRID_COMPACT:
+                gridItemSize = 4;
+                break;
+            case LISTINGS_GRID_LIST:
+                gridItemSize = 12;
+                break;
+            case LISTINGS_GRID_DETAILED:
+                gridItemSize = 6;
+                break;
+        }
         return (
             <Grid container className={""} spacing={2}>
                 {isSet(data) &&
                 data.items_response.map((item, index) => (
-                    <Grid item xs={12} key={index}>
+                    <Grid item xs={gridItemSize} key={index}>
                         {getGridItem(item, item.category)}
                     </Grid>
                 ))

@@ -3,8 +3,11 @@ import HorizontalTabLayout from "../tabs/HorizontalTabLayout";
 import {connect} from "react-redux";
 import {getUserAccountMenuAction} from "../../redux/actions/page-actions";
 import VerticalTabLayout from "../tabs/VerticalTabLayout";
+import {isNotEmpty, isSet} from "../../library/utils";
 
 const UserAccountBlock = (props) => {
+    const defaultTabOrientation = "horizontal";
+
     const buildTabLayoutData = (menuData) => {
         return menuData.map((item) => {
             return {
@@ -28,6 +31,12 @@ const UserAccountBlock = (props) => {
     }
     const tabData = buildTabLayoutData(props.userAccountMenu);
 
+    const getTabOrientation = () => {
+        if (isSet(props.userAccountSettings) && isNotEmpty(props.userAccountSettings.tabs_orientation)) {
+            return props.userAccountSettings.tabs_orientation;
+        }
+        return defaultTabOrientation;
+    }
     useEffect(() => {
         getUserAccountMenuAction()
         // console.log(props.session[SESSION_AUTHENTICATED])
@@ -36,14 +45,14 @@ const UserAccountBlock = (props) => {
             <div className={"user-account-area"}>
                 {tabData.length > 0 &&
                     <>
-                        {props.userAccountSettings.tabs_orientation === "vertical" &&
+                        {getTabOrientation() === "vertical" &&
                             <VerticalTabLayout
                                 data={tabData}
                                 tabIndex={getPageIndex()}
                                 tabsBgImage={props.userAccountSettings.sidebar_background_image}
                             />
                         }
-                        {props.userAccountSettings.tabs_orientation === "horizontal" &&
+                        {getTabOrientation() === "horizontal" &&
                             <HorizontalTabLayout
                                 data={tabData}
                                 tabIndex={getPageIndex()}
