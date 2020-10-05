@@ -19,6 +19,10 @@ const ImageListCarouselLoader = (props) => {
         }
     }
     useEffect(() => {
+        if (isSet(props.request) && !props.request) {
+            setImageList(props.imageData)
+            return;
+        }
         if (isNotEmpty(props.imageData) &&
             isSet(props.imageData.request_item) &&
             isSet(props.imageData.request_item.request_operation)) {
@@ -62,7 +66,7 @@ const ImageListCarouselLoader = (props) => {
             >
                 {imageList.map((item, index) => (
                     <div key={index}>
-                        <img src={item.url} alt={props.item.provider}/>
+                        <img className={props.imageClassName? props.imageClassName : ""} src={item.url} alt={props.item.provider}/>
                     </div>
                 ))}
             </Carousel>
