@@ -74,7 +74,7 @@ export function isSavedItemAction(item_id, provider, category, user_id) {
     const isSaved = savedItemsList.filter(savedItem => {
         if(
             parseInt(savedItem.user_id) === parseInt(user_id) &&
-            savedItem.item_id === item_id &&
+            parseInt(savedItem.item_id) === parseInt(item_id) &&
             savedItem.provider_name === provider &&
             savedItem.category === category
         ) {
