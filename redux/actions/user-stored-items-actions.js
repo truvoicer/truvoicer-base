@@ -76,29 +76,42 @@ export function setItemRatingsListAction(data, searchState) {
 export function isSavedItemAction(item_id, provider, category, user_id) {
     const savedItemsList = [...store.getState().search.savedItemsList];
     const isSaved = savedItemsList.filter(savedItem => {
-        if(
-            parseInt(savedItem.user_id) === parseInt(user_id) &&
-            parseInt(savedItem.item_id) === parseInt(item_id) &&
-            savedItem.provider_name === provider &&
-            savedItem.category === category
-        ) {
-            return savedItem;
+        const getItemFromList = getItem(savedItem, item_id, provider, category, user_id);
+        if (getItemFromList) {
+            return getItemFromList;
         }
     });
     return isSaved.length > 0;
 }
 
+function getItem(item, item_id, provider, category, user_id) {
+    if (item === null) {
+        return false;
+    }
+    let savedItemId = item.item_id;
+    if (!isNaN(savedItemId)) {
+        savedItemId = parseInt(savedItemId);
+    }
+    if (!isNaN(item_id)) {
+        item_id = parseInt(item_id);
+    }
+    if(
+        parseInt(item.user_id) === parseInt(user_id) &&
+        savedItemId === item_id &&
+        item.provider_name === provider &&
+        item.category === category
+    ) {
+        return item;
+    }
+    return false;
+}
+
 export function getItemRatingDataAction(item_id, provider, category, user_id) {
     const itemRatingsList = [...store.getState().search.itemRatingsList];
     const itemRatingData = itemRatingsList.filter(item => {
-        if(
-            item !== null &&
-            parseInt(item.user_id) === parseInt(user_id) &&
-            parseInt(item.item_id) === parseInt(item_id) &&
-            item.provider_name === provider &&
-            item.category === category
-        ) {
-            return item;
+        const getItemFromList = getItem(item, item_id, provider, category, user_id);
+        if (getItemFromList) {
+            return getItemFromList;
         }
     });
     if (itemRatingData.length > 0) {
