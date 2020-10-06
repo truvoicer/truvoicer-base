@@ -7,6 +7,14 @@ import {
 } from "../reducers/item-reducer";
 import {fetchData} from "../../library/api/fetcher/middleware";
 import produce from "immer";
+import {listingsGridConfig} from "../../../config/listings-grid-config";
+import {isSet} from "../../library/utils";
+import {
+    LISTINGS_GRID_COMPACT,
+    LISTINGS_GRID_CUSTOM,
+    LISTINGS_GRID_DETAILED,
+    LISTINGS_GRID_LIST
+} from "../constants/listings-constants";
 
 export function setItemErrorAction(error) {
     store.dispatch(setItemError(error))
@@ -37,5 +45,47 @@ export function fetchItemCallback (status, data) {
     } else {
         console.error(data)
         store.dispatch(setItemError("Item fetch error..."))
+    }
+}
+
+export const getCustomItem = (item, category) => {
+    const gridConfig = listingsGridConfig.gridItems;
+    if (!isSet(gridConfig[category])) {
+        return null;
+    }
+    if (!isSet(gridConfig[category][LISTINGS_GRID_CUSTOM])) {
+        return null;
+    }
+    const CustomItem = gridConfig[category][LISTINGS_GRID_CUSTOM];
+    return <CustomItem data={item} />
+}
+
+
+export const getGridItemColumns = (listingsGrid) => {
+    switch (listingsGrid) {
+        case LISTINGS_GRID_COMPACT:
+            return {
+                sm: 12,
+                md: 6,
+                lg: 4
+            };
+        case LISTINGS_GRID_LIST:
+            return {
+                sm: 12,
+                md: 12,
+                lg: 12
+            };
+        case LISTINGS_GRID_DETAILED:
+            return {
+                sm: 12,
+                md: 6,
+                lg: 6
+            };
+        default:
+            return {
+                sm: 12,
+                md: 6,
+                lg: 4
+            };
     }
 }

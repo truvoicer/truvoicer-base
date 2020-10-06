@@ -234,5 +234,5 @@ export function getItemRatingIndexAction(item_id, provider, category, user_id) {
 }
 
 export function saveItemRequestCallback(error, data) {
-    console.log(error, data)
+    // console.log(error, data)
 }
