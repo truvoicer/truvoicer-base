@@ -33,9 +33,7 @@ import {
     setPageControlsAction
 } from "./pagination-actions";
 import {Routes} from "../../config/routes";
-import Router from "next/router";
 import {getUserItemsListAction} from "./user-stored-items-actions";
-import {siteConfig} from "../../../config/site-config";
 
 const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
