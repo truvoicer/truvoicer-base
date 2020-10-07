@@ -16,8 +16,8 @@ export const AddAxiosInterceptors = () => {
 }
 
 export const LoadEnvironment = () => {
-    const env = process.env.NEXT_PUBLIC_APP_ENV;
-    if (env === "prod") {
-        console.log = function () {};
-    }
+    // const env = process.env.NEXT_PUBLIC_APP_ENV;
+    // if (env === "prod") {
+    //     console.log = function () {};
+    // }
 }
