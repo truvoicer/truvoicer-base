@@ -14,10 +14,7 @@ import {isObjectEmpty} from "../../library/utils";
 import {siteConfig} from "../../../config/site-config";
 
 export function setBaseSidebarsJson(sidebarsJson) {
-    console.log("Parsing sidebars...")
     const sidebars = JSON.parse(sidebarsJson.sidebars_json);
-    console.log("Parsed sidebars")
-    console.log(sidebars)
     if (isObjectEmpty(sidebars)) {
         return false;
     }

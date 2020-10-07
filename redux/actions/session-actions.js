@@ -127,8 +127,6 @@ export const getSessionObject = () => {
     if (typeof localStorage === 'undefined') {
         return false;
     }
-
-    console.log("Checking local storage...")
     try {
         let expiresAt = localStorage.getItem('expires_at');
         let token = localStorage.getItem('token');
@@ -136,10 +134,7 @@ export const getSessionObject = () => {
             !isSet(token) || token === null || token === "") {
             return false;
         }
-        console.log("Parsing expiry...")
         const expiry = JSON.parse(expiresAt);
-        console.log("Parsed expiry")
-        console.log(expiry)
         return {
             token: localStorage.getItem('token'),
             expires_at: expiry

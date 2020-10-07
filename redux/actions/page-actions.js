@@ -62,10 +62,7 @@ export function getPageTitle(siteTitle, pageTitle) {
 
 export function loadBasePageData({page, truFetcherSettings, sidebars}) {
     const pageData = {...page};
-    console.log("Parsing settings...")
     const siteSettings = JSON.parse(truFetcherSettings.settings_json);
-    console.log("Parsed settings")
-    console.log(siteSettings)
     pageData.seo_title = getPageTitle(
         siteSettings?.blog_name,
         page?.title
@@ -109,10 +106,7 @@ export function isUserAccountPage(pageData) {
     if (!isSet(pageData) || !isSet(pageData.blocksJSON) || pageData.blocksJSON === null) {
         return false;
     }
-    console.log("Parsing blocks object...")
     const blocksObject = JSON.parse(pageData.blocksJSON)
-    console.log("Parsed blocks object")
-    console.log(blocksObject)
     if (isSet(blocksObject.tru_fetcher_listings) &&
         isSet(blocksObject.tru_fetcher_listings.tru_fetcher_user_area)) {
         return true;
