@@ -40,8 +40,8 @@ const GridItems = (props) => {
             props.listings.listingsData.item_display === "new_page"
         ) {
             const url = getItemViewUrl(item, category);
-            // router.push(url, url)
-            window.location.href = url
+            router.push(url, url)
+            // window.location.href = url
         } else {
             e.preventDefault()
             setModalData({
