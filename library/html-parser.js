@@ -6,8 +6,12 @@ export const filterHtml = (node, index) => {
         if(typeof node.attribs.id !== "undefined" &&
             typeof componentsConfig.components[node.attribs.id] !== "undefined")
         {
+            console.log("Parsing wp block Data...")
+            const parseData = JSON.parse(node.attribs.data);
+console.log(parseData)
+            console.log("Parsed wp block Data")
             const Component = componentsConfig.components[node.attribs.id].component;
-            return <Component key={index} data={JSON.parse(node.attribs.data)}/>;
+            return <Component key={index} data={parseData}/>;
         }
     }
 }
