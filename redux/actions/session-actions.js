@@ -134,9 +134,13 @@ export const getSessionObject = () => {
             !isSet(token) || token === null || token === "") {
             return false;
         }
+        console.log("Parsing expiry...")
+        const expiry = JSON.parse(expiresAt);
+        console.log("Parsed expiry")
+        console.log(expiry)
         return {
             token: localStorage.getItem('token'),
-            expires_at: JSON.parse(expiresAt)
+            expires_at: expiry
         }
     } catch (error) {
         console.error(error);
