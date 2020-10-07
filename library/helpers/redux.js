@@ -1,3 +1,10 @@
+/**
+ * Checks for additional state data for a specific state
+ * Checks in a state config in the parent redux/reducers/(state_name).js config file
+ * @param key
+ * @param defaultState
+ * @returns {*}
+ */
 export const getState = (key, defaultState) => {
     try {
         const stateFile = require("../../../library/redux/reducers/" + key);
