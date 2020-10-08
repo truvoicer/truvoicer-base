@@ -91,3 +91,7 @@ export const isObjectEmpty = (object) => {
 export const isObject = (object) => {
     return typeof object === "object";
 }
+
+export const scrollToRef = (ref) => {
+    window.scrollTo(0, ref.current.offsetTop)
+}
