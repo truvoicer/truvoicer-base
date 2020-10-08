@@ -4,6 +4,7 @@ import {
     setListingsData,
     setListingsQueryData,
     setListingsDataProviders,
+    setListingsScrollTop,
     setListingsError, setListingsGrid
 } from "../reducers/listings-reducer"
 import {
@@ -46,6 +47,10 @@ export function addQueryDataObjectAction(queryData, search = false) {
 
 export function setListingsGridAction(listingsGrid) {
     store.dispatch(setListingsGrid(listingsGrid))
+}
+
+export function setListingsScrollTopAction(show) {
+    store.dispatch(setListingsScrollTop(show))
 }
 
 export function getListingsInitialLoad() {

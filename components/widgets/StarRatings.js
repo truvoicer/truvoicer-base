@@ -3,12 +3,13 @@ import React from "react";
 const StarRatings = (props) => {
     const maxRating = 5;
     const rating = props.rating;
+    const defaultRatingsClassName = "fa fa-star";
 
     const getRatingStars = () => {
         let ratingStars = [];
         for (let i = 1; i <= maxRating; i++) {
             ratingStars.push(
-                <span className={"item-ratings--star icon-star " + (i <= rating ? "text-warning" : "text-secondary")}/>
+                <span className={props.starClassName ? props.starClassName : defaultRatingsClassName + (i <= rating ? " text-warning" : " text-secondary")}/>
             )
         }
         return ratingStars;

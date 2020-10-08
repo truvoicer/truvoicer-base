@@ -4,22 +4,25 @@ import {addListingsQueryDataString} from "../../redux/middleware/listings-middle
 import {setSearchRequestOperationMiddleware} from "../../redux/middleware/search-middleware";
 import {fetcherApiConfig} from "../../config/fetcher-api-config";
 import {NEW_SEARCH_REQUEST} from "../../redux/constants/search-constants";
+import {setListingsScrollTopAction} from "../../redux/actions/listings-actions";
 
 const TopbarSearch = (props) => {
     const [query, setQuery] = useState("");
 
-    const formClickHandler = (e) => {
+    const formSubmitHandler = (e) => {
         e.preventDefault();
         props.setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         props.addListingsQueryDataString(fetcherApiConfig.queryKey, query, true)
+        setListingsScrollTopAction(true);
     }
 
     const formChangeHandler = (e) => {
+        e.preventDefault()
         setQuery(e.target.value);
     }
     return (
         <div className="top-search-area">
-            <form action="#" method="post">
+            <form onSubmit={formSubmitHandler}>
                 <input
                     type="search"
                     name="top-search"

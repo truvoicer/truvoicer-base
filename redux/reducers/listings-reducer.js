@@ -13,6 +13,7 @@ const defaultState = {
     listingsQueryData: {},
     listingsSearchResults: {},
     listingsRequestStatus: "",
+    listingsScrollTop: false,
     error: {}
 };
 const defaultReducers = {
@@ -26,15 +27,16 @@ const defaultReducers = {
         state.listingsData = action.payload;
     },
     setListingsQueryData: (state, action) => {
-        // console.log(action.payload)
         state.listingsQueryData = action.payload;
-        // console.log(state.listingsQueryData)
     },
     setListingsSearchResults: (state, action) => {
         state.listingsSearchResults = action.payload;
     },
     setListingsDataProviders: (state, action) => {
         state.listingsData.providers = action.payload;
+    },
+    setListingsScrollTop: (state, action) => {
+        state.listingsScrollTop = action.payload;
     },
     setListingsError: (state, action) => {
         state.error = action.payload;
@@ -57,5 +59,6 @@ export const {
     setListingsDataProviders,
     setListingsQueryData,
     setListingsSearchResults,
+    setListingsScrollTop,
     setListingsError
 } = listingsSlice.actions;
