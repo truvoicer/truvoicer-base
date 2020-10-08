@@ -117,16 +117,15 @@ const GridItems = (props) => {
     const getCustomItemsData = (listPosition) => {
         const listingsData = props.listings.listingsData;
         let itemsData;
-        console.log(listingsData?.list_start_items)
         switch (listPosition) {
             case "list_start":
-                itemsData = listingsData?.list_start_items?.items_data;
+                itemsData = listingsData?.list_start_items;
                 break;
             case "list_end":
-                itemsData = listingsData?.list_end_items?.items_data;
+                itemsData = listingsData?.list_end_items;
                 break;
             case "custom_position":
-                itemsData = listingsData?.custom_position_items?.items_data;
+                itemsData = listingsData?.custom_position_items;
                 break;
             default:
                 return [];
