@@ -14,12 +14,6 @@ import {
     isSavedItemAction,
 } from "../../../../redux/actions/user-stored-items-actions";
 import Col from "react-bootstrap/Col";
-import {
-    LISTINGS_GRID_COMPACT,
-    LISTINGS_GRID_DETAILED,
-    LISTINGS_GRID_LIST
-} from "../../../../redux/constants/listings-constants";
-import {Routes} from "../../../../config/routes";
 import Router, {useRouter} from "next/router";
 import {getItemViewUrl} from "../../../../redux/actions/search-actions";
 import {getGridItemColumns, getCustomItem} from "../../../../redux/actions/item-actions";
@@ -123,6 +117,7 @@ const GridItems = (props) => {
     const getCustomItemsData = (listPosition) => {
         const listingsData = props.listings.listingsData;
         let itemsData;
+        console.log(listingsData?.list_start_items)
         switch (listPosition) {
             case "list_start":
                 itemsData = listingsData?.list_start_items?.items_data;
