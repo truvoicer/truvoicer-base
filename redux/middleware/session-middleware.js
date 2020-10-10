@@ -47,7 +47,7 @@ export function createUserMiddleware(requestData, callback) {
             })
             .catch(error => {
                 console.error(error)
-                callback(true, error?.response);
+                callback(true, error?.response?.data);
             });
     }
 }

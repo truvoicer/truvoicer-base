@@ -34,19 +34,19 @@ const RegisterDialog = (props) => {
 
     return (
         <div className={"auth-wrapper"}>
+            <h2 className="text-black">Register</h2>
             {response.success &&
-            <div className="p-5 bg-white">
+            <div className="bg-white">
                 <p className={"text-success"}>{response.message}</p>
             </div>
             }
             {response.error &&
-            <div className="p-5 bg-white">
+            <div className="bg-white">
                 <p className={"text-danger"}>{response.message}</p>
             </div>
             }
             {showRegisterForm &&
             <>
-                <h2 className="text-black">Register</h2>
                 <div className={"auth-wrapper--signup-form"}>
                     <AuthRegisterForm requestCallback={requestCallback} />
                 </div>
