@@ -1,11 +1,12 @@
 import React, {useState} from "react";
-import AuthLoginForm from "./AuthLoginForm";
 import AuthGoogle from "./AuthGoogle";
 import AuthFacebook from "./AuthFacebook";
-import Button from "@material-ui/core/Button";
 import AuthRegisterForm from "./AuthRegisterForm";
 import {connect} from "react-redux";
 import {showPageModalMiddleware} from "../../../redux/middleware/page-middleware";
+import {siteConfig} from "../../../../config/site-config";
+import {componentsConfig} from "../../../../config/components-config";
+import {setModalContentAction} from "../../../redux/actions/page-actions";
 
 const RegisterDialog = (props) => {
     const [showRegisterForm, setShowRegisterForm] = useState(true);
@@ -28,13 +29,15 @@ const RegisterDialog = (props) => {
                 message: data.message
             })
             setShowRegisterForm(false)
-            // props.showPageModalMiddleware(false);
         }
     }
-
+    const showAuthLoginModal = (e) => {
+        e.preventDefault();
+        setModalContentAction(componentsConfig.components.authentication_login.name, {}, true)
+    }
     return (
         <div className={"auth-wrapper"}>
-            <h2 className="text-black">Register</h2>
+            <h2 className="text-dark text-black">Register</h2>
             {response.success &&
             <div className="bg-white">
                 <p className={"text-success"}>{response.message}</p>
@@ -48,7 +51,9 @@ const RegisterDialog = (props) => {
             {showRegisterForm &&
             <>
                 <div className={"auth-wrapper--signup-form"}>
-                    <AuthRegisterForm requestCallback={requestCallback} />
+                    <AuthRegisterForm requestCallback={requestCallback}>
+                        <p className={"mb-0"}>Already registered? <a className={"text-danger"} href={siteConfig.defaultLoginHref} onClick={showAuthLoginModal}>Sign In</a></p>
+                    </AuthRegisterForm>
                 </div>
                 <div className={"horizontal-divider"}>
                     <span>OR</span>

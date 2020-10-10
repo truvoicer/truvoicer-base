@@ -1,17 +1,15 @@
 import React from "react";
 import {connect} from "react-redux";
-import {setModalContentMiddleware, setUserAccountMenuMiddleware} from "../../../redux/middleware/page-middleware";
 import AuthLoginForm from "./AuthLoginForm";
 import {siteConfig} from "../../../../config/site-config";
-import {wpApiConfig} from "../../../config/wp-api-config";
+import {componentsConfig} from "../../../../config/components-config";
+import {setModalContentAction} from "../../../redux/actions/page-actions";
 
 const LoginBlock = (props) => {
-
     const showAuthRegisterModal = (e) => {
         e.preventDefault()
-        props.setModalContentMiddleware(wpApiConfig.components.authentication_register.name, {}, true)
+        setModalContentAction(componentsConfig.components.authentication_register.name, {}, true)
     }
-
     return (
         <div className="site-section bg-light">
             <div className="container">
@@ -33,8 +31,5 @@ const LoginBlock = (props) => {
 }
 export default connect(
     null,
-    {
-        setModalContentMiddleware
-
-    }
+    null
 )(LoginBlock);

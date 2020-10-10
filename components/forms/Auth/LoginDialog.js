@@ -2,10 +2,11 @@ import React, {useState} from "react";
 import AuthLoginForm from "./AuthLoginForm";
 import AuthGoogle from "./AuthGoogle";
 import AuthFacebook from "./AuthFacebook";
-import Button from "@material-ui/core/Button";
 import {connect} from "react-redux";
 import {showPageModalMiddleware} from "../../../redux/middleware/page-middleware";
-import SocialButton from "../Buttons/SocialButton";
+import {siteConfig} from "../../../../config/site-config";
+import {setModalContentAction} from "../../../redux/actions/page-actions";
+import {componentsConfig} from "../../../../config/components-config";
 
 const LoginDialog = (props) => {
     const [showLoginForm, setShowLoginForm] = useState(false);
@@ -13,7 +14,10 @@ const LoginDialog = (props) => {
         show: false,
         message: ""
     });
-
+    const showAuthRegisterModal = (e) => {
+        e.preventDefault()
+        setModalContentAction(componentsConfig.components.authentication_register.name, {}, true)
+    }
     const requestCallback = (error, data) => {
         if (error) {
             console.error(data)
@@ -31,14 +35,16 @@ const LoginDialog = (props) => {
         <div className={"auth-wrapper"}>
             {!showLoginForm &&
             <>
-                <h2 className="text-black">Sign In</h2>
+                <h2 className="text-dark text-black">Sign In</h2>
                 {error.show &&
                 <div className={"site-form--error--block"}>
                     {error.message}
                 </div>
                 }
                 <div className={"auth-wrapper--login-form"}>
-                    <AuthLoginForm requestCallback={requestCallback}/>
+                    <AuthLoginForm requestCallback={requestCallback}>
+                        <p className={"mb-0"}>No account yet? <a className={"text-danger"} href={siteConfig.defaultRegisterHref} onClick={showAuthRegisterModal}>Register</a></p>
+                    </AuthLoginForm>
                 </div>
                 <div className={"horizontal-divider"}>
                     <span>OR</span>
