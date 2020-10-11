@@ -1,6 +1,5 @@
 import React, {useEffect} from "react";
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
-import {facebookAuthConfig} from "../../../../config/facebook/facebookAuthConfig";
 import {connect} from "react-redux";
 import {getSessionTokenMiddleware} from "../../../redux/middleware/session-middleware";
 import {buildWpApiUrl} from "../../../library/api/wp/middleware";
@@ -22,7 +21,7 @@ const AuthFacebook = (props) => {
 
     return (
         <FacebookLogin
-            appId={facebookAuthConfig.appId}
+            appId={props.siteSettings?.facebook_app_id}
             autoLoad={false}
             fields="name,email,picture"
             callback={responseFacebook}
@@ -36,9 +35,8 @@ const AuthFacebook = (props) => {
     )
 }
 function mapStateToProps(state) {
-    // console.log(state.session)
     return {
-        session: state.session
+        siteSettings: state.page.siteSettings
     };
 }
 
