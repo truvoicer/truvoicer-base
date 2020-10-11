@@ -30,7 +30,7 @@ const PasswordResetDialog = (props) => {
             setResponse({
                 error: true,
                 success: false,
-                message: data.message
+                message: data.response.data.message
             })
         } else {
             setResponse({
