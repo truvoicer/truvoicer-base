@@ -32,8 +32,8 @@ const UserAccountBlock = (props) => {
     const tabData = buildTabLayoutData(props.userAccountMenu);
 
     const getTabOrientation = () => {
-        if (isSet(props.userAccountSettings) && isNotEmpty(props.userAccountSettings.tabs_orientation)) {
-            return props.userAccountSettings.tabs_orientation;
+        if (isNotEmpty(props.siteSettings?.tabs_orientation)) {
+            return props.siteSettings.tabs_orientation;
         }
         return defaultTabOrientation;
     }
@@ -49,7 +49,7 @@ const UserAccountBlock = (props) => {
                             <VerticalTabLayout
                                 data={tabData}
                                 tabIndex={getPageIndex()}
-                                tabsBgImage={props.userAccountSettings.sidebar_background_image}
+                                tabsBgImage={props.siteSettings?.sidebar_background_image}
                             />
                         }
                         {getTabOrientation() === "horizontal" &&
@@ -67,7 +67,7 @@ const UserAccountBlock = (props) => {
 function mapStateToProps(state) {
     // console.log(state.page)
     return {
-        userAccountSettings: state.page.siteSettings.user_account_settings,
+        siteSettings: state.page.siteSettings,
         blockData: state.page.blocksData,
         userAccountMenu: state.page.userAccountMenu
     };

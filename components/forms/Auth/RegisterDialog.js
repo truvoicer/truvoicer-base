@@ -37,10 +37,12 @@ const RegisterDialog = (props) => {
     }
     return (
         <div className={"auth-wrapper"}>
-            <h2 className="text-dark text-black">Register</h2>
+            {!response.success &&
+                <h2 className="text-dark text-black">Register</h2>
+            }
             {response.success &&
-            <div className="bg-white">
-                <p className={"text-success"}>{response.message}</p>
+            <div className="bg-white p-3">
+                <p className={"text-center"}>{response.message}</p>
             </div>
             }
             {response.error &&

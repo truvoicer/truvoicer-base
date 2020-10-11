@@ -7,11 +7,11 @@ import DataForm from "../DataForm";
 import {LoginFormData} from "../../../config/forms/login-form";
 import {useRouter} from "next/router";
 import {wpApiConfig} from "../../../config/wp-api-config";
-import {PasswordResetData} from "../../../config/forms/password-reset-form";
+import {PasswordResetRequestData} from "../../../config/forms/password-reset-request-form";
 
 
 const PasswordResetForm = (props) => {
-    const [submitButtonText, setSubmitButtonText] = useState("Reset Password",);
+    const [submitButtonText, setSubmitButtonText] = useState("Request Password Reset",);
 
     const submitHandler = (values) => {
         publicApiRequest(buildWpApiUrl(wpApiConfig.endpoints.passwordReset), values, props.requestCallback)
@@ -22,7 +22,7 @@ const PasswordResetForm = (props) => {
             {!props.session.authenticated &&
             <>
                 <DataForm
-                    data={PasswordResetData}
+                    data={PasswordResetRequestData}
                     submitCallback={submitHandler}
                     submitButtonText={submitButtonText}
                 >

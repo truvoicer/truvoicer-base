@@ -1,6 +1,12 @@
 import store from "../store"
 import React from "react";
-import {setAuthenticated, setSavedItems, setSessionError, setUser} from "../reducers/session-reducer";
+import {
+    setAuthenticated,
+    setPasswordResetKey,
+    setSavedItems,
+    setSessionError,
+    setUser, setUserId
+} from "../reducers/session-reducer";
 import produce from "immer";
 import {
     SESSION_AUTH_TYPE,
@@ -158,4 +164,12 @@ export function getSavedItemsListByUserAction(requestData, callback = false) {
                 callback(true, error)
             });
     }
+}
+
+export function setSessionUserIdAction(userId) {
+    store.dispatch(setUserId(userId));
+}
+
+export function setPasswordResetKeyAction(passwordResetKey) {
+    store.dispatch(setPasswordResetKey(passwordResetKey));
 }

@@ -2,7 +2,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {
     SESSION_AUTH_TYPE,
-    SESSION_AUTHENTICATED, SESSION_ERROR, SESSION_SAVED_ITEMS,
+    SESSION_AUTHENTICATED, SESSION_ERROR, SESSION_PASSWORD_RESET_KEY, SESSION_SAVED_ITEMS,
     SESSION_USER,
     SESSION_USER_DISPLAY_NAME,
     SESSION_USER_EMAIL,
@@ -23,6 +23,7 @@ const defaultState = {
         [SESSION_USER_DISPLAY_NAME]: "",
         [SESSION_USER_TOKEN]: "",
     },
+    [SESSION_PASSWORD_RESET_KEY]: "",
     [SESSION_AUTHENTICATED]: false,
     [SESSION_ERROR]: {
         show: false,
@@ -34,8 +35,14 @@ const defaultReducers = {
     setUser: (state, action) => {
         state.user = action.payload;
     },
+    setUserId: (state, action) => {
+        state.user[SESSION_USER_ID] = action.payload;
+    },
     setToken: (state, action) => {
         state.token = action.payload;
+    },
+    setPasswordResetKey: (state, action) => {
+        state.passwordResetKey = action.payload;
     },
     setAuthenticated: (state, action) => {
         state.authenticated = action.payload;
@@ -53,4 +60,4 @@ export const sessionSlice = createSlice({
 });
 
 export const sessionReducer = sessionSlice.reducer;
-export const {setUser, setToken, setAuthenticated, setSessionError} = sessionSlice.actions;
+export const {setUser, setToken, setAuthenticated, setUserId, setPasswordResetKey, setSessionError} = sessionSlice.actions;

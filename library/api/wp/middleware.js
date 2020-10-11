@@ -234,7 +234,7 @@ export function publicApiRequest(endpoint, requestData = {}, callback = false) {
     let config = {
         url: endpoint,
         method: "get",
-        query: requestData,
+        params: requestData,
     }
     const getRequest = axios.request(config)
     if (!callback) {

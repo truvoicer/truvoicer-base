@@ -1,5 +1,6 @@
 export const SESSION_AUTHENTICATED = "authenticated";
 export const SESSION_AUTH_TYPE = "authType";
+export const SESSION_PASSWORD_RESET_KEY = "passwordResetKey";
 export const SESSION_USER = "user";
 export const SESSION_USER_ID = "id";
 export const SESSION_USER_EMAIL = "email";

@@ -30,7 +30,7 @@ export const LoginFormData = {
             validation: {
                 rules: [
                     {
-                        type: "alphanumeric"
+                        type: "password"
                     },
                     {
                         type: "length",

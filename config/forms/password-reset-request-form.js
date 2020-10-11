@@ -1,4 +1,4 @@
-export const PasswordResetData = {
+export const PasswordResetRequestData = {
     fields: [
         {
             name: "username",
