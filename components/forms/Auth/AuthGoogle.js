@@ -17,7 +17,6 @@ const AuthGoogle = (props) => {
     const responseFail = (response) => {
         console.error(response);
     }
-
     return (
         <GoogleLogin
             clientId={props.siteSettings?.google_client_id}

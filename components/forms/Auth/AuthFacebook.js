@@ -19,6 +19,7 @@ const AuthFacebook = (props) => {
         console.error(response);
     }
 
+    // console.log(props.siteSettings?.facebook_app_id)
     return (
         <FacebookLogin
             appId={props.siteSettings?.facebook_app_id}
