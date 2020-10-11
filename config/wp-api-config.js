@@ -6,6 +6,7 @@ export const wpApiConfig = {
         token: "jwt-auth/v1/token",
         validateToken: "jwt-auth/v1/token/validate",
         menu: publicEndpoint + "/pages/menu/%s",
+        passwordReset: publicEndpoint + "/users/password-reset",
         createUser: publicEndpoint + "/users/create",
         updateUser: publicEndpoint + "/users/update",
         saveItem: protectedEndpoint + "/users/item/save",

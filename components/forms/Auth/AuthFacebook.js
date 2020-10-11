@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
-import {facebookAuthConfig} from "../../../config/facebook/facebookAuthConfig";
+import {facebookAuthConfig} from "../../../../config/facebook/facebookAuthConfig";
 import {connect} from "react-redux";
 import {getSessionTokenMiddleware} from "../../../redux/middleware/session-middleware";
 import {buildWpApiUrl} from "../../../library/api/wp/middleware";

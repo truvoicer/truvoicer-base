@@ -7,6 +7,7 @@ import {showPageModalMiddleware} from "../../../redux/middleware/page-middleware
 import {siteConfig} from "../../../../config/site-config";
 import {setModalContentAction} from "../../../redux/actions/page-actions";
 import {componentsConfig} from "../../../../config/components-config";
+import AuthRegisterForm from "./AuthRegisterForm";
 
 const LoginDialog = (props) => {
     const [showLoginForm, setShowLoginForm] = useState(false);
@@ -17,6 +18,10 @@ const LoginDialog = (props) => {
     const showAuthRegisterModal = (e) => {
         e.preventDefault()
         setModalContentAction(componentsConfig.components.authentication_register.name, {}, true)
+    }
+    const showForgotPasswordModal = (e) => {
+        e.preventDefault()
+        setModalContentAction(componentsConfig.components.authentication_password_reset.name, {}, true)
     }
     const requestCallback = (error, data) => {
         if (error) {
@@ -43,7 +48,17 @@ const LoginDialog = (props) => {
                 }
                 <div className={"auth-wrapper--login-form"}>
                     <AuthLoginForm requestCallback={requestCallback}>
-                        <p className={"mb-0"}>No account yet? <a className={"text-danger"} href={siteConfig.defaultRegisterHref} onClick={showAuthRegisterModal}>Register</a></p>
+                        <p className={"mb-0 text-center"}>
+                            <a className={"text-danger"} href={siteConfig.defaultForgotPasswordHref} onClick={showForgotPasswordModal}>
+                                Forgot Password?
+                            </a>
+                        </p>
+                        <p className={"mb-0 text-center"}>
+                            No account yet?
+                            <a className={"text-primary ml-1"} href={siteConfig.defaultRegisterHref} onClick={showAuthRegisterModal}>
+                                Register
+                            </a>
+                        </p>
                     </AuthLoginForm>
                 </div>
                 <div className={"horizontal-divider"}>

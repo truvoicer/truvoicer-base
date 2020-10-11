@@ -1,6 +1,6 @@
 import React  from "react";
 import { GoogleLogin } from 'react-google-login';
-import {GoogleAuthConfig} from "../../../config/google/googleOauthConfig";
+import {GoogleAuthConfig} from "../../../../config/google/googleOauthConfig";
 import {connect} from "react-redux";
 import {getSessionTokenMiddleware} from "../../../redux/middleware/session-middleware";
 import {buildWpApiUrl} from "../../../library/api/wp/middleware";

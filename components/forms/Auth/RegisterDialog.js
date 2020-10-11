@@ -52,7 +52,12 @@ const RegisterDialog = (props) => {
             <>
                 <div className={"auth-wrapper--signup-form"}>
                     <AuthRegisterForm requestCallback={requestCallback}>
-                        <p className={"mb-0"}>Already registered? <a className={"text-danger"} href={siteConfig.defaultLoginHref} onClick={showAuthLoginModal}>Sign In</a></p>
+                        <p className={"mb-0 text-center"}>
+                            Already registered?
+                            <a className={"text-danger"} href={siteConfig.defaultLoginHref} onClick={showAuthLoginModal}>
+                                Sign In
+                            </a>
+                        </p>
                     </AuthRegisterForm>
                 </div>
                 <div className={"horizontal-divider"}>
