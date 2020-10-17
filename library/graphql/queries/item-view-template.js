@@ -12,7 +12,6 @@ export const itemViewTemplateQuery = () => {
                 slug
                 uri
                 content(format: RENDERED)
-                blocksJSON
                 date
                 dateGmt
                 modified

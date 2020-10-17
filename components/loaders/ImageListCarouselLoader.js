@@ -64,7 +64,7 @@ const ImageListCarouselLoader = (props) => {
                     )
                 }
             >
-                {imageList.map((item, index) => (
+                {Array.isArray(imageList) && imageList.map((item, index) => (
                     <div key={index}>
                         <img className={props.imageClassName? props.imageClassName : ""} src={item.url} alt={props.item.provider}/>
                     </div>

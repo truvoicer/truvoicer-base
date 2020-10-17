@@ -10,7 +10,14 @@ export const singlePageQuery = () => {
                   slug
                   uri
                   content(format: RENDERED)
-                  blocksJSON
+                  page_options {
+                    fieldGroupName
+                    footerScripts
+                    footerScriptsOverride
+                    headerScripts
+                    headerScriptsOverride
+                    pageType
+                  }
                   date
                   dateGmt
                   modified
