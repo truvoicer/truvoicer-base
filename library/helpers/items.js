@@ -1,11 +1,21 @@
 import HtmlParser from "react-html-parser";
 import React from "react";
-import {formatDate, isSet} from "../utils";
+import {formatDate, isNotEmpty, isSet} from "../utils";
 import ImageLoader from "../../components/loaders/ImageLoader";
 import ListLoader from "../../components/loaders/ListLoader";
 
+export const convertLinkToHttps = (url) => {
+    if (!isNotEmpty(url)) {
+        return url;
+    }
+    if (url.includes("http:")) {
+        url = url.replace("http:", "https:")
+    }
+    return url;
+}
+
 const getItemImage = (url, label) => {
-    return <img src={url} alt={label}/>
+    return <img src={convertLinkToHttps(url)} alt={label}/>
 }
 
 const getItemLink = (url, label) => {

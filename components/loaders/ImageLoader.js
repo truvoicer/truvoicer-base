@@ -1,6 +1,7 @@
 import {fetchLoaderDataAction} from "../../redux/actions/item-actions";
 import {imageSelector, isNotEmpty, isSet} from "../../library/utils";
 import React, {useState} from "react";
+import {convertLinkToHttps} from "../../library/helpers/items";
 
 const {useEffect} = require("react");
 
@@ -50,9 +51,9 @@ const ImageLoader = (props) => {
         <>
             {props.background ?
                 <div className={props.className ? props.className : ""}
-                     style={{backgroundImage: "url(" + image.url + ")"}}/>
+                     style={{backgroundImage: "url(" + convertLinkToHttps(image.url) + ")"}}/>
                 :
-                <img className={props.className ? props.className : ""} src={image.url} alt={props.item.provider}/>
+                <img className={props.className ? props.className : ""} src={convertLinkToHttps(image.url)} alt={props.item.provider}/>
             }
 
         </>

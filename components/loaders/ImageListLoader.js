@@ -1,6 +1,7 @@
 import {fetchLoaderDataAction} from "../../redux/actions/item-actions";
 import {isNotEmpty, isSet} from "../../library/utils";
 import React, {useState} from "react";
+import {convertLinkToHttps} from "../../library/helpers/items";
 
 const {useEffect} = require("react");
 
@@ -21,7 +22,7 @@ const ImageListLoader = (props) => {
             <ul>
                 {imageList.map((item, index) => (
                     <li key={index}>
-                        <img src={item.url}  alt={provider}/>
+                        <img src={convertLinkToHttps(item.url)}  alt={provider}/>
                     </li>
                 ))}
             </ul>
@@ -33,7 +34,7 @@ const ImageListLoader = (props) => {
             <ol>
                 {imageList.map((item, index) => (
                     <li key={index}>
-                        <img src={item.url}  alt={provider}/>
+                        <img src={convertLinkToHttps(item.url)}  alt={provider}/>
                     </li>
                 ))}
             </ol>
@@ -45,7 +46,7 @@ const ImageListLoader = (props) => {
             <>
                 {imageList.map((item, index) => (
                     <div key={index}>
-                        <img src={item.url}  alt={provider}/>
+                        <img src={convertLinkToHttps(item.url)}  alt={provider}/>
                     </div>
                 ))}
             </>
