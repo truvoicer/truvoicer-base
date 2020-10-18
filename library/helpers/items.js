@@ -17,7 +17,7 @@ export function replaceItemDataPlaceholders(pageTitle, item) {
 
 export const itemDataTextFilter = (text) => {
     const itemState = {...store.getState().item};
-    if (!isSet(text)) {
+    if (!isNotEmpty(text)) {
         return "";
     }
     if (isNotEmpty(itemState.itemId)) {
