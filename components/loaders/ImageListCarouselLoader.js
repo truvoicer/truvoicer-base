@@ -40,7 +40,7 @@ const ImageListCarouselLoader = (props) => {
 
     return (
         <>
-            {imageList.length > 0 &&
+            {Array.isArray(imageList) && imageList.length > 0 &&
             <Carousel
                 infiniteLoop
                 swipeable={true}
