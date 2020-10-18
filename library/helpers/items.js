@@ -1,8 +1,33 @@
 import HtmlParser from "react-html-parser";
 import React from "react";
-import {formatDate, isNotEmpty, isSet} from "../utils";
+import {formatDate, isNotEmpty, isObjectEmpty, isSet, uCaseFirst} from "../utils";
 import ImageLoader from "../../components/loaders/ImageLoader";
 import ListLoader from "../../components/loaders/ListLoader";
+import store from "../../redux/store";
+
+export function replaceItemDataPlaceholders(pageTitle, item) {
+    const test = new RegExp("\\\[+(.*?)\\]", "g");
+    return pageTitle.replace(test, (match, value) => {
+        if (isSet(item[value])) {
+            return uCaseFirst(item[value]);
+        }
+        return "loading..."
+    });
+}
+
+export const itemDataTextFilter = (text) => {
+    const itemState = {...store.getState().item};
+    if (!isSet(text)) {
+        return "";
+    }
+    if (isNotEmpty(itemState.itemId)) {
+        if (!isObjectEmpty(itemState.data)) {
+            return replaceItemDataPlaceholders(text, itemState.data)
+        }
+        return "Loading...";
+    }
+    return text;
+}
 
 export const convertLinkToHttps = (url) => {
     if (!isNotEmpty(url)) {

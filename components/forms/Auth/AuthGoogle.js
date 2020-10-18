@@ -19,7 +19,7 @@ const AuthGoogle = (props) => {
     }
     return (
         <GoogleLogin
-            clientId={props.siteSettings?.google_client_id}
+            clientId={props.siteSettings?.google_login_client_id}
             autoLoad={false}
             buttonText="Login with Google"
             onSuccess={responseSuccess}

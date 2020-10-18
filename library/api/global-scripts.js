@@ -1,3 +1,6 @@
+import TagManager from "react-gtm-module";
+import store from "../../redux/store";
+import {isNotEmpty} from "../utils";
 
 const axios = require('axios');
 
@@ -20,4 +23,17 @@ export const LoadEnvironment = () => {
     if (env === "prod") {
         console.log = function () {};
     }
+    initializeTagManager()
+}
+
+const initializeTagManager = () => {
+    const siteSettingsState = {...store.getState().page.siteSettings};
+    if (!isNotEmpty(siteSettingsState?.google_tag_manager_id)) {
+        console.warn("Tag Manager Id not set.")
+        return;
+    }
+    const tagManagerArgs = {
+        gtmId: siteSettingsState?.google_tag_manager_id
+    }
+    TagManager.initialize(tagManagerArgs)
 }

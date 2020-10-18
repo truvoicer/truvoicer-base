@@ -1,14 +1,8 @@
-import {isSet, uCaseFirst} from "../utils";
+import {isNotEmpty, isSet} from "../utils";
+import {itemDataTextFilter} from "./items";
+import store from "../../redux/store";
 
-export function getPageSeoTitle(pageTitle, item) {
-    const test = new RegExp("\\\[+(.*?)\\]","g");
-    return pageTitle.replace(test, (match, value) => {
-        if (isSet(item[value])) {
-            return uCaseFirst(item[value]);
-        }
-        return "loading..."
-    });
-}
+const sprintf = require("sprintf").sprintf;
 
 export const getHeadScripts = (page_options, siteSettings) => {
     if (isSet(page_options?.headerScriptsOverride) && page_options.headerScriptsOverride) {
@@ -22,4 +16,17 @@ export const getHeadScripts = (page_options, siteSettings) => {
         headScripts += page_options.headerScripts;
     }
     return headScripts;
+}
+
+export const getItemViewPageTitle = () => {
+    const pageState = {...store.getState().page};
+
+    if (isNotEmpty(pageState?.siteSettings?.blog_name) && isNotEmpty(pageState?.pageData?.title)) {
+        return  sprintf("%s | %s", pageState.siteSettings.blog_name, itemDataTextFilter(pageState?.pageData?.title));
+    }
+
+    if (isNotEmpty(pageState?.siteSettings?.blog_name)) {
+        return pageState.siteSettings.blog_name;
+    }
+    return "Loading...";
 }
