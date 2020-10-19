@@ -13,7 +13,7 @@ const CommentItem = (props) => {
         <div className="media">
             <a className="pull-left" href="#">
                 <img
-                    className="media-object"
+                    className="media-object avatar-image"
                     src="https://bootdey.com/img/Content/avatar/avatar1.png"
                     alt=""
                 />

@@ -1,17 +1,21 @@
-const DateFormat = require("dateformat");
+import moment from 'moment';
 
-export const formatDate = (dateString, formatString = "dd mmmm yyyy") => {
+export const formatDate = (dateString, formatString = "Do MMMM YYYY") => {
+    moment.updateLocale('en', {
+        invalidDate : ""
+    });
     if (!isSet(dateString) || dateString === null || dateString === "") {
         return dateString;
     }
     let date;
     if (!isNaN(dateString)) {
-        date = new Date(dateString*1000);
+        date = moment(dateString*1000).format(formatString);
+
     } else {
-        date = new Date(dateString);
+        date = moment(dateString).format(formatString);
     }
     if (isSet(date)) {
-        return DateFormat(date, formatString);
+        return date;
     }
     return dateString
 }

@@ -22,7 +22,7 @@ const CommentTextForm = (props) => {
             <fieldset>
                 <div className="row">
                     <div className="col-sm-3 col-lg-2 hidden-xs">
-                        <img className="img-responsive"
+                        <img className="img-responsive avatar-image"
                              src="https://bootdey.com/img/Content/avatar/avatar1.png"
                              alt=""/>
                     </div>
