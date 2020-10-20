@@ -30,6 +30,8 @@ const DataForm = (props) => {
         let value;
         if (item.fieldType === "text") {
             value = isSet(item.value) ? item.value : "";
+        } else if (item.fieldType === "textarea") {
+            value = isSet(item.value) ? item.value : "";
         } else if (item.fieldType === "select") {
             value = isSet(props.selectData[item.name]) ? props.selectData[item.name] : [];
         } else if (item.fieldType === "checkbox") {
@@ -237,6 +239,9 @@ const DataForm = (props) => {
                 {field.fieldType === "text" &&
                 getInputRow(field, errors, touched, handleBlur, handleChange, values)
                 }
+                {field.fieldType === "textarea" &&
+                getTextAreaRow(field, errors, touched, handleBlur, handleChange, values)
+                }
                 {field.fieldType === "select" &&
                 getSelectRow(field, errors, touched, handleBlur, handleChange, values)
                 }
@@ -399,6 +404,55 @@ const DataForm = (props) => {
         )
     }
 
+    const getTextAreaRow = (field, errors, touched, handleBlur, handleChange, values) => {
+        return (
+            <>
+                {dependsOnCheck(field, values) &&
+                <div className="row form-group form-group-text">
+                    <div className="col-md-12">
+                        {field.label &&
+                        <>
+                            {field.label}
+                            <label className="text-black" htmlFor={field.name}>
+                        <span className={"text-danger site-form--error--field"}>
+                            {errors[field.name] && touched[field.name] && errors[field.name]}
+                        </span>
+                            </label>
+                        </>
+                        }
+                        <textarea
+                            rows={field.rows ? field.rows : 4}
+                            id={field.name}
+                            name={field.name}
+                            className="form-control text-input"
+                            placeholder={field.placeHolder}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values[field.name]}
+                        />
+                    </div>
+                </div>
+                }
+            </>
+        )
+    }
+
+    const getFields = (fields) => {
+        let buildFields = [];
+        fields.map((field, index) => {
+            if (!isSet(buildFields[field.rowIndex])) {
+                buildFields[field.rowIndex] = [];
+            }
+            buildFields[field.rowIndex][field.columnIndex] = field
+        })
+        return buildFields;
+    }
+
+    const getGridColumnClasses = (row) => {
+        const columnSize = Math.round(12 / row.length);
+        return "col-" + columnSize.toString()
+    }
+
     return (
         <Formik
             initialValues={initialValues}
@@ -416,11 +470,17 @@ const DataForm = (props) => {
                 <>
                     <form className="site-form"
                           onSubmit={handleSubmit}>
-                        {props.data.fields.map((field, index) => (
-                            <React.Fragment key={index}>
-                                {getFieldRow(field, errors, touched, handleBlur, handleChange, values)}
-                            </React.Fragment>
-                        ))}
+                        <div className={"row"}>
+                            {getFields(props.data.fields).map((row, rowIndex) => (
+                                <React.Fragment key={rowIndex}>
+                                    {row.map((field, index) => (
+                                        <div className={getGridColumnClasses(row)} key={index}>
+                                            {getFieldRow(field, errors, touched, handleBlur, handleChange, values)}
+                                        </div>
+                                    ))}
+                                </React.Fragment>
+                            ))}
+                        </div>
 
                         <div className="row form-group">
                             <div className="col-md-12">
