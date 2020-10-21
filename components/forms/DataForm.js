@@ -35,32 +35,40 @@ const DataForm = (props) => {
         } else if (item.fieldType === "select") {
             value = isSet(props.selectData[item.name]) ? props.selectData[item.name] : [];
         } else if (item.fieldType === "checkbox") {
-            value = !!(isSet(item.checked) && item.checked);
+            if (isSet(item.checkboxType) && item.checkboxType === "true_false") {
+                value = !!(isSet(item.checked) && item.checked);
+            } else if (isSet(props.checkboxData[item.name])) {
+                value = isSet(props.checkboxData[item.name]) ? props.checkboxData[item.name] : [];
+            }
+        }  else if (item.fieldType === "radio") {
+            if (isSet(props.radioData[item.name])) {
+                value = isSet(props.radioData[item.name]) ? props.radioData[item.name] : [];
+            }
         } else if (item.fieldType === "date") {
             value = isSet(item.value) ? item.value : "";
         }
         return value;
     }
 
-    const getSelectDefaults = () => {
-        let selectDefaults = {};
+    const getListItemsDefaults = (fieldType) => {
+        let fieldDefaults = {};
         props.data.fields.map((item) => {
-            if (item.fieldType === "select") {
+            if (item.fieldType === fieldType) {
                 const value = getInitialValue(item);
                 if (value !== null) {
-                    selectDefaults[item.name] = value;
+                    fieldDefaults[item.name] = value;
                 }
             }
             if (isSet(item.subFields)) {
                 item.subFields.map((subItem) => {
                     const subValue = getInitialValue(subItem);
                     if (subValue !== null) {
-                        selectDefaults[subItem.name] = subValue;
+                        fieldDefaults[subItem.name] = subValue;
                     }
                 })
             }
         });
-        return selectDefaults;
+        return fieldDefaults;
     }
 
     const getDatesDefaults = () => {
@@ -75,7 +83,9 @@ const DataForm = (props) => {
     }
 
     const [initialValues, setInitialValues] = useState(getInitialDataObject())
-    const [selected, setSelected] = useState(getSelectDefaults())
+    const [selected, setSelected] = useState(getListItemsDefaults("select"))
+    const [checkboxes, setCheckboxes] = useState(getListItemsDefaults("checkbox"))
+    const [radios, setRadios] = useState(getListItemsDefaults("radio"))
     const [dates, setDates] = useState(getDatesDefaults())
 
 
@@ -251,6 +261,9 @@ const DataForm = (props) => {
                 {field.fieldType === "checkbox" &&
                 getCheckboxRow(field, errors, touched, handleBlur, handleChange, values)
                 }
+                {field.fieldType === "radio" &&
+                getRadioRow(field, errors, touched, handleBlur, handleChange, values)
+                }
             </>
         )
     }
@@ -291,22 +304,103 @@ const DataForm = (props) => {
         )
     }
 
+    const getChoiceField = (name, label, value = null, type) => {
+        let containerClass = "";
+        let fieldProps = {
+            type: type,
+            name: name
+        }
+        if (type === "checkbox") {
+            fieldProps.className = "form-check-input";
+            containerClass = "form-check";
+        } else if (type === "radio") {
+            fieldProps.className = "form-radio-input";
+            containerClass = "form-radio";
+        }
+        if (value !== null) {
+            fieldProps.value = value;
+        }
+        return (
+            <div className={containerClass}>
+                <label>
+                    <Field
+                        {...fieldProps}
+                    />
+                    {label}
+                </label>
+            </div>
+        );
+    }
+
+    const getChoiceFieldList = (type, choiceFieldOptions, field) => {
+        return (
+            <>
+                {choiceFieldOptions && choiceFieldOptions.map((item, index) => (
+                    <React.Fragment key={index}>
+                        {getChoiceField(field.name, item.label, item.value, type)}
+                    </React.Fragment>
+                ))}
+            </>
+        )
+    }
+
     const getCheckboxRow = (field, errors, touched, handleBlur, handleChange, values) => {
+        let checkboxOptions;
+        let checkboxData;
+        if (isSet(props.checkboxOptions) && isSet(props.checkboxOptions[field.name])) {
+            checkboxOptions = props.checkboxOptions[field.name];
+        }
+        if (isSet(field.checkboxType) && field.checkboxType === "true_false") {
+            checkboxData = getChoiceField(field.name, field.label, null, "checkbox");
+        } else if (Array.isArray(checkboxOptions)) {
+            checkboxData = getChoiceFieldList("checkbox", checkboxOptions, field);
+        }
         return (
             <>
                 {dependsOnCheck(field, values) &&
                 <div className={"form-check-group"}>
-                    <div className="form-check">
-                        <label>
-                            <Field
-                                className="form-check-input"
-                                type="checkbox"
-                                name={field.name}
-                                // value={field.value}
-                            />
-                            {field.label}
-                        </label>
+                    {field.label}
+                    <label className="text-black" htmlFor={field.name}>
+                        <span className={"text-danger site-form--error--field"}>
+                            {errors[field.name]}
+                        </span>
+                    </label>
+                    {checkboxData && checkboxData}
+                    {field.subFields && values[field.name] &&
+                    <div className={"form-subfields"}>
+                        {field.subFields.map((subField, subFieldIndex) => (
+                            <React.Fragment key={subFieldIndex}>
+                                {getFieldRow(subField, errors, touched, handleBlur, handleChange, values)}
+                            </React.Fragment>
+                        ))}
                     </div>
+                    }
+                </div>
+                }
+            </>
+        )
+    }
+
+    const getRadioRow = (field, errors, touched, handleBlur, handleChange, values) => {
+        let radioOptions;
+        let radioData;
+        if (isSet(props.radioOptions) && isSet(props.radioOptions[field.name])) {
+            radioOptions = props.radioOptions[field.name];
+        }
+        if (Array.isArray(radioOptions)) {
+            radioData = getChoiceFieldList("radio", radioOptions, field);
+        }
+        return (
+            <>
+                {dependsOnCheck(field, values) &&
+                <div className={"form-check-group"}>
+                    {field.label}
+                    <label className="text-black" htmlFor={field.name}>
+                        <span className={"text-danger site-form--error--field"}>
+                            {errors[field.name]}
+                        </span>
+                    </label>
+                    {radioData && radioData}
                     {field.subFields && values[field.name] &&
                     <div className={"form-subfields"}>
                         {field.subFields.map((subField, subFieldIndex) => (

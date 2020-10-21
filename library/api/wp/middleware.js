@@ -230,10 +230,10 @@ export function protectedApiRequest(endpoint, requestData, callback = false) {
     });
 }
 
-export function publicApiRequest(endpoint, requestData = {}, callback = false) {
+export function publicApiRequest(endpoint, requestData = {}, callback = false, method = "get") {
     let config = {
         url: endpoint,
-        method: "get",
+        method: method,
         params: requestData,
     }
     const getRequest = axios.request(config)

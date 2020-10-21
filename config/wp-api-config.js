@@ -18,6 +18,7 @@ export const wpApiConfig = {
         commentsByUserId: publicEndpoint + "/comments/user/%(data.user_id)d/list",
         createComment: protectedEndpoint + "/comments/create",
         updateComment: protectedEndpoint + "/comments/update",
-        contactForm: publicEndpoint + "/forms/contact-us",
+        formsEmail: publicEndpoint + "/forms/email",
+        formsCustom: publicEndpoint + "/forms/%s",
     }
 }
