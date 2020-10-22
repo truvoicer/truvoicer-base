@@ -234,7 +234,11 @@ export function publicApiRequest(endpoint, requestData = {}, callback = false, m
     let config = {
         url: endpoint,
         method: method,
-        params: requestData,
+    }
+    if (method === "get") {
+        config.params = requestData
+    } else if(method === "post") {
+        config.data = requestData;
     }
     const getRequest = axios.request(config)
     if (!callback) {

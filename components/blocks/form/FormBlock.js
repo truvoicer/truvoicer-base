@@ -44,7 +44,6 @@ const FormBlock = (props) => {
     }
 
     const getFormFieldConfig = (options) => {
-        console.log(options)
         let fieldConfig = {};
         switch (options.form_control) {
             case "text":
@@ -131,7 +130,6 @@ const FormBlock = (props) => {
         }
 
         console.log({...data, ...endpointData.data})
-        return;
         publicApiRequest(buildWpApiUrl(endpointData.endpoint), {...data, ...endpointData.data}, false, "post")
             .then(response => {
                 console.log(response.data)
