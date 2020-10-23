@@ -12,7 +12,7 @@ import {
     setSearchOperation,
     setSearchStatus,
 } from "../reducers/search-reducer"
-import {isEmpty, isSet} from "../../library/utils";
+import {isSet} from "../../library/utils";
 import produce from "immer";
 import {addArrayItem, addListingsQueryDataString} from "../middleware/listings-middleware";
 import {addQueryDataObjectAction} from "./listings-actions";
@@ -27,16 +27,13 @@ import {
     SEARCH_REQUEST_STARTED
 } from "../constants/search-constants";
 import {
-    addPaginationQueryParameters, addProviderToSearch,
+    addPaginationQueryParameters,
+    addProviderToSearch,
     setHasMoreSearchPages,
     setPageControlItemAction,
     setPageControlsAction
 } from "./pagination-actions";
-import {Routes} from "../../config/routes";
 import {getUserItemsListAction} from "./user-stored-items-actions";
-
-const axios = require('axios');
-const sprintf = require("sprintf").sprintf;
 
 export function setSearchExtraDataAction(extraData, provider, listData) {
     const extraDataState = {...store.getState().search.extraData};
@@ -229,13 +226,3 @@ export function initialSearch() {
     setSearchRequestServiceAction(fetcherApiConfig.searchOperation)
     addQueryDataObjectAction(queryData, true);
 }
-
-export function getItemViewUrl(item, category) {
-    const data = {
-        category: category,
-        provider: item.provider,
-        item_id: item.item_id
-    }
-    return sprintf(Routes.itemView, data);
-}
-

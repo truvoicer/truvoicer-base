@@ -158,3 +158,47 @@ export const getListItemData = (item, dataItem) => {
         </>
     )
 }
+
+export const getDataKeyValue = (dataItem) => {
+    switch (dataItem.value_type) {
+        case "text":
+            return dataItem.data_item_text;
+        case "html":
+            return dataItem.data_item_html;
+        case "number":
+            return parseInt(dataItem.data_item_number)
+        case "date":
+            return dataItem.data_item_date;
+        case "true_false":
+            return dataItem.data_item_true_false === true || dataItem.data_item_true_false === "true";
+        case "image":
+            return dataItem.data_item_image;
+        case "array":
+            return dataItem.data_item_array;
+        default:
+            return null;
+    }
+}
+
+export const buildDataKeyObject = (dataKeyList) => {
+    let dataKeyObject = {};
+    dataKeyList.map((item) => {
+        dataKeyObject[item.data_item_key] = getDataKeyValue(item)
+    })
+    return dataKeyObject;
+}
+
+export const buildCustomItemsArray = (itemsData) => {
+    return itemsData.map(item => {
+        if (
+            item.item_type !== "post" ||
+            !Array.isArray(item.item_post?.data?.api_data_keys_list)
+        ) {
+            return null;
+        }
+        const dataKeyList = item.item_post.data.api_data_keys_list;
+        let dataKeyObject = buildDataKeyObject(dataKeyList);
+        dataKeyObject.item_id = item.item_post.post_type.ID;
+        return dataKeyObject;
+    });
+}

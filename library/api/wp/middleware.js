@@ -10,6 +10,7 @@ import {itemViewTemplateQuery} from "../../graphql/queries/item-view-template";
 import {menuQuery} from "../../graphql/queries/menu";
 import {wpApiConfig} from "../../../config/wp-api-config";
 import {getSessionObject} from "../../../redux/actions/session-actions";
+import {singleItemTemplateQuery} from "../../graphql/queries/single-item-post-template";
 
 const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
@@ -101,6 +102,20 @@ export async function getAllPostsWithUri() {
 export async function getAllPagesWithUri() {
     const data = await fetchAPI(allPagesUriQuery())
     return data?.pages
+}
+
+export async function getSingleItemPost(id, type, preview) {
+    return await fetchAPI(
+        singleItemTemplateQuery(),
+        {
+            variables: {
+                id: id,
+                idType: type,
+                onlyEnabled: !preview,
+                preview,
+            },
+        }
+    );
 }
 
 export async function getItemViewTemplate(category, type, preview) {

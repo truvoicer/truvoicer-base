@@ -534,10 +534,18 @@ const DataForm = (props) => {
     const getFields = (fields) => {
         let buildFields = [];
         fields.map((field, index) => {
-            if (!isSet(buildFields[field.rowIndex])) {
-                buildFields[field.rowIndex] = [];
+            let rowIndex = field?.rowIndex;
+            let columnIndex = field?.columnIndex;
+            if (!isSet(rowIndex)) {
+                rowIndex = index;
             }
-            buildFields[field.rowIndex][field.columnIndex] = field
+            if (!isSet(columnIndex)) {
+                columnIndex = 0;
+            }
+            if (!isSet(buildFields[rowIndex])) {
+                buildFields[rowIndex] = [];
+            }
+            buildFields[rowIndex][columnIndex] = field
         })
         return buildFields;
     }

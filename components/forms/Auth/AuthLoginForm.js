@@ -10,7 +10,7 @@ import {wpApiConfig} from "../../../config/wp-api-config";
 
 
 const AuthLoginForm = (props) => {
-    const [submitButtonText, setSubmitButtonText] = useState("Login",);
+    const [submitButtonText, setSubmitButtonText] = useState("Login");
 
     const submitHandler = (values) => {
         props.getSessionTokenMiddleware(buildWpApiUrl(wpApiConfig.endpoints.token), values, props.requestCallback)

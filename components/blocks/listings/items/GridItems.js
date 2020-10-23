@@ -9,16 +9,12 @@ import {
 import {listingsGridConfig} from "../../../../../config/listings-grid-config";
 import {convertImageObjectsToArray, isNotEmpty, isSet} from "../../../../library/utils";
 import {SESSION_USER, SESSION_USER_ID} from "../../../../redux/constants/session-constants";
-import {
-    getItemRatingDataAction,
-    isSavedItemAction,
-} from "../../../../redux/actions/user-stored-items-actions";
+import {getItemRatingDataAction, isSavedItemAction,} from "../../../../redux/actions/user-stored-items-actions";
 import Col from "react-bootstrap/Col";
-import Router, {useRouter} from "next/router";
-import {getItemViewUrl} from "../../../../redux/actions/search-actions";
-import {getGridItemColumns, getCustomItem} from "../../../../redux/actions/item-actions";
-
-const sprintf = require("sprintf").sprintf;
+import {useRouter} from "next/router";
+import {getGridItemColumns, getItemViewUrl} from "../../../../redux/actions/item-actions";
+import HtmlParser from "react-html-parser";
+import {buildCustomItemsArray} from "../../../../library/helpers/items";
 
 const GridItems = (props) => {
     const router = useRouter();
@@ -68,18 +64,7 @@ const GridItems = (props) => {
         })
     }
 
-    const getCustomGridItem = (item) => {
-        if (!isSet(item.custom_item) || !item.custom_item) {
-            return false;
-        }
-        return getCustomItem(item, props.search.category);
-    }
-
     const getGridItem = (item) => {
-        const customGridItem = getCustomGridItem(item);
-        if (customGridItem) {
-            return customGridItem;
-        }
         let gridItem = {...item};
         if (isSet(gridItem.image_list)) {
             gridItem.image_list = convertImageObjectsToArray(gridItem.image_list);
@@ -97,16 +82,16 @@ const GridItems = (props) => {
                           showInfoCallback={showInfo}
                           savedItem={
                               isSavedItemAction(
-                                  item.item_id,
-                                  item.provider,
+                                  isSet(item.item_id)? item.item_id : null,
+                                  isSet(item.provider)? item.provider : null,
                                   props.search.category,
                                   props.user[SESSION_USER_ID]
                               )
                           }
                           ratingsData={
                               getItemRatingDataAction(
-                                  item.item_id,
-                                  item.provider,
+                                  isSet(item.item_id)? item.item_id : null,
+                                  isSet(item.provider)? item.provider : null,
                                   props.search.category,
                                   props.user[SESSION_USER_ID]
                               )
@@ -119,13 +104,13 @@ const GridItems = (props) => {
         let itemsData;
         switch (listPosition) {
             case "list_start":
-                itemsData = listingsData?.list_start_items;
+                itemsData = listingsData?.list_start_items.data;
                 break;
             case "list_end":
-                itemsData = listingsData?.list_end_items;
+                itemsData = listingsData?.list_end_items.data;
                 break;
             case "custom_position":
-                itemsData = listingsData?.custom_position_items;
+                itemsData = listingsData?.custom_position_items.data;
                 break;
             default:
                 return [];
@@ -133,7 +118,8 @@ const GridItems = (props) => {
         if (!Array.isArray(itemsData) || itemsData.length === 0) {
             return [];
         }
-        return itemsData;
+
+        return buildCustomItemsArray(itemsData);
     }
 
     const insertListStartItems = (searchList) => {
@@ -220,7 +206,7 @@ const GridItems = (props) => {
         }
         return searchList;
     }
-
+    console.log(props.listings?.listingsData)
     return (
         <>
             <Row>
