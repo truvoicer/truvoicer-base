@@ -3,11 +3,12 @@ import {SESSION_AUTHENTICATED, SESSION_USER, SESSION_USER_ID} from "../constants
 import {setModalContentAction} from "./page-actions";
 import {buildWpApiUrl, protectedApiRequest} from "../../library/api/wp/middleware";
 import produce from "immer";
-import {APPEND_SEARCH_REQUEST, NEW_SEARCH_REQUEST} from "../constants/search-constants";
+import {NEW_SEARCH_REQUEST} from "../constants/search-constants";
 import {setItemRatingsList, setSavedItemsList} from "../reducers/search-reducer";
 import {isSet} from "../../library/utils";
 import {componentsConfig} from "../../../config/components-config";
 import {wpApiConfig} from "../../config/wp-api-config";
+import {filterItemIdDataType} from "../../library/helpers/items";
 
 const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
@@ -21,9 +22,11 @@ export function getUserItemsListAction(data, provider, category) {
         return;
     }
     const userId = session[SESSION_USER][SESSION_USER_ID]
-    const itemsList = data.map((item) => {
+
+    const itemsList = data.map((item) =>  {
         return item.item_id;
     })
+
     const requestData = {
         provider_name: provider,
         category: category,
@@ -42,32 +45,37 @@ export function getUserItemsListCallback(error, data) {
     if (error) {
         return false;
     }
-    const searchState = {...store.getState().search};
-    setSavedItemsListAction(data.data.saved_items, searchState);
-    setItemRatingsListAction(data.data.item_ratings, searchState);
+    setSavedItemsListAction(data.data.saved_items);
+    setItemRatingsListAction(data.data.item_ratings);
 }
 
-export function setSavedItemsListAction(data, searchState) {
+export function setSavedItemsListAction(data) {
+    const searchState = {...store.getState().search};
     const searchOperation = searchState.searchOperation;
     const nextState = produce(searchState.savedItemsList, (draftState) => {
         if ((searchOperation === NEW_SEARCH_REQUEST)) {
             draftState.splice(0, draftState.length + 1);
         }
         data.map((item) => {
-            draftState.push(item)
+            if (!isSavedItemAction(item.item_id, item.provider_name, item.category, item.user_id)) {
+                draftState.push(item)
+            }
         })
     })
     store.dispatch(setSavedItemsList(nextState))
 }
 
-export function setItemRatingsListAction(data, searchState) {
+export function setItemRatingsListAction(data) {
+    const searchState = {...store.getState().search};
     const searchOperation = searchState.searchOperation;
     const nextState = produce(searchState.itemRatingsList, (draftState) => {
         if ((searchOperation === NEW_SEARCH_REQUEST)) {
             draftState.splice(0, draftState.length + 1);
         }
         data.map((item) => {
-            draftState.push(item)
+            if (!getItemRatingDataAction(item.item_id, item.provider_name, item.category, item.user_id)) {
+                draftState.push(item)
+            }
         })
     })
     store.dispatch(setItemRatingsList(nextState))
@@ -88,16 +96,11 @@ function getItem(item, item_id, provider, category, user_id) {
     if (item === null) {
         return false;
     }
-    let savedItemId = item.item_id;
-    if (!isNaN(savedItemId)) {
-        savedItemId = parseInt(savedItemId);
-    }
-    if (!isNaN(item_id)) {
-        item_id = parseInt(item_id);
-    }
+    const savedItemId = filterItemIdDataType(item.item_id)
+    const itemId = filterItemIdDataType(item_id)
     if(
         parseInt(item.user_id) === parseInt(user_id) &&
-        savedItemId === item_id &&
+        savedItemId === itemId &&
         item.provider_name === provider &&
         item.category === category
     ) {
@@ -168,9 +171,11 @@ export function getSavedItemIndexAction(item_id, provider, category, user_id) {
     let index;
     const savedItemsList = [...store.getState().search.savedItemsList];
     savedItemsList.map((savedItem, savedItemIndex) => {
+        const savedItemId = filterItemIdDataType(savedItem.item_id)
+        const itemId = filterItemIdDataType(item_id)
         if(
             parseInt(savedItem.user_id) === parseInt(user_id) &&
-            savedItem.item_id === item_id &&
+            savedItemId === itemId &&
             savedItem.provider_name === provider &&
             savedItem.category === category
         ) {
@@ -221,9 +226,11 @@ export function getItemRatingIndexAction(item_id, provider, category, user_id) {
     let index;
     const itemRatingsList = [...store.getState().search.itemRatingsList];
     itemRatingsList.map((item, itemIndex) => {
+        const savedItemId = filterItemIdDataType(item.item_id)
+        const itemId = filterItemIdDataType(item_id)
         if(
             parseInt(item.user_id) === parseInt(user_id) &&
-            item.item_id === item_id &&
+            savedItemId === itemId &&
             item.provider_name === provider &&
             item.category === category
         ) {

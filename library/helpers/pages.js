@@ -30,3 +30,14 @@ export const getItemViewPageTitle = () => {
     }
     return "Loading...";
 }
+
+export const getExtraDataValue = (name, data) => {
+    if (!Array.isArray(data)) {
+        return null;
+    }
+    const paramItem = data.filter(item => item.param_name === name);
+    if (paramItem.length > 0) {
+        return paramItem[0].param_value;
+    }
+    return null;
+}

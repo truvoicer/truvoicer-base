@@ -1,9 +1,12 @@
 import HtmlParser from "react-html-parser";
 import React from "react";
-import {formatDate, isNotEmpty, isObjectEmpty, isSet, uCaseFirst} from "../utils";
+import {convertImageObjectsToArray, formatDate, isNotEmpty, isObjectEmpty, isSet, uCaseFirst} from "../utils";
 import ImageLoader from "../../components/loaders/ImageLoader";
 import ListLoader from "../../components/loaders/ListLoader";
 import store from "../../redux/store";
+import {siteConfig} from "../../../config/site-config";
+import {listingsGridConfig} from "../../../config/listings-grid-config";
+import {getItemRatingDataAction, isSavedItemAction} from "../../redux/actions/user-stored-items-actions";
 
 export function replaceItemDataPlaceholders(pageTitle, item) {
     const test = new RegExp("\\\[+(.*?)\\]", "g");
@@ -127,6 +130,13 @@ export const getItemContentType = (type, key, dataItem, config = null) => {
     }
 }
 
+export function filterItemIdDataType(itemId) {
+    if (!isNaN(itemId)) {
+        itemId = parseInt(itemId);
+    }
+    return itemId;
+}
+
 const getItemContent = (type, key, dataItem, config = null) => {
     if (isSet(dataItem[key]) &&
         dataItem[key] !== null &&
@@ -180,11 +190,15 @@ export const getDataKeyValue = (dataItem) => {
     }
 }
 
-export const buildDataKeyObject = (dataKeyList) => {
+export const buildDataKeyObject = (dataKeyList, itemId) => {
     let dataKeyObject = {};
     dataKeyList.map((item) => {
         dataKeyObject[item.data_item_key] = getDataKeyValue(item)
     })
+    dataKeyObject.item_id = itemId;
+    dataKeyObject.provider = siteConfig.internalProviderName;
+    dataKeyObject.category = siteConfig.internalCategory;
+    dataKeyObject.custom_item = true;
     return dataKeyObject;
 }
 
@@ -197,8 +211,41 @@ export const buildCustomItemsArray = (itemsData) => {
             return null;
         }
         const dataKeyList = item.item_post.data.api_data_keys_list;
-        let dataKeyObject = buildDataKeyObject(dataKeyList);
-        dataKeyObject.item_id = item.item_post.post_type.ID;
-        return dataKeyObject;
+        return buildDataKeyObject(dataKeyList, item.item_post.post_type.ID);
     });
+}
+
+export const getGridItem = (item, category, listingsGrid, userId, showInfoCallback) => {
+    let gridItem = {...item};
+    if (isSet(gridItem.image_list)) {
+        gridItem.image_list = convertImageObjectsToArray(gridItem.image_list);
+    }
+    const gridConfig = listingsGridConfig.gridItems;
+    if (!isSet(gridConfig[category])) {
+        return null;
+    }
+    if (!isSet(gridConfig[category][listingsGrid])) {
+        return null;
+    }
+    const GridItems = gridConfig[category][listingsGrid];
+    return <GridItems data={gridItem}
+                      searchCategory={category}
+                      showInfoCallback={showInfoCallback}
+                      savedItem={
+                          isSavedItemAction(
+                              isSet(item.item_id)? item.item_id : null,
+                              isSet(item.provider)? item.provider : null,
+                              category,
+                              userId
+                          )
+                      }
+                      ratingsData={
+                          getItemRatingDataAction(
+                              isSet(item.item_id)? item.item_id : null,
+                              isSet(item.provider)? item.provider : null,
+                              category,
+                              userId
+                          )
+                      }
+    />
 }

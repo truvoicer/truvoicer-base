@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Row from "react-bootstrap/Row";
 import {connect} from "react-redux";
 import {addListingsQueryDataString} from "../../../../redux/middleware/listings-middleware";
@@ -7,14 +7,16 @@ import {
     setSearchRequestStatusMiddleware,
 } from "../../../../redux/middleware/search-middleware";
 import {listingsGridConfig} from "../../../../../config/listings-grid-config";
-import {convertImageObjectsToArray, isNotEmpty, isSet} from "../../../../library/utils";
+import {isNotEmpty, isSet} from "../../../../library/utils";
 import {SESSION_USER, SESSION_USER_ID} from "../../../../redux/constants/session-constants";
-import {getItemRatingDataAction, isSavedItemAction,} from "../../../../redux/actions/user-stored-items-actions";
+import {
+    getUserItemsListAction,
+} from "../../../../redux/actions/user-stored-items-actions";
 import Col from "react-bootstrap/Col";
 import {useRouter} from "next/router";
 import {getGridItemColumns, getItemViewUrl} from "../../../../redux/actions/item-actions";
-import HtmlParser from "react-html-parser";
-import {buildCustomItemsArray} from "../../../../library/helpers/items";
+import {buildCustomItemsArray, getGridItem} from "../../../../library/helpers/items";
+import {siteConfig} from "../../../../../config/site-config";
 
 const GridItems = (props) => {
     const router = useRouter();
@@ -25,8 +27,7 @@ const GridItems = (props) => {
     });
 
     const showInfo = (item, category, e) => {
-        if (isSet(props.listings.listingsData) &&
-            isSet(props.listings.listingsData.item_display) &&
+        if (isSet(props?.listings?.listingsData?.item_display) &&
             props.listings.listingsData.item_display === "new_page"
         ) {
             const url = getItemViewUrl(item, category);
@@ -64,39 +65,10 @@ const GridItems = (props) => {
         })
     }
 
-    const getGridItem = (item) => {
-        let gridItem = {...item};
-        if (isSet(gridItem.image_list)) {
-            gridItem.image_list = convertImageObjectsToArray(gridItem.image_list);
-        }
-        const gridConfig = listingsGridConfig.gridItems;
-        if (!isSet(gridConfig[props.search.category])) {
-            return null;
-        }
-        if (!isSet(gridConfig[props.search.category][props.listings.listingsGrid])) {
-            return null;
-        }
-        const GridItems = gridConfig[props.search.category][props.listings.listingsGrid];
-        return <GridItems data={gridItem}
-                          searchCategory={props.search.category}
-                          showInfoCallback={showInfo}
-                          savedItem={
-                              isSavedItemAction(
-                                  isSet(item.item_id)? item.item_id : null,
-                                  isSet(item.provider)? item.provider : null,
-                                  props.search.category,
-                                  props.user[SESSION_USER_ID]
-                              )
-                          }
-                          ratingsData={
-                              getItemRatingDataAction(
-                                  isSet(item.item_id)? item.item_id : null,
-                                  isSet(item.provider)? item.provider : null,
-                                  props.search.category,
-                                  props.user[SESSION_USER_ID]
-                              )
-                          }
-        />
+    const getInternalUserItems = (itemsData) => {
+        useEffect(() => {
+            getUserItemsListAction(itemsData, siteConfig.internalProviderName, siteConfig.internalCategory)
+        }, [])
     }
 
     const getCustomItemsData = (listPosition) => {
@@ -128,9 +100,10 @@ const GridItems = (props) => {
             return searchList;
         }
 
+        getInternalUserItems(itemsData)
+
         itemsData.map(item => {
             let itemCopy = {...item};
-            itemCopy.custom_item = true;
             searchList.unshift(itemCopy)
         })
         return searchList;
@@ -142,9 +115,10 @@ const GridItems = (props) => {
             return searchList;
         }
 
+        getInternalUserItems(itemsData)
+
         itemsData.map(item => {
             let itemCopy = {...item};
-            itemCopy.custom_item = true;
             searchList.push(itemCopy)
         })
         return searchList;
@@ -167,9 +141,11 @@ const GridItems = (props) => {
         if (itemsData.length === 0) {
             return searchList;
         }
+
+        getInternalUserItems(itemsData)
+
         itemsData.map(item => {
             let itemCopy = {...item};
-            itemCopy.custom_item = true;
             newItemsData.push(itemCopy);
         });
         let insertCount = 0 - listStartItemsCount;
@@ -206,14 +182,20 @@ const GridItems = (props) => {
         }
         return searchList;
     }
-    console.log(props.listings?.listingsData)
+
     return (
         <>
             <Row>
                 {getSearchList().map((item, index) => (
                     <React.Fragment key={index}>
                         <Col {...getGridItemColumns(props.listings.listingsGrid)}>
-                            {getGridItem(item)}
+                            {getGridItem(
+                                item,
+                                props.search.category,
+                                props.listings.listingsGrid,
+                                props.user[SESSION_USER_ID],
+                                showInfo
+                            )}
                         </Col>
                     </React.Fragment>
                 ))}

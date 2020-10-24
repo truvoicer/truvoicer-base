@@ -11,6 +11,7 @@ import {menuQuery} from "../../graphql/queries/menu";
 import {wpApiConfig} from "../../../config/wp-api-config";
 import {getSessionObject} from "../../../redux/actions/session-actions";
 import {singleItemTemplateQuery} from "../../graphql/queries/single-item-post-template";
+import {siteConfig} from "../../../../config/site-config";
 
 const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
@@ -226,10 +227,14 @@ export async function getSinglePost(slug, preview, previewData) {
 
 
 export function protectedApiRequest(endpoint, requestData, callback = false) {
+    const extraData = {
+        internal_category: siteConfig.internalCategory,
+        internal_provider_name: siteConfig.internalProviderName,
+    };
     let config = {
         url: endpoint,
         method: "post",
-        data: requestData,
+        data: {...requestData, ...extraData},
         headers: {'Authorization': 'Bearer ' + getSessionObject().token}
     }
     const getRequest = axios.request(config)

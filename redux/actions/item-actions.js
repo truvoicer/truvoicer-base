@@ -12,6 +12,7 @@ import {
 } from "../constants/listings-constants";
 import {ItemRoutes} from "../../../config/item-routes";
 import {buildDataKeyObject} from "../../library/helpers/items";
+import {siteConfig} from "../../../config/site-config";
 
 const sprintf = require("sprintf").sprintf;
 
@@ -64,12 +65,11 @@ export function setSingleItemPostState(itemData) {
         return;
     }
 
-    let dataKeyObject = buildDataKeyObject(parseJson.api_data_keys_list);
-    dataKeyObject.item_id = itemData.fetcherSingleItem.databaseId;
+    let dataKeyObject = buildDataKeyObject(parseJson.api_data_keys_list, itemData.fetcherSingleItem.databaseId);
 
     setItemIdAction(itemData.fetcherSingleItem.databaseId)
-    setItemProviderAction("Internal")
-    setItemCategoryAction("recruitment")
+    setItemProviderAction(siteConfig.internalProviderName)
+    setItemCategoryAction(siteConfig.internalCategory)
     setItemDataAction(dataKeyObject)
 }
 
