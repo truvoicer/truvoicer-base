@@ -1,6 +1,7 @@
 import {isNotEmpty, isSet} from "../utils";
 import {itemDataTextFilter} from "./items";
 import store from "../../redux/store";
+import {siteConfig} from "../../../config/site-config";
 
 const sprintf = require("sprintf").sprintf;
 
@@ -40,4 +41,12 @@ export const getExtraDataValue = (name, data) => {
         return paramItem[0].param_value;
     }
     return null;
+}
+
+export const getSidebarMenuItem = (menuName, sidebarData) => {
+    const getItem = sidebarData.filter(item => isSet(item.nav_menu) && item.nav_menu.menu_slug === menuName);
+    if (getItem.length > 0) {
+        return getItem[0];
+    }
+    return false;
 }
