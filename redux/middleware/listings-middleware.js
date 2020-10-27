@@ -18,8 +18,16 @@ import {NEW_SEARCH_REQUEST, PAGE_CONTROL_PAGE_SIZE} from "../constants/search-co
 import {getSearchLimit, setPageControlItemAction} from "../actions/pagination-actions";
 import {getListingsInitialLoad} from "../actions/listings-actions";
 
-export function getListingsProviders(category) {
-    fetchData("list", [category, "providers"], {}, getProvidersCallback);
+export function getListingsProviders({listing_block_category, select_providers, provider_list}, endpoint = "providers", callback) {
+    console.log(listing_block_category, select_providers, provider_list)
+    if (isSet(select_providers) && select_providers && Array.isArray(provider_list)) {
+        const requestData = {
+            filter: provider_list.map(item => item.provider)
+        }
+        fetchData("list", [listing_block_category, endpoint], requestData, callback);
+    } else {
+        fetchData("list", [listing_block_category, endpoint], {}, callback);
+    }
 }
 
 export function getProvidersCallback(status, data) {

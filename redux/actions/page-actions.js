@@ -10,8 +10,8 @@ import {
     setUserAccountMenuData,
 } from "../reducers/page-reducer";
 import {setCategory, setListingsData} from "../reducers/listings-reducer";
-import {isSet} from "../../library/utils";
-import {getListingsProviders} from "../middleware/listings-middleware";
+import {isNotEmpty, isSet} from "../../library/utils";
+import {getListingsProviders, getProvidersCallback} from "../middleware/listings-middleware";
 import {buildWpApiUrl} from "../../library/api/wp/middleware";
 import {siteConfig} from "../../../config/site-config";
 import {setBaseSidebarsJson} from "./sidebar-actions";
@@ -86,13 +86,12 @@ export function setListingsBlocksDataAction(data) {
         return false;
     }
     if (data !== null) {
+        console.log(data)
         // store.dispatch(setBlocksData(blocksObject))
         store.dispatch(setListingsData(data))
-        if (isSet(data.listing_block_category) &&
-            isSet(data.listing_block_category.slug)
-        ) {
-            store.dispatch(setCategory(data.listing_block_category.slug))
-            getListingsProviders(data.listing_block_category.slug)
+        if (isNotEmpty(data.listing_block_category)) {
+            store.dispatch(setCategory(data.listing_block_category))
+            getListingsProviders(data, "providers", getProvidersCallback)
         }
     }
 }
