@@ -86,7 +86,7 @@ export function setListingsBlocksDataAction(data) {
         return false;
     }
     if (data !== null) {
-        console.log(data)
+        // console.log(data)
         // store.dispatch(setBlocksData(blocksObject))
         store.dispatch(setListingsData(data))
         if (isNotEmpty(data.listing_block_category)) {

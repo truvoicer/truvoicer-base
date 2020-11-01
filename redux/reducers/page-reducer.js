@@ -8,6 +8,7 @@ const defaultState = {
     siteSettings: {},
     leftSidebar: [],
     rightSidebar: [],
+    blogSidebar: [],
     navBar: [],
     footer: [],
     userAccountMenu: [],
@@ -33,6 +34,9 @@ const defaultReducers = {
     },
     setRightSidebarData: (state, action) => {
         state.rightSidebar = action.payload;
+    },
+    setBlogSidebarData: (state, action) => {
+        state.blogSidebar = action.payload;
     },
     setNavBarData: (state, action) => {
         state.navBar = action.payload;
@@ -65,6 +69,7 @@ export const pageReducer = pageSlice.reducer;
 export const {
     setPageData, setBlocksData,
     setSiteSettings, setRightSidebarData,
+    setBlogSidebarData,
     setLeftSidebarData, setNavBarData,
     setFooterData, setUserAccountMenuData,
     setPageError, setShowModal,

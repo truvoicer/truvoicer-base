@@ -1,5 +1,6 @@
 import store from "../store"
 import {
+    BLOG_SIDEBAR_REQUEST,
     FOOTER_REQUEST,
     LEFT_SIDEBAR_REQUEST, NAVBAR_REQUEST,
     RIGHT_SIDEBAR_REQUEST,
@@ -7,7 +8,7 @@ import {
 import {
     setFooterData,
     setPageError,
-    setLeftSidebarData,
+    setLeftSidebarData, setBlogSidebarData,
     setRightSidebarData, setNavBarData
 } from "../reducers/page-reducer";
 import {isObjectEmpty} from "../../library/utils";
@@ -29,6 +30,9 @@ export function setBaseSidebarsJson(sidebarsJson) {
             case siteConfig.rightSidebarName:
                 setBaseSidebarAction(sidebars[sidebarKey], RIGHT_SIDEBAR_REQUEST);
                 break;
+            case siteConfig.blogSidebarName:
+                setBaseSidebarAction(sidebars[sidebarKey], BLOG_SIDEBAR_REQUEST);
+                break;
             case siteConfig.footerName:
                 setBaseSidebarAction(sidebars[sidebarKey], FOOTER_REQUEST);
                 break;
@@ -45,6 +49,9 @@ export function setBaseSidebarAction(data, sidebarRequest) {
             break;
         case RIGHT_SIDEBAR_REQUEST:
             store.dispatch(setRightSidebarData(data))
+            break;
+        case BLOG_SIDEBAR_REQUEST:
+            store.dispatch(setBlogSidebarData(data))
             break;
         case NAVBAR_REQUEST:
             store.dispatch(setNavBarData(data));

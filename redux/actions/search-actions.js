@@ -97,7 +97,7 @@ export function setSearchRequestErrorAction(error) {
 }
 
 export function searchResponseHandler(status, data, completed = false) {
-    console.log(status, data)
+    // console.log(status, data)
     if (status === 200 && data.status === "success") {
         getUserItemsListAction(data.request_data, data.provider, data.category)
         setSearchListDataAction(data.request_data);
