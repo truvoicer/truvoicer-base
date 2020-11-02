@@ -85,6 +85,9 @@ export const getDefaultImage = (item) => {
 }
 
 export const uCaseFirst = (string) => {
+    if (!isNotEmpty(string)) {
+        return ""
+    }
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 

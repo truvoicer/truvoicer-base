@@ -29,6 +29,12 @@ const ImageLoader = (props) => {
     }
 
     useEffect(() => {
+        if (isSet(props.request) && !props.request) {
+            setImage({
+                url: props.imageData
+            })
+            return;
+        }
         if (isNotEmpty(props.imageData) &&
             isSet(props.imageData.request_item) &&
             isSet(props.imageData.request_item.request_operation)) {

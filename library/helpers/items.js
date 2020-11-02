@@ -183,6 +183,8 @@ export const getDataKeyValue = (dataItem) => {
             return dataItem.data_item_true_false === true || dataItem.data_item_true_false === "true";
         case "image":
             return dataItem.data_item_image;
+        case "image_list":
+            return dataItem.data_item_image_list;
         case "array":
             return dataItem.data_item_array;
         default:
