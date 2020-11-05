@@ -204,6 +204,14 @@ export const buildDataKeyObject = (dataKeyList, itemId) => {
     return dataKeyObject;
 }
 
+export const buildCustomItem = (item) => {
+    if (!item) {
+        return null;
+    }
+    const dataKeyList = item.data.api_data_keys_list;
+    return buildDataKeyObject(dataKeyList, item.post_type.ID);
+}
+
 export const buildCustomItemsArray = (itemsData) => {
     return itemsData.map(item => {
         if (
@@ -212,8 +220,7 @@ export const buildCustomItemsArray = (itemsData) => {
         ) {
             return null;
         }
-        const dataKeyList = item.item_post.data.api_data_keys_list;
-        return buildDataKeyObject(dataKeyList, item.item_post.post_type.ID);
+        return buildCustomItem(item.item_post)
     });
 }
 
