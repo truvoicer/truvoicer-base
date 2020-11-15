@@ -1,8 +1,9 @@
 import {isNotEmpty, isObjectEmpty, isSet} from "../../../library/utils";
-import DataForm from "../../forms/DataForm";
-import React, {useState} from "react";
+import DataForm from "../../forms/DataForm/DataForm";
+import React, {useEffect, useState} from "react";
 import {buildWpApiUrl, publicApiRequest} from "../../../library/api/wp/middleware";
 import {wpApiConfig} from "../../../config/wp-api-config";
+
 const sprintf = require("sprintf").sprintf;
 
 const FormBlock = (props) => {
@@ -10,21 +11,27 @@ const FormBlock = (props) => {
         return null;
     }
 
-    const formData = props.data.form_data;
-    console.log(formData)
+    const formData = props.data.form.form_data;
+
     const [response, setResponse] = useState({
         error: false,
         success: false,
         message: ""
     })
-
+    const [selectOptions, setSelectOptions] = useState({});
+    const [formDataConfig, setFormDataConfig] = useState({});
     const selectData = {};
-    const selectOptions = {};
+    const formSelectOptions = {};
     const checkboxData = {};
     const checkboxOptions = {};
     const radioData = {};
     const radioOptions = {};
     const submitButtonText = "Update";
+    const addListItemButtonText = "Add new item";
+
+    useEffect(() => {
+        setFormDataConfig(buildFormData())
+    }, [formData])
 
     const buildFormData = () => {
         let configData = {};
@@ -41,6 +48,16 @@ const FormBlock = (props) => {
             })
         })
         return configData;
+    }
+
+    const getSelectEndpointData = (name, endpoint) => {
+        publicApiRequest(buildWpApiUrl(sprintf(wpApiConfig.endpoints.generalData, endpoint)), {})
+            .then(response => {
+                setSelectOptions({skills: response.data.data})
+            })
+            .catch(error => {
+                console.error(error)
+            })
     }
 
     const getFormFieldConfig = (options) => {
@@ -69,7 +86,13 @@ const FormBlock = (props) => {
             case "select":
                 fieldConfig.fieldType = "select";
                 fieldConfig.multi = options.control_settings.multiple;
-                selectOptions[options.name] = options.control_settings.options;
+                formSelectOptions[options.name] = options.control_settings.options;
+                selectData[options.name] = [];
+                break;
+            case "select_data_source":
+                fieldConfig.fieldType = "select_data_source";
+                fieldConfig.multi = options.control_settings.multiple;
+                getSelectEndpointData(options.name, options.control_settings.endpoint)
                 selectData[options.name] = [];
                 break;
             case "checkbox":
@@ -90,6 +113,12 @@ const FormBlock = (props) => {
                 fieldConfig.fieldType = "date";
                 fieldConfig.format = "dd MMMM yyyy H:mm:s";
                 fieldConfig.value = options.control_settings.date_value;
+                break;
+            case "image_upload":
+                fieldConfig.fieldType = "image_upload";
+                break;
+            case "file_upload":
+                fieldConfig.fieldType = "file_upload";
                 break;
             default:
                 return false;
@@ -152,14 +181,15 @@ const FormBlock = (props) => {
 
     const getDataFormProps = () => {
         const defaultProps = {
-            data: buildFormData(),
+            data: formDataConfig,
+            formType: formData?.form_type === "list" ? "list" : "single",
             submitCallback: formSubmitCallback,
-            submitButtonText: (isNotEmpty(formData.submit_button_label)? formData.submit_button_label : submitButtonText)
+            submitButtonText: (isNotEmpty(formData?.submit_button_label) ? formData.submit_button_label : submitButtonText),
+            addListItemButtonText: (isNotEmpty(formData?.add_item_button_label) ? formData.add_item_button_label : addListItemButtonText)
         }
-        if (!isObjectEmpty(selectOptions)) {
-            defaultProps.selectData = selectData
-            defaultProps.selectOptions = selectOptions
-        }
+        defaultProps.selectData = selectData
+        defaultProps.selectOptions = selectOptions
+
         if (!isObjectEmpty(checkboxOptions)) {
             defaultProps.checkboxData = checkboxData
             defaultProps.checkboxOptions = checkboxOptions
@@ -168,7 +198,7 @@ const FormBlock = (props) => {
             defaultProps.radioData = radioData
             defaultProps.radioOptions = radioOptions
         }
-        console.log(defaultProps)
+        // console.log(defaultProps)
         return defaultProps;
     }
 
@@ -189,9 +219,11 @@ const FormBlock = (props) => {
                             <p className={"text-danger"}>{response.message}</p>
                         </div>
                         }
+                        {!isObjectEmpty(formDataConfig) &&
                         <DataForm
                             {...getDataFormProps()}
                         />
+                        }
                     </div>
                 </div>
             </div>

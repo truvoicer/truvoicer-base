@@ -20,5 +20,6 @@ export const wpApiConfig = {
         updateComment: protectedEndpoint + "/comments/update",
         formsEmail: publicEndpoint + "/forms/email",
         formsCustom: publicEndpoint + "/forms/%s",
+        generalData: publicEndpoint + "/general/%s"
     }
 }
