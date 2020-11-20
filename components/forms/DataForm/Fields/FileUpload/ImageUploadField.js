@@ -46,17 +46,16 @@ function ImageUploadField({dataImageSrc, name, callback, arrayFieldIndex = false
 
     const makeClientCrop = async (crop) => {
         if (imageRef && crop.width && crop.height) {
-            console.log(imageRef)
             const croppedImageUrl = await getCroppedImg(
                 imageRef,
                 crop,
-                'newFile.jpeg'
+                image.type
             );
             setCroppedImageSrc(croppedImageUrl)
         }
     }
 
-    const getCroppedImg = (image, crop, fileName) => {
+    const getCroppedImg = (image, crop, type) => {
         const canvas = document.createElement('canvas');
         const scaleX = image.naturalWidth / image.width;
         const scaleY = image.naturalHeight / image.height;
@@ -75,7 +74,7 @@ function ImageUploadField({dataImageSrc, name, callback, arrayFieldIndex = false
             crop.width,
             crop.height
         );
-
+        // console.log(ctx.toDa)
         return new Promise((resolve, reject) => {
             canvas.toBlob(blob => {
                 if (!blob) {
@@ -83,17 +82,18 @@ function ImageUploadField({dataImageSrc, name, callback, arrayFieldIndex = false
                     console.error('Canvas is empty');
                     return;
                 }
-                blob.name = fileName;
-                // window.URL.revokeObjectURL(this.fileUrl);
-                let fileUrl;
-                fileUrl = window.URL.createObjectURL(blob);
-                resolve(fileUrl);
-            }, 'image/jpeg');
+                resolve(blob);
+            }, type);
         });
     }
     const cropSubmitHandler = (e) => {
-        setImageSrc(croppedImageSrc);
-        callback(name, croppedImageSrc, arrayFieldIndex)
+        let blob = croppedImageSrc;
+        const fileUrl = window.URL.createObjectURL(blob);
+        blob.name = `${name}.${image.type.replace("image/", "")}`;
+
+        const file = new File([blob], name, {type: image.type})
+        setImageSrc(fileUrl);
+        callback(name, file, arrayFieldIndex)
         setModal(false);
     }
 

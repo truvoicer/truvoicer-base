@@ -12,6 +12,8 @@ import {wpApiConfig} from "../../../config/wp-api-config";
 import {getSessionObject} from "../../../redux/actions/session-actions";
 import {singleItemTemplateQuery} from "../../graphql/queries/single-item-post-template";
 import {siteConfig} from "../../../../config/site-config";
+import store from "../../../redux/store";
+import {SESSION_USER, SESSION_USER_ID} from "../../../redux/constants/session-constants";
 
 const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
@@ -226,16 +228,49 @@ export async function getSinglePost(slug, preview, previewData) {
 }
 
 
-export function protectedApiRequest(endpoint, requestData, callback = false) {
+export function protectedFileUploadApiRequest(endpoint, requestData, callback = false, headers = {}) {
+    const userId = store.getState().session[SESSION_USER][SESSION_USER_ID];
+    requestData.append("action", "wp_handle_upload");
+    requestData.append("user_id", userId);
+    requestData.append("internal_category", siteConfig.internalCategory);
+    requestData.append("internal_provider_name", siteConfig.internalProviderName);
+    const defaultHeaders = {
+        'Authorization': 'Bearer ' + getSessionObject().token
+    };
+    let config = {
+        url: endpoint,
+        method: "post",
+        data: requestData,
+        headers: {...defaultHeaders, ...headers}
+    }
+    const getRequest = axios.request(config)
+    if (!callback) {
+        return getRequest;
+    }
+    getRequest.then(response => {
+        callback(false, response.data);
+    })
+    .catch(error => {
+        console.error(error)
+        callback(true, error);
+    });
+}
+
+export function protectedApiRequest(endpoint, requestData, callback = false, headers = {}) {
+    const userId = store.getState().session[SESSION_USER][SESSION_USER_ID];
     const extraData = {
         internal_category: siteConfig.internalCategory,
         internal_provider_name: siteConfig.internalProviderName,
+        user_id: userId
+    };
+    const defaultHeaders = {
+        'Authorization': 'Bearer ' + getSessionObject().token
     };
     let config = {
         url: endpoint,
         method: "post",
         data: {...requestData, ...extraData},
-        headers: {'Authorization': 'Bearer ' + getSessionObject().token}
+        headers: {...defaultHeaders, ...headers}
     }
     const getRequest = axios.request(config)
     if (!callback) {

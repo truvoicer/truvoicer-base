@@ -8,7 +8,7 @@ import { useFormikContext } from 'formik';
 import ImageUploadField from "./FileUpload/ImageUploadField";
 import FileUploadField from "./FileUpload/FileUploadField";
 
-function FormFieldItem({field, handleChange, handleBlur, dates, selected, selectOptions,
+function FormFieldItem({formId, field, handleChange, handleBlur, dates, selected, selectOptions,
                        checkboxOptions, radioOptions, arrayFieldIndex = false}) {
     const { values, setFieldValue } = useFormikContext();
 
@@ -16,19 +16,19 @@ function FormFieldItem({field, handleChange, handleBlur, dates, selected, select
         if (arrayFieldIndex === false) {
             return field.name;
         }
-        return `fields[${arrayFieldIndex}].${field.name}`;
+        return `${formId}[${arrayFieldIndex}].${field.name}`;
     }
 
     const getFieldValue = (fieldName) => {
         if (arrayFieldIndex === false) {
             return values[fieldName];
         }
-        return values.fields[arrayFieldIndex][fieldName];
+        return values[formId][arrayFieldIndex][fieldName];
     }
 
 
     const getListFieldValue = (name, value) => {
-        return values.fields.map((item, itemIndex) => {
+        return values[formId].map((item, itemIndex) => {
             if (itemIndex === arrayFieldIndex) {
                 item[name] = value;
             }
@@ -41,7 +41,7 @@ function FormFieldItem({field, handleChange, handleBlur, dates, selected, select
             setFieldValue(name, value);
             return;
         }
-        setFieldValue("fields", getListFieldValue(name, value));
+        setFieldValue(formId, getListFieldValue(name, value));
     }
 
     const dateChangeHandler = (key, date, e) => {
@@ -112,7 +112,7 @@ function FormFieldItem({field, handleChange, handleBlur, dates, selected, select
                 placeholder={field.placeHolder}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                value={getFieldValue(field.name)}
+                defaultValue={getFieldValue(field.name)}
             />
         )
     }

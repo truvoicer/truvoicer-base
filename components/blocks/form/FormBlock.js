@@ -1,8 +1,15 @@
 import {isNotEmpty, isObjectEmpty, isSet} from "../../../library/utils";
 import DataForm from "../../forms/DataForm/DataForm";
 import React, {useEffect, useState} from "react";
-import {buildWpApiUrl, publicApiRequest} from "../../../library/api/wp/middleware";
+import {
+    buildWpApiUrl,
+    protectedApiRequest,
+    protectedFileUploadApiRequest,
+    publicApiRequest
+} from "../../../library/api/wp/middleware";
 import {wpApiConfig} from "../../../config/wp-api-config";
+import {connect} from "react-redux";
+import {getSavedItemsListByUserMiddleware} from "../../../redux/middleware/session-middleware";
 
 const sprintf = require("sprintf").sprintf;
 
@@ -12,7 +19,7 @@ const FormBlock = (props) => {
     }
 
     const formData = props.data.form.form_data;
-
+    // console.log(formData)
     const [response, setResponse] = useState({
         error: false,
         success: false,
@@ -140,9 +147,18 @@ const FormBlock = (props) => {
                         ["from"]: formData.email["from"],
                     }
                 };
-            case "custom":
+            case "user_meta":
                 return {
-                    endpoint: sprintf(wpApiConfig.endpoints.formsCustom, formData.custom_endpoint),
+                    endpoint: wpApiConfig.endpoints.formsUserMeta,
+                    data: {}
+                };
+            case "custom":
+                const customEndpoint = getCustomEndpoint();
+                if (customEndpoint === null) {
+                    return null;
+                }
+                return {
+                    endpoint: customEndpoint,
                     data: {}
                 };
             default:
@@ -150,24 +166,68 @@ const FormBlock = (props) => {
         }
     }
 
+    const getCustomEndpoint = () => {
+        switch (formData?.endpoint_type) {
+            case "public":
+                return sprintf(wpApiConfig.endpoints.formsCustomPublic, formData.custom_endpoint);
+            case "protected":
+                return sprintf(wpApiConfig.endpoints.formsCustomProtected, formData.custom_endpoint);
+            default:
+                return null;
+        }
+    }
+
+    const getFileUploadRequest = (data, endpointData) => {
+        let formValues = data;
+        const headers = {
+            'Content-Type': 'multipart/form-data'
+        };
+
+        formValues = new FormData();
+        Object.keys(data).forEach(key => formValues.append(key, data[key]));
+        Object.keys(endpointData.data).forEach(key => formValues.append(key, endpointData.data[key]));
+
+        return protectedFileUploadApiRequest(
+            buildWpApiUrl(endpointData.endpoint),
+            formValues,
+            false,
+            headers,
+        )
+    }
+
     const formSubmitCallback = (data) => {
         const endpointData = getEndpointData(formData.endpoint);
-
         if (endpointData === null) {
             console.error("Invalid endpoint")
             return;
         }
 
-        console.log({...data, ...endpointData.data})
-        publicApiRequest(buildWpApiUrl(endpointData.endpoint), {...data, ...endpointData.data}, false, "post")
-            .then(response => {
-                console.log(response.data)
-                setResponse({
-                    error: false,
-                    success: true,
-                    message: response?.data?.message
-                })
+        let hasFile = false;
+        Object.keys(data).forEach(key => {
+            if (data[key] instanceof File) {
+                hasFile = true;
+            }
+        })
+
+        let apiRequest;
+        if (hasFile) {
+            apiRequest = getFileUploadRequest(data, endpointData);
+        } else {
+            apiRequest = protectedApiRequest(
+                buildWpApiUrl(endpointData.endpoint),
+                {...data, ...endpointData.data},
+                false
+            );
+        }
+
+        apiRequest.then(response => {
+            console.log(response.data)
+            setResponse({
+                error: false,
+                success: true,
+                message: response?.data?.message
             })
+        })
             .catch(error => {
                 setResponse({
                     error: true,
@@ -183,6 +243,7 @@ const FormBlock = (props) => {
         const defaultProps = {
             data: formDataConfig,
             formType: formData?.form_type === "list" ? "list" : "single",
+            formId: isNotEmpty(formData.form_id) ? formData.form_id : "wp_form",
             submitCallback: formSubmitCallback,
             submitButtonText: (isNotEmpty(formData?.submit_button_label) ? formData.submit_button_label : submitButtonText),
             addListItemButtonText: (isNotEmpty(formData?.add_item_button_label) ? formData.add_item_button_label : addListItemButtonText)
@@ -230,4 +291,15 @@ const FormBlock = (props) => {
         </div>
     )
 }
-export default FormBlock;
+
+
+function mapStateToProps(state) {
+    return {
+        session: state.session,
+    };
+}
+
+export default connect(
+    mapStateToProps,
+    null
+)(FormBlock);

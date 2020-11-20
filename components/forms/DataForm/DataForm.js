@@ -9,6 +9,8 @@ import FormFieldItem from "./Fields/FormFieldItem";
 const sprintf = require("sprintf");
 const DataForm = (props) => {
 
+    const formId = props?.formId ?? "fields";
+
     const getInitialDataObject = () => {
         let initialValues = {};
         props.data.fields.map((item) => {
@@ -83,13 +85,6 @@ const DataForm = (props) => {
         });
         return datesDefaults;
     }
-
-    const [initialValues, setInitialValues] = useState({})
-    const [selected, setSelected] = useState(getListItemsDefaults("select"))
-    const [checkboxes, setCheckboxes] = useState(getListItemsDefaults("checkbox"))
-    const [radios, setRadios] = useState(getListItemsDefaults("radio"))
-    const [dates, setDates] = useState(getDatesDefaults())
-
 
     const validationRules = (rule, values, key) => {
         switch (rule.type) {
@@ -209,8 +204,8 @@ const DataForm = (props) => {
                 values[key] = "";
             }
         });
-        console.log(values)
-        // props.submitCallback(values);
+        console.log(values, props.submitCallback)
+        props.submitCallback(values);
     }
 
     const dependsOnCheck = (field, values) => {
@@ -236,6 +231,7 @@ const DataForm = (props) => {
                         <div className="col-md-12">
                             <FormFieldLabel field={field} errors={errors}/>
                             <FormFieldItem
+                                formId={formId}
                                 field={field}
                                 arrayFieldIndex={arrayFieldIndex}
                                 dates={dates}
@@ -288,16 +284,21 @@ const DataForm = (props) => {
         return "col-" + columnSize.toString()
     }
 
+    const [initialValues, setInitialValues] = useState({})
+    const [selected, setSelected] = useState(getListItemsDefaults("select"))
+    const [checkboxes, setCheckboxes] = useState(getListItemsDefaults("checkbox"))
+    const [radios, setRadios] = useState(getListItemsDefaults("radio"))
+    const [dates, setDates] = useState(getDatesDefaults())
+
     useEffect(() => {
         setInitialValues(initialValues => {
             switch (props.formType) {
                 case "list":
                     const dataObject = getInitialDataObject();
                     const initialObject = {};
-                    initialObject.fields = [];
+                    initialObject[formId] = [];
                     initialObject.dataObject = dataObject;
-                    initialObject.fields.push(dataObject)
-                    // console.log(initialObject)
+                    initialObject[formId].push(dataObject)
                     return initialObject;
                 case "single":
                 default:
@@ -345,11 +346,11 @@ const DataForm = (props) => {
                             buildFormRows(props.data, errors, touched, handleBlur, handleChange, values)
                             :
                             <FieldArray
-                                name="fields"
+                                name={formId}
                                 render={arrayHelpers => {
                                     return (
                                         <div>
-                                            {Array.isArray(values?.fields) && values.fields.map((item, index) => {
+                                            {Array.isArray(values[formId]) && values[formId].map((item, index) => {
                                                 return (
                                                     <React.Fragment key={index}>
                                                         {buildFormRows(props.data, errors, touched, handleBlur, handleChange, values, index)}
