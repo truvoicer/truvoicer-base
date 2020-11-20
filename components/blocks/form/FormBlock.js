@@ -152,6 +152,11 @@ const FormBlock = (props) => {
                     endpoint: wpApiConfig.endpoints.formsUserMeta,
                     data: {}
                 };
+            case "user_profile":
+                return {
+                    endpoint: wpApiConfig.endpoints.formsUserProfile,
+                    data: {}
+                };
             case "custom":
                 const customEndpoint = getCustomEndpoint();
                 if (customEndpoint === null) {
@@ -196,6 +201,7 @@ const FormBlock = (props) => {
     }
 
     const formSubmitCallback = (data) => {
+        console.log(data)
         const endpointData = getEndpointData(formData.endpoint);
         if (endpointData === null) {
             console.error("Invalid endpoint")

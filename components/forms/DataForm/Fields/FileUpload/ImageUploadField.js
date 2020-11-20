@@ -89,9 +89,10 @@ function ImageUploadField({dataImageSrc, name, callback, arrayFieldIndex = false
     const cropSubmitHandler = (e) => {
         let blob = croppedImageSrc;
         const fileUrl = window.URL.createObjectURL(blob);
-        blob.name = `${name}.${image.type.replace("image/", "")}`;
+        const fileName = `${name}.${image.type.replace("image/", "")}`
+        blob.name = fileName;
 
-        const file = new File([blob], name, {type: image.type})
+        const file = new File([blob], fileName, {type: image.type})
         setImageSrc(fileUrl);
         callback(name, file, arrayFieldIndex)
         setModal(false);
