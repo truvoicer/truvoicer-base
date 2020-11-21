@@ -1,7 +1,7 @@
 import store from "../store"
 import React from "react";
 import {
-    setAuthenticated,
+    setAuthenticated, setIsAuthenticating,
     setPasswordResetKey,
     setSavedItems,
     setSessionError,
@@ -94,9 +94,11 @@ export function validateToken() {
             } else {
                 removeLocalSession()
             }
+            setIsAuthenticatingAction(false)
         })
         .catch((error) => {
             setSessionErrorAction(error)
+            setIsAuthenticatingAction(false)
         })
 }
 
@@ -172,4 +174,8 @@ export function setSessionUserIdAction(userId) {
 
 export function setPasswordResetKeyAction(passwordResetKey) {
     store.dispatch(setPasswordResetKey(passwordResetKey));
+}
+
+export function setIsAuthenticatingAction(isAuthenticating) {
+    store.dispatch(setIsAuthenticating(isAuthenticating));
 }

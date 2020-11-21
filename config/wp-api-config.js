@@ -21,6 +21,7 @@ export const wpApiConfig = {
         formsEmail: publicEndpoint + "/forms/email",
         formsUserMeta: protectedEndpoint + "/forms/user-meta",
         formsUserProfile: protectedEndpoint + "/forms/user/profile",
+        formsUserMetaDataRequest: protectedEndpoint + "/forms/user/profile/data",
         formsCustomPublic: publicEndpoint + "%s",
         formsCustomProtected: protectedEndpoint + "%s",
         generalData: publicEndpoint + "/general/%s"

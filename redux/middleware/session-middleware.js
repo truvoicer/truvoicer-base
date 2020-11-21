@@ -1,6 +1,6 @@
 import {isObjectEmpty} from "../../library/utils";
 import {
-    getSavedItemsListByUserAction,
+    getSavedItemsListByUserAction, setIsAuthenticatingAction,
     setSessionErrorAction,
     setSessionLocalStorage,
     setSessionUserAction
@@ -25,6 +25,7 @@ export function getSessionTokenMiddleware(url, requestData, callback = false, he
                 if (response.data.success) {
                     setSessionUserAction(response.data.data, true)
                     setSessionLocalStorage(response.data.data.token)
+                    setIsAuthenticatingAction(false)
                     callback(false, response.data);
                     // resetSessionErrorAction()
                 } else {
@@ -34,6 +35,7 @@ export function getSessionTokenMiddleware(url, requestData, callback = false, he
             })
             .catch(error => {
                 setSessionErrorAction(error)
+                setIsAuthenticatingAction(false)
                 callback(true, error);
             });
     };

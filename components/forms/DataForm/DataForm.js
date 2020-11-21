@@ -204,7 +204,6 @@ const DataForm = (props) => {
                 values[key] = "";
             }
         });
-        console.log(values, props.submitCallback)
         props.submitCallback(values);
     }
 
@@ -260,7 +259,6 @@ const DataForm = (props) => {
     }
 
     const getFields = (fields) => {
-        // console.log(fields)
         let buildFields = [];
         fields.map((field, index) => {
             let rowIndex = field?.rowIndex;
@@ -327,6 +325,7 @@ const DataForm = (props) => {
             initialValues={initialValues}
             validate={values => validateForm(values)}
             onSubmit={values => formSubmitHandler(values)}
+            enableReinitialize={true}
         >
             {({
                   values,

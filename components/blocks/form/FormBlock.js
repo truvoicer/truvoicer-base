@@ -27,6 +27,7 @@ const FormBlock = (props) => {
     })
     const [selectOptions, setSelectOptions] = useState({});
     const [formDataConfig, setFormDataConfig] = useState({});
+    const [userData, setUserData] = useState({});
     const selectData = {};
     const formSelectOptions = {};
     const checkboxData = {};
@@ -37,23 +38,83 @@ const FormBlock = (props) => {
     const addListItemButtonText = "Add new item";
 
     useEffect(() => {
-        setFormDataConfig(buildFormData())
+        // setFormDataConfig(buildFormData())
+        setFormConfigData(formData.endpoint)
+        // buildFormData()
     }, [formData])
+
+    useEffect(() => {
+        setFormDataConfig(buildFormData())
+    }, [userData])
+
+    const setFormConfigData = (endpoint) => {
+        switch (endpoint) {
+            case "user_meta":
+            case "user_profile":
+                getUserDataRequest(getSavedData())
+                break;
+            default:
+                setFormDataConfig(buildFormData())
+                break;
+        }
+    }
+
+    const getUserDataRequest = (savedData) => {
+        protectedApiRequest(
+            buildWpApiUrl(wpApiConfig.endpoints.formsUserMetaDataRequest),
+            savedData,
+            false
+        )
+            .then(response => {
+                console.log(response.data)
+                if (response.data.status === "success") {
+                    setUserData(response.data.data)
+                }
+            })
+            .catch(error => {
+                console.error(error)
+            })
+    }
+
+    const getSavedData = () => {
+        let formFields = [];
+        formRowsIterator({
+            rows: formData.form_rows,
+            callback: (item, itemIndex, rowIndex) => {
+                formFields.push({
+                    form_control: item.form_item.form_control,
+                    name: item.form_item.name
+                })
+            }
+        });
+        return formFields;
+    }
+
+    const formRowsIterator = ({rows, callback}) => {
+        rows.map((row, rowIndex) => {
+            row.form_row.map((item, itemIndex) => {
+                callback(item, itemIndex, rowIndex)
+            })
+        })
+    }
 
     const buildFormData = () => {
         let configData = {};
         configData.fields = [];
-        const rows = formData.form_rows;
-        rows.map((row, rowIndex) => {
-            row.form_row.map((item, itemIndex) => {
+        formRowsIterator({
+            rows: formData.form_rows,
+            callback: (item, itemIndex, rowIndex) => {
                 let fieldConfig = getFormFieldConfig(item.form_item);
                 if (fieldConfig) {
                     fieldConfig.rowIndex = rowIndex;
                     fieldConfig.columnIndex = itemIndex;
                     configData.fields.push(fieldConfig);
+                    if (isSet(userData[fieldConfig.name])) {
+                        fieldConfig.value = userData[fieldConfig.name];
+                    }
                 }
-            })
-        })
+            }
+        });
         return configData;
     }
 
@@ -86,7 +147,7 @@ const FormBlock = (props) => {
                 fieldConfig.fieldType = "text";
                 fieldConfig.type = "tel";
                 break;
-            case "text_area":
+            case "textarea":
                 fieldConfig.fieldType = "textarea";
                 fieldConfig.rows = 4;
                 break;
