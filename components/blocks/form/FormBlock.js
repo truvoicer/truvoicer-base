@@ -77,17 +77,25 @@ const FormBlock = (props) => {
     }
 
     const getSavedData = () => {
-        let formFields = [];
-        formRowsIterator({
-            rows: formData.form_rows,
-            callback: (item, itemIndex, rowIndex) => {
-                formFields.push({
-                    form_control: item.form_item.form_control,
-                    name: item.form_item.name
-                })
-            }
-        });
-        return formFields;
+        let form = {
+            type: formData.form_type,
+            id: formData.form_id,
+            fields: []
+        };
+        switch (formData.form_type) {
+            case "single":
+                formRowsIterator({
+                    rows: formData.form_rows,
+                    callback: (item, itemIndex, rowIndex) => {
+                        form.fields.push({
+                            form_control: item.form_item.form_control,
+                            name: item.form_item.name
+                        })
+                    }
+                });
+                break;
+        }
+        return {form: form};
     }
 
     const formRowsIterator = ({rows, callback}) => {
