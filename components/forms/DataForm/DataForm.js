@@ -37,53 +37,19 @@ const DataForm = (props) => {
         } else if (item.fieldType === "textarea") {
             value = isSet(item.value) ? item.value : "";
         } else if (item.fieldType === "select") {
-            value = isSet(props.selectData[item.name]) ? props.selectData[item.name] : [];
+            value = isSet(item.value) ? item.value : {};
         } else if (item.fieldType === "checkbox") {
             if (isSet(item.checkboxType) && item.checkboxType === "true_false") {
                 value = !!(isSet(item.checked) && item.checked);
-            } else if (isSet(props.checkboxData[item.name])) {
-                value = isSet(props.checkboxData[item.name]) ? props.checkboxData[item.name] : [];
+            } else {
+                value = isSet(item.value) ? item.value : {};
             }
         } else if (item.fieldType === "radio") {
-            if (isSet(props.radioData[item.name])) {
-                value = isSet(props.radioData[item.name]) ? props.radioData[item.name] : [];
-            }
+            value = isSet(item.value) ? item.value : {};
         } else if (item.fieldType === "date") {
             value = isSet(item.value) ? item.value : "";
         }
         return value;
-    }
-
-    const getListItemsDefaults = (fieldType) => {
-        let fieldDefaults = {};
-        props.data.fields.map((item) => {
-            if (item.fieldType === fieldType) {
-                const value = getInitialValue(item);
-                if (value !== null) {
-                    fieldDefaults[item.name] = value;
-                }
-            }
-            if (isSet(item.subFields)) {
-                item.subFields.map((subItem) => {
-                    const subValue = getInitialValue(subItem);
-                    if (subValue !== null) {
-                        fieldDefaults[subItem.name] = subValue;
-                    }
-                })
-            }
-        });
-        return fieldDefaults;
-    }
-
-    const getDatesDefaults = () => {
-        let datesDefaults = {};
-        props.data.fields.map((item) => {
-            const value = getInitialValue(item);
-            if (value !== null) {
-                datesDefaults[item.name] = value;
-            }
-        });
-        return datesDefaults;
     }
 
     const validationRules = (rule, values, key) => {
@@ -204,7 +170,8 @@ const DataForm = (props) => {
                 values[key] = "";
             }
         });
-        props.submitCallback(values);
+        console.log(values)
+        // props.submitCallback(values);
     }
 
     const dependsOnCheck = (field, values) => {
@@ -233,13 +200,8 @@ const DataForm = (props) => {
                                 formId={formId}
                                 field={field}
                                 arrayFieldIndex={arrayFieldIndex}
-                                dates={dates}
                                 handleChange={handleChange}
                                 handleBlur={handleBlur}
-                                checkboxOptions={props.checkboxOptions}
-                                radioOptions={props.radioOptions}
-                                selectOptions={props.selectOptions}
-                                selected={selected}
                             />
                         </div>
                     </div>
@@ -283,21 +245,12 @@ const DataForm = (props) => {
     }
 
     const [initialValues, setInitialValues] = useState({})
-    const [selected, setSelected] = useState(getListItemsDefaults("select"))
-    const [checkboxes, setCheckboxes] = useState(getListItemsDefaults("checkbox"))
-    const [radios, setRadios] = useState(getListItemsDefaults("radio"))
-    const [dates, setDates] = useState(getDatesDefaults())
 
     useEffect(() => {
         setInitialValues(initialValues => {
             switch (props.formType) {
                 case "list":
-                    const dataObject = getInitialDataObject();
-                    const initialObject = {};
-                    initialObject[formId] = [];
-                    initialObject.dataObject = dataObject;
-                    initialObject[formId].push(dataObject)
-                    return initialObject;
+                    return {...props.data, ...{dataObject: getInitialDataObject()}};
                 case "single":
                 default:
                     return getInitialDataObject()

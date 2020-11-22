@@ -3,12 +3,13 @@ import DatePicker from "react-datepicker";
 import {Field} from "formik";
 import Select from "react-select";
 import CreatableSelect from 'react-select/creatable';
-import {isSet} from "../../../../library/utils";
+import {isNotEmpty, isSet} from "../../../../library/utils";
 import { useFormikContext } from 'formik';
 import ImageUploadField from "./FileUpload/ImageUploadField";
 import FileUploadField from "./FileUpload/FileUploadField";
+import moment from 'moment';
 
-function FormFieldItem({formId, field, handleChange, handleBlur, dates, selected, selectOptions,
+function FormFieldItem({formId, field, handleChange, handleBlur,
                        checkboxOptions, radioOptions, arrayFieldIndex = false}) {
     const { values, setFieldValue } = useFormikContext();
 
@@ -131,16 +132,14 @@ function FormFieldItem({formId, field, handleChange, handleBlur, dates, selected
         )
     }
     const getSelectField = () => {
-        let options;
-        if (!isSet(selectOptions[field.name])) {
+        if (!isSet(field?.options)) {
             return <p>Select error...</p>
         }
-        options = selectOptions[field.name];
         if (field.fieldType === "select_data_source") {
             return (
                 <CreatableSelect
                     isMulti={field.multi && field.multi}
-                    options={options}
+                    options={field.options}
                     value={getFieldValue(field.name)}
                     onChange={selectChangeHandler.bind(this, field.name)}
                 />
@@ -149,22 +148,27 @@ function FormFieldItem({formId, field, handleChange, handleBlur, dates, selected
         return (
             <Select
                 isMulti={field.multi && field.multi}
-                options={options}
+                options={field.options}
                 value={getFieldValue(field.name)}
                 onChange={selectChangeHandler.bind(this, field.name)}
             />
         )
     }
     const getDateField = () => {
+        const extraProps = {};
+        const dateString = getFieldValue(field.name);
+        if (isNotEmpty(dateString)) {
+            extraProps.selected = moment(dateString).toDate();
+        }
         return (
             <DatePicker
                 id={field.name}
                 name={getFieldName()}
                 dateFormat={field.format}
                 className={"filter-datepicker"}
-                selected={getFieldValue(field.name)}
                 showTimeInput
                 onChange={dateChangeHandler.bind(this, field.name)}
+                {...extraProps}
             />
         )
     }

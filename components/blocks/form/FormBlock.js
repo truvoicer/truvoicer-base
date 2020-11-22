@@ -9,7 +9,6 @@ import {
 } from "../../../library/api/wp/middleware";
 import {wpApiConfig} from "../../../config/wp-api-config";
 import {connect} from "react-redux";
-import {getSavedItemsListByUserMiddleware} from "../../../redux/middleware/session-middleware";
 
 const sprintf = require("sprintf").sprintf;
 
@@ -25,26 +24,17 @@ const FormBlock = (props) => {
         success: false,
         message: ""
     })
-    const [selectOptions, setSelectOptions] = useState({});
     const [formDataConfig, setFormDataConfig] = useState({});
     const [userData, setUserData] = useState({});
-    const selectData = {};
-    const formSelectOptions = {};
-    const checkboxData = {};
-    const checkboxOptions = {};
-    const radioData = {};
-    const radioOptions = {};
     const submitButtonText = "Update";
     const addListItemButtonText = "Add new item";
 
     useEffect(() => {
-        // setFormDataConfig(buildFormData())
         setFormConfigData(formData.endpoint)
-        // buildFormData()
     }, [formData])
 
     useEffect(() => {
-        setFormDataConfig(buildFormData())
+        setFormDataConfig(buildFormData(formData.form_type))
     }, [userData])
 
     const setFormConfigData = (endpoint) => {
@@ -54,9 +44,33 @@ const FormBlock = (props) => {
                 getUserDataRequest(getSavedData())
                 break;
             default:
-                setFormDataConfig(buildFormData())
+                setFormDataConfig(buildFormData(formData.form_type))
                 break;
         }
+    }
+
+    const updateFieldConfig = (configArray, fieldName, key, value) => {
+        const fieldIndex = configArray.findIndex(item => {
+            return item.name === fieldName;
+        })
+        configArray[fieldIndex][key] = value
+        return configArray;
+    }
+
+    const getSelectEndpointData = (name, key, endpoint) => {
+        publicApiRequest(buildWpApiUrl(sprintf(wpApiConfig.endpoints.generalData, endpoint)), {})
+            .then(response => {
+                if (response.data.status === "success") {
+                    setFormDataConfig(formDataConfig => {
+                        let configData = {...formDataConfig};
+                        configData.fields = updateFieldConfig(configData.fields, name, key, response.data.data)
+                        return configData;
+                    })
+                }
+            })
+            .catch(error => {
+                console.error(error)
+            })
     }
 
     const getUserDataRequest = (savedData) => {
@@ -66,7 +80,7 @@ const FormBlock = (props) => {
             false
         )
             .then(response => {
-                console.log(response.data)
+                // console.log(response.data)
                 if (response.data.status === "success") {
                     setUserData(response.data.data)
                 }
@@ -82,19 +96,15 @@ const FormBlock = (props) => {
             id: formData.form_id,
             fields: []
         };
-        switch (formData.form_type) {
-            case "single":
-                formRowsIterator({
-                    rows: formData.form_rows,
-                    callback: (item, itemIndex, rowIndex) => {
-                        form.fields.push({
-                            form_control: item.form_item.form_control,
-                            name: item.form_item.name
-                        })
-                    }
-                });
-                break;
-        }
+        formRowsIterator({
+            rows: formData.form_rows,
+            callback: (item, itemIndex, rowIndex) => {
+                form.fields.push({
+                    form_control: item.form_item.form_control,
+                    name: item.form_item.name
+                })
+            }
+        });
         return {form: form};
     }
 
@@ -106,9 +116,25 @@ const FormBlock = (props) => {
         })
     }
 
-    const buildFormData = () => {
-        let configData = {};
-        configData.fields = [];
+    const buildFormData = (formType) => {
+        let configData = {
+            fields: [],
+            dataObject: {}
+        };
+        switch (formType) {
+            case "single":
+                configData.fields = buildSingleFormTypeData(userData);
+                break;
+            case "list":
+                const dataObject = buildSingleFormTypeData(userData);
+                configData.fields = dataObject;
+                configData[formData.form_id] = userData[formData.form_id]
+        }
+        return configData;
+    }
+
+    const buildSingleFormTypeData = (userDataValues) => {
+        let configData = [];
         formRowsIterator({
             rows: formData.form_rows,
             callback: (item, itemIndex, rowIndex) => {
@@ -116,24 +142,14 @@ const FormBlock = (props) => {
                 if (fieldConfig) {
                     fieldConfig.rowIndex = rowIndex;
                     fieldConfig.columnIndex = itemIndex;
-                    configData.fields.push(fieldConfig);
-                    if (isSet(userData[fieldConfig.name])) {
-                        fieldConfig.value = userData[fieldConfig.name];
+                    if (isSet(userDataValues[fieldConfig.name])) {
+                        fieldConfig.value = userDataValues[fieldConfig.name];
                     }
+                    configData.push(fieldConfig);
                 }
             }
         });
         return configData;
-    }
-
-    const getSelectEndpointData = (name, endpoint) => {
-        publicApiRequest(buildWpApiUrl(sprintf(wpApiConfig.endpoints.generalData, endpoint)), {})
-            .then(response => {
-                setSelectOptions({skills: response.data.data})
-            })
-            .catch(error => {
-                console.error(error)
-            })
     }
 
     const getFormFieldConfig = (options) => {
@@ -162,28 +178,28 @@ const FormBlock = (props) => {
             case "select":
                 fieldConfig.fieldType = "select";
                 fieldConfig.multi = options.control_settings.multiple;
-                formSelectOptions[options.name] = options.control_settings.options;
-                selectData[options.name] = [];
+                fieldConfig.options = options.control_settings.options;
+                fieldConfig.data =  [];
                 break;
             case "select_data_source":
                 fieldConfig.fieldType = "select_data_source";
                 fieldConfig.multi = options.control_settings.multiple;
-                getSelectEndpointData(options.name, options.control_settings.endpoint)
-                selectData[options.name] = [];
+                fieldConfig.data =  [];
+                getSelectEndpointData(options.name, "options", options.control_settings.endpoint)
                 break;
             case "checkbox":
                 fieldConfig.fieldType = "checkbox";
                 fieldConfig.value = options.control_settings.value;
                 fieldConfig.checked = options.control_settings.checked;
-                checkboxOptions[options.name] = options.control_settings.options;
-                checkboxData[options.name] = [];
+                fieldConfig.options = options.control_settings.options;
+                fieldConfig.data =  [];
                 break;
             case "radio":
                 fieldConfig.fieldType = "radio";
                 fieldConfig.value = options.control_settings.value;
                 fieldConfig.checked = options.control_settings.checked;
-                radioOptions[options.name] = options.control_settings.options;
-                radioData[options.name] = [];
+                fieldConfig.options = options.control_settings.options;
+                fieldConfig.data =  [];
                 break;
             case "date":
                 fieldConfig.fieldType = "date";
@@ -315,27 +331,14 @@ const FormBlock = (props) => {
     }
 
     const getDataFormProps = () => {
-        const defaultProps = {
+        return {
             data: formDataConfig,
             formType: formData?.form_type === "list" ? "list" : "single",
             formId: isNotEmpty(formData.form_id) ? formData.form_id : "wp_form",
             submitCallback: formSubmitCallback,
             submitButtonText: (isNotEmpty(formData?.submit_button_label) ? formData.submit_button_label : submitButtonText),
             addListItemButtonText: (isNotEmpty(formData?.add_item_button_label) ? formData.add_item_button_label : addListItemButtonText)
-        }
-        defaultProps.selectData = selectData
-        defaultProps.selectOptions = selectOptions
-
-        if (!isObjectEmpty(checkboxOptions)) {
-            defaultProps.checkboxData = checkboxData
-            defaultProps.checkboxOptions = checkboxOptions
-        }
-        if (!isObjectEmpty(radioOptions)) {
-            defaultProps.radioData = radioData
-            defaultProps.radioOptions = radioOptions
-        }
-        // console.log(defaultProps)
-        return defaultProps;
+        };
     }
 
     return (
