@@ -38,7 +38,10 @@ const DataForm = (props) => {
             value = isSet(item.value) ? item.value : "";
         } else if (item.fieldType === "select") {
             value = isSet(item.value) ? item.value : {};
-        } else if (item.fieldType === "checkbox") {
+        } else if (item.fieldType === "select_data_source") {
+            value = isSet(item.value) ? item.value : {};
+        }
+        else if (item.fieldType === "checkbox") {
             if (isSet(item.checkboxType) && item.checkboxType === "true_false") {
                 value = !!(isSet(item.checked) && item.checked);
             } else {
