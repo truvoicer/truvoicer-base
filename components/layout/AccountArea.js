@@ -23,13 +23,15 @@ const AccountArea = ({pageData, session}) => {
                     ?
                     <>
                         <HtmlHead/>
-                        <div className={"row"}>
-                            <div className="col-12 col-sm-9 col-md-3 col-lg-2 d-none d-md-block">
-                                <AccountAreaSidebar/>
-                            </div>
-                            <div className="col-12 col-md-10 col-lg-10">
-                                <div className={"listings-block job_lists mt-0"}>
-                                    {ReactHtmlParser(pageData.content, htmlParserOptions)}
+                        <div className={"container-fluid"}>
+                            <div className={"row"}>
+                                <div className="col-12 col-md-3 col-lg-2 d-none d-md-block left-sidebar pl-0 pr-0">
+                                    <AccountAreaSidebar/>
+                                </div>
+                                <div className="col-12 col-md-9 col-lg-10">
+                                    <div className={"listings-block job_lists mt-0"}>
+                                        {ReactHtmlParser(pageData.content, htmlParserOptions)}
+                                    </div>
                                 </div>
                             </div>
                         </div>
