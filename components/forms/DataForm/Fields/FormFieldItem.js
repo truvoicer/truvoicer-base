@@ -4,14 +4,16 @@ import {Field} from "formik";
 import Select from "react-select";
 import CreatableSelect from 'react-select/creatable';
 import {isNotEmpty, isSet} from "../../../../library/utils";
-import { useFormikContext } from 'formik';
+import {useFormikContext} from 'formik';
 import ImageUploadField from "./FileUpload/ImageUploadField";
 import FileUploadField from "./FileUpload/FileUploadField";
 import moment from 'moment';
 
-function FormFieldItem({formId, field, handleChange, handleBlur,
-                       checkboxOptions, radioOptions, arrayFieldIndex = false}) {
-    const { values, setFieldValue } = useFormikContext();
+function FormFieldItem({
+                           formId, field, handleChange, handleBlur,
+                           checkboxOptions, radioOptions, arrayFieldIndex = false
+                       }) {
+    const {values, setFieldValue} = useFormikContext();
 
     const getFieldName = () => {
         if (arrayFieldIndex === false) {
@@ -136,13 +138,18 @@ function FormFieldItem({formId, field, handleChange, handleBlur,
             return <p>Select error...</p>
         }
         if (field.fieldType === "select_data_source") {
+            const selectedOptions = getFieldValue(field.name);
             return (
-                <CreatableSelect
-                    isMulti={field.multi && field.multi}
-                    options={field.options}
-                    value={getFieldValue(field.name)}
-                    onChange={selectChangeHandler.bind(this, field.name)}
-                />
+                <>
+                    {Array.isArray(selectedOptions) &&
+                    <CreatableSelect
+                        isMulti={field.multi && field.multi}
+                        options={field.options}
+                        value={selectedOptions}
+                        onChange={selectChangeHandler.bind(this, field.name)}
+                    />
+                    }
+                </>
             )
         }
         return (
@@ -211,9 +218,24 @@ function FormFieldItem({formId, field, handleChange, handleBlur,
             case "radio":
                 return getRadioField();
             case "file_upload":
-                return <FileUploadField name={name} callback={fileUploadCallback} arrayFieldIndex={arrayFieldIndex}/>;
+                return (
+                    <FileUploadField
+                        name={name}
+                        callback={fileUploadCallback}
+                        arrayFieldIndex={arrayFieldIndex}
+                        allowedFileTypes={field.allowedFileTypes}
+                        value={getFieldValue(field.name)}
+                    />
+                );
             case "image_upload":
-                return <ImageUploadField name={name} callback={imageUploadCallback} arrayFieldIndex={arrayFieldIndex}/>;
+                return (
+                    <ImageUploadField
+                        name={name}
+                        callback={imageUploadCallback}
+                        arrayFieldIndex={arrayFieldIndex}
+                        value={getFieldValue(field.name)}
+                    />
+                );
             default:
                 return null;
         }

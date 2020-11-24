@@ -9,6 +9,8 @@ import {
 } from "../../../library/api/wp/middleware";
 import {wpApiConfig} from "../../../config/wp-api-config";
 import {connect} from "react-redux";
+import {ChangePasswordFormFields} from "../../../config/forms/change-password-form-fields";
+import {SESSION_AUTH_TYPE, SESSION_USER} from "../../../redux/constants/session-constants";
 
 const sprintf = require("sprintf").sprintf;
 
@@ -18,7 +20,6 @@ const FormBlock = (props) => {
     }
 
     const formData = props.data.form.form_data;
-    // console.log(formData)
     const [response, setResponse] = useState({
         error: false,
         success: false,
@@ -41,7 +42,8 @@ const FormBlock = (props) => {
         switch (endpoint) {
             case "user_meta":
             case "user_profile":
-                getUserDataRequest(getSavedData())
+            case "account_details":
+                getUserDataRequest(getSavedData(), endpoint)
                 break;
             default:
                 setFormDataConfig(buildFormData(formData.form_type))
@@ -73,14 +75,17 @@ const FormBlock = (props) => {
             })
     }
 
-    const getUserDataRequest = (savedData) => {
+    const getUserDataRequest = (savedData, endpoint) => {
+        let apiEndpoint = wpApiConfig.endpoints.formsUserMetaDataRequest;
+        if (endpoint === "account_details") {
+            apiEndpoint = wpApiConfig.endpoints.userAccountDataRequest;
+        }
         protectedApiRequest(
-            buildWpApiUrl(wpApiConfig.endpoints.formsUserMetaDataRequest),
+            buildWpApiUrl(apiEndpoint),
             savedData,
             false
         )
             .then(response => {
-                // console.log(response.data)
                 if (response.data.status === "success") {
                     setUserData(response.data.data)
                 }
@@ -149,6 +154,9 @@ const FormBlock = (props) => {
                 }
             }
         });
+        if (formData.endpoint === "account_details") {
+            return [...configData, ...ChangePasswordFormFields()]
+        }
         return configData;
     }
 
@@ -211,6 +219,7 @@ const FormBlock = (props) => {
                 break;
             case "file_upload":
                 fieldConfig.fieldType = "file_upload";
+                fieldConfig.allowedFileTypes = options.control_settings.allowed_file_types
                 break;
             default:
                 return false;
@@ -241,6 +250,13 @@ const FormBlock = (props) => {
                 return {
                     endpoint: wpApiConfig.endpoints.formsUserProfile,
                     data: {}
+                };
+            case "account_details":
+                return {
+                    endpoint: wpApiConfig.endpoints.updateUser,
+                    data: {
+                        auth_type: props.session[SESSION_USER][SESSION_AUTH_TYPE]
+                    }
                 };
             case "custom":
                 const customEndpoint = getCustomEndpoint();
@@ -286,7 +302,6 @@ const FormBlock = (props) => {
     }
 
     const formSubmitCallback = (data) => {
-        console.log(data)
         const endpointData = getEndpointData(formData.endpoint);
         if (endpointData === null) {
             console.error("Invalid endpoint")
@@ -312,7 +327,6 @@ const FormBlock = (props) => {
         }
 
         apiRequest.then(response => {
-            console.log(response.data)
             setResponse({
                 error: false,
                 success: true,

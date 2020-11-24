@@ -32,25 +32,26 @@ const DataForm = (props) => {
 
     const getInitialValue = (item) => {
         let value;
-        if (item.fieldType === "text") {
-            value = isSet(item.value) ? item.value : "";
-        } else if (item.fieldType === "textarea") {
-            value = isSet(item.value) ? item.value : "";
-        } else if (item.fieldType === "select") {
-            value = isSet(item.value) ? item.value : {};
-        } else if (item.fieldType === "select_data_source") {
-            value = isSet(item.value) ? item.value : {};
-        }
-        else if (item.fieldType === "checkbox") {
-            if (isSet(item.checkboxType) && item.checkboxType === "true_false") {
-                value = !!(isSet(item.checked) && item.checked);
-            } else {
+        switch (item.fieldType) {
+            case "text":
+            case "textarea":
+            case "date":
+            case "image_upload":
+            case "file_upload":
+                value = isSet(item.value) ? item.value : "";
+                break;
+            case "select":
+            case "select_data_source":
+            case "radio":
                 value = isSet(item.value) ? item.value : {};
-            }
-        } else if (item.fieldType === "radio") {
-            value = isSet(item.value) ? item.value : {};
-        } else if (item.fieldType === "date") {
-            value = isSet(item.value) ? item.value : "";
+                break;
+            case "checkbox":
+                if (isSet(item.checkboxType) && item.checkboxType === "true_false") {
+                    value = !!(isSet(item.checked) && item.checked);
+                } else {
+                    value = isSet(item.value) ? item.value : {};
+                }
+                break;
         }
         return value;
     }
@@ -173,8 +174,7 @@ const DataForm = (props) => {
                 values[key] = "";
             }
         });
-        console.log(values)
-        // props.submitCallback(values);
+        props.submitCallback(values);
     }
 
     const dependsOnCheck = (field, values) => {
