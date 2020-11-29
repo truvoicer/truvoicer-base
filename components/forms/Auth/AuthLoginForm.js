@@ -2,10 +2,8 @@ import React, {useState} from 'react';
 import {connect} from "react-redux";
 import {getSessionTokenMiddleware} from "../../../redux/middleware/session-middleware";
 import {buildWpApiUrl} from "../../../library/api/wp/middleware";
-import {siteConfig} from "../../../../config/site-config";
 import DataForm from "../DataForm/DataForm";
 import {LoginFormData} from "../../../config/forms/login-form";
-import {useRouter} from "next/router";
 import {wpApiConfig} from "../../../config/wp-api-config";
 
 
@@ -22,6 +20,7 @@ const AuthLoginForm = (props) => {
             <>
                 <DataForm
                     data={LoginFormData}
+                    formType={"single"}
                     submitCallback={submitHandler}
                     submitButtonText={submitButtonText}
                 >

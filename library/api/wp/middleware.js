@@ -78,7 +78,6 @@ export function getStaticPagePaths(allPages) {
                 }
             });
         }
-        // console.log(pagePaths.length > 0 ? pagePaths : [node.slug])
         return {
             params: {
                 page: pagePaths.length > 0 ? pagePaths : [node.slug]

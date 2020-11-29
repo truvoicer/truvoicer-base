@@ -27,21 +27,13 @@ const GridItems = (props) => {
     });
 
     const showInfo = (item, category, e) => {
-        if (isSet(props?.listings?.listingsData?.item_display) &&
-            props.listings.listingsData.item_display === "new_page"
-        ) {
-            const url = getItemViewUrl(item, category);
-            router.push(url, url)
-            // window.location.href = url
-        } else {
-            e.preventDefault()
-            setModalData({
-                show: true,
-                item: item,
-                provider: item.provider,
-                category: category
-            })
-        }
+        e.preventDefault()
+        setModalData({
+            show: true,
+            item: item,
+            provider: item.provider,
+            category: category
+        })
     }
 
     const GetModal = () => {

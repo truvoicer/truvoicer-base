@@ -189,6 +189,12 @@ const FormBlock = (props) => {
                 fieldConfig.options = options.control_settings.options;
                 fieldConfig.data =  [];
                 break;
+            case "select_countries":
+                fieldConfig.fieldType = "select";
+                fieldConfig.multi = false;
+                fieldConfig.options = options?.countries_list;
+                fieldConfig.data =  [];
+                break;
             case "select_data_source":
                 fieldConfig.fieldType = "select_data_source";
                 fieldConfig.multi = options.control_settings.multiple;
@@ -248,7 +254,7 @@ const FormBlock = (props) => {
                 };
             case "user_profile":
                 return {
-                    endpoint: wpApiConfig.endpoints.formsUserProfile,
+                    endpoint: wpApiConfig.endpoints.userProfileUpdate,
                     data: {}
                 };
             case "account_details":

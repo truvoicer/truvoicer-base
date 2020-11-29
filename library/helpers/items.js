@@ -7,6 +7,7 @@ import store from "../../redux/store";
 import {siteConfig} from "../../../config/site-config";
 import {listingsGridConfig} from "../../../config/listings-grid-config";
 import {getItemRatingDataAction, isSavedItemAction} from "../../redux/actions/user-stored-items-actions";
+import {getItemViewUrl} from "../../redux/actions/item-actions";
 
 export function replaceItemDataPlaceholders(pageTitle, item) {
     const test = new RegExp("\\\[+(.*?)\\]", "g");
@@ -257,4 +258,15 @@ export const getGridItem = (item, category, listingsGrid, userId, showInfoCallba
                           )
                       }
     />
+}
+
+export const getItemLinkProps = (category, item, showInfoCallback, e) => {
+    const listingsData = store.getState().listings?.listingsData;
+    if (isSet(listingsData?.item_display) && listingsData.item_display === "new_page") {
+        return {};
+    }
+    return {
+        href: getItemViewUrl(item, category),
+        onClick: showInfoCallback.bind(e, item, category)
+    }
 }

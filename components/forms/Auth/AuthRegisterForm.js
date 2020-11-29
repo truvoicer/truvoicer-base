@@ -17,6 +17,7 @@ const AuthRegisterForm = (props) => {
         <>
             <DataForm
                 data={RegisterFormData}
+                formType={"single"}
                 submitCallback={formSubmitHandler}
                 submitButtonText={submitButtonLabel}
             >
