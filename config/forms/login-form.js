@@ -2,7 +2,7 @@ export const LoginFormData = {
     fields: [
         {
             name: "username",
-            // label: "Username",
+            label: "Username",
             fieldType: "text",
             type: "text",
             placeHolder: "Enter your username",
@@ -22,7 +22,7 @@ export const LoginFormData = {
         },
         {
             name: "password",
-            // label: "Password",
+            label: "Password",
             type: "password",
             fieldType: "text",
             placeHolder: "Enter your password",

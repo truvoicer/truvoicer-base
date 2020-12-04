@@ -74,13 +74,9 @@ export function getSessionAction() {
 
 export function validateToken() {
     if (!getSessionObject()) {
+        setIsAuthenticatingAction(false)
         return false;
     }
-    console.log(getSessionObject())
-    // if (new Date().getTime() > getSessionObject().expires_at) {
-    //     removeLocalSession()
-    //     return false;
-    // }
     let config = {
         url: buildWpApiUrl(wpApiConfig.endpoints.validateToken),
         method: "post",

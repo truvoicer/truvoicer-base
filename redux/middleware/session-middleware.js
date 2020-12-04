@@ -23,8 +23,8 @@ export function getSessionTokenMiddleware(url, requestData, callback = false, he
         return axios.request(data)
             .then(response => {
                 if (response.data.success) {
-                    setSessionUserAction(response.data.data, true)
                     setSessionLocalStorage(response.data.data.token)
+                    setSessionUserAction(response.data.data, true)
                     setIsAuthenticatingAction(false)
                     callback(false, response.data);
                     // resetSessionErrorAction()
