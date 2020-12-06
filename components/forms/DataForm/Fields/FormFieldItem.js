@@ -56,12 +56,10 @@ function FormFieldItem({
     }
 
     const fileUploadCallback = (name, file, index) => {
-        console.log(name, file, index)
         setFormFieldValue(name, file, index)
     }
 
     const imageUploadCallback = (name, imageData, index) => {
-        console.log(name, imageData)
         setFormFieldValue(name, imageData, index)
     }
 

@@ -14,11 +14,12 @@ function ImageUploadField({dataImageSrc, name, callback, arrayFieldIndex = false
     const [imageRef, setImageRef] = useState(null);
     const [croppedImage, setCroppedImage] = useState(null);
     const [image, setImage] = useState({});
-    const [imageCrop, setImageCrop] = useState({
+    const defaultImageCrop = {
         unit: 'px',
         width: 150,
         height: 150,
-    });
+    }
+    const [imageCrop, setImageCrop] = useState(defaultImageCrop);
 
     const handleModalClose = () => {
         setModal(false);
@@ -35,6 +36,13 @@ function ImageUploadField({dataImageSrc, name, callback, arrayFieldIndex = false
     // If you setState the crop in here you should return false.
     const onImageLoaded = async (image) => {
         setImageRef(image)
+        const crop = { ...defaultImageCrop, ...{x: 0, y: 0} }
+        const croppedImageObject = await getCroppedImg(
+            image,
+            crop,
+            image.type
+        );
+        setCroppedImage(croppedImageObject)
     };
 
     const onCropComplete = crop => {

@@ -60,7 +60,6 @@ const AccountArea = ({pageData, session}) => {
         } else if (!isNotEmpty(session[SESSION_USER][SESSION_USER_TOKEN]) || !session[SESSION_AUTHENTICATED]) {
             setLoadKey("show_login")
         } else if (!session[SESSION_IS_AUTHENTICATING] && session[SESSION_AUTHENTICATED] && pageData) {
-            console.log("acc")
             setLoadKey("show_account_area")
         } else {
             setLoadKey("show_loader")

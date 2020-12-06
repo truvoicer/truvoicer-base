@@ -11,6 +11,8 @@ import {wpApiConfig} from "../../../config/wp-api-config";
 import {connect} from "react-redux";
 import {ChangePasswordFormFields} from "../../../config/forms/change-password-form-fields";
 import {SESSION_AUTH_TYPE, SESSION_USER} from "../../../redux/constants/session-constants";
+import Snackbar from "@material-ui/core/Snackbar";
+import SnackbarContent from "@material-ui/core/SnackbarContent";
 
 const sprintf = require("sprintf").sprintf;
 
@@ -21,6 +23,7 @@ const FormBlock = (props) => {
 
     const formData = props.data.form.form_data;
     const [response, setResponse] = useState({
+        showAlert: false,
         error: false,
         success: false,
         message: ""
@@ -334,20 +337,21 @@ const FormBlock = (props) => {
 
         apiRequest.then(response => {
             setResponse({
+                showAlert: true,
                 error: false,
                 success: true,
                 message: response?.data?.message
             })
         })
-            .catch(error => {
-                setResponse({
-                    error: true,
-                    success: false,
-                    message: error?.response?.data?.message
-                })
-                console.error(error)
+        .catch(error => {
+            setResponse({
+                showAlert: true,
+                error: true,
+                success: false,
+                message: error?.response?.data?.message
             })
-
+            console.error(error)
+        })
     }
 
     const getDataFormProps = () => {
@@ -370,12 +374,12 @@ const FormBlock = (props) => {
                         <p>{formData.sub_heading}</p>
                         {response.success &&
                         <div className="bg-white p-3">
-                            <p className={"text-center"}>{response.message}</p>
+                            <p className={"text-center text-success"}>{response.message}</p>
                         </div>
                         }
                         {response.error &&
                         <div className="bg-white">
-                            <p className={"text-danger"}>{response.message}</p>
+                            <p className={"text-danger text-danger"}>{response.message}</p>
                         </div>
                         }
                         {!isObjectEmpty(formDataConfig) &&
@@ -386,6 +390,19 @@ const FormBlock = (props) => {
                     </div>
                 </div>
             </div>
+            <Snackbar open={response.showAlert}
+                      autoHideDuration={6000}
+                      onClose={() => {
+                          setResponse(response => {
+                              return {...response, ...{showAlert: false}}
+                          })
+                      }}
+            >
+                <SnackbarContent
+                    message={response.message}
+                    // role={response.success ? "success" : "error"}
+                />
+            </Snackbar>
         </div>
     )
 }
