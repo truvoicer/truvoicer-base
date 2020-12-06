@@ -4,7 +4,6 @@ import AuthRegisterForm from "./AuthRegisterForm";
 import {siteConfig} from "../../../../config/site-config";
 import {componentsConfig} from "../../../../config/components-config";
 import {setModalContentAction} from "../../../redux/actions/page-actions";
-import AuthLoginForm from "./AuthLoginForm";
 import AuthGoogle from "./AuthGoogle";
 import AuthFacebook from "./AuthFacebook";
 

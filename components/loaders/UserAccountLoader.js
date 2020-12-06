@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {SESSION_AUTHENTICATED} from "../../redux/constants/session-constants";
 import {buildWpApiUrl, protectedApiRequest} from "../../library/api/wp/middleware";
 import {wpApiConfig} from "../../config/wp-api-config";

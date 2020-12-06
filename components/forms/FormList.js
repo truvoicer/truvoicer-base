@@ -1,7 +1,7 @@
-import React, {Component, useState} from 'react';
+import React, {useState} from 'react';
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import {isSet} from "../../../../library/utils";
+import {isSet} from "../../library/utils";
 
 const FormList = (props) => {
     const listClass = "form-list";

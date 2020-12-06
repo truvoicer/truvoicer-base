@@ -3,8 +3,6 @@ import {
     setSearchStatus,
     setSearchOperation,
     setRequestService,
-    setSearchList,
-    setExtraData,
     setProvider,
     setCategory,
     setSearchError,

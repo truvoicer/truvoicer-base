@@ -3,7 +3,6 @@ import React from "react";
 import {
     setAuthenticated, setIsAuthenticating,
     setPasswordResetKey,
-    setSavedItems,
     setSessionError,
     setUser, setUserId
 } from "../reducers/session-reducer";
@@ -19,7 +18,7 @@ import {
     SESSION_USER_TOKEN
 } from "../constants/session-constants";
 import {buildWpApiUrl} from "../../library/api/wp/middleware";
-import {isSet, uCaseFirst} from "../../library/utils";
+import {isSet} from "../../library/utils";
 import {wpApiConfig} from "../../config/wp-api-config";
 
 const axios = require("axios")

@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
@@ -16,7 +16,6 @@ import {SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-const
 import {connect} from "react-redux";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {useRouter} from "next/router";
-import {siteConfig} from "../../../config/site-config";
 
 const SavedItemsVerticalTabs = (props) => {
     const router = useRouter();

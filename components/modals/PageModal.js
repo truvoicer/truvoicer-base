@@ -1,11 +1,7 @@
-import Modal from "@material-ui/core/Modal";
-import Fade from "@material-ui/core/Fade";
 import React, {useState} from "react";
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import Backdrop from "@material-ui/core/Backdrop";
 import {connect} from "react-redux";
 import {showPageModalMiddleware} from "../../redux/middleware/page-middleware";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import Dialog from "@material-ui/core/Dialog";
 

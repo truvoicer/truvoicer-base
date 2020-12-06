@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import Box from "@material-ui/core/Box";
 import Tabs from "@material-ui/core/Tabs";
 import AppBar from "@material-ui/core/AppBar";

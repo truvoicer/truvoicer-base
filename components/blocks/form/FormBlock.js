@@ -190,18 +190,18 @@ const FormBlock = (props) => {
                 fieldConfig.fieldType = "select";
                 fieldConfig.multi = options.control_settings.multiple;
                 fieldConfig.options = options.control_settings.options;
-                fieldConfig.data =  [];
+                fieldConfig.data = [];
                 break;
             case "select_countries":
                 fieldConfig.fieldType = "select";
                 fieldConfig.multi = false;
                 fieldConfig.options = options?.countries_list;
-                fieldConfig.data =  [];
+                fieldConfig.data = [];
                 break;
             case "select_data_source":
                 fieldConfig.fieldType = "select_data_source";
                 fieldConfig.multi = options.control_settings.multiple;
-                fieldConfig.data =  [];
+                fieldConfig.data = [];
                 getSelectEndpointData(options.name, "options", options.control_settings.endpoint)
                 break;
             case "checkbox":
@@ -209,18 +209,18 @@ const FormBlock = (props) => {
                 fieldConfig.value = options.control_settings.value;
                 fieldConfig.checked = options.control_settings.checked;
                 fieldConfig.options = options.control_settings.options;
-                fieldConfig.data =  [];
+                fieldConfig.data = [];
                 break;
             case "radio":
                 fieldConfig.fieldType = "radio";
                 fieldConfig.value = options.control_settings.value;
                 fieldConfig.checked = options.control_settings.checked;
                 fieldConfig.options = options.control_settings.options;
-                fieldConfig.data =  [];
+                fieldConfig.data = [];
                 break;
             case "date":
                 fieldConfig.fieldType = "date";
-                fieldConfig.format = "dd MMMM yyyy H:mm:s";
+                fieldConfig.format = "dd MMMM yyyy";
                 fieldConfig.value = options.control_settings.date_value;
                 break;
             case "image_upload":
@@ -302,40 +302,51 @@ const FormBlock = (props) => {
         Object.keys(data).forEach(key => formValues.append(key, data[key]));
         Object.keys(endpointData.data).forEach(key => formValues.append(key, endpointData.data[key]));
 
-        return protectedFileUploadApiRequest(
-            buildWpApiUrl(endpointData.endpoint),
-            formValues,
-            false,
-            headers,
+        responseHandler(
+            protectedFileUploadApiRequest(
+                buildWpApiUrl(endpointData.endpoint),
+                formValues,
+                false,
+                headers,
+            )
         )
+
     }
 
     const formSubmitCallback = (data) => {
+        const requestData = {...data};
         const endpointData = getEndpointData(formData.endpoint);
         if (endpointData === null) {
             console.error("Invalid endpoint")
             return;
         }
 
-        let hasFile = false;
-        Object.keys(data).forEach(key => {
-            if (data[key] instanceof File) {
-                hasFile = true;
+        let files = {};
+        let fileKeys = [];
+        Object.keys(requestData).forEach(key => {
+            if (requestData[key] instanceof File) {
+                files[key] = requestData[key]
+                fileKeys.push(key)
             }
         })
+        fileKeys.forEach(key => {
+            delete requestData[key];
+        })
 
-        let apiRequest;
-        if (hasFile) {
-            apiRequest = getFileUploadRequest(data, endpointData);
-        } else {
-            apiRequest = protectedApiRequest(
-                buildWpApiUrl(endpointData.endpoint),
-                {...data, ...endpointData.data},
-                false
-            );
+        if (!isObjectEmpty(files)) {
+            getFileUploadRequest(files, endpointData);
         }
+        responseHandler(
+            protectedApiRequest(
+                buildWpApiUrl(endpointData.endpoint),
+                {...requestData, ...endpointData.data},
+                false
+            )
+        );
+    }
 
-        apiRequest.then(response => {
+    const responseHandler = (request) => {
+        request.then(response => {
             setResponse({
                 showAlert: true,
                 error: false,
@@ -343,15 +354,15 @@ const FormBlock = (props) => {
                 message: response?.data?.message
             })
         })
-        .catch(error => {
-            setResponse({
-                showAlert: true,
-                error: true,
-                success: false,
-                message: error?.response?.data?.message
+            .catch(error => {
+                setResponse({
+                    showAlert: true,
+                    error: true,
+                    success: false,
+                    message: error?.response?.data?.message
+                })
+                console.error(error)
             })
-            console.error(error)
-        })
     }
 
     const getDataFormProps = () => {
@@ -364,7 +375,6 @@ const FormBlock = (props) => {
             addListItemButtonText: (isNotEmpty(formData?.add_item_button_label) ? formData.add_item_button_label : addListItemButtonText)
         };
     }
-
     return (
         <div className={"m-5"}>
             <div className={formData.layout_style === "full-width" ? "container-fluid" : "container"}>

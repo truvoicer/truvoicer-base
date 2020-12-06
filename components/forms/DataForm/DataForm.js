@@ -1,8 +1,6 @@
-import React, {Component, useEffect, useState} from 'react';
-import {Field, FieldArray, Formik, isObject} from "formik";
+import React, {useEffect, useState} from 'react';
+import {FieldArray, Formik, isObject} from "formik";
 import {isSet} from "../../../library/utils";
-import Select from "react-select";
-import DatePicker from "react-datepicker";
 import FormFieldLabel from "./Fields/FormFieldLabel";
 import FormFieldItem from "./Fields/FormFieldItem";
 

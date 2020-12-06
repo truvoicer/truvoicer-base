@@ -14,7 +14,7 @@ import {
 } from "../../../../redux/actions/user-stored-items-actions";
 import Col from "react-bootstrap/Col";
 import {useRouter} from "next/router";
-import {getGridItemColumns, getItemViewUrl} from "../../../../redux/actions/item-actions";
+import {getGridItemColumns} from "../../../../redux/actions/item-actions";
 import {buildCustomItemsArray, getGridItem} from "../../../../library/helpers/items";
 import {siteConfig} from "../../../../../config/site-config";
 

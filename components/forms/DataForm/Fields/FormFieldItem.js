@@ -132,6 +132,7 @@ function FormFieldItem({
         )
     }
     const getSelectField = () => {
+        // console.log(values)
         if (!isSet(field?.options)) {
             return <p>Select error...</p>
         }
@@ -171,7 +172,6 @@ function FormFieldItem({
                 name={getFieldName()}
                 dateFormat={field.format}
                 className={"filter-datepicker"}
-                showTimeInput
                 onChange={dateChangeHandler.bind(this, field.name)}
                 {...extraProps}
             />

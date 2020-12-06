@@ -3,7 +3,7 @@ import {
     getPageDataAction,
     getUserAccountMenuAction, setModalContentAction, setSiteSettingsAction,
 } from "../actions/page-actions";
-import {setShowModal, setSiteSettings} from "../reducers/page-reducer";
+import {setShowModal} from "../reducers/page-reducer";
 
 export function getPageDataMiddleware(data) {
     return function(dispatch) {

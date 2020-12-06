@@ -14,9 +14,6 @@ const AuthButton = (props) => {
     const showAuthLoginModal = () => {
         props.setModalContentMiddleware(componentsConfig.components.authentication_login.name, {}, true)
     }
-    const showAuthRegisterModal = () => {
-        props.setModalContentMiddleware(componentsConfig.components.authentication_register.name, {}, true)
-    }
     const logoutHandler = (e) => {
         e.preventDefault();
         logout();

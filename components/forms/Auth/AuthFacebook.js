@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props'
 import {connect} from "react-redux";
 import {getSessionTokenMiddleware} from "../../../redux/middleware/session-middleware";

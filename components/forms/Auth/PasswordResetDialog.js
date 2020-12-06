@@ -1,13 +1,9 @@
 import React, {useState} from "react";
-import AuthLoginForm from "./AuthLoginForm";
-import AuthGoogle from "./AuthGoogle";
-import AuthFacebook from "./AuthFacebook";
 import {connect} from "react-redux";
 import {showPageModalMiddleware} from "../../../redux/middleware/page-middleware";
 import {siteConfig} from "../../../../config/site-config";
 import {setModalContentAction} from "../../../redux/actions/page-actions";
 import {componentsConfig} from "../../../../config/components-config";
-import AuthRegisterForm from "./AuthRegisterForm";
 import PasswordResetForm from "./PasswordResetForm";
 
 const PasswordResetDialog = (props) => {

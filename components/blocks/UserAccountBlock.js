@@ -3,7 +3,7 @@ import HorizontalTabLayout from "../tabs/HorizontalTabLayout";
 import {connect} from "react-redux";
 import {getUserAccountMenuAction} from "../../redux/actions/page-actions";
 import VerticalTabLayout from "../tabs/VerticalTabLayout";
-import {isNotEmpty, isSet} from "../../library/utils";
+import {isNotEmpty} from "../../library/utils";
 
 const UserAccountBlock = (props) => {
     const defaultTabOrientation = "horizontal";

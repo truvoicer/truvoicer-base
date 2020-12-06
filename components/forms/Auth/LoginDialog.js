@@ -7,7 +7,6 @@ import {showPageModalMiddleware} from "../../../redux/middleware/page-middleware
 import {siteConfig} from "../../../../config/site-config";
 import {setModalContentAction} from "../../../redux/actions/page-actions";
 import {componentsConfig} from "../../../../config/components-config";
-import AuthRegisterForm from "./AuthRegisterForm";
 
 const LoginDialog = (props) => {
     const [showLoginForm, setShowLoginForm] = useState(false);

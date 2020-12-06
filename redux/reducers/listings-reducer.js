@@ -1,4 +1,3 @@
-import store from "../store"
 // AUTH STATE
 import {createSlice} from "@reduxjs/toolkit";
 import {LISTINGS_GRID_COMPACT} from "../constants/listings-constants";

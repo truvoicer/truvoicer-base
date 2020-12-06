@@ -1,7 +1,6 @@
 import {isNotEmpty, isSet} from "../utils";
 import {itemDataTextFilter} from "./items";
 import store from "../../redux/store";
-import {siteConfig} from "../../../config/site-config";
 
 const sprintf = require("sprintf").sprintf;
 

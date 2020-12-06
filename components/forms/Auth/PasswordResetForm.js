@@ -2,10 +2,7 @@ import React, {useState} from 'react';
 import {connect} from "react-redux";
 import {getSessionTokenMiddleware} from "../../../redux/middleware/session-middleware";
 import {buildWpApiUrl, publicApiRequest} from "../../../library/api/wp/middleware";
-import {siteConfig} from "../../../../config/site-config";
 import DataForm from "../DataForm/DataForm";
-import {LoginFormData} from "../../../config/forms/login-form";
-import {useRouter} from "next/router";
 import {wpApiConfig} from "../../../config/wp-api-config";
 import {PasswordResetRequestData} from "../../../config/forms/password-reset-request-form";
 

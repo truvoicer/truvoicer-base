@@ -1,16 +1,13 @@
 import React from "react";
 import store from "../store";
 import {
-    setListingsData,
     setListingsQueryData,
-    setListingsDataProviders,
     setListingsScrollTop,
-    setListingsError, setListingsGrid
+    setListingsGrid
 } from "../reducers/listings-reducer"
 import {
     initialSearch,
     runSearch,
-    setSearchRequestOperationAction,
     setSearchRequestServiceAction
 } from "./search-actions";
 import {isEmpty, isSet} from "../../library/utils";

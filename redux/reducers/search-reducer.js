@@ -1,7 +1,6 @@
-import store from "../store"
 // AUTH STATE
 import {createSlice} from "@reduxjs/toolkit";
-import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_COMPLETED, SEARCH_REQUEST_IDLE} from "../constants/search-constants";
+import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_IDLE} from "../constants/search-constants";
 import {getReducers, getState} from "../../library/helpers/redux";
 
 const defaultState = {

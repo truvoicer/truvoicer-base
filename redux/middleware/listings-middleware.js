@@ -3,18 +3,15 @@ import store from "../store";
 import {fetchData} from "../../library/api/fetcher/middleware";
 import {
     setListingsGrid,
-    setListingsData,
     setListingsQueryData,
     setListingsDataProviders,
     setListingsError
 } from "../reducers/listings-reducer"
 import {isSet} from "../../library/utils";
 import {
-    initialSearch,
-    runSearch,
-    setSearchRequestOperationAction
+    runSearch
 } from "../actions/search-actions";
-import {NEW_SEARCH_REQUEST, PAGE_CONTROL_PAGE_SIZE} from "../constants/search-constants";
+import {PAGE_CONTROL_PAGE_SIZE} from "../constants/search-constants";
 import {getSearchLimit, setPageControlItemAction} from "../actions/pagination-actions";
 import {getListingsInitialLoad} from "../actions/listings-actions";
 

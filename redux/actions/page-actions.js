@@ -1,7 +1,6 @@
 import store from "../store"
 import React from "react";
 import {
-    setBlocksData,
     setModalComponent,
     setPageData,
     setPageError,
@@ -106,11 +105,9 @@ export function isUserAccountPage(pageData) {
         return false;
     }
     const blocksObject = JSON.parse(pageData.blocksJSON)
-    if (isSet(blocksObject.tru_fetcher_listings) &&
-        isSet(blocksObject.tru_fetcher_listings.tru_fetcher_user_area)) {
-        return true;
-    }
-    return false;
+    return isSet(blocksObject.tru_fetcher_listings) &&
+        isSet(blocksObject.tru_fetcher_listings.tru_fetcher_user_area);
+
 }
 
 export function setUserAccountMenuAction(menu) {

@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import {siteConfig} from "../../../../config/site-config";
 import {connect} from "react-redux";
 import {createUserMiddleware} from "../../../redux/middleware/session-middleware";
 import DataForm from "../DataForm/DataForm";

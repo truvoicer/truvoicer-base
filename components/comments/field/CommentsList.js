@@ -1,9 +1,8 @@
-import React, {useContext, useState} from "react";
+import React, {useState} from "react";
 import {CommentsContext} from "../context/CommentsContext";
 import CommentTextForm from "./CommentTextForm";
 import CommentItem from "./CommentItem";
 import {isSet} from "../../../library/utils";
-import LoaderComponent from "../../widgets/Loader";
 
 const CommentsList = (props) => {
     const commentSubmitCallback = (content, parentCommentId) => {

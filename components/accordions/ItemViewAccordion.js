@@ -1,11 +1,9 @@
 import React, {useState} from 'react';
 import Typography from '@material-ui/core/Typography';
-import HtmlParser from "react-html-parser";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {getListItemData} from "../../library/helpers/items";
 const useStyles = makeStyles((theme) => ({
     root: {
