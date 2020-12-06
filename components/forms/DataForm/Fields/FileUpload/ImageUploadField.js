@@ -12,7 +12,7 @@ function ImageUploadField({dataImageSrc, name, callback, arrayFieldIndex = false
     const [model, setModal] = useState(false);
     const [imageSrc, setImageSrc] = useState(dataImageSrc || value || "https://via.placeholder.com/150");
     const [imageRef, setImageRef] = useState(null);
-    const [croppedImageSrc, setCroppedImageSrc] = useState(null);
+    const [croppedImage, setCroppedImage] = useState(null);
     const [image, setImage] = useState({});
     const [imageCrop, setImageCrop] = useState({
         unit: 'px',
@@ -47,12 +47,12 @@ function ImageUploadField({dataImageSrc, name, callback, arrayFieldIndex = false
 
     const makeClientCrop = async (crop) => {
         if (imageRef && crop.width && crop.height) {
-            const croppedImageUrl = await getCroppedImg(
+            const croppedImageObject = await getCroppedImg(
                 imageRef,
                 crop,
                 image.type
             );
-            setCroppedImageSrc(croppedImageUrl)
+            setCroppedImage(croppedImageObject)
         }
     }
 
@@ -83,18 +83,24 @@ function ImageUploadField({dataImageSrc, name, callback, arrayFieldIndex = false
                     console.error('Canvas is empty');
                     return;
                 }
-                resolve(blob);
+                resolve({
+                    blob: blob,
+                    url: window.URL.createObjectURL(blob)
+                });
             }, type);
         });
     }
     const cropSubmitHandler = (e) => {
-        let blob = croppedImageSrc;
-        const fileUrl = window.URL.createObjectURL(blob);
+        if (croppedImage === null) {
+            return;
+        }
+        let blob = croppedImage.blob;
+        setImageSrc(croppedImage.url);
+
         const fileName = `${name}.${image.type.replace("image/", "")}`
         blob.name = fileName;
 
         const file = new File([blob], fileName, {type: image.type})
-        setImageSrc(fileUrl);
         callback(name, file, arrayFieldIndex)
         setModal(false);
     }
@@ -105,10 +111,11 @@ function ImageUploadField({dataImageSrc, name, callback, arrayFieldIndex = false
         onDrop: onSelectFile
     });
     useEffect(() => {
-        if (isNotEmpty(value)) {
+        if (isNotEmpty(value) && !(value instanceof File)) {
             setImageSrc(value);
         }
-    }, [value])
+    }, [value]);
+
     return (
         <section>
             <Row className={"align-items-center"}>
@@ -153,9 +160,9 @@ function ImageUploadField({dataImageSrc, name, callback, arrayFieldIndex = false
                                         maxWidth={150}
                                         maxHeight={150}
                                         circularCrop={true}
-                                        imageStyle={{
-                                            height: "300px"
-                                        }}
+                                        // imageStyle={{
+                                        //     height: "300px"
+                                        // }}
                                     />
                                 </Col>
                                 <Col sm={12} md={6} lg={6}>
