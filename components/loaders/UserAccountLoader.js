@@ -26,6 +26,8 @@ const UserAccountLoader = ({session, fields = [], children, dataCallback}) => {
                 .catch(error => {
                     console.error(error)
                 })
+        } else {
+            dataCallback({})
         }
     }, [session[SESSION_AUTHENTICATED]]);
     return (

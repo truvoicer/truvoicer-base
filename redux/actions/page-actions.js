@@ -13,7 +13,6 @@ import {isNotEmpty, isSet} from "../../library/utils";
 import {getListingsProviders, getProvidersCallback} from "../middleware/listings-middleware";
 import {buildWpApiUrl} from "../../library/api/wp/middleware";
 import {siteConfig} from "../../../config/site-config";
-import {setBaseSidebarsJson} from "./sidebar-actions";
 import {componentsConfig} from "../../../config/components-config";
 import {wpApiConfig} from "../../config/wp-api-config";
 
@@ -59,7 +58,7 @@ export function getPageTitle(siteTitle, pageTitle) {
     return null;
 }
 
-export function loadBasePageData({page, truFetcherSettings, sidebars}) {
+export function loadBasePageData({page, truFetcherSettings}) {
     const pageData = {...page};
     const siteSettings = JSON.parse(truFetcherSettings.settings_json);
     pageData.seo_title = getPageTitle(
@@ -68,14 +67,12 @@ export function loadBasePageData({page, truFetcherSettings, sidebars}) {
     );
     setSiteSettingsAction(siteSettings);
     getPageDataAction(pageData);
-    setBaseSidebarsJson(sidebars)
 }
 
 export function loadBaseItemPage(pageData) {
     const data = {
         page: pageData?.listingsCategory?.itemViewTemplates?.nodes[0],
-        truFetcherSettings: pageData?.truFetcherSettings,
-        sidebars: pageData?.sidebars
+        truFetcherSettings: pageData?.truFetcherSettings
     }
     loadBasePageData(data);
 }

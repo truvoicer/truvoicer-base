@@ -20,10 +20,6 @@ export const itemViewTemplateQuery = () => {
               }
             }
           }
-            sidebars {
-              sidebars_json
-              sidebar_error
-            }
             allSettings {
               generalSettingsTitle
               generalSettingsUrl

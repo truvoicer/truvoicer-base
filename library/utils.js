@@ -1,4 +1,6 @@
 import moment from 'moment';
+import {siteConfig} from "../../config/site-config";
+import {menuIcons} from "../../config/menu-icons";
 
 export const formatDate = (dateString, formatString = "Do MMMM YYYY") => {
     moment.updateLocale('en', {
@@ -104,4 +106,16 @@ export const isObject = (object) => {
 
 export const scrollToRef = (ref) => {
     window.scrollTo(0, ref.current.offsetTop)
+}
+
+export const getFontAwesomeMenuIcon = (menuName, iconName, defaultIcon) => {
+    const getMenuIcons = menuIcons[menuName];
+    if (!getMenuIcons) {
+        return defaultIcon;
+    }
+    const getIconClass = getMenuIcons[iconName];
+    if (!getIconClass) {
+        return getMenuIcons?.default || defaultIcon;
+    }
+    return getIconClass;
 }

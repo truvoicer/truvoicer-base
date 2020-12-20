@@ -14,13 +14,25 @@ import {singleItemTemplateQuery} from "../../graphql/queries/single-item-post-te
 import {siteConfig} from "../../../../config/site-config";
 import store from "../../../redux/store";
 import {SESSION_USER, SESSION_USER_ID} from "../../../redux/constants/session-constants";
+import useSWR from "swr";
 
 const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
 const API_URL = process.env.NEXT_PUBLIC_WP_GRAPHQL_URL
 
+const fetcher = (...args) => fetch(...args).then(res => res.json())
+
 export const buildWpApiUrl = (endpoint, param = "") => {
     return sprintf(wpApiConfig.apiBaseUrl + endpoint, param);
+}
+
+export function getSidebar (sidebar) {
+    const { data, error } = useSWR(buildWpApiUrl(wpApiConfig.endpoints.sidebar, sidebar), fetcher)
+    return {
+        sidebarData: data,
+        isLoading: !error && !data,
+        isError: error
+    }
 }
 
 async function fetchAPI(query, {variables} = {}) {
@@ -42,10 +54,6 @@ async function fetchAPI(query, {variables} = {}) {
     const res = await fetch(API_URL, request);
 
     if (res.status !== 200) {
-        // console.log(res.status)
-        // console.log(res.statusText)
-        // console.log(res.url)
-        // console.error(res.error())
         throw new Error('Error, response status not 200')
     }
 
@@ -84,21 +92,6 @@ export function getStaticPagePaths(allPages) {
             }
         }
     })
-}
-
-export async function getPreviewPage(id, idType = 'DATABASE_ID') {
-    const data = await fetchAPI(
-        previewPageQuery(),
-        {
-            variables: {id, idType},
-        }
-    )
-    return data.page
-}
-
-export async function getAllPostsWithUri() {
-    const data = await fetchAPI(allPostsUriQuery())
-    return data?.posts
 }
 
 export async function getAllPagesWithUri() {
@@ -147,85 +140,6 @@ export async function getSinglePage(slug, type, preview) {
         }
     );
 }
-
-export async function getSidebar(slug, preview) {
-    const data = await fetchAPI(
-        sidebarQuery(),
-        {
-            variables: {
-                slug: slug,
-                onlyEnabled: !preview,
-                preview,
-            },
-        }
-    )
-    return data?.sidebar
-}
-
-export async function getMenu(slug, preview) {
-    const data = await fetchAPI(
-        menuQuery(),
-        {
-            variables: {
-                slug: slug,
-                onlyEnabled: !preview,
-                preview,
-            },
-        }
-    )
-    return data?.sidebar
-}
-
-export async function getAllSiteSettings(preview) {
-    const data = await fetchAPI(
-        siteSettingsQuery(),
-        {
-            variables: {
-                onlyEnabled: !preview,
-                preview,
-            },
-        }
-    )
-    return data?.allSettings
-}
-
-export async function getSinglePost(slug, preview, previewData) {
-    const postPreview = preview && previewData?.post
-    // The slug may be the id of an unpublished post
-    const isId = Number.isInteger(Number(slug))
-    const isSamePost = isId
-        ? Number(slug) === postPreview.id
-        : slug === postPreview.slug
-    const isDraft = isSamePost && postPreview?.status === 'draft'
-    const isRevision = isSamePost && postPreview?.status === 'publish'
-    const data = await fetchAPI(
-        singlePostQuery(isRevision),
-        {
-            variables: {
-                id: isDraft ? postPreview.id : slug,
-                idType: isDraft ? 'DATABASE_ID' : 'SLUG',
-            },
-        }
-    )
-
-    // Draft posts may not have an slug
-    if (isDraft) data.post.slug = postPreview.id
-    // Apply a revision (changes in a published post)
-    if (isRevision && data.post.revisions) {
-        const revision = data.post.revisions.edges[0]?.node
-
-        if (revision) Object.assign(data.post, revision)
-        delete data.post.revisions
-    }
-
-    // Filter out the main post
-    data.posts.edges = data.posts.edges.filter(({node}) => node.slug !== slug)
-    // If there are still 3 posts, remove the last one
-    if (data.posts.edges.length > 2) data.posts.edges.pop()
-
-    return data
-}
-
 
 export function protectedFileUploadApiRequest(endpoint, requestData, callback = false, headers = {}) {
     const userId = store.getState().session[SESSION_USER][SESSION_USER_ID];

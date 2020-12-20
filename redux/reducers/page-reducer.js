@@ -6,12 +6,6 @@ const defaultState = {
     pageData: {},
     blocksData: {},
     siteSettings: {},
-    leftSidebar: [],
-    rightSidebar: [],
-    blogSidebar: [],
-    accountAreaSidebar: [],
-    navBar: [],
-    footer: [],
     userAccountMenu: [],
     modal: {
         show: false,
@@ -29,24 +23,6 @@ const defaultReducers = {
     },
     setBlocksData: (state, action) => {
         state.blocksData = action.payload;
-    },
-    setLeftSidebarData: (state, action) => {
-        state.leftSidebar = action.payload;
-    },
-    setRightSidebarData: (state, action) => {
-        state.rightSidebar = action.payload;
-    },
-    setBlogSidebarData: (state, action) => {
-        state.blogSidebar = action.payload;
-    },
-    setAccountAreaSidebarData: (state, action) => {
-        state.accountAreaSidebar = action.payload;
-    },
-    setNavBarData: (state, action) => {
-        state.navBar = action.payload;
-    },
-    setFooterData: (state, action) => {
-        state.footer = action.payload;
     },
     setShowModal: (state, action) => {
         state.modal.show = action.payload;
@@ -72,10 +48,7 @@ export const pageSlice = createSlice({
 export const pageReducer = pageSlice.reducer;
 export const {
     setPageData, setBlocksData,
-    setSiteSettings, setRightSidebarData,
-    setBlogSidebarData, setAccountAreaSidebarData,
-    setLeftSidebarData, setNavBarData,
-    setFooterData, setUserAccountMenuData,
+    setSiteSettings, setUserAccountMenuData,
     setPageError, setShowModal,
     setModalComponent
 } = pageSlice.actions;
