@@ -3,11 +3,10 @@ import React, {useState} from "react";
 export const CustomDropdownMenu = React.forwardRef(
     ({ children, style, className, 'aria-labelledby': labeledBy }, ref) => {
         const [value, setValue] = useState('');
-
         return (
             <div
                 ref={ref}
-                style={style}
+                style={{...style, ...{right: 0, left: "auto"}}}
                 className={className}
                 aria-labelledby={labeledBy}
             >

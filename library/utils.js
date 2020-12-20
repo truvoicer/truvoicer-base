@@ -34,7 +34,7 @@ export const isSet = (item) => {
 }
 
 export const isNotEmpty = (item) => {
-    return typeof item !== "undefined" && item !== null && item !== "";
+    return typeof item !== "undefined" && item !== null && item !== "" && item !== false;
 }
 
 export const imageSelector = (imageSize = "medium", imageArray = []) => {

@@ -71,7 +71,7 @@ const AccountArea = ({pageData, session}) => {
             <>
                 <Header/>
                 {loadAccountArea(loadKey)}
-                <Footer/>
+                <Footer fluidContainer={true}/>
             </>
         </div>
     );
