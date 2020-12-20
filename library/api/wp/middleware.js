@@ -15,6 +15,7 @@ import {siteConfig} from "../../../../config/site-config";
 import store from "../../../redux/store";
 import {SESSION_USER, SESSION_USER_ID} from "../../../redux/constants/session-constants";
 import useSWR from "swr";
+import {allSingleItemPostsQuery} from "../../graphql/queries/all-single-item-posts";
 
 const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
@@ -59,7 +60,7 @@ async function fetchAPI(query, {variables} = {}) {
 
     const json = await res.json()
     if (json.errors) {
-        // console.log(json)
+        console.log(variables, json)
         console.error(json.errors)
         throw new Error('Failed to fetch API')
     }
@@ -76,6 +77,15 @@ export async function getPreviewPost(id, idType = 'DATABASE_ID') {
     return data.post
 }
 
+export function getStaticSingleItemPaths(allSingleItems) {
+    return allSingleItems.nodes.map((node) => {
+        return {
+            params: {
+                item_id: node.databaseId.toString()
+            }
+        }
+    });
+}
 export function getStaticPagePaths(allPages) {
     return allPages.nodes.map((node) => {
         let pagePaths = [];
@@ -97,6 +107,11 @@ export function getStaticPagePaths(allPages) {
 export async function getAllPagesWithUri() {
     const data = await fetchAPI(allPagesUriQuery())
     return data?.pages
+}
+
+export async function getAllSingleItemPosts() {
+    const data = await fetchAPI(allSingleItemPostsQuery())
+    return data?.fetcherSingleItems
 }
 
 export async function getSingleItemPost(id, type, preview) {

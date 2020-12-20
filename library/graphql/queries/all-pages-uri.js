@@ -1,7 +1,7 @@
 export const allPagesUriQuery = () => {
     return `
         query AllPagesUri {
-          pages(first: 10000) {
+          pages {
               nodes {
                 slug
                 uri
