@@ -1,5 +1,4 @@
 import moment from 'moment';
-import {siteConfig} from "../../config/site-config";
 import {menuIcons} from "../../config/menu-icons";
 
 export const formatDate = (dateString, formatString = "Do MMMM YYYY") => {
