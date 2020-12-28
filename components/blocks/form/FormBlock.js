@@ -178,9 +178,8 @@ const FormBlock = (props) => {
                 fieldConfig.fieldType = "text";
                 fieldConfig.type = "password";
                 break;
-            case "telephone":
-                fieldConfig.fieldType = "text";
-                fieldConfig.type = "tel";
+            case "tel":
+                fieldConfig.fieldType = "tel";
                 break;
             case "textarea":
                 fieldConfig.fieldType = "textarea";
@@ -225,17 +224,25 @@ const FormBlock = (props) => {
                 break;
             case "image_upload":
                 fieldConfig.fieldType = "image_upload";
+                fieldConfig.showDropzone = options.control_settings?.show_dropzone;
+                fieldConfig.dropzoneMessage = options.control_settings.dropzone_message
+                fieldConfig.acceptedFileTypesMessage = options.control_settings.accepted_file_types_message
                 break;
             case "file_upload":
                 fieldConfig.fieldType = "file_upload";
+                fieldConfig.showDropzone = options.control_settings?.show_dropzone;
                 fieldConfig.allowedFileTypes = options.control_settings.allowed_file_types
+                fieldConfig.dropzoneMessage = options.control_settings.dropzone_message
+                fieldConfig.acceptedFileTypesMessage = options.control_settings.accepted_file_types_message
                 break;
             default:
                 return false;
         }
         fieldConfig.name = options.name;
+        fieldConfig.description = options?.description;
         fieldConfig.placeHolder = options.placeholder;
         fieldConfig.label = options.label;
+        fieldConfig.labelPosition = options.label_position;
         return fieldConfig;
     }
 
@@ -265,6 +272,13 @@ const FormBlock = (props) => {
                     endpoint: wpApiConfig.endpoints.updateUser,
                     data: {
                         auth_type: props.session[SESSION_USER][SESSION_AUTH_TYPE]
+                    }
+                };
+            case "redirect":
+                return {
+                    endpoint: wpApiConfig.endpoints.formsRedirectPublic,
+                    data: {
+                        redirect_url: formData?.redirect_url
                     }
                 };
             case "custom":
@@ -302,15 +316,12 @@ const FormBlock = (props) => {
         Object.keys(data).forEach(key => formValues.append(key, data[key]));
         Object.keys(endpointData.data).forEach(key => formValues.append(key, endpointData.data[key]));
 
-        responseHandler(
-            protectedFileUploadApiRequest(
-                buildWpApiUrl(endpointData.endpoint),
-                formValues,
-                false,
-                headers,
-            )
+        processRequest(
+            endpointData,
+            formValues,
+            headers,
+            true
         )
-
     }
 
     const formSubmitCallback = (data) => {
@@ -336,13 +347,67 @@ const FormBlock = (props) => {
         if (!isObjectEmpty(files)) {
             getFileUploadRequest(files, endpointData);
         }
-        responseHandler(
-            protectedApiRequest(
-                buildWpApiUrl(endpointData.endpoint),
-                {...requestData, ...endpointData.data},
-                false
-            )
-        );
+
+        processRequest(
+            endpointData,
+            {
+                ...requestData,
+                ...endpointData.data,
+                ...{
+                    endpoint_providers: formData.endpoint_providers
+                }
+            }
+        )
+    }
+
+    const processRequest = (endpointData, requestData, headers = {}, fileUpload = false) => {
+        switch (formData?.endpoint_type) {
+            case "public":
+                if (fileUpload) {
+                    responseHandler(
+                        protectedFileUploadApiRequest(
+                            buildWpApiUrl(endpointData.endpoint),
+                            requestData,
+                            false,
+                            headers,
+                        )
+                    )
+                } else {
+                    responseHandler(
+                        publicApiRequest(
+                            buildWpApiUrl(endpointData.endpoint),
+                            requestData,
+                            false,
+                            "post",
+                            headers
+                        )
+                    );
+                }
+                break;
+            case "protected":
+                if (fileUpload) {
+                    responseHandler(
+                        protectedFileUploadApiRequest(
+                            buildWpApiUrl(endpointData.endpoint),
+                            requestData,
+                            false,
+                            headers,
+                        )
+                    )
+                } else {
+                    responseHandler(
+                        protectedApiRequest(
+                            buildWpApiUrl(endpointData.endpoint),
+                            requestData,
+                            false,
+                            headers
+                        )
+                    );
+                }
+                break;
+            default:
+                return;
+        }
     }
 
     const responseHandler = (request) => {
@@ -353,6 +418,9 @@ const FormBlock = (props) => {
                 success: true,
                 message: response?.data?.message
             })
+            if (isNotEmpty(response?.data?.data?.redirect_url)) {
+                window.location.href = response.data.data.redirect_url
+            }
         })
             .catch(error => {
                 setResponse({
@@ -367,6 +435,7 @@ const FormBlock = (props) => {
 
     const getDataFormProps = () => {
         return {
+            classes: formData?.classes,
             data: formDataConfig,
             formType: formData?.form_type === "list" ? "list" : "single",
             formId: isNotEmpty(formData.form_id) ? formData.form_id : "wp_form",
@@ -376,28 +445,30 @@ const FormBlock = (props) => {
         };
     }
     return (
-        <div className={"m-5"}>
-            <div className={formData.layout_style === "full-width" ? "container-fluid" : "container"}>
-                <div className={"row justify-content-" + (isNotEmpty(formData.align) ? formData.align : "start")}>
-                    <div className={isNotEmpty(formData.column_size) ? "col-" + formData.column_size : "col-12"}>
-                        <h1>{formData.heading}</h1>
-                        <p>{formData.sub_heading}</p>
-                        {response.success &&
-                        <div className="bg-white p-3">
-                            <p className={"text-center text-success"}>{response.message}</p>
-                        </div>
-                        }
-                        {response.error &&
-                        <div className="bg-white">
-                            <p className={"text-danger text-danger"}>{response.message}</p>
-                        </div>
-                        }
-                        {!isObjectEmpty(formDataConfig) &&
-                        <DataForm
-                            {...getDataFormProps()}
-                        />
-                        }
+        <div className={formData.layout_style === "full-width" ? "container-fluid" : "container"}>
+            <div className={"row justify-content-" + (isNotEmpty(formData.align) ? formData.align : "start")}>
+                <div className={isNotEmpty(formData.column_size) ? "col-" + formData.column_size : "col-12"}>
+                    {isNotEmpty(formData?.heading) &&
+                    <h3>{formData.heading}</h3>
+                    }
+                    {isNotEmpty(formData?.sub_heading) &&
+                    <p>{formData.sub_heading}</p>
+                    }
+                    {response.success &&
+                    <div className="bg-white p-3">
+                        <p className={"text-center text-success"}>{response.message}</p>
                     </div>
+                    }
+                    {response.error &&
+                    <div className="bg-white">
+                        <p className={"text-danger text-danger"}>{response.message}</p>
+                    </div>
+                    }
+                    {!isObjectEmpty(formDataConfig) &&
+                    <DataForm
+                        {...getDataFormProps()}
+                    />
+                    }
                 </div>
             </div>
             <Snackbar open={response.showAlert}

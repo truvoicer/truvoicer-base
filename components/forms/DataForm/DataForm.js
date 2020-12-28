@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {FieldArray, Formik, isObject} from "formik";
-import {isSet} from "../../../library/utils";
+import {isNotEmpty, isSet} from "../../../library/utils";
 import FormFieldLabel from "./Fields/FormFieldLabel";
 import FormFieldItem from "./Fields/FormFieldItem";
 
@@ -188,6 +188,60 @@ const DataForm = (props) => {
         }
         return show;
     }
+    const getFieldItemLabelPair = (field, errors, touched, handleBlur, handleChange, values, arrayFieldIndex) => {
+        const formFieldLabel = (<FormFieldLabel field={field} errors={errors}/>)
+        const formFieldItem = (
+            <FormFieldItem
+                formId={formId}
+                field={field}
+                arrayFieldIndex={arrayFieldIndex}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+            />
+        );
+        switch (field?.labelPosition) {
+            case "right":
+                return (
+                    <>
+                        <div className="col-md-9">
+                            {formFieldItem}
+                            {isNotEmpty(field?.description) &&
+                            <p className={"field-description"}>
+                                {field.description}
+                            </p>
+                            }
+                        </div>
+                        <div className="col-md-3">
+                            {formFieldLabel}
+                        </div>
+                    </>
+                )
+            case "left":
+                return (
+                    <>
+                        <div className="col-md-3">
+                            {formFieldLabel}
+                        </div>
+                        <div className="col-md-9 text-left">
+                            {formFieldItem}
+                            {isNotEmpty(field?.description) &&
+                            <p className={"field-description"}>
+                                {field.description}
+                            </p>
+                            }
+                        </div>
+                    </>
+                )
+            case "top":
+            default:
+                return (
+                    <div className="col-md-12">
+                        {formFieldLabel}
+                        {formFieldItem}
+                    </div>
+                )
+        }
+    }
 
     const getFieldRow = (field, errors, touched, handleBlur, handleChange, values, arrayFieldIndex = false) => {
         return (
@@ -195,16 +249,7 @@ const DataForm = (props) => {
                 {dependsOnCheck(field, values) &&
                 <div className={"select-wrapper"}>
                     <div className="row form-group form-group-text">
-                        <div className="col-md-12">
-                            <FormFieldLabel field={field} errors={errors}/>
-                            <FormFieldItem
-                                formId={formId}
-                                field={field}
-                                arrayFieldIndex={arrayFieldIndex}
-                                handleChange={handleChange}
-                                handleBlur={handleBlur}
-                            />
-                        </div>
+                        {getFieldItemLabelPair(field, errors, touched, handleBlur, handleChange, values, arrayFieldIndex)}
                     </div>
                     {field.subFields && values[field.name] &&
                     <div className={"form-subfields"}>
@@ -291,7 +336,7 @@ const DataForm = (props) => {
               }) => (
                 <>
                     <form
-                        className="site-form"
+                        className={`site-form ${isNotEmpty(props.classes) ? props.classes : ""}`}
                         onSubmit={handleSubmit}
                     >
                         {props.formType === "single"

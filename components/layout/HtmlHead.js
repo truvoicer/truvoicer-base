@@ -10,8 +10,8 @@ function HtmlHead({siteSettings, pageData}) {
     return (
         <Head>
             <title>{pageData.seo_title ? pageData.seo_title : "Loading..."}</title>
-            <link rel="stylesheet"
-                  href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+            {/*<link rel="stylesheet"*/}
+            {/*      href="https://fonts.googleapis.com/icon?family=Material+Icons"/>*/}
             <script type={"text/javascript"}>
                 {isNotEmpty(headScripts) && headScripts}
             </script>

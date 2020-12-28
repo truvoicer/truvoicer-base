@@ -118,3 +118,16 @@ export const getFontAwesomeMenuIcon = (menuName, iconName, defaultIcon) => {
     }
     return getIconClass;
 }
+export const getAcceptedMimeTypesString = (allowedExtArray = null) => {
+    if (allowedExtArray === null) {
+        return '';
+    }
+    return allowedExtArray.map(type => type.mime_type).join(", ");
+}
+export const getAcceptedFileExtString = (allowedExtArray = null, allowedMessage) => {
+    if (allowedExtArray === null) {
+        return '';
+    }
+    const joinAcceptedFiles = allowedExtArray.map(type => type.extension).join(", ");
+    return allowedMessage.replace("[accepted]", joinAcceptedFiles)
+}

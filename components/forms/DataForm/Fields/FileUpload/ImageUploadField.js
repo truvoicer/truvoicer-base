@@ -6,9 +6,19 @@ import Col from "react-bootstrap/Col";
 import Modal from "react-bootstrap/Modal";
 import ReactCrop from "react-image-crop";
 import {Button} from "react-bootstrap";
-import {isNotEmpty} from "../../../../../library/utils";
+import {getAcceptedFileExtString, getAcceptedMimeTypesString, isNotEmpty} from "../../../../../library/utils";
 
-function ImageUploadField({dataImageSrc, name, callback, arrayFieldIndex = false, value = null}) {
+function ImageUploadField({
+                              dataImageSrc,
+                              name,
+                              description = null,
+                              showDropzone = true,
+                              dropzoneMessage = null,
+                              acceptedFilesMessage = null,
+                              callback,
+                              arrayFieldIndex = false,
+                              value = null
+                          }) {
     const [model, setModal] = useState(false);
     const [imageSrc, setImageSrc] = useState(dataImageSrc || value || "https://via.placeholder.com/150");
     const [imageRef, setImageRef] = useState(null);
@@ -20,6 +30,20 @@ function ImageUploadField({dataImageSrc, name, callback, arrayFieldIndex = false
         height: 150,
     }
     const [imageCrop, setImageCrop] = useState(defaultImageCrop);
+    const allowedFileTypes = [
+        {
+            mime_type: "'image/jpg",
+            extension: "jpg"
+        },
+        {
+            mime_type: "'image/jpeg",
+            extension: "jpeg"
+        },
+        {
+            mime_type: "image/png'",
+            extension: "png"
+        },
+    ]
 
     const handleModalClose = () => {
         setModal(false);
@@ -36,7 +60,7 @@ function ImageUploadField({dataImageSrc, name, callback, arrayFieldIndex = false
     // If you setState the crop in here you should return false.
     const onImageLoaded = async (image) => {
         setImageRef(image)
-        const crop = { ...defaultImageCrop, ...{x: 0, y: 0} }
+        const crop = {...defaultImageCrop, ...{x: 0, y: 0}}
         const croppedImageObject = await getCroppedImg(
             image,
             crop,
@@ -113,8 +137,8 @@ function ImageUploadField({dataImageSrc, name, callback, arrayFieldIndex = false
         setModal(false);
     }
 
-    const {getRootProps, getInputProps} = useDropzone({
-        accept: 'image/jpeg, image/png',
+    const {getRootProps, getInputProps, open} = useDropzone({
+        accept: getAcceptedMimeTypesString(allowedFileTypes),
         maxFiles: 1,
         onDrop: onSelectFile
     });
@@ -134,10 +158,24 @@ function ImageUploadField({dataImageSrc, name, callback, arrayFieldIndex = false
                     </div>
                 </Col>
                 <Col sm={12} md={9} lg={9}>
-                    <div className={"dropzone-area"}>
-                        <p>Drag 'n' drop some files here, or click to select files</p>
-                        <em>(Only *.jpeg and *.png images will be accepted)</em>
-                    </div>
+                    {showDropzone
+                        ?
+                        <div className={"dropzone-area"}>
+                            {dropzoneMessage &&
+                            <p>{dropzoneMessage}</p>
+                            }
+                            {acceptedFilesMessage &&
+                            <em>{`(${getAcceptedFileExtString(allowedFileTypes, acceptedFilesMessage)}`}</em>
+                            }
+                        </div>
+                        :
+                        <>
+                            <input {...getInputProps()} />
+                            <button type="button" onClick={open}>
+                                Browse
+                            </button>
+                        </>
+                    }
                 </Col>
             </Row>
             <Modal

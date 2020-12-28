@@ -2,23 +2,20 @@ import React, {useState} from 'react';
 import {useDropzone} from "react-dropzone";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import {isNotEmpty} from "../../../../../library/utils";
+import {getAcceptedFileExtString, getAcceptedMimeTypesString, isNotEmpty} from "../../../../../library/utils";
 
-function FileUploadField({name, callback, arrayFieldIndex = false, value = null, allowedFileTypes = null}) {
-    const [uploadedFile, setUploadedFile] = useState({});
-
-    const getAcceptedMimeTypes = () => {
-        if (allowedFileTypes === null) {
-            return '';
-        }
-        return allowedFileTypes.map(type => type.mime_type).join(", ");
-    }
-    const getAcceptedFileExtensions = () => {
-        if (allowedFileTypes === null) {
-            return '';
-        }
-        return allowedFileTypes.map(type => type.extension).join(", ");
-    }
+function FileUploadField({
+                             name,
+                             description = null,
+                             showDropzone = true,
+                             dropzoneMessage = null,
+                             acceptedFilesMessage = null,
+                             callback,
+                             arrayFieldIndex = false,
+                             value = null,
+                             allowedFileTypes = null
+                         }) {
+    const [, setUploadedFile] = useState({});
 
     const onSelectFile = (acceptedFiles) => {
         const getFiles = acceptedFiles.map(file => Object.assign(file, {
@@ -29,25 +26,42 @@ function FileUploadField({name, callback, arrayFieldIndex = false, value = null,
         callback(name, getFile, arrayFieldIndex)
     };
 
-    const {getRootProps, getInputProps} = useDropzone({
-        accept: getAcceptedMimeTypes(),
+    const {getRootProps, getInputProps, open} = useDropzone({
+        accept: getAcceptedMimeTypesString(allowedFileTypes),
         maxFiles: 1,
         onDrop: onSelectFile
     });
     return (
         <section>
             <Row className={"align-items-center"}>
-                <Col sm={12} md={7} lg={7}>
+                <Col sm={12} md={12} lg={12}>
                     <>
-                        {isNotEmpty(value) && <>Saved File: <a href={value} target={"_blank"}>Click here to
-                            download</a></>}
+                        {isNotEmpty(value) && !value instanceof File && (
+                            <>
+                                Saved File:
+                                <a href={value} target={"_blank"}>Click here to download</a>
+                            </>
+                        )}
                         <div {...getRootProps({className: 'dropzone'})}>
-
-                            <div className={"dropzone-area"}>
-                                <input {...getInputProps()} />
-                                <p>Drag 'n' drop some files here, or click to select files</p>
-                                <em>{`(Only ${getAcceptedFileExtensions()}  images will be accepted)`}</em>
-                            </div>
+                            {showDropzone
+                                ?
+                                <div className={"dropzone-area"}>
+                                    <input {...getInputProps()} />
+                                    {dropzoneMessage &&
+                                    <p>{dropzoneMessage}</p>
+                                    }
+                                    {acceptedFilesMessage &&
+                                    <em>{`(${getAcceptedFileExtString(allowedFileTypes, acceptedFilesMessage)}`}</em>
+                                    }
+                                </div>
+                                :
+                                <>
+                                    <input {...getInputProps()} />
+                                    <button type="button" onClick={open}>
+                                        Browse
+                                    </button>
+                                </>
+                            }
                         </div>
                     </>
                 </Col>

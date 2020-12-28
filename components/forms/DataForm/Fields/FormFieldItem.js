@@ -8,6 +8,7 @@ import {useFormikContext} from 'formik';
 import ImageUploadField from "./FileUpload/ImageUploadField";
 import FileUploadField from "./FileUpload/FileUploadField";
 import moment from 'moment';
+import TelephoneField from "./Telephone/TelephoneField";
 
 function FormFieldItem({
                            formId, field, handleChange, handleBlur,
@@ -215,10 +216,24 @@ function FormFieldItem({
                 return getCheckboxField();
             case "radio":
                 return getRadioField();
+            case "tel":
+                return (
+                    <TelephoneField
+                        name={name}
+                        callback={setFormFieldValue}
+                        arrayFieldIndex={arrayFieldIndex}
+                        value={getFieldValue(field.name)}
+                        placeholder={field.placeHolder}
+                    />
+                )
             case "file_upload":
                 return (
                     <FileUploadField
                         name={name}
+                        description={field?.description}
+                        showDropzone={field?.showDropzone}
+                        dropzoneMessage={field?.dropzoneMessage}
+                        acceptedFilesMessage={field?.acceptedFileTypesMessage}
                         callback={fileUploadCallback}
                         arrayFieldIndex={arrayFieldIndex}
                         allowedFileTypes={field.allowedFileTypes}
@@ -229,6 +244,10 @@ function FormFieldItem({
                 return (
                     <ImageUploadField
                         name={name}
+                        description={field?.description}
+                        showDropzone={field?.showDropzone}
+                        dropzoneMessage={field?.dropzoneMessage}
+                        acceptedFilesMessage={field?.acceptedFileTypesMessage}
                         callback={imageUploadCallback}
                         arrayFieldIndex={arrayFieldIndex}
                         value={getFieldValue(field.name)}

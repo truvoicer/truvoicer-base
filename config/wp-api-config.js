@@ -28,6 +28,7 @@ export const wpApiConfig = {
         formsProgressRequest: protectedEndpoint + "/forms/progress/request",
         formsCustomPublic: publicEndpoint + "%s",
         formsCustomProtected: protectedEndpoint + "%s",
+        formsRedirectPublic: publicEndpoint + "/forms/redirect",
         generalData: publicEndpoint + "/general/%s"
     }
 }
