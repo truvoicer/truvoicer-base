@@ -29,6 +29,7 @@ export const wpApiConfig = {
         formsCustomPublic: publicEndpoint + "%s",
         formsCustomProtected: protectedEndpoint + "%s",
         formsRedirectPublic: publicEndpoint + "/forms/redirect",
-        generalData: publicEndpoint + "/general/%s"
+        generalData: publicEndpoint + "/general/%s",
+        postListRequest: publicEndpoint + "/posts/list/request"
     }
 }

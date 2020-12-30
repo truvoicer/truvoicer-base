@@ -277,9 +277,7 @@ const FormBlock = (props) => {
             case "redirect":
                 return {
                     endpoint: wpApiConfig.endpoints.formsRedirectPublic,
-                    data: {
-                        redirect_url: formData?.redirect_url
-                    }
+                    data: {}
                 };
             case "custom":
                 const customEndpoint = getCustomEndpoint();
@@ -316,11 +314,13 @@ const FormBlock = (props) => {
         Object.keys(data).forEach(key => formValues.append(key, data[key]));
         Object.keys(endpointData.data).forEach(key => formValues.append(key, endpointData.data[key]));
 
-        processRequest(
-            endpointData,
-            formValues,
-            headers,
-            true
+        responseHandler(
+            protectedFileUploadApiRequest(
+                buildWpApiUrl(endpointData.endpoint),
+                formValues,
+                false,
+                headers,
+            )
         )
     }
 
@@ -354,56 +354,33 @@ const FormBlock = (props) => {
                 ...requestData,
                 ...endpointData.data,
                 ...{
-                    endpoint_providers: formData.endpoint_providers
+                    endpoint_providers: formData?.endpoint_providers,
+                    redirect_url: formData?.redirect_url
                 }
             }
         )
     }
 
-    const processRequest = (endpointData, requestData, headers = {}, fileUpload = false) => {
+    const processRequest = (endpointData, requestData) => {
         switch (formData?.endpoint_type) {
             case "public":
-                if (fileUpload) {
-                    responseHandler(
-                        protectedFileUploadApiRequest(
-                            buildWpApiUrl(endpointData.endpoint),
-                            requestData,
-                            false,
-                            headers,
-                        )
+                responseHandler(
+                    publicApiRequest(
+                        buildWpApiUrl(endpointData.endpoint),
+                        requestData,
+                        false,
+                        "post"
                     )
-                } else {
-                    responseHandler(
-                        publicApiRequest(
-                            buildWpApiUrl(endpointData.endpoint),
-                            requestData,
-                            false,
-                            "post",
-                            headers
-                        )
-                    );
-                }
+                );
                 break;
             case "protected":
-                if (fileUpload) {
-                    responseHandler(
-                        protectedFileUploadApiRequest(
-                            buildWpApiUrl(endpointData.endpoint),
-                            requestData,
-                            false,
-                            headers,
-                        )
+                responseHandler(
+                    protectedApiRequest(
+                        buildWpApiUrl(endpointData.endpoint),
+                        requestData,
+                        false
                     )
-                } else {
-                    responseHandler(
-                        protectedApiRequest(
-                            buildWpApiUrl(endpointData.endpoint),
-                            requestData,
-                            false,
-                            headers
-                        )
-                    );
-                }
+                );
                 break;
             default:
                 return;
