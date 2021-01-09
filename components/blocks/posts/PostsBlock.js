@@ -5,13 +5,17 @@ import JobNewsItemList from "../../../../views/Components/Blocks/Listings/Listin
 import JobNewsItemListPost
     from "../../../../views/Components/Blocks/Listings/ListingsItems/Items/JobNews/JobNewsItemListPost";
 import {isNotEmpty} from "../../../library/utils";
+import {getNextPostFromList, getPrevPostFromList} from "../../../library/helpers/posts";
+import {setPostListData} from "../../../redux/reducers/page-reducer";
+import {setPostListDataAction} from "../../../redux/actions/page-actions";
 
 const PostsBlock = ({data}) => {
     const [posts, setPosts] = useState([]);
 
     const postListRequestCallback = (error, data) => {
         if (data?.status === "success" && Array.isArray(data?.data)) {
-            setPosts(data.data)
+            setPosts(data.data);
+            setPostListDataAction(data.data);
         } else {
             console.log("Post list error")
         }
@@ -31,18 +35,6 @@ const PostsBlock = ({data}) => {
         )
     }, [data])
     console.log(posts)
-    const getNextPost = (currentPostIndex) => {
-        if (isNotEmpty(posts[currentPostIndex + 1])) {
-            return posts[currentPostIndex + 1];
-        }
-        return {};
-    }
-    const getPrevPost = (currentPostIndex) => {
-        if (currentPostIndex > 0 && isNotEmpty(posts[currentPostIndex - 1])) {
-            return posts[currentPostIndex - 1];
-        }
-        return {};
-    }
     return (
         <section className="blog_area section-padding">
             <div className="container">
@@ -69,9 +61,10 @@ const PostsBlock = ({data}) => {
                                 return (
                                     <JobNewsItemListPost
                                         key={index}
+                                        postIndex={index}
                                         data={post}
-                                        nextPost={getNextPost(index)}
-                                        prevPost={getPrevPost(index)}
+                                        // nextPost={getNextPost(index)}
+                                        // prevPost={getPrevPost(index)}
                                     />
                                 )
                             })}

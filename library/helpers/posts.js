@@ -13,3 +13,16 @@ export function getPostItemUrl({post_name = null}) {
     }
     return sprintf(PostRoutes.postItem, data);
 }
+
+export const getNextPostFromList = (currentPostIndex, posts) => {
+    if (isNotEmpty(posts[currentPostIndex + 1])) {
+        return posts[currentPostIndex + 1];
+    }
+    return {};
+}
+export const getPrevPostFromList = (currentPostIndex, posts) => {
+    if (currentPostIndex > 0 && isNotEmpty(posts[currentPostIndex - 1])) {
+        return posts[currentPostIndex - 1];
+    }
+    return {};
+}

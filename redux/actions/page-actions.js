@@ -3,7 +3,7 @@ import React from "react";
 import {
     setModalComponent, setNextPostNavData,
     setPageData,
-    setPageError, setPostData, setPrevPostNavData,
+    setPageError, setPostData, setPostListData, setPostNavIndex, setPrevPostNavData,
     setShowModal,
     setSiteSettings,
     setUserAccountMenuData,
@@ -104,13 +104,19 @@ export function setListingsBlocksDataAction(data) {
 }
 
 export function getPageDataAction(data) {
-    // console.log(data)
     store.dispatch(setPageData(data))
 }
 
 export function setPostDataAction(data) {
-    // console.log(data)
     store.dispatch(setPostData(data))
+}
+
+export function setPostListDataAction(data) {
+    store.dispatch(setPostListData(data))
+}
+
+export function setPostNavIndexAction(index) {
+    store.dispatch(setPostNavIndex(index))
 }
 
 export function setNextPostNavDataAction(data) {
