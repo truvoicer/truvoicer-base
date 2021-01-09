@@ -16,7 +16,6 @@ export const itemViewTemplateQuery = () => {
                 dateGmt
                 modified
                 modifiedGmt
-                menuOrder
               }
             }
           }

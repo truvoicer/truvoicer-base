@@ -4,6 +4,11 @@ import {getReducers, getState} from "../../library/helpers/redux";
 
 const defaultState = {
     pageData: {},
+    postData: {},
+    postNavData: {
+        nextPost: {},
+        prevPost: {}
+    },
     blocksData: {},
     siteSettings: {},
     userAccountMenu: [],
@@ -17,6 +22,15 @@ const defaultState = {
 const defaultReducers = {
     setPageData: (state, action) => {
         state.pageData = action.payload;
+    },
+    setPostData: (state, action) => {
+        state.postData = action.payload;
+    },
+    setPrevPostNavData: (state, action) => {
+        state.postNavData.prevPost = action.payload;
+    },
+    setNextPostNavData: (state, action) => {
+        state.postNavData.nextPost = action.payload;
     },
     setSiteSettings: (state, action) => {
         state.siteSettings = action.payload;
@@ -47,7 +61,8 @@ export const pageSlice = createSlice({
 
 export const pageReducer = pageSlice.reducer;
 export const {
-    setPageData, setBlocksData,
+    setPageData, setPostData, setPrevPostNavData,
+    setNextPostNavData,
     setSiteSettings, setUserAccountMenuData,
     setPageError, setShowModal,
     setModalComponent

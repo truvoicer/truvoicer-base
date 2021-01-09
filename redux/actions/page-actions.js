@@ -1,15 +1,15 @@
 import store from "../store"
 import React from "react";
 import {
-    setModalComponent,
+    setModalComponent, setNextPostNavData,
     setPageData,
-    setPageError,
+    setPageError, setPostData, setPrevPostNavData,
     setShowModal,
     setSiteSettings,
     setUserAccountMenuData,
 } from "../reducers/page-reducer";
 import {setCategory, setListingsData} from "../reducers/listings-reducer";
-import {isNotEmpty, isSet} from "../../library/utils";
+import {isNotEmpty, isObjectEmpty, isSet} from "../../library/utils";
 import {getListingsProviders, getProvidersCallback} from "../middleware/listings-middleware";
 import {buildWpApiUrl} from "../../library/api/wp/middleware";
 import {siteConfig} from "../../../config/site-config";
@@ -58,7 +58,9 @@ export function getPageTitle(siteTitle, pageTitle) {
     return null;
 }
 
-export function loadBasePageData({page, truFetcherSettings}) {
+export function loadBasePageData({page, truFetcherSettings, post = {}, postNavigation = {}}) {
+    const postNavState = store.getState().page.postNavData;
+    console.log(postNavState)
     const pageData = {...page};
     const siteSettings = JSON.parse(truFetcherSettings.settings_json);
     pageData.seo_title = getPageTitle(
@@ -67,6 +69,15 @@ export function loadBasePageData({page, truFetcherSettings}) {
     );
     setSiteSettingsAction(siteSettings);
     getPageDataAction(pageData);
+    setPostDataAction(post)
+
+    if (isObjectEmpty(postNavState.nextPost) && isNotEmpty(postNavigation?.next_post)) {
+        setNextPostNavDataAction(postNavigation.next_post);
+    }
+
+    if (isObjectEmpty(postNavState.prevPost) && isNotEmpty(postNavigation?.prev_post)) {
+        setPrevPostNavDataAction(postNavigation.prev_post);
+    }
 }
 
 export function loadBaseItemPage(pageData) {
@@ -95,6 +106,26 @@ export function setListingsBlocksDataAction(data) {
 export function getPageDataAction(data) {
     // console.log(data)
     store.dispatch(setPageData(data))
+}
+
+export function setPostDataAction(data) {
+    // console.log(data)
+    store.dispatch(setPostData(data))
+}
+
+export function setNextPostNavDataAction(data) {
+    if (!isNotEmpty(data)) {
+        store.dispatch(setNextPostNavData({}))
+    } else {
+        store.dispatch(setNextPostNavData(data))
+    }
+}
+export function setPrevPostNavDataAction(data) {
+    if (!isNotEmpty(data)) {
+        store.dispatch(setPrevPostNavData({}))
+    } else {
+        store.dispatch(setPrevPostNavData(data))
+    }
 }
 
 export function isUserAccountPage(pageData) {

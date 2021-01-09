@@ -1,7 +1,7 @@
-export const allPostsUriQuery = () => {
+export const allPostsQuery = () => {
     return `
         query AllPostsUri {
-          posts(first: 10000) {
+          posts {
               nodes {
                 slug
                 uri

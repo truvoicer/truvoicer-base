@@ -25,6 +25,8 @@ const GridItems = (props) => {
         item: {},
         provider: ""
     });
+    const [listPosition, setListPosition] = useState(null);
+    const [searchList, setSearchList] = useState([]);
 
     const showInfo = (item, category, e) => {
         e.preventDefault()
@@ -57,12 +59,6 @@ const GridItems = (props) => {
         })
     }
 
-    const getInternalUserItems = (itemsData) => {
-        useEffect(() => {
-            getUserItemsListAction(itemsData, siteConfig.internalProviderName, siteConfig.internalCategory)
-        }, [])
-    }
-
     const getCustomItemsData = (listPosition) => {
         const listingsData = props.listings.listingsData;
         let itemsData;
@@ -92,7 +88,7 @@ const GridItems = (props) => {
             return searchList;
         }
 
-        getInternalUserItems(itemsData)
+        setListPosition("list_start")
 
         itemsData.map(item => {
             let itemCopy = {...item};
@@ -107,7 +103,7 @@ const GridItems = (props) => {
             return searchList;
         }
 
-        getInternalUserItems(itemsData)
+        setListPosition("list_end")
 
         itemsData.map(item => {
             let itemCopy = {...item};
@@ -133,8 +129,7 @@ const GridItems = (props) => {
         if (itemsData.length === 0) {
             return searchList;
         }
-
-        getInternalUserItems(itemsData)
+        setListPosition("custom_position")
 
         itemsData.map(item => {
             let itemCopy = {...item};
@@ -156,10 +151,16 @@ const GridItems = (props) => {
         return newSearchList;
     }
 
-    const getSearchList = () => {
+    useEffect(() => {
+        if (isNotEmpty(listPosition)) {
+            getUserItemsListAction(searchList, siteConfig.internalProviderName, siteConfig.internalCategory)
+        }
+    }, [listPosition])
+
+    useEffect(() => {
         const customItemsListPosition = props.listings?.listingsData?.custom_items_list_position;
         if (!Array.isArray(customItemsListPosition) || customItemsListPosition.length === 0) {
-            return props.search.searchList;
+            setSearchList(props.search.searchList)
         }
         let searchList = [...props.search.searchList];
 
@@ -172,13 +173,14 @@ const GridItems = (props) => {
         if (customItemsListPosition.includes("custom_position")) {
             searchList = insertCustomPositionItems(searchList)
         }
-        return searchList;
-    }
+        setSearchList(searchList)
+
+    }, [props.listings?.listingsData?.custom_items_list_position])
 
     return (
         <>
             <Row>
-                {getSearchList().map((item, index) => (
+                {searchList.map((item, index) => (
                     <React.Fragment key={index}>
                         <Col {...getGridItemColumns(props.listings.listingsGrid)}>
                             {getGridItem(

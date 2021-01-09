@@ -1,6 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {buildWpApiUrl, publicApiRequest} from "../../../library/api/wp/middleware";
 import {wpApiConfig} from "../../../config/wp-api-config";
+import JobNewsItemList from "../../../../views/Components/Blocks/Listings/ListingsItems/Items/JobNews/JobNewsItemList";
+import JobNewsItemListPost
+    from "../../../../views/Components/Blocks/Listings/ListingsItems/Items/JobNews/JobNewsItemListPost";
+import {isNotEmpty} from "../../../library/utils";
 
 const PostsBlock = ({data}) => {
     const [posts, setPosts] = useState([]);
@@ -27,6 +31,18 @@ const PostsBlock = ({data}) => {
         )
     }, [data])
     console.log(posts)
+    const getNextPost = (currentPostIndex) => {
+        if (isNotEmpty(posts[currentPostIndex + 1])) {
+            return posts[currentPostIndex + 1];
+        }
+        return {};
+    }
+    const getPrevPost = (currentPostIndex) => {
+        if (currentPostIndex > 0 && isNotEmpty(posts[currentPostIndex - 1])) {
+            return posts[currentPostIndex - 1];
+        }
+        return {};
+    }
     return (
         <section className="blog_area section-padding">
             <div className="container">
@@ -49,7 +65,16 @@ const PostsBlock = ({data}) => {
                 <div className={"row"}>
                     <div className="col-12 col-md-12 col-lg-12">
                         <div className="blog_left_sidebar">
-
+                            {posts.map((post, index) => {
+                                return (
+                                    <JobNewsItemListPost
+                                        key={index}
+                                        data={post}
+                                        nextPost={getNextPost(index)}
+                                        prevPost={getPrevPost(index)}
+                                    />
+                                )
+                            })}
                         </div>
                     </div>
                     {/*<div className="col-lg-4">*/}

@@ -3,7 +3,7 @@ import {siteSettingsQuery} from "../../graphql/queries/site-settings";
 import {sidebarQuery} from "../../graphql/queries/sidebar";
 import {allPagesUriQuery} from "../../graphql/queries/all-pages-uri";
 import {previewPostQuery} from "../../graphql/queries/preview-post";
-import {allPostsUriQuery} from "../../graphql/queries/all-posts-uri";
+import {allPostsQuery, allPostsUriQuery} from "../../graphql/queries/all-posts-uri";
 import {previewPageQuery} from "../../graphql/queries/preview-page";
 import {singlePostQuery} from "../../graphql/queries/single-post";
 import {itemViewTemplateQuery} from "../../graphql/queries/item-view-template";
@@ -16,6 +16,7 @@ import store from "../../../redux/store";
 import {SESSION_USER, SESSION_USER_ID} from "../../../redux/constants/session-constants";
 import useSWR from "swr";
 import {allSingleItemPostsQuery} from "../../graphql/queries/all-single-item-posts";
+import {postWithTemplateQuery} from "../../graphql/queries/post-with-template";
 
 const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
@@ -76,6 +77,15 @@ export async function getPreviewPost(id, idType = 'DATABASE_ID') {
     return data.post
 }
 
+export function getStaticPostsPaths(allPosts) {
+    return allPosts.nodes.map((node) => {
+        return {
+            params: {
+                post: [node.slug]
+            }
+        }
+    });
+}
 export function getStaticSingleItemPaths(allSingleItems) {
     return allSingleItems.nodes.map((node) => {
         return {
@@ -106,6 +116,11 @@ export function getStaticPagePaths(allPages) {
 export async function getAllPagesWithUri() {
     const data = await fetchAPI(allPagesUriQuery())
     return data?.pages
+}
+
+export async function getAllPosts() {
+    const data = await fetchAPI(allPostsQuery())
+    return data?.posts
 }
 
 export async function getAllSingleItemPosts() {
@@ -148,6 +163,35 @@ export async function getSinglePage(slug, type, preview) {
             variables: {
                 id: slug,
                 idType: type,
+                onlyEnabled: !preview,
+                preview,
+            },
+        }
+    );
+}
+
+export async function getSinglePost(slug, type, preview) {
+    return await fetchAPI(
+        singlePostQuery(),
+        {
+            variables: {
+                id: slug,
+                idType: type,
+                onlyEnabled: !preview,
+                preview,
+            },
+        }
+    );
+}
+
+export async function getPostWithTemplate(slug, type, preview) {
+    return await fetchAPI(
+        postWithTemplateQuery(),
+        {
+            variables: {
+                id: slug,
+                idType: type,
+                slug: slug,
                 onlyEnabled: !preview,
                 preview,
             },
