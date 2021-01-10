@@ -39,6 +39,14 @@ export const postWithTemplateQuery = () => {
                         nickname
                       }
                     }
+                    post_options {
+                      postTemplateCategory {
+                        databaseId
+                        slug
+                        uri
+                        name
+                      }
+                    }
                     categories {
                       nodes {
                         slug
@@ -58,6 +66,14 @@ export const postWithTemplateQuery = () => {
                       slug
                       title(format: RENDERED)
                       link
+                    post_options {
+                      postTemplateCategory {
+                        databaseId
+                        slug
+                        uri
+                        name
+                      }
+                    }
                       featuredImage {
                         node {
                           mediaItemUrl
@@ -71,6 +87,14 @@ export const postWithTemplateQuery = () => {
                       slug
                       title(format: RENDERED)
                       link
+                    post_options {
+                      postTemplateCategory {
+                        databaseId
+                        slug
+                        uri
+                        name
+                      }
+                    }
                       featuredImage {
                         node {
                           mediaItemUrl

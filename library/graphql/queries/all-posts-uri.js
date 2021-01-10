@@ -5,6 +5,14 @@ export const allPostsQuery = () => {
               nodes {
                 slug
                 uri
+                post_options {
+                  postTemplateCategory {
+                    databaseId
+                    slug
+                    uri
+                    name
+                  }
+                }
               }
           }
         }

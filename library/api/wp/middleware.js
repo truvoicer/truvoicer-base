@@ -17,6 +17,8 @@ import {SESSION_USER, SESSION_USER_ID} from "../../../redux/constants/session-co
 import useSWR from "swr";
 import {allSingleItemPostsQuery} from "../../graphql/queries/all-single-item-posts";
 import {postWithTemplateQuery} from "../../graphql/queries/post-with-template";
+import {allCategoriesQuery} from "../../graphql/queries/all-categories-uri";
+import {categoryTemplateQuery} from "../../graphql/queries/category-list-template";
 
 const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
@@ -61,8 +63,8 @@ async function fetchAPI(query, {variables} = {}) {
 
     const json = await res.json()
     if (json.errors) {
-        console.error(json.errors)
-        throw new Error('Failed to fetch API')
+        const errorMessage = json.errors.map(error => error.message).join(", ");
+        throw new Error(errorMessage)
     }
     return json.data
 }
@@ -81,11 +83,23 @@ export function getStaticPostsPaths(allPosts) {
     return allPosts.nodes.map((node) => {
         return {
             params: {
+                category: node?.post_options?.postTemplateCategory?.slug,
                 post: [node.slug]
             }
         }
     });
 }
+
+export function getStaticCategoriesPaths(allPosts) {
+    return allPosts.nodes.map((node) => {
+        return {
+            params: {
+                category: node?.slug
+            }
+        }
+    });
+}
+
 export function getStaticSingleItemPaths(allSingleItems) {
     return allSingleItems.nodes.map((node) => {
         return {
@@ -121,6 +135,11 @@ export async function getAllPagesWithUri() {
 export async function getAllPosts() {
     const data = await fetchAPI(allPostsQuery())
     return data?.posts
+}
+
+export async function getAllCategories() {
+    const data = await fetchAPI(allCategoriesQuery())
+    return data?.categories
 }
 
 export async function getAllSingleItemPosts() {
@@ -193,6 +212,18 @@ export async function getPostWithTemplate(slug, type, preview) {
                 idType: type,
                 slug: slug,
                 onlyEnabled: !preview,
+                preview,
+            },
+        }
+    );
+}
+
+export async function getCategoryTemplate(slug, preview) {
+    return await fetchAPI(
+        categoryTemplateQuery(),
+        {
+            variables: {
+                slug: slug,
                 preview,
             },
         }

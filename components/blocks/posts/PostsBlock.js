@@ -1,21 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import {buildWpApiUrl, publicApiRequest} from "../../../library/api/wp/middleware";
 import {wpApiConfig} from "../../../config/wp-api-config";
-import JobNewsItemList from "../../../../views/Components/Blocks/Listings/ListingsItems/Items/JobNews/JobNewsItemList";
 import JobNewsItemListPost
     from "../../../../views/Components/Blocks/Listings/ListingsItems/Items/JobNews/JobNewsItemListPost";
-import {isNotEmpty} from "../../../library/utils";
-import {getNextPostFromList, getPrevPostFromList} from "../../../library/helpers/posts";
-import {setPostListData} from "../../../redux/reducers/page-reducer";
 import {setPostListDataAction} from "../../../redux/actions/page-actions";
 
 const PostsBlock = ({data}) => {
     const [posts, setPosts] = useState([]);
 
     const postListRequestCallback = (error, data) => {
-        if (data?.status === "success" && Array.isArray(data?.data)) {
-            setPosts(data.data);
-            setPostListDataAction(data.data);
+        if (data?.status === "success" && Array.isArray(data?.data?.posts))
+        {
+            setPosts(data.data.posts);
+            setPostListDataAction(data.data.posts);
         } else {
             console.log("Post list error")
         }
@@ -34,7 +31,7 @@ const PostsBlock = ({data}) => {
             "post"
         )
     }, [data])
-    console.log(posts)
+
     return (
         <section className="blog_area section-padding">
             <div className="container">
@@ -63,11 +60,29 @@ const PostsBlock = ({data}) => {
                                         key={index}
                                         postIndex={index}
                                         data={post}
-                                        // nextPost={getNextPost(index)}
-                                        // prevPost={getPrevPost(index)}
                                     />
                                 )
                             })}
+                            <nav className="blog-pagination justify-content-center d-flex">
+                                <ul className="pagination">
+                                    <li className="page-item">
+                                        <a href="#" className="page-link" aria-label="Previous">
+                                            <i className="ti-angle-left"/>
+                                        </a>
+                                    </li>
+                                    <li className="page-item">
+                                        <a href="#" className="page-link">1</a>
+                                    </li>
+                                    <li className="page-item active">
+                                        <a href="#" className="page-link">2</a>
+                                    </li>
+                                    <li className="page-item">
+                                        <a href="#" className="page-link" aria-label="Next">
+                                            <i className="ti-angle-right"/>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
                     </div>
                     {/*<div className="col-lg-4">*/}

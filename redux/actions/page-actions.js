@@ -3,7 +3,7 @@ import React from "react";
 import {
     setModalComponent, setNextPostNavData,
     setPageData,
-    setPageError, setPostData, setPostListData, setPostNavIndex, setPrevPostNavData,
+    setPageError, setPostData, setPostListData, setPostNavFromList, setPostNavIndex, setPrevPostNavData,
     setShowModal,
     setSiteSettings,
     setUserAccountMenuData,
@@ -60,7 +60,7 @@ export function getPageTitle(siteTitle, pageTitle) {
 
 export function loadBasePageData({page, truFetcherSettings, post = {}, postNavigation = {}}) {
     const postNavState = store.getState().page.postNavData;
-    console.log(postNavState)
+
     const pageData = {...page};
     const siteSettings = JSON.parse(truFetcherSettings.settings_json);
     pageData.seo_title = getPageTitle(
@@ -71,11 +71,11 @@ export function loadBasePageData({page, truFetcherSettings, post = {}, postNavig
     getPageDataAction(pageData);
     setPostDataAction(post)
 
-    if (isObjectEmpty(postNavState.nextPost) && isNotEmpty(postNavigation?.next_post)) {
+    if (!postNavState.fromList) {
         setNextPostNavDataAction(postNavigation.next_post);
     }
 
-    if (isObjectEmpty(postNavState.prevPost) && isNotEmpty(postNavigation?.prev_post)) {
+    if (!postNavState.fromList) {
         setPrevPostNavDataAction(postNavigation.prev_post);
     }
 }
@@ -113,6 +113,10 @@ export function setPostDataAction(data) {
 
 export function setPostListDataAction(data) {
     store.dispatch(setPostListData(data))
+}
+
+export function setPostNavFromListAction(fromList) {
+    store.dispatch(setPostNavFromList(fromList))
 }
 
 export function setPostNavIndexAction(index) {

@@ -7,6 +7,7 @@ const defaultState = {
     postData: {},
     postListData: [],
     postNavData: {
+        fromList: false,
         index: null,
         nextPost: {},
         prevPost: {}
@@ -30,6 +31,9 @@ const defaultReducers = {
     },
     setPostListData: (state, action) => {
         state.postListData = action.payload;
+    },
+    setPostNavFromList: (state, action) => {
+        state.postNavData.fromList = action.payload;
     },
     setPostNavIndex: (state, action) => {
         state.postNavData.index = action.payload;
@@ -71,7 +75,7 @@ export const pageReducer = pageSlice.reducer;
 export const {
     setPageData, setPostData, setPrevPostNavData,
     setNextPostNavData, setPostListData,
-    setPostNavIndex,
+    setPostNavIndex, setPostNavFromList,
     setSiteSettings, setUserAccountMenuData,
     setPageError, setShowModal,
     setModalComponent
