@@ -3,21 +3,20 @@ import BlogSearch from "../../../views/Components/Widgets/BlogSearch";
 import ListingsFilter from "../../../views/Components/Blocks/Listings/ListingsFilter/ListingsFilter";
 import SidebarMenu from "../../../views/Components/Menus/SidebarMenu";
 import React from "react";
+import CategoryListWidget from "../../components/widgets/CategoryListWidget";
+import RecentPostsWidget from "../../components/widgets/RecentPostsWidget";
+import EmailOptinWidget from "../../components/widgets/EmailOptinWidget";
 
-export const buildSidebar = ({sidebarData, listingsData}) => {
+export const buildSidebar = ({sidebarData, listingsData = false}) => {
     let sideBarListData = [];
     if (Array.isArray(sidebarData) && sidebarData.length > 0) {
         sidebarData.map((item, index) => {
-            if (isSet(item.search)) {
-                sideBarListData.push(
-                    <>
-                        <BlogSearch data={item.search}/>
-                        {listingsData && <ListingsFilter/>}
-                    </>
-                )
-                if (isSet(item.nav_menu)) {
-                    sideBarListData.push(<SidebarMenu data={item.nav_menu}/>)
-                }
+            const widgetComponent = getSidebarWidgetComponent({
+                item: item,
+                listingsData: listingsData
+            })
+            if (widgetComponent) {
+                sideBarListData.push(widgetComponent)
             }
         })
     } else {
@@ -28,4 +27,29 @@ export const buildSidebar = ({sidebarData, listingsData}) => {
         )
     }
     return sideBarListData;
+}
+
+const getSidebarWidgetComponent = ({item, listingsData = false}) => {
+    if (isSet(item.search)) {
+        return (
+            <>
+                <BlogSearch data={item.search}/>
+                {listingsData && <ListingsFilter/>}
+            </>
+        )
+    }
+    if (isSet(item.nav_menu)) {
+        return (<SidebarMenu data={item.nav_menu}/>)
+    }
+    if (isSet(item.categories)) {
+        return (<CategoryListWidget data={item.categories}/>)
+    }
+    if (isSet(item["recent-posts"])) {
+        return (<RecentPostsWidget data={item["recent-posts"]}/>)
+    }
+    if (isSet(item.email_optin_widget)) {
+        return (<EmailOptinWidget data={item.email_optin_widget}/>)
+    }
+
+    return false;
 }

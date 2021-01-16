@@ -6,6 +6,7 @@ import {useRouter} from "next/router";
 import {buildWpApiUrl, publicApiRequest} from "../../../library/api/wp/middleware";
 import {wpApiConfig} from "../../../config/wp-api-config";
 import {isNotEmpty} from "../../../library/utils";
+import BlogSidebar from "../../../../views/Components/Sidebars/BlogSidebar";
 
 const PostsBlock = ({data}) => {
     function useQueryParams() {
@@ -25,16 +26,7 @@ const PostsBlock = ({data}) => {
     const [posts, setPosts] = useState([]);
     const [paginationControls, setPaginationControls] = useState(null);
 
-    const postListRequestCallback = (error, data) => {
-        if (data?.status === "success" && Array.isArray(data?.data?.posts)) {
-            setPosts(data.data.posts);
-            setPostListDataAction(data.data.posts);
-            setPaginationControls(data.data.controls)
-        } else {
-            console.log("Post list error")
-        }
-    }
-    const fetchPosts = (pageNumber = null) => {
+    const fetchPosts = (pageNumber = null, isCancelled = false) => {
         publicApiRequest(
             buildWpApiUrl(wpApiConfig.endpoints.postListRequest),
             {
@@ -43,19 +35,73 @@ const PostsBlock = ({data}) => {
                 categories: data?.categories,
                 page_number: isNotEmpty(pageNumber) ? parseInt(pageNumber) : 1
             },
-            postListRequestCallback,
+            false,
             "post"
         )
+            .then(response => {
+                if (!isCancelled) {
+                    if (response?.data?.status === "success" && Array.isArray(response.data?.data?.posts)) {
+                        setPosts(response.data.data.posts);
+                        setPostListDataAction(response.data.data.posts);
+                        setPaginationControls(response.data.data.controls)
+                    } else {
+                        console.log("Post list error")
+                    }
+                }
+            })
+            .catch(error => {
+                console.error(error)
+            })
     }
     useEffect(() => {
-        fetchPosts(p)
+        let isCancelled = false;
+        publicApiRequest(
+            buildWpApiUrl(wpApiConfig.endpoints.postListRequest),
+            {
+                posts_per_page: data?.posts_per_page,
+                show_all_categories: data?.show_all_categories,
+                categories: data?.categories,
+                page_number: isNotEmpty(p) ? parseInt(p) : 1
+            },
+            false,
+            "post"
+        )
+            .then(response => {
+                if (!isCancelled) {
+                    if (response?.data?.status === "success" && Array.isArray(response.data?.data?.posts)) {
+                        setPosts(response.data.data.posts);
+                        setPostListDataAction(response.data.data.posts);
+                        setPaginationControls(response.data.data.controls)
+                    } else {
+                        console.log("Post list error")
+                    }
+                }
+            })
+            .catch(error => {
+                console.error(error)
+            })
+        return () => {
+            isCancelled = true;
+        }
     }, [data, p])
-    
+
+    const getClasses = () => {
+        let layoutClasses = {
+            content: "col-12 col-md-12 col-lg-12",
+            sidebar: ""
+        };
+        if (data?.show_sidebar) {
+            layoutClasses.content = "col-12 col-md-12 col-lg-8";
+            layoutClasses.sidebar = "col-12 col-md-12 col-lg-4";
+        }
+        return layoutClasses;
+    }
+
     return (
         <section className="blog_area section-padding">
             <div className="container">
                 <div className={"row"}>
-                    <div className="col-12 col-md-12 col-lg-12">
+                    <div className={`${getClasses().content}`}>
                         <div className="blog_left_sidebar">
                             {posts.map((post, index) => {
                                 return (
@@ -95,11 +141,13 @@ const PostsBlock = ({data}) => {
                             </nav>
                         </div>
                     </div>
-                    {/*<div className="col-lg-4">*/}
-                    {/*    <div className="blog_right_sidebar">*/}
-                    {/*        <BlogSidebar/>*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
+                    {data?.show_sidebar &&
+                    <div className={`${getClasses().sidebar}`}>
+                        <div className="blog_right_sidebar">
+                            <BlogSidebar/>
+                        </div>
+                    </div>
+                    }
                 </div>
             </div>
         </section>

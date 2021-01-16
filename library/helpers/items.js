@@ -10,6 +10,7 @@ import {getItemRatingDataAction, isSavedItemAction} from "../../redux/actions/us
 import {getItemViewUrl} from "../../redux/actions/item-actions";
 
 export function replaceItemDataPlaceholders(pageTitle, item) {
+    // console.log(pageTitle, item)
     const test = new RegExp("\\\[+(.*?)\\]", "g");
     return pageTitle.replace(test, (match, value) => {
         if (isSet(item[value])) {
@@ -21,8 +22,18 @@ export function replaceItemDataPlaceholders(pageTitle, item) {
 
 export const itemDataTextFilter = (text) => {
     const itemState = {...store.getState().item};
+    const postDataState = {...store.getState().page.postData};
+    console.log(itemState, postDataState)
     if (!isNotEmpty(text)) {
         return "";
+    }
+    if (isNotEmpty(postDataState)) {
+        if (!isObjectEmpty(postDataState)) {
+            return replaceItemDataPlaceholders(text, {
+                post_title: postDataState.title,
+                title: postDataState.title
+            })
+        }
     }
     if (isNotEmpty(itemState.itemId)) {
         if (!isObjectEmpty(itemState.data)) {

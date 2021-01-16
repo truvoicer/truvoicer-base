@@ -1,14 +1,14 @@
 import React from "react";
 import {connect} from "react-redux";
 import SearchListingsBlock from "../../../../views/Components/Blocks/Listings/ListingsBlock/Types/SearchListingsBlock";
-import BlogListingsBlock from "../../../../views/Components/Blocks/Listings/ListingsBlock/Types/BlogListingsBlock";
 import ListingsBlockContainer from "./ListingsBlockContainer";
+import FeedsListingsBlock from "../../../../views/Components/Blocks/Listings/ListingsBlock/Types/FeedsListingsBlock";
 
 const ListingsBlock = (props) => {
     const getListingsBlock = (listingBlockType) => {
         switch (listingBlockType) {
             case "blog":
-                return <BlogListingsBlock data={props.data}/>
+                return <FeedsListingsBlock data={props.data}/>
             case "search":
             default:
                 return <SearchListingsBlock data={props.data}/>

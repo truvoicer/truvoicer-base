@@ -44,6 +44,7 @@ const ItemViewComments = (props) => {
     }
 
     useEffect(() => {
+        let isCancelled = false;
         if (isNotEmpty(props.category) && isNotEmpty(props.provider) && isNotEmpty(props.item_id)) {
             const data = {
                 category: props.category,
@@ -52,14 +53,18 @@ const ItemViewComments = (props) => {
             };
             publicApiRequest(buildWpApiUrl(wpApiConfig.endpoints.commentsByItemId, data))
                 .then(response => {
-                    console.log(response.data)
-                    if (response.data.status === "success") {
-                        setComments(response.data.data);
+                    if (!isCancelled) {
+                        if (response.data.status === "success") {
+                            setComments(response.data.data);
+                        }
                     }
                 })
                 .catch(error => {
                     console.error(error)
                 })
+            return () => {
+                isCancelled = true
+            }
         }
 
     }, [props.category, props.provider, props.item_id])

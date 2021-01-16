@@ -3,6 +3,7 @@ const protectedEndpoint = "wp/tru-fetcher-api/protected";
 export const wpApiConfig = {
     apiBaseUrl: process.env.NEXT_PUBLIC_WP_API_URL,
     endpoints: {
+        default: "wp/v2/%s",
         token: "jwt-auth/v1/token",
         validateToken: "jwt-auth/v1/token/validate",
         menu: publicEndpoint + "/pages/menu/%s",
@@ -30,6 +31,8 @@ export const wpApiConfig = {
         formsCustomProtected: protectedEndpoint + "%s",
         formsRedirectPublic: publicEndpoint + "/forms/redirect",
         generalData: publicEndpoint + "/general/%s",
-        postListRequest: publicEndpoint + "/posts/list/request"
+        postListRequest: publicEndpoint + "/posts/list/request",
+        recentPostsListRequest: publicEndpoint + "/posts/list/recent",
+        categoryListRequest: publicEndpoint + "/posts/category/list"
     }
 }
