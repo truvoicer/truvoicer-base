@@ -161,6 +161,7 @@ const GridItems = (props) => {
         const customItemsListPosition = props.listings?.listingsData?.custom_items_list_position;
         if (!Array.isArray(customItemsListPosition) || customItemsListPosition.length === 0) {
             setSearchList(props.search.searchList)
+            return;
         }
         let searchList = [...props.search.searchList];
 

@@ -1,5 +1,10 @@
 import store from "../store";
-import {SESSION_AUTHENTICATED, SESSION_USER, SESSION_USER_ID} from "../constants/session-constants";
+import {
+    SESSION_AUTHENTICATED,
+    SESSION_IS_AUTHENTICATING,
+    SESSION_USER,
+    SESSION_USER_ID
+} from "../constants/session-constants";
 import {setModalContentAction} from "./page-actions";
 import {buildWpApiUrl, protectedApiRequest} from "../../library/api/wp/middleware";
 import produce from "immer";
@@ -18,6 +23,7 @@ export function getUserItemsListAction(data, provider, category) {
         return false;
     }
     const session = {...store.getState().session};
+
     if (!session[SESSION_AUTHENTICATED]) {
         return;
     }

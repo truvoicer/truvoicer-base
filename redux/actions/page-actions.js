@@ -15,6 +15,7 @@ import {buildWpApiUrl} from "../../library/api/wp/middleware";
 import {siteConfig} from "../../../config/site-config";
 import {componentsConfig} from "../../../config/components-config";
 import {wpApiConfig} from "../../config/wp-api-config";
+import {getListingsInitialLoad} from "./listings-actions";
 
 const sprintf = require("sprintf").sprintf;
 export function setPageErrorAction(error) {
@@ -96,9 +97,18 @@ export function setListingsBlocksDataAction(data) {
         // console.log(data)
         // store.dispatch(setBlocksData(blocksObject))
         store.dispatch(setListingsData(data))
-        if (isNotEmpty(data.listing_block_category)) {
-            store.dispatch(setCategory(data.listing_block_category))
-            getListingsProviders(data, "providers", getProvidersCallback)
+        switch (data?.listing_block_source) {
+            case "posts":
+                store.dispatch(setCategory(data.listings_category.slug))
+                getListingsInitialLoad();
+                break;
+            case "api":
+            default:
+                if (isNotEmpty(data.listing_block_category)) {
+                    store.dispatch(setCategory(data.listing_block_category))
+                    getListingsProviders(data, "providers", getProvidersCallback)
+                }
+                break;
         }
     }
 }

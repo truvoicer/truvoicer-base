@@ -2,18 +2,21 @@ import React, {useEffect, useRef} from "react";
 import {connect} from "react-redux";
 import {setListingsBlocksDataAction} from "../../../redux/actions/page-actions";
 import {scrollToRef} from "../../../library/utils";
+import {SESSION_AUTHENTICATED, SESSION_IS_AUTHENTICATING} from "../../../redux/constants/session-constants";
 
-const ListingsBlockContainer = (props) => {
+const ListingsBlockContainer = ({data, session, listings, children}) => {
     useEffect(() => {
-        setListingsBlocksDataAction(props.data)
-    }, [])
+        if (!session[SESSION_IS_AUTHENTICATING]) {
+            setListingsBlocksDataAction(data)
+        }
+    }, [session])
     const myRef = useRef(null)
-    if (props.listings.listingsScrollTop) {
+    if (listings.listingsScrollTop) {
         scrollToRef(myRef)
     }
     return (
         <div ref={myRef}>
-            {props.children}
+            {children}
         </div>
     )
 }
@@ -21,6 +24,7 @@ const ListingsBlockContainer = (props) => {
 function mapStateToProps(state) {
     return {
         listings: state.listings,
+        session: state.session
     };
 }
 

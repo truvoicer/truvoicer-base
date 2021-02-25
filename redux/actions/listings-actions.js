@@ -7,13 +7,21 @@ import {
 } from "../reducers/listings-reducer"
 import {
     initialSearch,
-    runSearch,
-    setSearchRequestServiceAction
+    runSearch, setSearchCategoryAction, setSearchExtraDataAction, setSearchListDataAction, setSearchProviderAction,
+    setSearchRequestServiceAction, setSearchRequestStatusAction
 } from "./search-actions";
 import {isEmpty, isSet} from "../../library/utils";
 import {setSearchError, setSearchOperation} from "../reducers/search-reducer";
-import {NEW_SEARCH_REQUEST} from "../constants/search-constants";
+import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_COMPLETED} from "../constants/search-constants";
 import {fetcherApiConfig} from "../../config/fetcher-api-config";
+import PostsListingsBlock
+    from "../../../views/Components/Blocks/Listings/ListingsBlock/Sources/Posts/PostsListingsBlock";
+import FetcherApiListingsBlock
+    from "../../../views/Components/Blocks/Listings/ListingsBlock/Sources/FetcherApi/FetcherApiListingsBlock";
+import {buildDataKeyObject} from "../../library/helpers/items";
+import {getUserItemsListAction} from "./user-stored-items-actions";
+import {setPageControlsAction} from "./pagination-actions";
+import {siteConfig} from "../../../config/site-config";
 
 export function addQueryDataString(key, value, search = false) {
     let listingsQueryData = {...store.getState().listings.listingsQueryData}
@@ -56,6 +64,42 @@ export function getListingsInitialLoad() {
         setSearchError("Listings data empty on initial search...")
         return false;
     }
+    switch (listingsDataState?.listing_block_source) {
+        case "posts":
+            postsListingsInitialLoad(listingsDataState)
+            break;
+        case "api":
+        default:
+            apiListingsInitialLoad(listingsDataState)
+            break;
+    }
+
+}
+
+function postsListingsInitialLoad(listingsDataState) {
+    const listData = listingsDataState.posts_list.data.map(item => {
+        switch (item.item_type) {
+            case "post":
+                return buildDataKeyObject(
+                    item.item_post.data.api_data_keys_list,
+                    item.item_post.post_type.ID
+                )
+        }
+    })
+
+    store.dispatch(setSearchOperation(NEW_SEARCH_REQUEST));
+    const category = listingsDataState.listings_category.slug;
+    getUserItemsListAction(listData, siteConfig.internalProviderName, category)
+    setSearchListDataAction(listData);
+    setSearchCategoryAction(category)
+    setSearchProviderAction(siteConfig.internalProviderName)
+    setSearchRequestStatusAction(SEARCH_REQUEST_COMPLETED);
+    // setSearchExtraDataAction(data.extra_data, data.provider, data.request_data)
+    // setSearchRequestServiceAction(data.request_service)
+    // setPageControlsAction(data.extra_data)
+}
+
+function apiListingsInitialLoad(listingsDataState) {
     if (!isSet(listingsDataState.initial_load)) {
         setSearchError("Initial load data is not set...")
         return false;
