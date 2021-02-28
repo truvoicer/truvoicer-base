@@ -203,12 +203,15 @@ export const getDataKeyValue = (dataItem) => {
     }
 }
 
-export const buildDataKeyObject = (dataKeyList, itemId) => {
+export const buildDataKeyObject = (dataKeyList, itemId, itemSlug = null) => {
     let dataKeyObject = {};
     dataKeyList.map((item) => {
         dataKeyObject[item.data_item_key] = getDataKeyValue(item)
     })
     dataKeyObject.item_id = itemId;
+    if (isNotEmpty(itemSlug)) {
+        dataKeyObject.item_slug = itemSlug;
+    }
     dataKeyObject.provider = siteConfig.internalProviderName;
     dataKeyObject.category = siteConfig.internalCategory;
     dataKeyObject.custom_item = true;

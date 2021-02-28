@@ -1,7 +1,7 @@
 export const allSingleItemPostsQuery = () => {
     return `
         query FetchAllSingleItemsQuery {
-          fetcherSingleItems {
+          fetcherSingleItems(first: 1000) {
               nodes {
                 databaseId
               }

@@ -22,6 +22,7 @@ import {buildDataKeyObject} from "../../library/helpers/items";
 import {getUserItemsListAction} from "./user-stored-items-actions";
 import {setPageControlsAction} from "./pagination-actions";
 import {siteConfig} from "../../../config/site-config";
+import {LISTINGS_BLOCK_SOURCE_API, LISTINGS_BLOCK_SOURCE_WORDPRESS} from "../constants/general_constants";
 
 export function addQueryDataString(key, value, search = false) {
     let listingsQueryData = {...store.getState().listings.listingsQueryData}
@@ -65,10 +66,10 @@ export function getListingsInitialLoad() {
         return false;
     }
     switch (listingsDataState?.listing_block_source) {
-        case "posts":
+        case LISTINGS_BLOCK_SOURCE_WORDPRESS:
             postsListingsInitialLoad(listingsDataState)
             break;
-        case "api":
+        case LISTINGS_BLOCK_SOURCE_API:
         default:
             apiListingsInitialLoad(listingsDataState)
             break;
@@ -82,7 +83,8 @@ function postsListingsInitialLoad(listingsDataState) {
             case "post":
                 return buildDataKeyObject(
                     item.item_post.data.api_data_keys_list,
-                    item.item_post.post_type.ID
+                    item.item_post.post_type.ID,
+                    item.item_post.post_type.post_name
                 )
         }
     })

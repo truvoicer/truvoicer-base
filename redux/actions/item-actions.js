@@ -53,7 +53,7 @@ export function fetchItemCallback (status, data) {
 }
 
 export function setSingleItemPostState(itemData) {
-    const dataKeysJson = itemData?.fetcherSingleItem?.single_item_data_keys;
+    const dataKeysJson = itemData?.single_item_data_keys;
     if (!isNotEmpty(dataKeysJson)) {
         console.error("Single Item data keys is either empty or undefined.")
         return;
@@ -65,11 +65,8 @@ export function setSingleItemPostState(itemData) {
         return;
     }
 
-    let dataKeyObject = buildDataKeyObject(parseJson.api_data_keys_list, itemData.fetcherSingleItem.databaseId);
-
-    setItemIdAction(itemData.fetcherSingleItem.databaseId)
-    setItemProviderAction(siteConfig.internalProviderName)
-    setItemCategoryAction(siteConfig.internalCategory)
+    let dataKeyObject = buildDataKeyObject(parseJson.api_data_keys_list, itemData.databaseId);
+    setItemIdAction(itemData.databaseId)
     setItemDataAction(dataKeyObject)
 }
 
@@ -128,5 +125,14 @@ export function getItemViewUrl(item, category) {
     } else {
         return null;
     }
+}
+
+export function getComparisonItemViewUrl(item, category) {
+    let data = {
+        item_slug: item.item_slug,
+        listings_category: category
+    }
+
+    return sprintf(ItemRoutes.comparisonItemView, data);
 }
 

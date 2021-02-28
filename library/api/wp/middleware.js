@@ -19,6 +19,9 @@ import {allSingleItemPostsQuery} from "../../graphql/queries/all-single-item-pos
 import {postWithTemplateQuery} from "../../graphql/queries/post-with-template";
 import {allCategoriesQuery} from "../../graphql/queries/all-categories-uri";
 import {categoryTemplateQuery} from "../../graphql/queries/category-list-template";
+import {comparisonItemTemplateQuery} from "../../graphql/queries/single-comparison-item-post-template";
+import {allComparisonItemsPostsQuery} from "../../graphql/queries/all-comparison-items-posts";
+import {isNotEmpty} from "../../utils";
 
 const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
@@ -109,6 +112,21 @@ export function getStaticSingleItemPaths(allSingleItems) {
         }
     });
 }
+
+export function getStaticComparisonItemsPaths(allSingleItems) {
+    return allSingleItems.nodes.map((node) => {
+        let category = null;
+        if (isNotEmpty(node?.listingsCategories?.nodes[0]?.slug)) {
+            category = node.listingsCategories.nodes[0].slug;
+        }
+        return {
+            params: {
+                item_slug: node.slug,
+                listings_category: category
+            }
+        }
+    });
+}
 export function getStaticPagePaths(allPages) {
     return allPages.nodes.map((node) => {
         let pagePaths = [];
@@ -147,9 +165,28 @@ export async function getAllSingleItemPosts() {
     return data?.fetcherSingleItems
 }
 
+export async function getAllComparisonItemPosts() {
+    const data = await fetchAPI(allComparisonItemsPostsQuery())
+    return data?.fetcherSingleComparisons
+}
+
 export async function getSingleItemPost(id, type, preview) {
     return await fetchAPI(
         singleItemTemplateQuery(),
+        {
+            variables: {
+                id: id,
+                idType: type,
+                onlyEnabled: !preview,
+                preview,
+            },
+        }
+    );
+}
+
+export async function getSingleComparisonPost(id, type, preview) {
+    return await fetchAPI(
+        comparisonItemTemplateQuery(),
         {
             variables: {
                 id: id,
