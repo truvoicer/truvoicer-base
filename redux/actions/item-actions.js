@@ -28,6 +28,7 @@ export function setItemProviderAction(provider) {
 export function setItemIdAction(itemId) {
     store.dispatch(setItemId(itemId))
 }
+
 export function setItemDataAction(itemData) {
     const itemDataState = {...store.getState().item.data};
     const object = Object.assign({}, itemDataState, itemData);
