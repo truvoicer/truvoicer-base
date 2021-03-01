@@ -52,21 +52,20 @@ export function fetchItemCallback (status, data) {
     }
 }
 
-export function setSingleItemPostState(itemData) {
-    const dataKeysJson = itemData?.single_item_data_keys;
-    if (!isNotEmpty(dataKeysJson)) {
+export function setSingleItemPostState({databaseId, dataKeys = null}) {
+    if (!isNotEmpty(dataKeys)) {
         console.error("Single Item data keys is either empty or undefined.")
         return;
     }
 
-    const parseJson = JSON.parse(dataKeysJson)
+    const parseJson = JSON.parse(dataKeys)
     if (!Array.isArray(parseJson?.api_data_keys_list)) {
         console.error("Single item (api_data_keys_list) is not a valid array.")
         return;
     }
 
-    let dataKeyObject = buildDataKeyObject(parseJson.api_data_keys_list, itemData.databaseId);
-    setItemIdAction(itemData.databaseId)
+    let dataKeyObject = buildDataKeyObject(parseJson.api_data_keys_list, databaseId);
+    setItemIdAction(databaseId)
     setItemDataAction(dataKeyObject)
 }
 

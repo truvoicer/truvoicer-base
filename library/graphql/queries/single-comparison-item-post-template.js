@@ -7,7 +7,7 @@ export const comparisonItemTemplateQuery = () => {
             slug
             title(format: RENDERED)
             status
-            single_item_data_keys
+            comparison_item_data_keys
           listingsCategories(first: 1) {
             nodes {
               slug
