@@ -189,7 +189,8 @@ const GridItems = (props) => {
                                 props.search.category,
                                 props.listings.listingsGrid,
                                 props.user[SESSION_USER_ID],
-                                showInfo
+                                showInfo,
+                                index
                             )}
                         </Col>
                     </React.Fragment>

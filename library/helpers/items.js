@@ -81,17 +81,17 @@ const getItemList = (config, data) => {
         return null;
     }
     return (
-     <ul>
-         {data.map((item, index) => (
-             <li key={index}>
-                 {config.keys.map((key, keyIndex) => (
-                     <div key={keyIndex}>
-                         {getItemContentType(key.type, key.name, item, key)}
-                     </div>
-                 ))}
-             </li>
-         ))}
-     </ul>
+        <ul>
+            {data.map((item, index) => (
+                <li key={index}>
+                    {config.keys.map((key, keyIndex) => (
+                        <div key={keyIndex}>
+                            {getItemContentType(key.type, key.name, item, key)}
+                        </div>
+                    ))}
+                </li>
+            ))}
+        </ul>
     )
 }
 
@@ -184,6 +184,10 @@ export const getDataKeyValue = (dataItem) => {
     switch (dataItem.value_type) {
         case "text":
             return dataItem.data_item_text;
+        case "url":
+            return dataItem.data_item_url;
+        case "color":
+            return dataItem.data_item_color;
         case "html":
             return dataItem.data_item_html;
         case "number":
@@ -238,7 +242,7 @@ export const buildCustomItemsArray = (itemsData) => {
     });
 }
 
-export const getGridItem = (item, category, listingsGrid, userId, showInfoCallback) => {
+export const getGridItem = (item, category, listingsGrid, userId, showInfoCallback, index = false) => {
     let gridItem = {...item};
     if (isSet(gridItem.image_list)) {
         gridItem.image_list = convertImageObjectsToArray(gridItem.image_list);
@@ -251,26 +255,30 @@ export const getGridItem = (item, category, listingsGrid, userId, showInfoCallba
         return null;
     }
     const GridItems = gridConfig[category][listingsGrid];
-    return <GridItems data={gridItem}
-                      searchCategory={category}
-                      showInfoCallback={showInfoCallback}
-                      savedItem={
-                          isSavedItemAction(
-                              isSet(item.item_id)? item.item_id : null,
-                              isSet(item.provider)? item.provider : null,
-                              category,
-                              userId
-                          )
-                      }
-                      ratingsData={
-                          getItemRatingDataAction(
-                              isSet(item.item_id)? item.item_id : null,
-                              isSet(item.provider)? item.provider : null,
-                              category,
-                              userId
-                          )
-                      }
-    />
+    return (
+        <GridItems
+            index={index}
+            data={gridItem}
+            searchCategory={category}
+            showInfoCallback={showInfoCallback}
+            savedItem={
+                isSavedItemAction(
+                    isSet(item.item_id) ? item.item_id : null,
+                    isSet(item.provider) ? item.provider : null,
+                    category,
+                    userId
+                )
+            }
+            ratingsData={
+                getItemRatingDataAction(
+                    isSet(item.item_id) ? item.item_id : null,
+                    isSet(item.provider) ? item.provider : null,
+                    category,
+                    userId
+                )
+            }
+        />
+    )
 }
 
 export const getItemLinkProps = (category, item, showInfoCallback, e) => {
