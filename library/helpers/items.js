@@ -8,6 +8,7 @@ import {siteConfig} from "../../../config/site-config";
 import {listingsGridConfig} from "../../../config/listings-grid-config";
 import {getItemRatingDataAction, isSavedItemAction} from "../../redux/actions/user-stored-items-actions";
 import {getItemViewUrl} from "../../redux/actions/item-actions";
+import {tagManagerSendDataLayer} from "../api/global-scripts";
 
 export function replaceItemDataPlaceholders(pageTitle, item) {
     const test = new RegExp("\\\[+(.*?)\\]", "g");
@@ -281,10 +282,19 @@ export const getGridItem = (item, category, listingsGrid, userId, showInfoCallba
     )
 }
 
-export const getItemLinkProps = (category, item, showInfoCallback, e) => {
+export const globalItemLinkClick = (trackData = {}) => {
+    tagManagerSendDataLayer(trackData)
+}
+
+export const getItemLinkProps = (category, item, showInfoCallback, e, trackData = {}) => {
     const listingsData = store.getState().listings?.listingsData;
     if (isSet(listingsData?.item_display) && listingsData.item_display === "new_page") {
-        return {};
+        return {
+            onClick: (e) => {
+                e.preventDefault()
+                globalItemLinkClick(trackData)
+            }
+        };
     }
     return {
         href: getItemViewUrl(item, category),
