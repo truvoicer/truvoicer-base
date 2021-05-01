@@ -1,3 +1,6 @@
+import {reduxConfig} from "../../../config/redux-config";
+import {isNotEmpty} from "../utils";
+
 /**
  * Checks for additional state data for a specific state
  * Checks in a state config in the parent redux/reducers/(state_name).js config file
@@ -7,9 +10,11 @@
  */
 export const getState = (key, defaultState) => {
     try {
-        const stateFile = require("../../../library/redux/reducers/" + key);
-        const stateConfig = stateFile.stateConfig;
-        if (stateFile) {
+        if(!isNotEmpty(reduxConfig[key])) {
+            return defaultState;
+        }
+        const stateConfig = reduxConfig[key]?.stateConfig;
+        if (isNotEmpty(stateConfig)) {
             return {
                 ...defaultState,
                 ...stateConfig
@@ -30,9 +35,11 @@ export const getState = (key, defaultState) => {
  */
 export const getReducers = (key, defaultReducers) => {
     try {
-        const reducerFile = require("../../../library/redux/reducers/" + key);
-        const reducerConfig = reducerFile.reducerConfig;
-        if (reducerFile) {
+        if(!isNotEmpty(reduxConfig[key])) {
+            return defaultReducers;
+        }
+        const reducerConfig = reduxConfig[key]?.reducerConfig;
+        if (isNotEmpty(reducerConfig)) {
             return {
                 ...defaultReducers,
                 ...reducerConfig
@@ -47,9 +54,8 @@ export const getReducers = (key, defaultReducers) => {
 
 export const getStoreReducers = (defaultReducers) => {
     try {
-        const storeFile = require("../../../library/redux/store");
-        const storeReducers = storeFile.reducers;
-        if (storeFile) {
+        const storeReducers = reduxConfig?.store?.reducers;
+        if (isNotEmpty(storeReducers)) {
             return {
                 ...defaultReducers,
                 ...storeReducers
