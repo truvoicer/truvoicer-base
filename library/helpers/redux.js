@@ -7,7 +7,7 @@
  */
 export const getState = (key, defaultState) => {
     try {
-        const stateFile = require("../../../library/redux/reducers/" + key);
+        const stateFile = require("../../../library/redux/reducersgh/" + key);
         const stateConfig = stateFile.stateConfig;
         if (stateFile) {
             return {
