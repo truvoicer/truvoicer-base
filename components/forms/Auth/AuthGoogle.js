@@ -1,5 +1,5 @@
 import React  from "react";
-import { GoogleLogin } from 'react-google-login';
+// import { GoogleLogin } from 'react-google-login';
 import {connect} from "react-redux";
 import {getSessionTokenMiddleware} from "../../../redux/middleware/session-middleware";
 import {buildWpApiUrl} from "../../../library/api/wp/middleware";
@@ -17,21 +17,22 @@ const AuthGoogle = (props) => {
     const responseFail = (response) => {
         console.error(response);
     }
-    return (
-        <GoogleLogin
-            clientId={props.siteSettings?.google_login_client_id}
-            autoLoad={false}
-            buttonText="Login with Google"
-            onSuccess={responseSuccess}
-            onFailure={responseFail}
-            cookiePolicy={'single_host_origin'}
-            render={renderProps => <SocialButton buttonClass={props.buttonClass}
-                                                 iconClass={props.iconClass}
-                                                 buttonLabel={props.buttonLabel}
-                                                 onClick={renderProps.onClick}
-            />}
-        />
-    );
+    return null;
+    // return (
+    //     <GoogleLogin
+    //         clientId={props.siteSettings?.google_login_client_id}
+    //         autoLoad={false}
+    //         buttonText="Login with Google"
+    //         onSuccess={responseSuccess}
+    //         onFailure={responseFail}
+    //         cookiePolicy={'single_host_origin'}
+    //         render={renderProps => <SocialButton buttonClass={props.buttonClass}
+    //                                              iconClass={props.iconClass}
+    //                                              buttonLabel={props.buttonLabel}
+    //                                              onClick={renderProps.onClick}
+    //         />}
+    //     />
+    // );
 }
 
 function mapStateToProps(state) {

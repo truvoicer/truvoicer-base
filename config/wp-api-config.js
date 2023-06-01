@@ -1,11 +1,12 @@
-const publicEndpoint = "wp/tru-fetcher-api/public";
-const protectedEndpoint = "wp/tru-fetcher-api/protected";
+const publicEndpoint = "/tru-fetcher-api/public";
+const protectedEndpoint = "/tru-fetcher-api/protected";
 export const wpApiConfig = {
     apiBaseUrl: process.env.NEXT_PUBLIC_WP_API_URL,
     endpoints: {
         default: "wp/v2/%s",
         token: "jwt-auth/v1/token",
         validateToken: "jwt-auth/v1/token/validate",
+        page: publicEndpoint + "/pages/page",
         menu: publicEndpoint + "/pages/menu/%s",
         sidebar: publicEndpoint + "/pages/sidebar/%s",
         passwordReset: publicEndpoint + "/users/password-reset",
@@ -33,6 +34,22 @@ export const wpApiConfig = {
         generalData: publicEndpoint + "/general/%s",
         postListRequest: publicEndpoint + "/posts/list/request",
         recentPostsListRequest: publicEndpoint + "/posts/list/recent",
-        categoryListRequest: publicEndpoint + "/posts/category/list"
+        categoryListRequest: publicEndpoint + "/posts/category/list",
+        auth: {
+            publicTokenCheck: `${publicEndpoint}/auth/token/check`,
+            protectedTokenCheck: `${protectedEndpoint}/auth/token/check`,
+            register: `${publicEndpoint}/auth/register`,
+            login: `${publicEndpoint}/auth/login`,
+            resetPassword: `${publicEndpoint}/auth/reset-password`,
+            resetPasswordConfirm: `${publicEndpoint}/auth/reset-password-confirm`,
+        },
+        user: {
+            accountDetails: `${protectedEndpoint}/account/details`,
+        },
+    },
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
     }
 }
+

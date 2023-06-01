@@ -22,6 +22,7 @@ import {categoryTemplateQuery} from "../../graphql/queries/category-list-templat
 import {comparisonItemTemplateQuery} from "../../graphql/queries/single-comparison-item-post-template";
 import {allComparisonItemsPostsQuery} from "../../graphql/queries/all-comparison-items-posts";
 import {isNotEmpty} from "../../utils";
+import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 
 const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
@@ -212,18 +213,22 @@ export async function getItemViewTemplate(category, type, preview) {
     );
 }
 
-export async function getSinglePage(slug, type, preview) {
-    return await fetchAPI(
-        singlePageQuery(),
-        {
-            variables: {
-                id: slug,
-                idType: type,
-                onlyEnabled: !preview,
-                preview,
-            },
-        }
-    );
+export async function getHomePage() {
+    const results = await wpResourceRequest({
+        endpoint: `${wpApiConfig.endpoints.page}`,
+        method: 'GET',
+    })
+    return results.data;
+}
+export async function getSinglePage(slug) {
+    const results = await wpResourceRequest({
+        endpoint: `${wpApiConfig.endpoints.page}}`,
+        query: {
+            page: slug
+        },
+        method: 'GET',
+    })
+    return results.data;
 }
 
 export async function getSinglePost(slug, type, preview) {
