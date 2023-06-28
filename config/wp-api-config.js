@@ -6,6 +6,7 @@ export const wpApiConfig = {
         default: "wp/v2/%s",
         token: "jwt-auth/v1/token",
         validateToken: "jwt-auth/v1/token/validate",
+        settings: publicEndpoint + "/settings",
         page: publicEndpoint + "/pages/page",
         menu: publicEndpoint + "/pages/menu/%s",
         sidebar: publicEndpoint + "/pages/sidebar/%s",

@@ -28,7 +28,7 @@ const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
 const API_URL = process.env.NEXT_PUBLIC_WP_GRAPHQL_URL
 
-const fetcher = (...args) => fetch(...args).then(res => res.json())
+export const fetcher = (...args) => fetch(...args).then(res => res.json())
 
 export const buildWpApiUrl = (endpoint, param = "") => {
     return sprintf(wpApiConfig.apiBaseUrl + endpoint, param);
@@ -218,7 +218,14 @@ export async function getHomePage() {
         endpoint: `${wpApiConfig.endpoints.page}`,
         method: 'GET',
     })
-    return results.data;
+    return results?.data;
+}
+export async function getSiteSettings() {
+    const results = await wpResourceRequest({
+        endpoint: `${wpApiConfig.endpoints.settings}`,
+        method: 'GET',
+    })
+    return results?.data;
 }
 export async function getSinglePage(slug) {
     const results = await wpResourceRequest({
@@ -228,7 +235,7 @@ export async function getSinglePage(slug) {
         },
         method: 'GET',
     })
-    return results.data;
+    return results?.data;
 }
 
 export async function getSinglePost(slug, type, preview) {

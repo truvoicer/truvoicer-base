@@ -1,13 +1,13 @@
 import React from "react";
 import {
-    getPageDataAction,
+    setPageDataAction,
     getUserAccountMenuAction, setModalContentAction, setSiteSettingsAction,
 } from "../actions/page-actions";
 import {setShowModal} from "../reducers/page-reducer";
 
 export function getPageDataMiddleware(data) {
     return function(dispatch) {
-        return getPageDataAction(data);
+        return setPageDataAction(data);
     }
 }
 

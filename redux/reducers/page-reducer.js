@@ -4,6 +4,7 @@ import {getReducers, getState} from "../../library/helpers/redux";
 
 const defaultState = {
     pageData: {},
+    pageDataOptions: {},
     postData: {},
     postListData: [],
     postNavData: {
@@ -25,6 +26,9 @@ const defaultState = {
 const defaultReducers = {
     setPageData: (state, action) => {
         state.pageData = action.payload;
+    },
+    setPageDataOptions: (state, action) => {
+        state.pageDataOptions = action.payload;
     },
     setPostData: (state, action) => {
         state.postData = action.payload;
@@ -73,7 +77,7 @@ export const pageSlice = createSlice({
 
 export const pageReducer = pageSlice.reducer;
 export const {
-    setPageData, setPostData, setPrevPostNavData,
+    setPageData, setPageDataOptions, setPostData, setPrevPostNavData,
     setNextPostNavData, setPostListData,
     setPostNavIndex, setPostNavFromList,
     setSiteSettings, setUserAccountMenuData,

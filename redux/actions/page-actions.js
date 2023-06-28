@@ -2,7 +2,7 @@ import store from "../store"
 import React from "react";
 import {
     setModalComponent, setNextPostNavData,
-    setPageData,
+    setPageData, setPageDataOptions,
     setPageError, setPostData, setPostListData, setPostNavFromList, setPostNavIndex, setPrevPostNavData,
     setShowModal,
     setSiteSettings,
@@ -60,25 +60,25 @@ export function getPageTitle(siteTitle, pageTitle) {
     return null;
 }
 
-export function loadBasePageData({page, truFetcherSettings, post = {}, postNavigation = {}}) {
+export function loadBasePageData({page, options, settings, post = {}, postNavigation = {}}) {
     const postNavState = store.getState().page.postNavData;
 
     const pageData = {...page};
-    const siteSettings = JSON.parse(truFetcherSettings.settings_json);
     pageData.seo_title = getPageTitle(
-        siteSettings?.blog_name,
-        page?.title
+        settings?.blogname,
+        page?.post_title
     );
-    setSiteSettingsAction(siteSettings);
-    getPageDataAction(pageData);
+    setSiteSettingsAction(settings);
+    setPageDataAction(pageData);
+    setPageDataOptionsAction(options);
     setPostDataAction(post)
 
     if (!postNavState.fromList) {
-        setNextPostNavDataAction(postNavigation.next_post);
+        setNextPostNavDataAction(postNavigation?.next_post);
     }
 
     if (!postNavState.fromList) {
-        setPrevPostNavDataAction(postNavigation.prev_post);
+        setPrevPostNavDataAction(postNavigation?.prev_post);
     }
 }
 
@@ -114,8 +114,12 @@ export function setListingsBlocksDataAction(data) {
     }
 }
 
-export function getPageDataAction(data) {
+export function setPageDataAction(data) {
     store.dispatch(setPageData(data))
+}
+
+export function setPageDataOptionsAction(data) {
+    store.dispatch(setPageDataOptions(data))
 }
 
 export function setPostDataAction(data) {
