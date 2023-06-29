@@ -36,7 +36,7 @@ export function setItemDataAction(itemData) {
 }
 
 export function getItemAction(requestData) {
-    console.log(requestData)
+    console.log({requestData})
     fetchData("operation", ["single"], requestData, fetchItemCallback)
 }
 

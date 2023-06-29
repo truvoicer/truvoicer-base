@@ -82,10 +82,10 @@ export function loadBasePageData({page, options, settings, post = {}, postNaviga
     }
 }
 
-export function loadBaseItemPage(pageData) {
+export function loadBaseItemPage(pageData, settings) {
     const data = {
-        page: pageData?.listingsCategory?.itemViewTemplates?.nodes[0],
-        truFetcherSettings: pageData?.truFetcherSettings
+        page: pageData,
+        truFetcherSettings: settings
     }
     loadBasePageData(data);
 }
@@ -95,18 +95,19 @@ export function setListingsBlocksDataAction(data) {
         return false;
     }
     if (data !== null) {
+        console.log({data})
         // console.log(data)
         // store.dispatch(setBlocksData(blocksObject))
         store.dispatch(setListingsData(data))
-        switch (data?.listing_block_source) {
+        switch (data?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 store.dispatch(setCategory(data.listings_category.slug))
                 getListingsInitialLoad();
                 break;
             case LISTINGS_BLOCK_SOURCE_API:
             default:
-                if (isNotEmpty(data.listing_block_category)) {
-                    store.dispatch(setCategory(data.listing_block_category))
+                if (isNotEmpty(data.api_listings_category)) {
+                    store.dispatch(setCategory(data.api_listings_category))
                     getListingsProviders(data, "providers", getProvidersCallback)
                 }
                 break;

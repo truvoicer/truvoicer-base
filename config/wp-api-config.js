@@ -8,6 +8,7 @@ export const wpApiConfig = {
         validateToken: "jwt-auth/v1/token/validate",
         settings: publicEndpoint + "/settings",
         page: publicEndpoint + "/pages/page",
+        pageTemplate: publicEndpoint + "/pages/template/%(post_type)s/%(category)s",
         menu: publicEndpoint + "/pages/menu/%s",
         sidebar: publicEndpoint + "/pages/sidebar/%s",
         passwordReset: publicEndpoint + "/users/password-reset",

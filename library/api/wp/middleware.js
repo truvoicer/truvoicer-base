@@ -199,18 +199,15 @@ export async function getSingleComparisonPost(id, type, preview) {
     );
 }
 
-export async function getItemViewTemplate(category, type, preview) {
-    return await fetchAPI(
-        itemViewTemplateQuery(),
-        {
-            variables: {
-                id: category,
-                idType: type,
-                onlyEnabled: !preview,
-                preview,
-            },
-        }
-    );
+export async function getItemViewTemplate(category, postType, preview) {
+    const results = await wpResourceRequest({
+        endpoint: sprintf(wpApiConfig.endpoints.pageTemplate, {
+            category: category,
+            post_type: postType,
+        }),
+        method: 'GET',
+    })
+    return results?.data;
 }
 
 export async function getHomePage() {
@@ -229,7 +226,7 @@ export async function getSiteSettings() {
 }
 export async function getSinglePage(slug) {
     const results = await wpResourceRequest({
-        endpoint: `${wpApiConfig.endpoints.page}}`,
+        endpoint: `${wpApiConfig.endpoints.page}`,
         query: {
             page: slug
         },

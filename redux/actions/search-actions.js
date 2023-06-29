@@ -13,7 +13,7 @@ import {
     setSearchStatus,
 } from "../reducers/search-reducer"
 import {isSet} from "../../library/utils";
-import produce from "immer";
+import {produce} from "immer";
 import {addArrayItem, addListingsQueryDataString} from "../middleware/listings-middleware";
 import {addQueryDataObjectAction} from "./listings-actions";
 import {
@@ -120,7 +120,7 @@ export function searchResponseHandler(status, data, completed = false) {
 function validateSearchParams() {
     const listingsDataState = store.getState().listings.listingsData;
     const queryDataState = store.getState().listings.listingsQueryData;
-    if (!isSet(listingsDataState.listing_block_category)) {
+    if (!isSet(listingsDataState.listings_category)) {
         setSearchRequestErrorAction("No category found...")
         return false;
     }
@@ -207,22 +207,30 @@ function calculateLimit(providerCount) {
 }
 
 export function initialSearch() {
+    console.log('init search')
     store.dispatch(setSearchOperation(NEW_SEARCH_REQUEST));
     const listingsDataState = store.getState().listings.listingsData;
 
-    if (!isSet(listingsDataState.initial_search)) {
+    if (!Array.isArray(listingsDataState?.initial_load_search_params)) {
         setSearchError("Initial search data is not set on initial search...")
         return false;
     }
-    let initialSearch = listingsDataState.initial_search;
-    if (!isSet(initialSearch.parameter_name || !isSet(initialSearch.parameter_value))) {
+    if (!listingsDataState.initial_load_search_params.length) {
+        setSearchError("Initial search data is empty on initial search...")
+        return false;
+    }
+    let initialSearch = listingsDataState.initial_load_search_params;
+    if (!isSet(initialSearch.name || !isSet(initialSearch.value))) {
         setSearchError("Initial search parameters are not set...")
         return false;
     }
     let queryData = {};
-    queryData[initialSearch.parameter_name] = initialSearch.parameter_value;
+    listingsDataState.initial_load_search_params.forEach((item) => {
+        queryData[item.name] = item.value;
+    });
     queryData[fetcherApiConfig.pageNumberKey] = 1;
     queryData[fetcherApiConfig.pageOffsetKey] = 0;
+    console.log({queryData})
     setSearchRequestServiceAction(fetcherApiConfig.searchOperation)
     addQueryDataObjectAction(queryData, true);
 }

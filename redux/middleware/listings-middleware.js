@@ -15,15 +15,12 @@ import {PAGE_CONTROL_PAGE_SIZE} from "../constants/search-constants";
 import {getSearchLimit, setPageControlItemAction} from "../actions/pagination-actions";
 import {getListingsInitialLoad} from "../actions/listings-actions";
 
-export function getListingsProviders({listing_block_category, select_providers, provider_list}, endpoint = "providers", callback) {
-    console.log(listing_block_category, select_providers, provider_list)
-    if (isSet(select_providers) && select_providers && Array.isArray(provider_list)) {
-        const requestData = {
-            filter: provider_list.map(item => item.provider)
-        }
-        fetchData("list", [listing_block_category, endpoint], requestData, callback);
+export function getListingsProviders({api_listings_category, select_providers, providers_list}, endpoint = "providers", callback) {
+    console.log({api_listings_category, select_providers, providers_list})
+    if (isSet(select_providers) && select_providers && Array.isArray(providers_list)) {
+        fetchData("list", [api_listings_category, endpoint], providers_list, callback);
     } else {
-        fetchData("list", [listing_block_category, endpoint], {}, callback);
+        fetchData("list", [api_listings_category, endpoint], {}, callback);
     }
 }
 

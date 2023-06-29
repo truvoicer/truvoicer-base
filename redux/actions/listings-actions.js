@@ -65,7 +65,7 @@ export function getListingsInitialLoad() {
         setSearchError("Listings data empty on initial search...")
         return false;
     }
-    switch (listingsDataState?.listing_block_source) {
+    switch (listingsDataState?.source) {
         case LISTINGS_BLOCK_SOURCE_WORDPRESS:
             postsListingsInitialLoad(listingsDataState)
             break;
