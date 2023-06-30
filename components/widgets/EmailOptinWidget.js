@@ -9,10 +9,8 @@ const EmailOptinWidget = ({data}) => {
         status: "",
         message: ""
     })
-    console.log(data)
 
     const formResponseHandler = (status, data) => {
-        console.log(data)
         if (data?.status === "success") {
             setResponse({
                 status: "success",

@@ -21,7 +21,6 @@ export function setPageControlsAction(extraData) {
         totalItems: getTotalItems(pageControlsState, extraData),
         totalPages: getTotalPages(pageControlsState, extraData),
     });
-    // console.log(pageControlsObject)
     store.dispatch(setPageControls(pageControlsObject))
 }
 

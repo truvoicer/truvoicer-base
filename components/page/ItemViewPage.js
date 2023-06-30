@@ -1,9 +1,7 @@
 'use client';
 import React, {useEffect, useState} from 'react';
 import {connect} from "react-redux";
-import {useRouter} from "next/router";
 import {loadBaseItemPage} from "@/truvoicer-base/redux/actions/page-actions";
-import {isSet} from "underscore";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import {
     setItemCategoryAction,
@@ -23,10 +21,13 @@ import {isNotEmpty} from "@/truvoicer-base/library/utils";
 const ItemViewPage = ({settings, pageData, provider, item_id, getItemMiddleware}) => {
     const [showLoader, setShowLoader] = useState(true);
     useEffect(() => {
-        if (!isNotEmpty(pageData) && !isNotEmpty(settings)) {
-            loadBaseItemPage(pageData, settings)
-            setShowLoader(false)
+        if (!isNotEmpty(pageData)) {
+            return;
         }
+        if (!isNotEmpty(settings)) {
+            return;
+        }
+        loadBaseItemPage(pageData, settings)
     }, [pageData, settings])
 
     useEffect(() => {
@@ -44,9 +45,26 @@ const ItemViewPage = ({settings, pageData, provider, item_id, getItemMiddleware}
 
         getItemMiddleware(data);
         setItemProviderAction(provider)
-        setItemCategoryAction("recruitment")
+        setItemCategoryAction(props.category)
         setItemIdAction(item_id)
     }, [provider, item_id])
+
+    useEffect(() => {
+        if (!isNotEmpty(provider)) {
+            return;
+        }
+        if (!isNotEmpty(item_id)) {
+            return;
+        }
+
+        if (!isNotEmpty(pageData)) {
+            return;
+        }
+        if (!isNotEmpty(settings)) {
+            return;
+        }
+        setShowLoader(false)
+    }, [provider, item_id, pageData, settings])
 
     return (
         <>

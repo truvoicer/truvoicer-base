@@ -146,7 +146,6 @@ export async function runRequest({
   if (isObject(data)) {
     request.data = data;
   }
-  // console.log({request})
   return await axios.request(request);
 }
 function buildRequestUrl(url, queryObject = {}) {

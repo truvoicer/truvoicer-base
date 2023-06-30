@@ -83,7 +83,6 @@ export function validateToken() {
     }
     axios.request(config)
         .then((response) => {
-            // console.log(response.data)
             if (response.data.success) {
                 setSessionUserAction(response.data.data, true)
             } else {
@@ -113,7 +112,6 @@ export function logout() {
 
 export function setSessionLocalStorage(token) {
     let expiresAt = JSON.stringify(new Date(new Date().getTime() + 60 * 60 * 24 * 1000));
-    // console.log(expiresAt)
     localStorage.setItem('token', token);
     localStorage.setItem('expires_at', expiresAt);
 }

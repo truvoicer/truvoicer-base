@@ -291,7 +291,7 @@ export const getItemLinkProps = (category, item, showInfoCallback, e, trackData 
     if (isSet(listingsData?.item_view_display) && listingsData.item_view_display === "page") {
         return {
             onClick: (e) => {
-                e.preventDefault()
+                // e.preventDefault()
                 globalItemLinkClick(trackData)
             }
         };

@@ -26,31 +26,24 @@ const defaultState = {
 const defaultReducers = {
     setSearchStatus: (state, action) => {
         state.searchStatus = action.payload;
-        // console.log(state.searchStatus)
     },
     setSearchOperation: (state, action) => {
         state.searchOperation = action.payload;
-        // console.log(state.searchOperation)
     },
     setExtraData: (state, action) => {
         state.extraData = action.payload;
-        // console.log(state.extraData)
     },
     setSearchList: (state, action) => {
         state.searchList = action.payload;
-        // console.log(state.searchList)
     },
     setSavedItemsList: (state, action) => {
         state.savedItemsList = action.payload;
-        // console.log(state.searchList)
     },
     setItemRatingsList: (state, action) => {
         state.itemRatingsList = action.payload;
-        // console.log(state.searchList)
     },
     setPageControls: (state, action) => {
         state.pageControls = action.payload;
-        // console.log(state.pageControls)
     },
     setRequestService: (state, action) => {
         state.requestService = action.payload;
@@ -62,7 +55,6 @@ const defaultReducers = {
         state.category = action.payload;
     },
     setSearchError: (state, action) => {
-        console.log(action.payload)
         state.error = action.payload;
     },
 };

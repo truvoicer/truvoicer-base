@@ -38,7 +38,6 @@ export const isNotEmpty = (item) => {
 }
 
 export const imageSelector = (imageSize = "medium", imageArray = []) => {
-    // console.log(imageArray)
 
     if (!Array.isArray(imageArray)) {
         return false;

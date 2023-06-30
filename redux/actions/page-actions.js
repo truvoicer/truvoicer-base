@@ -49,7 +49,6 @@ export function getWidget(component, data) {
 }
 
 export function setSiteSettingsAction(data) {
-    // console.log(data)
     store.dispatch(setSiteSettings(data))
 }
 
@@ -85,7 +84,7 @@ export function loadBasePageData({page, options, settings, post = {}, postNaviga
 export function loadBaseItemPage(pageData, settings) {
     const data = {
         page: pageData,
-        truFetcherSettings: settings
+        settings: settings
     }
     loadBasePageData(data);
 }
@@ -95,9 +94,6 @@ export function setListingsBlocksDataAction(data) {
         return false;
     }
     if (data !== null) {
-        console.log({data})
-        // console.log(data)
-        // store.dispatch(setBlocksData(blocksObject))
         store.dispatch(setListingsData(data))
         switch (data?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:

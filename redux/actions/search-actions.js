@@ -59,12 +59,10 @@ export function setSearchListDataAction(listData) {
 
     const nextState = produce(searchState.searchList, (draftState) => {
         if ((searchOperation === NEW_SEARCH_REQUEST)) {
-            // console.log(searchOperation)
             store.dispatch(setSearchOperation(APPEND_SEARCH_REQUEST));
             draftState.splice(0, draftState.length + 1);
 
         } else if (searchOperation === APPEND_SEARCH_REQUEST) {
-            // console.log("append")
         }
         listData.map((item) => {
             draftState.push(item)
@@ -97,7 +95,6 @@ export function setSearchRequestErrorAction(error) {
 }
 
 export function searchResponseHandler(status, data, completed = false) {
-    // console.log(status, data)
     if (status === 200 && data.status === "success") {
         getUserItemsListAction(data.request_data, data.provider, data.category)
         setSearchListDataAction(data.request_data);
@@ -202,12 +199,10 @@ export const runSearch = (operation = false) => {
 function calculateLimit(providerCount) {
     const pageControlsState = {...store.getState().search.pageControls}
     let pageSize = pageControlsState[PAGE_CONTROL_PAGE_SIZE];
-    // console.log(pageSize, providerCount, Math.floor(pageSize / providerCount))
     return Math.floor(pageSize / providerCount);
 }
 
 export function initialSearch() {
-    console.log('init search')
     store.dispatch(setSearchOperation(NEW_SEARCH_REQUEST));
     const listingsDataState = store.getState().listings.listingsData;
 
@@ -230,7 +225,6 @@ export function initialSearch() {
     });
     queryData[fetcherApiConfig.pageNumberKey] = 1;
     queryData[fetcherApiConfig.pageOffsetKey] = 0;
-    console.log({queryData})
     setSearchRequestServiceAction(fetcherApiConfig.searchOperation)
     addQueryDataObjectAction(queryData, true);
 }

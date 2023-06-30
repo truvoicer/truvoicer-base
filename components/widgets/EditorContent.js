@@ -3,7 +3,6 @@ import {connect} from "react-redux";
 import HtmlParser from "react-html-parser";
 
 const EditorContent = (props) => {
-    console.log(props)
     return (
         <>
             {HtmlParser(props.data)}

@@ -16,7 +16,6 @@ import {getSearchLimit, setPageControlItemAction} from "../actions/pagination-ac
 import {getListingsInitialLoad} from "../actions/listings-actions";
 
 export function getListingsProviders({api_listings_category, select_providers, providers_list}, endpoint = "providers", callback) {
-    console.log({api_listings_category, select_providers, providers_list})
     if (isSet(select_providers) && select_providers && Array.isArray(providers_list)) {
         fetchData("list", [api_listings_category, endpoint], providers_list, callback);
     } else {
@@ -26,12 +25,10 @@ export function getListingsProviders({api_listings_category, select_providers, p
 
 export function getProvidersCallback(status, data) {
     if (status === 200) {
-        // console.log(data.data)
         store.dispatch(setListingsDataProviders(data.data))
         setPageControlItemAction(PAGE_CONTROL_PAGE_SIZE, getSearchLimit())
         getListingsInitialLoad();
     } else {
-        // console.error(data.message)
         store.dispatch(setListingsError(data.message))
     }
 }

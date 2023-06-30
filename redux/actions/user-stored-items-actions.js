@@ -47,7 +47,6 @@ export function getUserItemsListAction(data, provider, category) {
 }
 
 export function getUserItemsListCallback(error, data) {
-    // console.log(error, data)
     if (error) {
         return false;
     }
@@ -247,5 +246,4 @@ export function getItemRatingIndexAction(item_id, provider, category, user_id) {
 }
 
 export function saveItemRequestCallback(error, data) {
-    // console.log(error, data)
 }

@@ -23,7 +23,6 @@ const defaultReducers = {
     session: sessionReducer
 }
 const reducer = getStoreReducers(defaultReducers);
-// console.log(storeReducers)
 const store = configureStore({
     reducer,
     middleware,
