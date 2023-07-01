@@ -18,7 +18,7 @@ import {
 import {getPageDataMiddleware} from "@/truvoicer-base/redux/middleware/page-middleware";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
 
-const ItemViewPage = ({settings, pageData, provider, item_id, getItemMiddleware}) => {
+const ItemViewPage = ({settings, pageData, provider, item_id, category, getItemMiddleware}) => {
     const [showLoader, setShowLoader] = useState(true);
     useEffect(() => {
         if (!isNotEmpty(pageData)) {
@@ -45,7 +45,7 @@ const ItemViewPage = ({settings, pageData, provider, item_id, getItemMiddleware}
 
         getItemMiddleware(data);
         setItemProviderAction(provider)
-        setItemCategoryAction(props.category)
+        setItemCategoryAction(category)
         setItemIdAction(item_id)
     }, [provider, item_id])
 

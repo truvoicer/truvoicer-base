@@ -9,6 +9,7 @@ export const wpApiConfig = {
         settings: publicEndpoint + "/settings",
         page: publicEndpoint + "/pages/page",
         pageTemplate: publicEndpoint + "/pages/template/%(post_type)s/%(category)s",
+        singleItemPost: publicEndpoint + "/posts/post/%(post_id)d/type/%(post_type)s",
         menu: publicEndpoint + "/pages/menu/%s",
         sidebar: publicEndpoint + "/pages/sidebar/%s",
         passwordReset: publicEndpoint + "/users/password-reset",
@@ -48,6 +49,14 @@ export const wpApiConfig = {
         user: {
             accountDetails: `${protectedEndpoint}/account/details`,
         },
+    },
+    postTypes: {
+      itemViewTemplate: 'trf_item_view_tpl',
+      itemList: 'trf_item_list',
+      singleItem: 'trf_single_item',
+      filterList: 'trf_filter_list',
+      categoryTemplate: 'trf_category_tpl',
+      postTemplate: 'trf_post_tpl',
     },
     headers: {
         'Content-Type': 'application/json',

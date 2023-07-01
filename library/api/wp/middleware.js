@@ -1,17 +1,8 @@
-import {singlePageQuery} from "../../graphql/queries/single-page";
-import {siteSettingsQuery} from "../../graphql/queries/site-settings";
-import {sidebarQuery} from "../../graphql/queries/sidebar";
 import {allPagesUriQuery} from "../../graphql/queries/all-pages-uri";
-import {previewPostQuery} from "../../graphql/queries/preview-post";
-import {allPostsQuery, allPostsUriQuery} from "../../graphql/queries/all-posts-uri";
-import {previewPageQuery} from "../../graphql/queries/preview-page";
-import {singlePostQuery} from "../../graphql/queries/single-post";
-import {itemViewTemplateQuery} from "../../graphql/queries/item-view-template";
-import {menuQuery} from "../../graphql/queries/menu";
+import {allPostsQuery} from "../../graphql/queries/all-posts-uri";
 import {wpApiConfig} from "../../../config/wp-api-config";
 import {getSessionObject} from "../../../redux/actions/session-actions";
-import {singleItemTemplateQuery} from "../../graphql/queries/single-item-post-template";
-import {siteConfig} from "../../../../config/site-config";
+import {siteConfig} from "@/config/site-config";
 import store from "../../../redux/store";
 import {SESSION_USER, SESSION_USER_ID} from "../../../redux/constants/session-constants";
 import useSWR from "swr";
@@ -73,15 +64,6 @@ async function fetchAPI(query, {variables} = {}) {
     return json.data
 }
 
-export async function getPreviewPost(id, idType = 'DATABASE_ID') {
-    const data = await fetchAPI(
-        previewPostQuery(),
-        {
-            variables: {id, idType},
-        }
-    )
-    return data.post
-}
 
 export function getStaticPostsPaths(allPosts) {
     return allPosts.nodes.map((node) => {
@@ -171,18 +153,15 @@ export async function getAllComparisonItemPosts() {
     return data?.fetcherSingleComparisons
 }
 
-export async function getSingleItemPost(id, type, preview) {
-    return await fetchAPI(
-        singleItemTemplateQuery(),
-        {
-            variables: {
-                id: id,
-                idType: type,
-                onlyEnabled: !preview,
-                preview,
-            },
-        }
-    );
+export async function getSingleItemPost(id, postType) {
+    const results = await wpResourceRequest({
+        endpoint: sprintf(wpApiConfig.endpoints.singleItemPost, {
+            post_id: parseInt(id),
+            post_type: postType,
+        }),
+        method: 'GET',
+    })
+    return results?.data;
 }
 
 export async function getSingleComparisonPost(id, type, preview) {
@@ -233,20 +212,6 @@ export async function getSinglePage(slug) {
         method: 'GET',
     })
     return results?.data;
-}
-
-export async function getSinglePost(slug, type, preview) {
-    return await fetchAPI(
-        singlePostQuery(),
-        {
-            variables: {
-                id: slug,
-                idType: type,
-                onlyEnabled: !preview,
-                preview,
-            },
-        }
-    );
 }
 
 export async function getPostWithTemplate(slug, type, preview) {

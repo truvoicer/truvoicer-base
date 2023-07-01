@@ -58,15 +58,15 @@ export function setSingleItemPostState({databaseId, dataKeys = null}) {
         return;
     }
 
-    const parseJson = JSON.parse(dataKeys)
-    if (!Array.isArray(parseJson?.api_data_keys_list)) {
-        console.error("Single item (api_data_keys_list) is not a valid array.")
-        return;
-    }
+    // const parseJson = JSON.parse(dataKeys)
+    // if (!Array.isArray(parseJson?.api_data_keys_list)) {
+    //     console.error("Single item (api_data_keys_list) is not a valid array.")
+    //     return;
+    // }
 
-    let dataKeyObject = buildDataKeyObject(parseJson.api_data_keys_list, databaseId);
+    // let dataKeyObject = buildDataKeyObject(parseJson.api_data_keys_list, databaseId);
     setItemIdAction(databaseId)
-    setItemDataAction(dataKeyObject)
+    setItemDataAction(dataKeys)
 }
 
 export const getCustomItem = (item, category) => {
