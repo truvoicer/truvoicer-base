@@ -78,6 +78,7 @@ export function getListingsInitialLoad() {
 }
 
 function postsListingsInitialLoad(listingsDataState) {
+    console.log({listingsDataState})
     const listData = listingsDataState.posts_list.data.map(item => {
         switch (item.item_type) {
             case "post":
