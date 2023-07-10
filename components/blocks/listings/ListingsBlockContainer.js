@@ -7,6 +7,9 @@ import {SESSION_AUTHENTICATED, SESSION_IS_AUTHENTICATING} from "../../../redux/c
 const ListingsBlockContainer = ({data, session, listings, children}) => {
     useEffect(() => {
         if (!session[SESSION_IS_AUTHENTICATING]) {
+            if (Array.isArray(data?.listings_category_id)) {
+                data.listings_category = data.listings_category_id[0]?.slug
+            }
             setListingsBlocksDataAction(data)
         }
     }, [session])

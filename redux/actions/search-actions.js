@@ -118,6 +118,7 @@ function validateSearchParams() {
     const listingsDataState = store.getState().listings.listingsData;
     const queryDataState = store.getState().listings.listingsQueryData;
     if (!isSet(listingsDataState.listings_category)) {
+        console.log("No category found...")
         setSearchRequestErrorAction("No category found...")
         return false;
     }
@@ -169,10 +170,12 @@ export function buildQueryData(allProviders, provider) {
     queryData["limit"] = calculateLimit(allProviders.length);
     queryData = addPaginationQueryParameters(queryData, provider);
     queryData["provider"] = provider;
+    console.log({queryData})
     return queryData;
 }
 
 export const runSearch = (operation = false) => {
+    console.log("runSearch")
     setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
     const pageControlsState = store.getState().search.pageControls;
     if (!validateSearchParams()) {

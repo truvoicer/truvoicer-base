@@ -17,7 +17,7 @@ import {getListingsInitialLoad} from "../actions/listings-actions";
 
 export function getListingsProviders({api_listings_category, select_providers, providers_list}, endpoint = "providers", callback) {
     if (isSet(select_providers) && select_providers && Array.isArray(providers_list)) {
-        fetchData("list", [api_listings_category, endpoint], providers_list, callback);
+        fetchData("list", [api_listings_category, endpoint], {provider: providers_list}, callback);
     } else {
         fetchData("list", [api_listings_category, endpoint], {}, callback);
     }
