@@ -184,35 +184,37 @@ export const getListItemData = (item, dataItem) => {
 export const getDataKeyValue = (dataItem) => {
     switch (dataItem.value_type) {
         case "text":
-            return dataItem.data_item_text;
+            return dataItem.data_item_value;
         case "url":
-            return dataItem.data_item_url;
+            return dataItem.data_item_value;
         case "color":
-            return dataItem.data_item_color;
+            return dataItem.data_item_value;
         case "html":
-            return dataItem.data_item_html;
+            return dataItem.data_item_value;
         case "number":
-            return parseInt(dataItem.data_item_number)
+            return parseInt(dataItem.data_item_value)
         case "date":
-            return dataItem.data_item_date;
+            return dataItem.data_item_value;
         case "true_false":
-            return dataItem.data_item_true_false === true || dataItem.data_item_true_false === "true";
+            return dataItem.data_item_value === true || dataItem.data_item_value === "true";
         case "image":
-            return dataItem.data_item_image;
+            return dataItem.data_item_value;
         case "image_list":
-            return dataItem.data_item_image_list;
+            return dataItem.data_item_value;
         case "array":
-            return dataItem.data_item_array;
+            return dataItem.data_item_value;
         default:
             return null;
     }
 }
 
 export const buildDataKeyObject = (dataKeyList, itemId, itemSlug = null) => {
-    let dataKeyObject = {};
-    dataKeyList.map((item) => {
-        dataKeyObject[item.data_item_key] = getDataKeyValue(item)
-    })
+    let cloneDataKeyList = {...dataKeyList};
+    let dataKeyObject = convertDataKeysDataArray(cloneDataKeyList);
+    return renderDataKeyObject(dataKeyObject, itemId, itemSlug);
+}
+
+export const renderDataKeyObject = (dataKeyObject = {}, itemId, itemSlug = null) => {
     dataKeyObject.item_id = itemId;
     if (isNotEmpty(itemSlug)) {
         dataKeyObject.item_slug = itemSlug;
@@ -221,6 +223,21 @@ export const buildDataKeyObject = (dataKeyList, itemId, itemSlug = null) => {
     dataKeyObject.category = siteConfig.internalCategory;
     dataKeyObject.custom_item = true;
     return dataKeyObject;
+}
+
+export const convertDataKeysDataArrayObject = (dataKeyList) => {
+    let dataKeyObject = {};
+    dataKeyList.map((item) => {
+        dataKeyObject[item.data_item_key] = getDataKeyValue(item)
+    })
+    return dataKeyObject;
+}
+export const convertDataKeysDataArray = (dataKeyList) => {
+    let dataKeyObject = {};
+    // dataKeyList.map((item) => {
+    //     dataKeyObject[item.data_item_key] = getDataKeyValue(item)
+    // })
+    return dataKeyList;
 }
 
 export const buildCustomItem = (item) => {
@@ -264,16 +281,16 @@ export const getGridItem = (item, category, listingsGrid, userId, showInfoCallba
             showInfoCallback={showInfoCallback}
             savedItem={
                 isSavedItemAction(
-                    isSet(item.item_id) ? item.item_id : null,
-                    isSet(item.provider) ? item.provider : null,
+                    isSet(item?.item_id) ? item.item_id : null,
+                    isSet(item?.provider) ? item.provider : null,
                     category,
                     userId
                 )
             }
             ratingsData={
                 getItemRatingDataAction(
-                    isSet(item.item_id) ? item.item_id : null,
-                    isSet(item.provider) ? item.provider : null,
+                    isSet(item?.item_id) ? item.item_id : null,
+                    isSet(item?.provider) ? item.provider : null,
                     category,
                     userId
                 )

@@ -10,7 +10,7 @@ import {
     runSearch, setSearchCategoryAction, setSearchExtraDataAction, setSearchListDataAction, setSearchProviderAction,
     setSearchRequestServiceAction, setSearchRequestStatusAction
 } from "./search-actions";
-import {isEmpty, isSet} from "../../library/utils";
+import {isEmpty, isObject, isSet} from "../../library/utils";
 import {setSearchError, setSearchOperation} from "../reducers/search-reducer";
 import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_COMPLETED} from "../constants/search-constants";
 import {fetcherApiConfig} from "../../config/fetcher-api-config";
@@ -79,19 +79,41 @@ export function getListingsInitialLoad() {
 
 function postsListingsInitialLoad(listingsDataState) {
     console.log({listingsDataState})
-    const listData = listingsDataState.posts_list.data.map(item => {
-        switch (item.item_type) {
-            case "post":
-                return buildDataKeyObject(
-                    item.item_post.data.api_data_keys_list,
-                    item.item_post.post_type.ID,
-                    item.item_post.post_type.post_name
-                )
+    if (!Array.isArray(listingsDataState?.item_list_id)) {
+        return;
+    }
+    let listData = [];
+    listingsDataState.item_list_id.forEach(itemList => {
+        if (!Array.isArray(itemList?.item_list?.item_list)) {
+            return;
         }
+        const itemListData = itemList?.item_list?.item_list;
+        itemListData.forEach(item => {
+            switch (item.type) {
+                case "single_item":
+                    if (!item?.single_item_id?.ID) {
+                        return;
+                    }
+                    if (!item?.single_item_id?.post_name) {
+                        return;
+                    }
+                    if (!isObject(item?.single_item_id?.api_data_keys?.data_keys)) {
+                        return;
+                    }
+                    listData.push(
+                        buildDataKeyObject(
+                            item?.single_item_id?.api_data_keys.data_keys,
+                            item?.single_item_id?.ID,
+                            item?.single_item_id?.post_name
+                        )
+                    );
+                    break;
+            }
+        });
     })
 
     store.dispatch(setSearchOperation(NEW_SEARCH_REQUEST));
-    const category = listingsDataState.listings_category.slug;
+    const category = listingsDataState.listings_category;
     getUserItemsListAction(listData, siteConfig.internalProviderName, category)
     setSearchListDataAction(listData);
     setSearchCategoryAction(category)
@@ -121,7 +143,7 @@ function apiListingsInitialLoad(listingsDataState) {
 export function initialRequest() {
     store.dispatch(setSearchOperation(NEW_SEARCH_REQUEST));
     const listingsDataState = store.getState().listings.listingsData;
-    if (!isSet(listingsDataState.initial_request) ||!isSet(listingsDataState.initial_request.request_options)) {
+    if (!isSet(listingsDataState.initial_request) || !isSet(listingsDataState.initial_request.request_options)) {
         setSearchError("Initial request options not set......")
         return false;
     }

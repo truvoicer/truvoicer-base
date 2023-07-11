@@ -97,7 +97,7 @@ export function setListingsBlocksDataAction(data) {
         store.dispatch(setListingsData(data))
         switch (data?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
-                store.dispatch(setCategory(data.listings_category.slug))
+                store.dispatch(setCategory(data.listings_category))
                 getListingsInitialLoad();
                 break;
             case LISTINGS_BLOCK_SOURCE_API:
