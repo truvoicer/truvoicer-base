@@ -7,11 +7,13 @@ import {
 } from "../actions/session-actions";
 import {buildWpApiUrl} from "../../library/api/wp/middleware";
 import {wpApiConfig} from "../../config/wp-api-config";
+import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
+import {sprintf} from "sprintf";
 
 const axios = require('axios');
 
 export function getSessionTokenMiddleware(url, requestData, callback = false, headers = {}) {
-    return function(dispatch) {
+    return function (dispatch) {
         let data = {
             method: "post",
             url: url,
@@ -42,8 +44,12 @@ export function getSessionTokenMiddleware(url, requestData, callback = false, he
 }
 
 export function createUserMiddleware(requestData, callback) {
-    return function(dispatch) {
-        return axios.post(buildWpApiUrl(wpApiConfig.endpoints.createUser), requestData)
+    return function (dispatch) {
+            return wpResourceRequest({
+                endpoint: wpApiConfig.endpoints.createUser,
+                method: 'POST',
+                data: requestData
+            })
             .then(response => {
                 callback(false, response.data);
             })
@@ -55,7 +61,7 @@ export function createUserMiddleware(requestData, callback) {
 }
 
 export function updateUserMiddleware(requestData, callback) {
-    return function(dispatch) {
+    return function (dispatch) {
         return axios.post(buildWpApiUrl(wpApiConfig.endpoints.updateUser), requestData)
             .then(response => {
                 callback(false, response.data);
@@ -68,14 +74,14 @@ export function updateUserMiddleware(requestData, callback) {
 }
 
 export function updateUserSessionData(data) {
-    return function(dispatch) {
+    return function (dispatch) {
         setSessionUserAction(data, true)
     }
 }
 
 
 export function getSavedItemsListByUserMiddleware(requestData, callback) {
-    return function(dispatch) {
+    return function (dispatch) {
         getSavedItemsListByUserAction(requestData, callback)
     }
 }

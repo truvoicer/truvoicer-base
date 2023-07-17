@@ -15,7 +15,7 @@ import {
 import Col from "react-bootstrap/Col";
 import {useRouter} from "next/router";
 import {getGridItemColumns} from "../../../../redux/actions/item-actions";
-import {buildCustomItemsArray, getGridItem} from "../../../../library/helpers/items";
+import {buildCustomItemsArray, extractItemListFromPost, getGridItem} from "../../../../library/helpers/items";
 import {siteConfig} from "../../../../../config/site-config";
 
 const GridItems = (props) => {
@@ -26,7 +26,7 @@ const GridItems = (props) => {
         provider: ""
     });
     const [listPosition, setListPosition] = useState(null);
-    const [searchList, setSearchList] = useState([]);
+    // const [searchList, setSearchList] = useState([]);
 
     const showInfo = (item, category, e) => {
         e.preventDefault()
@@ -64,22 +64,27 @@ const GridItems = (props) => {
         let itemsData;
         switch (listPosition) {
             case "list_start":
-                itemsData = listingsData?.list_start_items.data;
+                itemsData = listingsData?.item_list_id__list_start_items;
                 break;
             case "list_end":
-                itemsData = listingsData?.list_end_items.data;
+                itemsData = listingsData?.item_list_id__list_end_items;
                 break;
             case "custom_position":
-                itemsData = listingsData?.custom_position_items.data;
+                itemsData = listingsData?.item_list_id__custom_position_items;
                 break;
             default:
                 return [];
         }
-        if (!Array.isArray(itemsData) || itemsData.length === 0) {
+        if (!itemsData) {
             return [];
         }
 
-        return buildCustomItemsArray(itemsData);
+        let listData = extractItemListFromPost({post: itemsData});
+        if (!listData) {
+            console.error('Invalid item list post data...')
+            listData = [];
+        }
+        return listData;
     }
 
     const insertListStartItems = (searchList) => {
@@ -88,7 +93,6 @@ const GridItems = (props) => {
             return searchList;
         }
 
-        setListPosition("list_start")
 
         itemsData.map(item => {
             let itemCopy = {...item};
@@ -103,7 +107,6 @@ const GridItems = (props) => {
             return searchList;
         }
 
-        setListPosition("list_end")
 
         itemsData.map(item => {
             let itemCopy = {...item};
@@ -129,7 +132,6 @@ const GridItems = (props) => {
         if (itemsData.length === 0) {
             return searchList;
         }
-        setListPosition("custom_position")
 
         itemsData.map(item => {
             let itemCopy = {...item};
@@ -153,35 +155,52 @@ const GridItems = (props) => {
 
     useEffect(() => {
         if (isNotEmpty(listPosition)) {
-            getUserItemsListAction(searchList, siteConfig.internalProviderName, siteConfig.internalCategory)
+            getUserItemsListAction(getSearchList(), siteConfig.internalProviderName, siteConfig.internalCategory)
         }
     }, [listPosition])
 
     useEffect(() => {
-        const customItemsListPosition = props.listings?.listingsData?.custom_items_list_position;
-        if (!Array.isArray(customItemsListPosition) || customItemsListPosition.length === 0) {
-            setSearchList(props.search.searchList)
-            return;
-        }
-        let searchList = [...props.search.searchList];
 
-        if (customItemsListPosition.includes("list_start")) {
+        if (props.listings?.listingsData?.list_start) {
+            setListPosition("list_start")
+        }
+        if (props.listings?.listingsData?.list_end) {
+            setListPosition("list_end")
+        }
+        if (props.listings?.listingsData?.custom_position) {
+            setListPosition("custom_position")
+        }
+
+    }, [
+        props.listings?.listingsData?.list_start,
+        props.listings?.listingsData?.list_end,
+        props.listings?.listingsData?.custom_position,
+    ])
+
+    function getSearchList() {
+        let searchList = [...props.search.searchList];
+        if (
+            !props.listings?.listingsData?.list_start &&
+            !props.listings?.listingsData?.list_end &&
+            !props.listings?.listingsData?.custom_position
+        ) {
+            return searchList;
+        }
+        if (props.listings?.listingsData?.list_start) {
             searchList = insertListStartItems(searchList);
         }
-        if (customItemsListPosition.includes("list_end")) {
+        if (props.listings?.listingsData?.list_end) {
             searchList = insertListEndItems(searchList)
         }
-        if (customItemsListPosition.includes("custom_position")) {
+        if (props.listings?.listingsData?.custom_position) {
             searchList = insertCustomPositionItems(searchList)
         }
-        setSearchList(searchList)
-
-    }, [props.listings?.listingsData?.custom_items_list_position])
-
+        return searchList;
+    }
     return (
         <>
             <Row>
-                {searchList.map((item, index) => (
+                {getSearchList().map((item, index) => (
                     <React.Fragment key={index}>
                         <Col {...getGridItemColumns(props.listings.listingsGrid)}>
                             {getGridItem(

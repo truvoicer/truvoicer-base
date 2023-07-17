@@ -18,7 +18,7 @@ import PostsListingsBlock
     from "../../../views/Components/Blocks/Listings/ListingsBlock/Sources/Posts/PostsListingsBlock";
 import FetcherApiListingsBlock
     from "../../../views/Components/Blocks/Listings/ListingsBlock/Sources/FetcherApi/FetcherApiListingsBlock";
-import {buildDataKeyObject} from "../../library/helpers/items";
+import {buildDataKeyObject, extractItemListFromPost} from "../../library/helpers/items";
 import {getUserItemsListAction} from "./user-stored-items-actions";
 import {setPageControlsAction} from "./pagination-actions";
 import {siteConfig} from "../../../config/site-config";
@@ -82,36 +82,11 @@ function postsListingsInitialLoad(listingsDataState) {
     if (!Array.isArray(listingsDataState?.item_list_id)) {
         return;
     }
-    let listData = [];
-    listingsDataState.item_list_id.forEach(itemList => {
-        if (!Array.isArray(itemList?.item_list?.item_list)) {
-            return;
-        }
-        const itemListData = itemList?.item_list?.item_list;
-        itemListData.forEach(item => {
-            switch (item.type) {
-                case "single_item":
-                    if (!item?.single_item_id?.ID) {
-                        return;
-                    }
-                    if (!item?.single_item_id?.post_name) {
-                        return;
-                    }
-                    if (!isObject(item?.single_item_id?.api_data_keys?.data_keys)) {
-                        return;
-                    }
-                    listData.push(
-                        buildDataKeyObject(
-                            item?.single_item_id?.api_data_keys.data_keys,
-                            item?.single_item_id?.ID,
-                            item?.single_item_id?.post_name
-                        )
-                    );
-                    break;
-            }
-        });
-    })
-
+    let listData = extractItemListFromPost({post: listingsDataState?.item_list_id});
+    if (!listData) {
+        console.error('Invalid item list post data...')
+        listData = [];
+    }
     store.dispatch(setSearchOperation(NEW_SEARCH_REQUEST));
     const category = listingsDataState.listings_category;
     getUserItemsListAction(listData, siteConfig.internalProviderName, category)

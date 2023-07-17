@@ -11,8 +11,8 @@ import {wpApiConfig} from "../../../config/wp-api-config";
 import {connect} from "react-redux";
 import {ChangePasswordFormFields} from "../../../config/forms/change-password-form-fields";
 import {SESSION_AUTH_TYPE, SESSION_USER} from "../../../redux/constants/session-constants";
-import Snackbar from "@material-ui/core/Snackbar";
-import SnackbarContent from "@material-ui/core/SnackbarContent";
+import Snackbar from "@mui/material/Snackbar";
+import SnackbarContent from "@mui/material/SnackbarContent";
 
 const sprintf = require("sprintf").sprintf;
 

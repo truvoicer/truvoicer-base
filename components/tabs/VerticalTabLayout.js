@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
-import Box from "@material-ui/core/Box";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
+import Box from "@mui/material/Box";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 import {isSet} from "../../library/utils";
 import {componentsConfig} from "../../../config/components-config";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+// import makeStyles from "@mui/material/styles/makeStyles";
 
 const VerticalTabLayout = (props) => {
     const [tabValue, setTabValue] = useState(props.tabIndex);
@@ -12,18 +12,18 @@ const VerticalTabLayout = (props) => {
     const handleTabChange = (e, value) => {
         setTabValue(value)
     }
-    const useStyles = makeStyles((theme) => ({
-        root: {
-            flexGrow: 1,
-            backgroundColor: theme.palette.background.paper,
-            display: 'flex',
-            minHeight: "100vh",
-        },
-        tabs: {
-            borderRight: `1px solid ${theme.palette.divider}`,
-            backgroundImage: `url(${props.tabsBgImage})`
-        },
-    }));
+    // const useStyles = makeStyles((theme) => ({
+    //     root: {
+    //         flexGrow: 1,
+    //         backgroundColor: theme.palette.background.paper,
+    //         display: 'flex',
+    //         minHeight: "100vh",
+    //     },
+    //     tabs: {
+    //         borderRight: `1px solid ${theme.palette.divider}`,
+    //         backgroundImage: `url(${props.tabsBgImage})`
+    //     },
+    // }));
 
     const tabProps = (index) => {
         return {
@@ -62,15 +62,15 @@ const VerticalTabLayout = (props) => {
         return null
     }
 
-    const classes = useStyles();
+    // const classes = useStyles();
     return (
-        <div className={classes.root}>
+        <div className={''}>
                 <Tabs
                     orientation="vertical"
                     value={tabValue}
                     onChange={handleTabChange}
                     aria-label="simple tabs example"
-                    className={"vertical-tabs " + classes.tabs}
+                    className={"vertical-tabs "}
                 >
                     {props.data.map((tabItem, index) => (
                         <Tab

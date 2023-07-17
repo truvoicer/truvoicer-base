@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import Box from "@material-ui/core/Box";
-import Tabs from "@material-ui/core/Tabs";
-import AppBar from "@material-ui/core/AppBar";
-import Tab from "@material-ui/core/Tab";
+import Box from "@mui/material/Box";
+import Tabs from "@mui/material/Tabs";
+import AppBar from "@mui/material/AppBar";
+import Tab from "@mui/material/Tab";
 import {isSet} from "../../library/utils";
 import {componentsConfig} from "../../../config/components-config";
 

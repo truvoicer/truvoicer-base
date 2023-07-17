@@ -6,7 +6,7 @@ import {
     setSessionError,
     setUser, setUserId
 } from "../reducers/session-reducer";
-import produce from "immer";
+import {produce} from "immer";
 import {
     SESSION_AUTH_TYPE,
     SESSION_USER_DISPLAY_NAME,
@@ -20,6 +20,7 @@ import {
 import {buildWpApiUrl} from "../../library/api/wp/middleware";
 import {isSet} from "../../library/utils";
 import {wpApiConfig} from "../../config/wp-api-config";
+import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 
 const axios = require("axios")
 
@@ -76,17 +77,18 @@ export function validateToken() {
         setIsAuthenticatingAction(false)
         return false;
     }
-    let config = {
-        url: buildWpApiUrl(wpApiConfig.endpoints.validateToken),
-        method: "post",
-        headers: {'Authorization': 'Bearer ' + getSessionObject().token}
-    }
-    axios.request(config)
+    wpResourceRequest({
+        endpoint: wpApiConfig.endpoints.validateToken,
+        method: 'GET',
+        protectedReq: true
+    })
         .then((response) => {
-            if (response.data.success) {
+            console.log({response})
+            if (response?.data?.status === 'success') {
+
                 setSessionUserAction(response.data.data, true)
             } else {
-                removeLocalSession()
+                // removeLocalSession()
             }
             setIsAuthenticatingAction(false)
         })
@@ -110,8 +112,7 @@ export function logout() {
     removeLocalSession();
 }
 
-export function setSessionLocalStorage(token) {
-    let expiresAt = JSON.stringify(new Date(new Date().getTime() + 60 * 60 * 24 * 1000));
+export function setSessionLocalStorage(token, expiresAt) {
     localStorage.setItem('token', token);
     localStorage.setItem('expires_at', expiresAt);
 }

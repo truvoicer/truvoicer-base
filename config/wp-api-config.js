@@ -4,8 +4,8 @@ export const wpApiConfig = {
     apiBaseUrl: process.env.NEXT_PUBLIC_WP_API_URL,
     endpoints: {
         default: "wp/v2/%s",
-        token: "jwt-auth/v1/token",
-        validateToken: "jwt-auth/v1/token/validate",
+        token: publicEndpoint + "/auth/register",
+        validateToken: protectedEndpoint + "/auth/token/check",
         settings: publicEndpoint + "/settings",
         page: publicEndpoint + "/pages/page",
         pageTemplate: publicEndpoint + "/pages/template/%(post_type)s/%(category)s",
@@ -14,7 +14,7 @@ export const wpApiConfig = {
         sidebar: publicEndpoint + "/pages/sidebar/%s",
         passwordReset: publicEndpoint + "/users/password-reset",
         passwordResetValidate: publicEndpoint + "/users/password-reset/validate",
-        createUser: publicEndpoint + "/users/create",
+        createUser: publicEndpoint + "/auth/register",
         updateUser: protectedEndpoint + "/users/update",
         userAccountDataRequest: protectedEndpoint + "/users/account/data/request",
         userProfileUpdate: protectedEndpoint + "/user/profile/update",
@@ -61,6 +61,7 @@ export const wpApiConfig = {
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-    }
+    },
+    appSecret: process.env.NEXT_PUBLIC_APP_SECRET,
 }
 

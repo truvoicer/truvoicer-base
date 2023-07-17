@@ -55,20 +55,20 @@ export const RegisterFormData = {
                 ]
             }
         },
-        // {
-        //     name: "confirm_password",
-        //     label: "Confirm password",
-        //     type: "password",
-        //     fieldType: "text",
-        //     placeHolder: "",
-        //     validation: {
-        //         rules: [
-        //             {
-        //                 type: "match",
-        //                 matchField: "password",
-        //             },
-        //         ]
-        //     }
-        // },
+        {
+            name: "password_confirmation",
+            label: "Confirm password",
+            type: "password",
+            fieldType: "text",
+            placeHolder: "",
+            validation: {
+                rules: [
+                    {
+                        type: "match",
+                        matchField: "password",
+                    },
+                ]
+            }
+        },
     ]
 }

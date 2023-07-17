@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Box from "@material-ui/core/Box";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
 import {convertImageObjectsToArray, isSet} from "../../library/utils";
 import {defaultListingsGrid, listingsGridConfig} from "../../../config/listings-grid-config";
 import {
@@ -10,11 +10,11 @@ import {
     LISTINGS_GRID_LIST
 } from "../../redux/constants/listings-constants";
 import {fetchData} from "../../library/api/fetcher/middleware";
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 import {getItemRatingDataAction, isSavedItemAction} from "../../redux/actions/user-stored-items-actions";
 import {SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-constants";
 import {connect} from "react-redux";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+// import makeStyles from "@mui/material/styles/makeStyles";
 import {useRouter} from "next/router";
 
 const SavedItemsVerticalTabs = (props) => {
@@ -204,22 +204,22 @@ const SavedItemsVerticalTabs = (props) => {
             </Grid>
         )
     }
-    const useStyles = makeStyles((theme) => ({
-        root: {
-            flexGrow: 1,
-            backgroundColor: theme.palette.background.paper,
-            display: 'flex',
-            height: 224,
-            overflow: "visible"
-        },
-        tabs: {
-            borderRight: `1px solid ${theme.palette.divider}`,
-            overflowX: 'visible',
-            overflow: "visible"
-        },
-    }));
+    // const useStyles = makeStyles((theme) => ({
+    //     root: {
+    //         flexGrow: 1,
+    //         backgroundColor: theme.palette.background.paper,
+    //         display: 'flex',
+    //         height: 224,
+    //         overflow: "visible"
+    //     },
+    //     tabs: {
+    //         borderRight: `1px solid ${theme.palette.divider}`,
+    //         overflowX: 'visible',
+    //         overflow: "visible"
+    //     },
+    // }));
 
-    const classes = useStyles();
+    // const classes = useStyles();
     const [tabValue, setTabValue] = useState(getItemByIndex(0).name);
     const [panelData, setPanelData] = useState({...props.data});
 
@@ -236,7 +236,7 @@ const SavedItemsVerticalTabs = (props) => {
                 value={tabValue}
                 onChange={handleTabChange}
                 aria-label="Vertical tabs example"
-                className={classes.tabs}
+                // className={classes.tabs}
             >
                 {Object.keys(props.data).map((itemKey, index) => (
                     <Tab

@@ -16,17 +16,18 @@ const RegisterDialog = (props) => {
         message: ""
     });
     const requestCallback = (error, data) => {
+        console.log({error, data})
         if (error) {
             setResponse({
                 error: true,
                 success: false,
-                message: data.message
+                message: data?.message
             })
         } else {
             setResponse({
                 error: false,
                 success: true,
-                message: data.message
+                message: data?.message || "Registration successful"
             })
             setShowRegisterForm(false)
         }

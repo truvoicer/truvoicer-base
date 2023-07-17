@@ -1,22 +1,22 @@
 import React, {useState} from 'react';
-import Typography from '@material-ui/core/Typography';
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
+import Typography from '@mui/material/Typography';
+// import makeStyles from "@mui/material/styles/makeStyles";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
 import {getListItemData} from "../../library/helpers/items";
-const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-    },
-    heading: {
-        fontSize: theme.typography.pxToRem(15),
-        fontWeight: theme.typography.fontWeightRegular,
-    },
-}));
+// const useStyles = makeStyles((theme) => ({
+//     root: {
+//         width: '100%',
+//     },
+//     heading: {
+//         fontSize: theme.typography.pxToRem(15),
+//         fontWeight: theme.typography.fontWeightRegular,
+//     },
+// }));
 const ItemViewAccordion = (props) => {
     const [expanded, setExpanded] = useState(props.data.config.initialTab);
-    const classes = useStyles();
+    // const classes = useStyles();
 
     const handleChange = (panel) => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
@@ -24,7 +24,7 @@ const ItemViewAccordion = (props) => {
 
 
     return (
-        <div className={"item-view--accordion " + classes.root}>
+        <div className={"item-view--accordion "}>
             {props.data.tabs.map((tabItem, index) => (
             <Accordion
                 key={index}
@@ -34,7 +34,7 @@ const ItemViewAccordion = (props) => {
                 onChange={handleChange(index)}
             >
                 <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                    <Typography className={classes.heading}>{tabItem.label}</Typography>
+                    <Typography className={''}>{tabItem.label}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <ul className={"tab-layout--list"}>

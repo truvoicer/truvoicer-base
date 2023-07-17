@@ -1,6 +1,6 @@
 import HtmlParser from "react-html-parser";
 import React from "react";
-import {convertImageObjectsToArray, formatDate, isNotEmpty, isObjectEmpty, isSet, uCaseFirst} from "../utils";
+import {convertImageObjectsToArray, formatDate, isNotEmpty, isObject, isObjectEmpty, isSet, uCaseFirst} from "../utils";
 import ImageLoader from "../../components/loaders/ImageLoader";
 import ListLoader from "../../components/loaders/ListLoader";
 import store from "../../redux/store";
@@ -317,4 +317,47 @@ export const getItemLinkProps = (category, item, showInfoCallback, e, trackData 
         href: getItemViewUrl(item, category),
         onClick: showInfoCallback.bind(e, item, category)
     }
+}
+export function extractItemListFromPost({post}) {
+    if (!Array.isArray(post?.item_list?.item_list)) {
+        return false;
+    }
+    let listData = [];
+    const itemListData = post?.item_list?.item_list;
+    itemListData.forEach(item => {
+        switch (item.type) {
+            case "single_item":
+                if (!item?.single_item_id?.ID) {
+                    return;
+                }
+                if (!item?.single_item_id?.post_name) {
+                    return;
+                }
+                if (!isObject(item?.single_item_id?.api_data_keys?.data_keys)) {
+                    return;
+                }
+                listData.push(buildDataKeyObject(
+                        item?.single_item_id?.api_data_keys.data_keys,
+                        item?.single_item_id?.ID,
+                        item?.single_item_id?.post_name
+                ));
+                break;
+        }
+    });
+    return listData;
+}
+export function extractItemListFromPostArray({posts = []}) {
+    if (!Array.isArray(posts)) {
+        return [];
+    }
+    let listData = [];
+    posts.forEach(post => {
+        listData.push({
+            ID: post?.ID,
+            post_title: post?.post_title,
+            post_type: post?.post_type,
+            item_list: extractItemListFromPost({post})
+        })
+    })
+    return listData;
 }
