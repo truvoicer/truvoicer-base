@@ -64,6 +64,7 @@ export function setSessionErrorAction(error) {
     store.dispatch(setSessionError(nextState))
 }
 
+
 export function getSessionUserAction() {
     return {...store.getState().session.user};
 }
