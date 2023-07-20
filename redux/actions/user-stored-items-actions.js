@@ -7,11 +7,11 @@ import {
 } from "../constants/session-constants";
 import {setModalContentAction} from "./page-actions";
 import {buildWpApiUrl, protectedApiRequest} from "../../library/api/wp/middleware";
-import produce from "immer";
+import {produce} from "immer";
 import {NEW_SEARCH_REQUEST} from "../constants/search-constants";
 import {setItemRatingsList, setSavedItemsList} from "../reducers/search-reducer";
 import {isSet} from "../../library/utils";
-import {componentsConfig} from "../../../config/components-config";
+import {componentsConfig} from "@/config/components-config";
 import {wpApiConfig} from "../../config/wp-api-config";
 import {filterItemIdDataType} from "../../library/helpers/items";
 
@@ -50,8 +50,9 @@ export function getUserItemsListCallback(error, data) {
     if (error) {
         return false;
     }
-    setSavedItemsListAction(data.data.saved_items);
-    setItemRatingsListAction(data.data.item_ratings);
+    console.log({data})
+    setSavedItemsListAction(data?.savedItems || []);
+    setItemRatingsListAction(data?.itemRatings || []);
 }
 
 export function setSavedItemsListAction(data) {

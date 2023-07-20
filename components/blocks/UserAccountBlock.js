@@ -32,8 +32,8 @@ const UserAccountBlock = (props) => {
     const tabData = buildTabLayoutData(props.userAccountMenu);
 
     const getTabOrientation = () => {
-        if (isNotEmpty(props.siteSettings?.tabs_orientation)) {
-            return props.siteSettings.tabs_orientation;
+        if (isNotEmpty(props.data?.tabs_orientation)) {
+            return props.data.tabs_orientation;
         }
         return defaultTabOrientation;
     }
@@ -41,6 +41,7 @@ const UserAccountBlock = (props) => {
         getUserAccountMenuAction()
         // console.log(props.session[SESSION_AUTHENTICATED])
     }, [])  //TODO Login form appears on page load if user is authenticated
+    console.log({props, tabData})
     return (
             <div className={"user-account-area"}>
                 {tabData.length > 0 &&
