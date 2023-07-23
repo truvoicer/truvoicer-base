@@ -1,4 +1,4 @@
-import {isNotEmpty, isObjectEmpty, isSet} from "../../../library/utils";
+import {isNotEmpty, isObject, isObjectEmpty, isSet} from "../../../library/utils";
 import DataForm from "../../forms/DataForm/DataForm";
 import React, {useEffect, useState} from "react";
 import {
@@ -17,11 +17,12 @@ import SnackbarContent from "@mui/material/SnackbarContent";
 const sprintf = require("sprintf").sprintf;
 
 const FormBlock = (props) => {
-    if (!isSet(props?.data?.form?.form_data)) {
+
+
+    const formData = props?.data;
+    if (!formData || !isObject(formData) || isObjectEmpty(formData)) {
         return null;
     }
-
-    const formData = props.data.form.form_data;
     const [response, setResponse] = useState({
         showAlert: false,
         error: false,
@@ -89,9 +90,13 @@ const FormBlock = (props) => {
             false
         )
             .then(response => {
-                if (response.data.status === "success") {
-                    setUserData(response.data.data)
+                if (response?.data?.status !== "success") {
+                    return;
                 }
+                if (!response?.data?.metaData || !isObject(response.data.metaData)) {
+                    return;
+                }
+                setUserData(response.data.metaData)
             })
             .catch(error => {
                 console.error(error)
@@ -107,9 +112,10 @@ const FormBlock = (props) => {
         formRowsIterator({
             rows: formData.form_rows,
             callback: (item, itemIndex, rowIndex) => {
+                console.log({item})
                 form.fields.push({
-                    form_control: item.form_item.form_control,
-                    name: item.form_item.name
+                    form_control: item.form_control,
+                    name: item.name
                 })
             }
         });
@@ -118,7 +124,10 @@ const FormBlock = (props) => {
 
     const formRowsIterator = ({rows, callback}) => {
         rows.map((row, rowIndex) => {
-            row.form_row.map((item, itemIndex) => {
+            if (!Array.isArray(row?.form_items)) {
+                return;
+            }
+            row.form_items.map((item, itemIndex) => {
                 callback(item, itemIndex, rowIndex)
             })
         })
@@ -142,11 +151,12 @@ const FormBlock = (props) => {
     }
 
     const buildSingleFormTypeData = (userDataValues) => {
+        console.log({userDataValues})
         let configData = [];
         formRowsIterator({
             rows: formData.form_rows,
             callback: (item, itemIndex, rowIndex) => {
-                let fieldConfig = getFormFieldConfig(item.form_item);
+                let fieldConfig = getFormFieldConfig(item);
                 if (fieldConfig) {
                     fieldConfig.rowIndex = rowIndex;
                     fieldConfig.columnIndex = itemIndex;

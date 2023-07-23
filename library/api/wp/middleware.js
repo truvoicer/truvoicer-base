@@ -204,6 +204,7 @@ export async function getSiteSettings() {
     return results?.data;
 }
 export async function getSinglePage(slug) {
+    console.log({slug})
     const results = await wpResourceRequest({
         endpoint: `${wpApiConfig.endpoints.page}`,
         query: {
