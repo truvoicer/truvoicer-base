@@ -64,6 +64,10 @@ const FormBlock = (props) => {
     }
 
     const getSelectEndpointData = (name, key, endpoint) => {
+        if (!endpoint) {
+            console.warn("No endpoint set for select data source")
+            return;
+        }
         publicApiRequest(buildWpApiUrl(sprintf(wpApiConfig.endpoints.generalData, endpoint)), {})
             .then(response => {
                 if (response.data.status === "success") {
@@ -197,53 +201,53 @@ const FormBlock = (props) => {
                 break;
             case "select":
                 fieldConfig.fieldType = "select";
-                fieldConfig.multi = options.control_settings.multiple;
-                fieldConfig.options = options.control_settings.options;
+                fieldConfig.multi = options?.control_settings?.multiple || false;
+                fieldConfig.options = options?.control_settings?.options || []
                 fieldConfig.data = [];
                 break;
             case "select_countries":
                 fieldConfig.fieldType = "select";
                 fieldConfig.multi = false;
-                fieldConfig.options = options?.countries_list;
+                fieldConfig.options = options?.countries_list || [];
                 fieldConfig.data = [];
                 break;
             case "select_data_source":
                 fieldConfig.fieldType = "select_data_source";
-                fieldConfig.multi = options.control_settings.multiple;
+                fieldConfig.multi = options?.control_settings?.multiple || false;
                 fieldConfig.data = [];
-                getSelectEndpointData(options.name, "options", options.control_settings.endpoint)
+                getSelectEndpointData(options.name, "options", options?.control_settings?.endpoint)
                 break;
             case "checkbox":
                 fieldConfig.fieldType = "checkbox";
-                fieldConfig.value = options.control_settings.value;
-                fieldConfig.checked = options.control_settings.checked;
-                fieldConfig.options = options.control_settings.options;
+                fieldConfig.value = options?.control_settings?.value || false;
+                fieldConfig.checked = options?.control_settings?.checked || false;
+                fieldConfig.options = options?.control_settings?.options || [];
                 fieldConfig.data = [];
                 break;
             case "radio":
                 fieldConfig.fieldType = "radio";
-                fieldConfig.value = options.control_settings.value;
-                fieldConfig.checked = options.control_settings.checked;
-                fieldConfig.options = options.control_settings.options;
+                fieldConfig.value = options?.control_settings?.value || false;
+                fieldConfig.checked = options?.control_settings?.checked || false;
+                fieldConfig.options = options?.control_settings?.options || [];
                 fieldConfig.data = [];
                 break;
             case "date":
                 fieldConfig.fieldType = "date";
                 fieldConfig.format = "dd MMMM yyyy";
-                fieldConfig.value = options.control_settings.date_value;
+                fieldConfig.value = options?.control_settings?.date_value || '';
                 break;
             case "image_upload":
                 fieldConfig.fieldType = "image_upload";
                 fieldConfig.showDropzone = options.control_settings?.show_dropzone;
-                fieldConfig.dropzoneMessage = options.control_settings.dropzone_message
-                fieldConfig.acceptedFileTypesMessage = options.control_settings.accepted_file_types_message
+                fieldConfig.dropzoneMessage = options?.control_settings?.dropzone_message
+                fieldConfig.acceptedFileTypesMessage = options?.control_settings?.accepted_file_types_message
                 break;
             case "file_upload":
                 fieldConfig.fieldType = "file_upload";
-                fieldConfig.showDropzone = options.control_settings?.show_dropzone;
-                fieldConfig.allowedFileTypes = options.control_settings.allowed_file_types
-                fieldConfig.dropzoneMessage = options.control_settings.dropzone_message
-                fieldConfig.acceptedFileTypesMessage = options.control_settings.accepted_file_types_message
+                fieldConfig.showDropzone = options?.control_settings?.show_dropzone || false;
+                fieldConfig.allowedFileTypes = options?.control_settings?.allowed_file_types || [];
+                fieldConfig.dropzoneMessage = options?.control_settings?.dropzone_message || "";
+                fieldConfig.acceptedFileTypesMessage = options?.control_settings?.accepted_file_types_message || "";
                 break;
             default:
                 return false;
@@ -436,7 +440,7 @@ const FormBlock = (props) => {
             <div className={"row justify-content-" + (isNotEmpty(formData.align) ? formData.align : "start")}>
                 <div className={isNotEmpty(formData.column_size) ? "col-" + formData.column_size : "col-12"}>
                     {isNotEmpty(formData?.heading) &&
-                    <h3>{formData.heading}</h3>
+                        <h1>{formData.heading}</h1>
                     }
                     {isNotEmpty(formData?.sub_heading) &&
                     <p>{formData.sub_heading}</p>
