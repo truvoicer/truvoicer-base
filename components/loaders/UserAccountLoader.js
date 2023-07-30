@@ -13,7 +13,7 @@ const UserAccountLoader = ({session, fields = [], children, dataCallback}) => {
         }
     };
     useEffect(() => {
-        if (session[SESSION_AUTHENTICATED]) {
+        if (session[SESSION_AUTHENTICATED] && fields.length && typeof dataCallback === 'function') {
             protectedApiRequest(
                 buildWpApiUrl(wpApiConfig.endpoints.formsUserMetaDataRequest),
                 userDataRequest,
@@ -33,8 +33,6 @@ const UserAccountLoader = ({session, fields = [], children, dataCallback}) => {
                 .catch(error => {
                     console.error(error)
                 })
-        } else {
-            dataCallback({})
         }
     }, [session[SESSION_AUTHENTICATED]]);
     return (
