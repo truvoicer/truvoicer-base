@@ -1,5 +1,5 @@
-const publicEndpoint = "/tru-fetcher-api/public";
-const protectedEndpoint = "/tru-fetcher-api/protected";
+export const publicEndpoint = "/tru-fetcher-api/public";
+export const protectedEndpoint = "/tru-fetcher-api/protected";
 export const wpApiConfig = {
     apiBaseUrl: process.env.NEXT_PUBLIC_WP_API_URL,
     endpoints: {

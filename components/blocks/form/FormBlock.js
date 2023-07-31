@@ -7,7 +7,7 @@ import {
     protectedFileUploadApiRequest,
     publicApiRequest
 } from "../../../library/api/wp/middleware";
-import {wpApiConfig} from "../../../config/wp-api-config";
+import {protectedEndpoint, publicEndpoint, wpApiConfig} from "../../../config/wp-api-config";
 import {connect} from "react-redux";
 import {ChangePasswordFormFields} from "../../../config/forms/change-password-form-fields";
 import {SESSION_AUTH_TYPE, SESSION_USER} from "../../../redux/constants/session-constants";
@@ -35,23 +35,18 @@ const FormBlock = (props) => {
     const addListItemButtonText = "Add new item";
 
     useEffect(() => {
-        setFormConfigData(formData.endpoint)
+        setFormConfigData()
     }, [formData])
 
     useEffect(() => {
         setFormDataConfig(buildFormData(formData.form_type))
     }, [userData])
 
-    const setFormConfigData = (endpoint) => {
-        switch (endpoint) {
-            case "user_meta":
-            case "user_profile":
-            case "account_details":
-                getUserDataRequest(getSavedData(), endpoint)
-                break;
-            default:
-                setFormDataConfig(buildFormData(formData.form_type))
-                break;
+    const setFormConfigData = () => {
+        if (formData?.fetch_user_data) {
+            getUserDataRequest(getSavedData(), formData?.endpoint)
+        } else {
+            setFormDataConfig(buildFormData(formData?.form_type))
         }
     }
 
@@ -116,7 +111,6 @@ const FormBlock = (props) => {
         formRowsIterator({
             rows: formData.form_rows,
             callback: (item, itemIndex, rowIndex) => {
-                console.log({item})
                 form.fields.push({
                     form_control: item.form_control,
                     name: item.name
@@ -155,7 +149,6 @@ const FormBlock = (props) => {
     }
 
     const buildSingleFormTypeData = (userDataValues) => {
-        console.log({userDataValues})
         let configData = [];
         formRowsIterator({
             rows: formData.form_rows,
@@ -261,50 +254,45 @@ const FormBlock = (props) => {
     }
 
     const getEndpointData = (endpoint) => {
+        const buildPublicEndpointUrl =  `${publicEndpoint}${formData?.endpoint_url}`;
+        const buildProtectedEndpointUrl =  `${protectedEndpoint}${formData?.endpoint_url}`;
+        let configData = {
+            endpoint: buildPublicEndpointUrl,
+        };
+
         switch (endpoint) {
             case "email":
-                return {
-                    endpoint: wpApiConfig.endpoints.formsEmail,
-                    data: {
-                        recipient: formData.email.recipient,
-                        subject: formData.email.subject,
-                        ["from"]: formData.email["from"],
-                    }
+                configData.data = {
+                    recipient: formData.email.recipient,
+                    subject: formData.email.subject,
+                    ["from"]: formData.email["from"],
                 };
-            case "user_meta":
-                return {
-                    endpoint: wpApiConfig.endpoints.formsUserMeta,
-                    data: {}
-                };
-            case "user_profile":
-                return {
-                    endpoint: wpApiConfig.endpoints.userProfileUpdate,
-                    data: {}
-                };
+                break;
             case "account_details":
-                return {
-                    endpoint: wpApiConfig.endpoints.updateUser,
-                    data: {
-                        auth_type: props.session[SESSION_USER][SESSION_AUTH_TYPE]
-                    }
-                };
-            case "redirect":
-                return {
-                    endpoint: wpApiConfig.endpoints.formsRedirectPublic,
-                    data: {}
-                };
+                configData.endpoint = buildProtectedEndpointUrl;
+                configData.data = {auth_type: props.session[SESSION_USER][SESSION_AUTH_TYPE]};
+                break;
             case "custom":
                 const customEndpoint = getCustomEndpoint();
                 if (customEndpoint === null) {
-                    return null;
+                    configData = null;
+                    break;
                 }
-                return {
-                    endpoint: customEndpoint,
-                    data: {}
-                };
+                configData.endpoint = customEndpoint;
+                configData.data = {};
+                break;
+            case "redirect":
+                break;
+            case "user_profile":
+            case "user_meta":
+                configData.endpoint = buildProtectedEndpointUrl;
+                configData.data = {};
+                break;
             default:
-                return null;
+                configData = null;
+                break;
         }
+        return configData;
     }
 
     const getCustomEndpoint = () => {
