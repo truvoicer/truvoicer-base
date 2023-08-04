@@ -234,6 +234,9 @@ const DataForm = (props) => {
                 )
             case "top":
             default:
+                if (field?.name === 'skill') {
+                    console.log({field})
+                }
                 return (
                     <div className="col-md-12">
                         {formFieldLabel}

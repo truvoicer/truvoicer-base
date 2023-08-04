@@ -194,8 +194,8 @@ const FormBlock = (props) => {
                 break;
             case "select":
                 fieldConfig.fieldType = "select";
-                fieldConfig.multi = options?.control_settings?.multiple || false;
-                fieldConfig.options = options?.control_settings?.options || []
+                fieldConfig.multi = options?.multiple || false;
+                fieldConfig.options = options?.options || []
                 fieldConfig.data = [];
                 break;
             case "select_countries":
@@ -206,41 +206,41 @@ const FormBlock = (props) => {
                 break;
             case "select_data_source":
                 fieldConfig.fieldType = "select_data_source";
-                fieldConfig.multi = options?.control_settings?.multiple || false;
+                fieldConfig.multi = options?.multiple || false;
                 fieldConfig.data = [];
-                getSelectEndpointData(options.name, "options", options?.control_settings?.endpoint)
+                getSelectEndpointData(options.name, "options", options?.endpoint)
                 break;
             case "checkbox":
                 fieldConfig.fieldType = "checkbox";
-                fieldConfig.value = options?.control_settings?.value || false;
-                fieldConfig.checked = options?.control_settings?.checked || false;
-                fieldConfig.options = options?.control_settings?.options || [];
+                fieldConfig.value = options?.value || false;
+                fieldConfig.checked = options?.checked || false;
+                fieldConfig.options = options?.options || [];
                 fieldConfig.data = [];
                 break;
             case "radio":
                 fieldConfig.fieldType = "radio";
-                fieldConfig.value = options?.control_settings?.value || false;
-                fieldConfig.checked = options?.control_settings?.checked || false;
-                fieldConfig.options = options?.control_settings?.options || [];
+                fieldConfig.value = options?.value || false;
+                fieldConfig.checked = options?.checked || false;
+                fieldConfig.options = options?.options || [];
                 fieldConfig.data = [];
                 break;
             case "date":
                 fieldConfig.fieldType = "date";
                 fieldConfig.format = "dd MMMM yyyy";
-                fieldConfig.value = options?.control_settings?.date_value || '';
+                fieldConfig.value = options?.date_value || '';
                 break;
             case "image_upload":
                 fieldConfig.fieldType = "image_upload";
-                fieldConfig.showDropzone = options.control_settings?.show_dropzone;
-                fieldConfig.dropzoneMessage = options?.control_settings?.dropzone_message
-                fieldConfig.acceptedFileTypesMessage = options?.control_settings?.accepted_file_types_message
+                fieldConfig.showDropzone = options?.show_dropzone;
+                fieldConfig.dropzoneMessage = options?.dropzone_message
+                fieldConfig.acceptedFileTypesMessage = options?.accepted_file_types_message
                 break;
             case "file_upload":
                 fieldConfig.fieldType = "file_upload";
-                fieldConfig.showDropzone = options?.control_settings?.show_dropzone || false;
-                fieldConfig.allowedFileTypes = options?.control_settings?.allowed_file_types || [];
-                fieldConfig.dropzoneMessage = options?.control_settings?.dropzone_message || "";
-                fieldConfig.acceptedFileTypesMessage = options?.control_settings?.accepted_file_types_message || "";
+                fieldConfig.showDropzone = options?.show_dropzone || false;
+                fieldConfig.allowedFileTypes = options?.allowed_file_types || [];
+                fieldConfig.dropzoneMessage = options?.dropzone_message || "";
+                fieldConfig.acceptedFileTypesMessage = options?.accepted_file_types_message || "";
                 break;
             default:
                 return false;
@@ -423,6 +423,7 @@ const FormBlock = (props) => {
             addListItemButtonText: (isNotEmpty(formData?.add_item_button_label) ? formData.add_item_button_label : addListItemButtonText)
         };
     }
+
     return (
         <div className={formData.layout_style === "full-width" ? "container-fluid" : "container"}>
             <div className={"row justify-content-" + (isNotEmpty(formData.align) ? formData.align : "start")}>

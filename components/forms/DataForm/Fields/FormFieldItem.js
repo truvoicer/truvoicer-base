@@ -133,22 +133,19 @@ function FormFieldItem({
         )
     }
     const getSelectField = () => {
-        // console.log(values)
         if (!isSet(field?.options)) {
             return <p>Select error...</p>
         }
         if (field.fieldType === "select_data_source") {
             const selectedOptions = getFieldValue(field.name);
             return (
-                <>
-                    {Array.isArray(selectedOptions) &&
-                    <CreatableSelect
+                    <>
+                        <CreatableSelect
                         isMulti={field.multi && field.multi}
                         options={field.options}
-                        value={selectedOptions}
+                        value={(Array.isArray(selectedOptions))? selectedOptions : []}
                         onChange={selectChangeHandler.bind(this, field.name)}
-                    />
-                    }
+                        />
                 </>
             )
         }
