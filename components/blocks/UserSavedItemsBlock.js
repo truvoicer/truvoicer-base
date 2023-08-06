@@ -9,7 +9,7 @@ import {wpApiConfig} from "../../config/wp-api-config";
 import {setSearchRequestOperationAction} from "../../redux/actions/search-actions";
 import {NEW_SEARCH_REQUEST} from "../../redux/constants/search-constants";
 import {setSavedItemsListAction} from "../../redux/actions/user-stored-items-actions";
-import SavedItemsVerticalTabs from "../../../views/Components/Tabs/SavedItemsVerticalTabs";
+import SavedItemsVerticalTabs from "../tabs/SavedItemsVerticalTabs";
 
 function UserSavedItemsBlock(props) {
     const [tabData, setTabData] = useState({});

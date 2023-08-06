@@ -32,6 +32,9 @@ export const isEmpty = (object) => {
 export const isSet = (item) => {
     return typeof item !== "undefined";
 }
+export const isFile = (item) => {
+    return Object.prototype.toString.call(item) === "[object File]";
+}
 
 export const isNotEmpty = (item) => {
     return typeof item !== "undefined" && item !== null && item !== "" && item !== false;
@@ -117,11 +120,31 @@ export const getFontAwesomeMenuIcon = (menuName, iconName, defaultIcon) => {
     }
     return getIconClass;
 }
-export const getAcceptedMimeTypesString = (allowedExtArray = null) => {
+export const getAcceptedMimeTypesObject = (allowedExtArray = null) => {
+    let dataObject = {};
     if (allowedExtArray === null) {
-        return '';
+        return dataObject;
     }
-    return allowedExtArray.map(type => type.mime_type).join(", ");
+    allowedExtArray.forEach(type => {
+        const mimeType = type?.mime_type;
+        let extension = type?.extension;
+        if (!isNotEmpty(mimeType)) {
+            return;
+        }
+        if (!isNotEmpty(extension)) {
+            return;
+        }
+        if (extension.charAt(0) !== ".") {
+            extension = "." + extension;
+        }
+        if (!dataObject?.[mimeType]) {
+            dataObject[mimeType] = [];
+        }
+        if (!dataObject[mimeType].includes(extension)) {
+            dataObject[mimeType].push(extension);
+        }
+    });
+    return dataObject;
 }
 export const getAcceptedFileExtString = (allowedExtArray = null, allowedMessage) => {
     if (allowedExtArray === null) {

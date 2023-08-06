@@ -2,7 +2,7 @@ import React from 'react';
 import FormBlock from "../../form/FormBlock";
 import HtmlParser from "react-html-parser";
 import SpeechBubbleTestimonialsCarousel
-    from "../../../../../views/Components/Blocks/Carousel/Types/Testimonials/SpeechBubbleTestimonialsCarousel";
+    from "@/truvoicer-base/components/blocks/carousel/types/Testimonials/SpeechBubbleTestimonialsCarousel";
 
 const FormOptin = ({data}) => {
     console.log(data.carousel)

@@ -6,7 +6,7 @@ import LoaderComponent from "../widgets/Loader";
 import Footer from "../../../views/Layout/Footer";
 import {connect} from "react-redux";
 import {filterHtml} from "../../library/html-parser";
-import AccountAreaSidebar from "../../../views/Components/Sidebars/AccountAreaSidebar";
+import AccountAreaSidebar from "@/truvoicer-base/components/Sidebars/AccountAreaSidebar";
 import {
     SESSION_AUTHENTICATED,
     SESSION_IS_AUTHENTICATING,

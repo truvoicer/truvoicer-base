@@ -9,10 +9,12 @@ import ImageUploadField from "./FileUpload/ImageUploadField";
 import FileUploadField from "./FileUpload/FileUploadField";
 import moment from 'moment';
 import TelephoneField from "./Telephone/TelephoneField";
+import {da} from "date-fns/locale";
 
 function FormFieldItem({
                            formId, field, handleChange, handleBlur,
-                           checkboxOptions, radioOptions, arrayFieldIndex = false
+                           checkboxOptions, radioOptions, arrayFieldIndex = false,
+                            addRemovableFieldData
                        }) {
     const {values, setFieldValue} = useFormikContext();
 
@@ -52,7 +54,24 @@ function FormFieldItem({
         setFormFieldValue(key, date, arrayFieldIndex)
     }
 
-    const selectChangeHandler = (name, e) => {
+    const selectChangeHandler = (name, e, addedOption) => {
+        if (
+            field?.fieldType === "select_data_source" &&
+            field?.multi &&
+            Array.isArray(field?.origValue)
+        ) {
+            let data = [...e];
+            const findOrigValue = field?.origValue.find((item) => item?.value === addedOption?.option?.value);
+            if (findOrigValue) {
+                const findValue = data.findIndex((item) => item?.value === findOrigValue?.value);
+                if (findValue !== -1) {
+                    data[findValue] = findOrigValue;
+                    setFormFieldValue(name, data, arrayFieldIndex)
+                    return;
+                }
+            }
+        }
+        console.log({name, e, addedOption})
         setFormFieldValue(name, e, arrayFieldIndex)
     }
 
@@ -132,6 +151,13 @@ function FormFieldItem({
             />
         )
     }
+    function getSelectValue(selectValues) {
+        if (field?.multi) {
+            return (Array.isArray(selectValues))? selectValues : [];
+        } else {
+            return (isNotEmpty(selectValues))? selectValues : {};
+        }
+    }
     const getSelectField = () => {
         if (!isSet(field?.options)) {
             return <p>Select error...</p>
@@ -141,10 +167,12 @@ function FormFieldItem({
             return (
                     <>
                         <CreatableSelect
-                        isMulti={field.multi && field.multi}
+                        isMulti={field?.multi}
                         options={field.options}
-                        value={(Array.isArray(selectedOptions))? selectedOptions : []}
-                        onChange={selectChangeHandler.bind(this, field.name)}
+                        value={getSelectValue(selectedOptions)}
+                        onChange={(values, addedOption) => {
+                            selectChangeHandler(field.name, values, addedOption)
+                        }}
                         />
                 </>
             )

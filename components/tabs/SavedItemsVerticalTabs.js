@@ -2,20 +2,34 @@ import React, {useEffect, useState} from 'react';
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import {convertImageObjectsToArray, isSet} from "../../library/utils";
+import {isNotEmpty, isSet} from "../../library/utils";
 import {defaultListingsGrid, listingsGridConfig} from "../../../config/listings-grid-config";
-import {
-    LISTINGS_GRID_COMPACT,
-    LISTINGS_GRID_DETAILED,
-    LISTINGS_GRID_LIST
-} from "../../redux/constants/listings-constants";
 import {fetchData} from "../../library/api/fetcher/middleware";
-import Grid from "@mui/material/Grid";
-import {getItemRatingDataAction, isSavedItemAction} from "../../redux/actions/user-stored-items-actions";
 import {SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-constants";
 import {connect} from "react-redux";
 // import makeStyles from "@mui/material/styles/makeStyles";
 import {useRouter} from "next/router";
+import {getGridItemColumns, getItemViewUrl} from "../../redux/actions/item-actions";
+import {filterItemIdDataType, getGridItem} from "../../library/helpers/items";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import {siteConfig} from "../../../config/site-config";
+
+
+// const useStyles = makeStyles((theme) => ({
+//     root: {
+//         flexGrow: 1,
+//         backgroundColor: theme.palette.background.paper,
+//         display: 'flex',
+//         height: 224,
+//         overflow: "visible"
+//     },
+//     tabs: {
+//         borderRight: `1px solid ${theme.palette.divider}`,
+//         overflowX: 'visible',
+//         overflow: "visible"
+//     },
+// }));
 
 const SavedItemsVerticalTabs = (props) => {
     const router = useRouter();
@@ -26,7 +40,7 @@ const SavedItemsVerticalTabs = (props) => {
         provider: ""
     });
 
-    const getItemByIndex = (index) => {
+    const getProviderDataByName = (index) => {
         let item = {};
         Object.keys(props.data).map((key, objectIndex) => {
             if (index === objectIndex) {
@@ -43,7 +57,7 @@ const SavedItemsVerticalTabs = (props) => {
                 provider: item.provider_name,
                 category: item.category
             }
-            console.log(data)
+
             fetchData("operation", ["single"], data)
                 .then((response) => {
                     if (response.status === 200) {
@@ -58,9 +72,10 @@ const SavedItemsVerticalTabs = (props) => {
     }
 
     const handleTabChange = (e, value) => {
-        console.log(value)
         setTabValue(value)
-        getItemsRequest(value, true);
+        if (!Array.isArray(panelData[value]?.items_response) || panelData[value]?.items_response.length === 0) {
+            getItemsRequest(value, true);
+        }
     }
 
 
@@ -107,20 +122,17 @@ const SavedItemsVerticalTabs = (props) => {
         );
     }
 
-    const saveItemRequestCallback = (error, data) => {
-        console.log(error, data)
-    }
-
     const showInfo = (item, category, e) => {
         e.preventDefault()
 
-        // const url = getItemViewUrl(item, category)
-        // router.push(url, url, { shallow: true });
-        setModalData({
-            show: true,
-            item: item,
-            provider: item.provider
-        })
+        const url = getItemViewUrl(item, category);
+        router.push(url, url)
+
+        // setModalData({
+        //     show: true,
+        //     item: item,
+        //     provider: item.provider
+        // })
     }
 
     const GetModal = (category) => {
@@ -143,89 +155,76 @@ const SavedItemsVerticalTabs = (props) => {
             provider: modalData.provider,
         })
     }
-    const getGridItem = (item, category) => {
-        let gridItem = {...item};
-        // console.log(item, category)
-        if (isSet(gridItem.image_list)) {
-            gridItem.image_list = convertImageObjectsToArray(gridItem.image_list);
-        }
-        const gridConfig = listingsGridConfig.gridItems;
-        if (!isSet(gridConfig[category])) {
-            return null;
-        }
-        if (!isSet(gridConfig[category][listingsGrid])) {
-            return null;
-        }
-        const GridItems = gridConfig[category][listingsGrid];
-        return <GridItems data={gridItem}
-                          searchCategory={category}
-                          showInfoCallback={showInfo}
-                          savedItem={
-                              isSavedItemAction(
-                                  gridItem.item_id,
-                                  gridItem.provider,
-                                  category,
-                                  props.user[SESSION_USER_ID]
-                              )
-                          }
-                          ratingsData={
-                              getItemRatingDataAction(
-                                  gridItem.item_id,
-                                  gridItem.provider,
-                                  category,
-                                  props.user[SESSION_USER_ID]
-                              )
-                          }
-        />
-    }
 
     const getItemList = (data) => {
-        let gridItemSize = 12;
-        switch (listingsGrid) {
-            case LISTINGS_GRID_COMPACT:
-                gridItemSize = 4;
-                break;
-            case LISTINGS_GRID_LIST:
-                gridItemSize = 12;
-                break;
-            case LISTINGS_GRID_DETAILED:
-                gridItemSize = 6;
-                break;
-        }
         return (
-            <Grid container className={""} spacing={2}>
+            <Row>
                 {isSet(data) &&
                 data.items_response.map((item, index) => (
-                    <Grid item xs={gridItemSize} key={index}>
-                        {getGridItem(item, item.category)}
-                    </Grid>
+                    <Col key={index} {...getGridItemColumns(listingsGrid)}>
+                        {getGridItem(
+                            item,
+                            item.category,
+                            listingsGrid,
+                            props.user[SESSION_USER_ID],
+                            showInfo
+                        )}
+                    </Col>
                 ))
                 }
-            </Grid>
+            </Row>
         )
     }
-    // const useStyles = makeStyles((theme) => ({
-    //     root: {
-    //         flexGrow: 1,
-    //         backgroundColor: theme.palette.background.paper,
-    //         display: 'flex',
-    //         height: 224,
-    //         overflow: "visible"
-    //     },
-    //     tabs: {
-    //         borderRight: `1px solid ${theme.palette.divider}`,
-    //         overflowX: 'visible',
-    //         overflow: "visible"
-    //     },
-    // }));
 
     // const classes = useStyles();
-    const [tabValue, setTabValue] = useState(getItemByIndex(0).name);
+    const [tabValue, setTabValue] = useState(getProviderDataByName(0).name);
     const [panelData, setPanelData] = useState({...props.data});
 
+    const getItemById = (itemId, dataArray) => {
+        if (!Array.isArray(dataArray) || !isNotEmpty(itemId)) {
+            return [];
+        }
+        return dataArray.filter(item => {
+            return filterItemIdDataType(item.item_id) === filterItemIdDataType(itemId)
+        });
+    }
+
+    const getItemIndexByItemId = (itemId, dataArray) => {
+        if (!Array.isArray(dataArray) || !isNotEmpty(itemId)) {
+            return null;
+        }
+        let index = null;
+        dataArray.map((item, objectIndex) => {
+            if (filterItemIdDataType(item.item_id) === filterItemIdDataType(itemId)) {
+                index = objectIndex
+            }
+        })
+        return index;
+    }
+
     useEffect(() => {
-        getItemsRequest(getItemByIndex(0).name, true)
+        if (getProviderDataByName(0).name !== siteConfig.internalProviderName) {
+            getItemsRequest(getProviderDataByName(0).name, true)
+        }
     }, [])
+
+    useEffect(() => {
+        setPanelData(panelData => {
+            let clonePanelData = {...panelData};
+            Object.keys(panelData).map((key, index) => {
+                panelData[key].items_response.map(panelItem => {
+                    const dataItemResponse = getItemById(panelItem.item_id, props?.data[key]?.items);
+                    if (dataItemResponse.length === 0) {
+                        const panelItemResponseIndex = getItemIndexByItemId(panelItem.item_id, clonePanelData[key].items_response);
+                        const panelItemsIndex = getItemIndexByItemId(panelItem.item_id, clonePanelData[key].items);
+                        clonePanelData[key].items_response.splice(panelItemResponseIndex, 1)
+                        clonePanelData[key].items.splice(panelItemsIndex, 1)
+                    }
+                })
+            })
+            return clonePanelData;
+        })
+    }, [props.data])
 
     return (
         <div className={"tab-layout"}>

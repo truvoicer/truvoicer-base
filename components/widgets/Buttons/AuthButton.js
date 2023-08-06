@@ -10,7 +10,6 @@ import {logout} from "../../../redux/actions/session-actions";
 
 const AuthButton = (props) => {
     const options = props.data.auth_options;
-
     const showAuthLoginModal = () => {
         props.setModalContentMiddleware(componentsConfig.components.authentication_login.name, {}, true)
     }
@@ -20,23 +19,23 @@ const AuthButton = (props) => {
     }
 
     return (
-        <>
+        <div className="Appointment">
             {!props.session.authenticated &&
-            <div className="login-area">
+            <div className="phone_num d-none d-xl-block">
                 <a onClick={showAuthLoginModal}>
-                    <span>{options.login_label} / {options.register_label}</span>
+                    {options.login_label}
                 </a>
             </div>
             }
             {props.session.authenticated &&
             <>
-                <div className="login-area">
+                <div className="phone_num d-none d-xl-block">
                     <a href={siteConfig.defaultUserAccountHref}>
                         <span className={"d-none d-md-block"}>{options.account_label}</span>
                         <span className={"d-block d-md-none"}><i className="fas fa-user-circle"/></span>
                     </a>
                 </div>
-                <div className="login-area">
+                <div className="phone_num d-none d-xl-block">
                     <a
                         href={siteConfig.defaultLogoutHref}
                         onClick={logoutHandler}
@@ -47,7 +46,7 @@ const AuthButton = (props) => {
                 </div>
             </>
             }
-        </>
+        </div>
     );
 }
 

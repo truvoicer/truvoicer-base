@@ -13,6 +13,7 @@ import {ChangePasswordFormFields} from "../../../config/forms/change-password-fo
 import {SESSION_AUTH_TYPE, SESSION_USER} from "../../../redux/constants/session-constants";
 import Snackbar from "@mui/material/Snackbar";
 import SnackbarContent from "@mui/material/SnackbarContent";
+import WPErrorDisplay from "@/truvoicer-base/components/errors/WPErrorDisplay";
 
 const sprintf = require("sprintf").sprintf;
 
@@ -158,7 +159,9 @@ const FormBlock = (props) => {
                     fieldConfig.rowIndex = rowIndex;
                     fieldConfig.columnIndex = itemIndex;
                     if (isSet(userDataValues[fieldConfig.name])) {
-                        fieldConfig.value = userDataValues[fieldConfig.name];
+                        const value = userDataValues[fieldConfig.name];
+                        fieldConfig.value = value;
+                        fieldConfig.origValue = value;
                     }
                     configData.push(fieldConfig);
                 }
@@ -394,6 +397,7 @@ const FormBlock = (props) => {
             setResponse({
                 showAlert: true,
                 error: false,
+                errors: response?.data?.errors || [],
                 success: true,
                 message: response?.data?.message
             })
@@ -405,6 +409,7 @@ const FormBlock = (props) => {
                 setResponse({
                     showAlert: true,
                     error: true,
+                    errors: error?.response?.data?.errors || [],
                     success: false,
                     message: error?.response?.data?.message
                 })
@@ -423,7 +428,6 @@ const FormBlock = (props) => {
             addListItemButtonText: (isNotEmpty(formData?.add_item_button_label) ? formData.add_item_button_label : addListItemButtonText)
         };
     }
-
     return (
         <div className={formData.layout_style === "full-width" ? "container-fluid" : "container"}>
             <div className={"row justify-content-" + (isNotEmpty(formData.align) ? formData.align : "start")}>
@@ -439,6 +443,9 @@ const FormBlock = (props) => {
                         <p className={"text-center text-success"}>{response.message}</p>
                     </div>
                     }
+                    {Array.isArray(response.errors) && response.errors.length > 0 && (
+                        <WPErrorDisplay errorData={response.errors} />
+                    )}
                     {response.error &&
                     <div className="bg-white">
                         <p className={"text-danger text-danger"}>{response.message}</p>

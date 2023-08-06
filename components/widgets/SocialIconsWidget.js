@@ -2,28 +2,32 @@ import React from 'react';
 
 const SocialIconsWidget = (props) => {
     return (
-        <>
-            <div className="single-footer-widget mb-70">
-                <div className="widget-title">
+        <div className="col-xl-3 col-md-6 col-lg-3">
+            <div className="footer_widget wow fadeInUp" data-wow-duration="1s" data-wow-delay=".3s">
+                <h3 className="footer_title">
                     <h4>{props.data.title}</h4>
-                </div>
-                <div className="widget-content">
-                    {props.data.facebook &&
-                    <a href={props.data.facebook} className="pl-0 pr-3"><span className="icon-facebook"/></a>
-                    }
-                    {props.data.twitter &&
-                    <a href={props.data.twitter} className="pl-0 pr-3"><span className="icon-twitter"/></a>
-                    }
-                    {props.data.instagram &&
-                    <a href={props.data.instagram} className="pl-0 pr-3"><span className="icon-instagram"/></a>
-                    }
-                    {props.data.linkedin &&
-                    <a href={props.data.linkedin} className="pl-0 pr-3"><span className="icon-linkedin"/></a>
-                    }
+                </h3>
+                <div className="socail_links">
+                    <ul>
+                        {props.data.facebook &&
+                        <li><a href={props.data.facebook} className="pl-0 pr-3"><span className="icon-facebook"/></a>
+                        </li>
+                        }
+                        {props.data.twitter &&
+                        <li><a href={props.data.twitter} className="pl-0 pr-3"><span className="icon-twitter"/></a></li>
+                        }
+                        {props.data.instagram &&
+                        <li><a href={props.data.instagram} className="pl-0 pr-3"><span className="icon-instagram"/></a>
+                        </li>
+                        }
+                        {props.data.linkedin &&
+                        <li><a href={props.data.linkedin} className="pl-0 pr-3"><span className="icon-linkedin"/></a>
+                        </li>
+                        }
+                    </ul>
                 </div>
             </div>
-
-        </>
+        </div>
     );
 }
 export default SocialIconsWidget;

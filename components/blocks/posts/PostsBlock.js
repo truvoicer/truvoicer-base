@@ -6,7 +6,7 @@ import {useRouter} from "next/router";
 import {buildWpApiUrl, publicApiRequest} from "../../../library/api/wp/middleware";
 import {wpApiConfig} from "../../../config/wp-api-config";
 import {isNotEmpty} from "../../../library/utils";
-import BlogSidebar from "../../../../views/Components/Sidebars/BlogSidebar";
+import BlogSidebar from "@/truvoicer-base/components/Sidebars/BlogSidebar";
 
 const PostsBlock = ({data}) => {
     function useQueryParams() {

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {createRef, useEffect, useState} from 'react';
 import {useDropzone} from "react-dropzone";
 import Image from "react-bootstrap/Image";
 import Row from "react-bootstrap/Row";
@@ -6,7 +6,7 @@ import Col from "react-bootstrap/Col";
 import Modal from "react-bootstrap/Modal";
 import ReactCrop from "react-image-crop";
 import {Button} from "react-bootstrap";
-import {getAcceptedFileExtString, getAcceptedMimeTypesString, isNotEmpty} from "../../../../../library/utils";
+import {getAcceptedFileExtString, getAcceptedMimeTypesObject, isNotEmpty} from "../../../../../library/utils";
 
 function ImageUploadField({
                               dataImageSrc,
@@ -21,7 +21,7 @@ function ImageUploadField({
                           }) {
     const [model, setModal] = useState(false);
     const [imageSrc, setImageSrc] = useState(dataImageSrc || value || "https://via.placeholder.com/150");
-    const [imageRef, setImageRef] = useState(null);
+    const imageRef = createRef();
     const [croppedImage, setCroppedImage] = useState(null);
     const [image, setImage] = useState({});
     const defaultImageCrop = {
@@ -44,7 +44,6 @@ function ImageUploadField({
             extension: "png"
         },
     ]
-
     const handleModalClose = () => {
         setModal(false);
     }
@@ -59,14 +58,15 @@ function ImageUploadField({
 
     // If you setState the crop in here you should return false.
     const onImageLoaded = async (image) => {
-        setImageRef(image)
         const crop = {...defaultImageCrop, ...{x: 0, y: 0}}
-        const croppedImageObject = await getCroppedImg(
-            image,
-            crop,
-            image.type
-        );
-        setCroppedImage(croppedImageObject)
+        if (image?.target && crop.width && crop.height) {
+            const croppedImageObject = await getCroppedImg(
+                image.target,
+                crop,
+                image.type
+            );
+            setCroppedImage(croppedImageObject)
+        }
     };
 
     const onCropComplete = crop => {
@@ -78,9 +78,9 @@ function ImageUploadField({
     };
 
     const makeClientCrop = async (crop) => {
-        if (imageRef && crop.width && crop.height) {
+        if (imageRef?.current && crop.width && crop.height) {
             const croppedImageObject = await getCroppedImg(
-                imageRef,
+                imageRef.current,
                 crop,
                 image.type
             );
@@ -138,7 +138,7 @@ function ImageUploadField({
     }
 
     const {getRootProps, getInputProps, open} = useDropzone({
-        accept: getAcceptedMimeTypesString(allowedFileTypes),
+        accept: getAcceptedMimeTypesObject(allowedFileTypes),
         maxFiles: 1,
         onDrop: onSelectFile
     });
@@ -147,6 +147,9 @@ function ImageUploadField({
             setImageSrc(value);
         }
     }, [value]);
+    useEffect(() => {
+
+    }, [image]);
 
     return (
         <section>
@@ -165,7 +168,7 @@ function ImageUploadField({
                             <p>{dropzoneMessage}</p>
                             }
                             {acceptedFilesMessage &&
-                            <em>{`(${getAcceptedFileExtString(allowedFileTypes, acceptedFilesMessage)}`}</em>
+                            <em>{`(${getAcceptedFileExtString(allowedFileTypes, acceptedFilesMessage)})`}</em>
                             }
                         </div>
                         :
@@ -197,10 +200,8 @@ function ImageUploadField({
                             <Row>
                                 <Col sm={12} md={6} lg={6}>
                                     <ReactCrop
-                                        src={image.preview}
                                         crop={imageCrop}
                                         ruleOfThirds
-                                        onImageLoaded={onImageLoaded}
                                         onComplete={onCropComplete}
                                         onChange={onCropChange}
                                         maxWidth={150}
@@ -209,7 +210,10 @@ function ImageUploadField({
                                         // imageStyle={{
                                         //     height: "300px"
                                         // }}
-                                    />
+                                    >
+
+                                        <img ref={imageRef} src={image.preview} onLoad={onImageLoaded} alt="Preview" style={{maxWidth: "100%"}}/>
+                                    </ReactCrop>
                                 </Col>
                                 <Col sm={12} md={6} lg={6}>
                                     <p>

@@ -162,17 +162,34 @@ const DataForm = (props) => {
     };
 
     const formSubmitHandler = (values) => {
+        let data = {...values};
         const ignoredFields = getIgnoredFields(values);
-        Object.keys(values).map((key) => {
+        Object.keys(data).map((key) => {
             const field = getFieldByName(key);
-            if (field.fieldType === "checkbox" && values[field.name] === "") {
-                values[field.name] = false;
+            if (field.fieldType === "checkbox" && data[field.name] === "") {
+                data[field.name] = false;
             }
             if (ignoredFields.includes(key)) {
-                values[key] = "";
+                data[key] = "";
+            }
+            if (
+                ['select_data_source', 'select'].includes(field?.fieldType) &&
+                field?.multi &&
+                Array.isArray(data[field.name]) &&
+                Array.isArray(field?.origValue)
+            ) {
+                const selectedValues = data[field.name];
+                const removedValues = field.origValue.filter((item) => {
+                    return !selectedValues.find(selectedItem => selectedItem?.value === item?.value);
+                }).map((item) => {
+                    let cloneItem = {...item};
+                    cloneItem.remove = true;
+                    return cloneItem;
+                });
+                data[field.name] = [...selectedValues, ...removedValues];
             }
         });
-        props.submitCallback(values);
+        props.submitCallback(data);
     }
 
     const dependsOnCheck = (field, values) => {
@@ -197,6 +214,7 @@ const DataForm = (props) => {
                 arrayFieldIndex={arrayFieldIndex}
                 handleChange={handleChange}
                 handleBlur={handleBlur}
+                addRemovableFieldData={addRemovableFieldData}
             />
         );
         switch (field?.labelPosition) {
@@ -293,7 +311,16 @@ const DataForm = (props) => {
         return "col-" + columnSize.toString()
     }
 
+    function addRemovableFieldData(name, value) {
+        setRemovableFieldData(prevState => {
+            let clonePrevState = {...prevState};
+            clonePrevState[name] = value;
+            return clonePrevState;
+        })
+    }
+
     const [initialValues, setInitialValues] = useState({})
+    const [removableFieldData, setRemovableFieldData] = useState({})
 
     useEffect(() => {
         setInitialValues(initialValues => {
