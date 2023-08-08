@@ -16,12 +16,176 @@ import {listingsGridConfig} from "@/config/listings-grid-config";
 import {getItemRatingDataAction, isSavedItemAction} from "@/truvoicer-base/redux/actions/user-stored-items-actions";
 import {tagManagerSendDataLayer} from "@/truvoicer-base/library/api/global-scripts";
 import {getItemViewUrl} from "@/truvoicer-base/redux/actions/item-actions";
+import {SESSION_AUTHENTICATED, SESSION_USER, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
+import {buildWpApiUrl, protectedApiRequest} from "@/truvoicer-base/library/api/wp/middleware";
+import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
+import {produce} from "immer";
+import {NEW_SEARCH_REQUEST} from "@/truvoicer-base/redux/constants/search-constants";
+import {setItemRatingsList, setSavedItemsList} from "@/truvoicer-base/redux/reducers/search-reducer";
+import {filterItemIdDataType} from "@/truvoicer-base/library/helpers/items";
+import {setModalContentAction} from "@/truvoicer-base/redux/actions/page-actions";
+import {componentsConfig} from "@/config/components-config";
+import {
+    LISTINGS_GRID_COMPACT,
+    LISTINGS_GRID_CUSTOM, LISTINGS_GRID_DETAILED,
+    LISTINGS_GRID_LIST
+} from "@/truvoicer-base/redux/constants/listings-constants";
+import Image from "react-bootstrap/Image";
+import {
+    setItemCategory,
+    setItemData,
+    setItemError,
+    setItemId,
+    setItemProvider
+} from "@/truvoicer-base/redux/reducers/item-reducer";
+import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
+import {sprintf} from "sprintf";
+import {ItemRoutes} from "@/config/item-routes";
 
 
-export class ItemssEngine {
+export class ItemEngine {
     constructor() {
+        this.itemData = {
+            data: {},
+            provider: "",
+            category: "",
+            itemId: "",
+            error: {},
+            updateData: () => {
+            }
+        };
     }
 
+    setItemContext(context) {
+        this.itemContext = context;
+    }
+
+    updateContext({key, value}) {
+        this.itemContext.updateData({key, value})
+    }
+
+    addError(error) {
+        this.updateContext({key: "error", value: error})
+    }
+
+    setItemErrorAction(error) {
+        this.addError(error)
+    }
+    setItemCategoryAction(category) {
+        this.updateContext({key: "category", value: category})
+    }
+    setItemProviderAction(provider) {
+        this.updateContext({key: "provider", value: provider})
+    }
+    setItemIdAction(itemId) {
+        this.updateContext({key: "itemId", value: itemId})
+    }
+
+    setItemDataAction(itemData) {
+        const itemDataState = {...store.getState().item.data};
+        const object = Object.assign({}, itemDataState, itemData);
+        this.updateContext({key: "data", value: object})
+    }
+
+    getItemAction(requestData) {
+        fetchData("operation", ["single"], requestData, this.fetchItemCallback)
+    }
+
+    fetchLoaderDataAction(operation, requestData, callback) {
+        fetchData("operation", [operation], requestData, callback)
+    }
+
+    fetchItemCallback (status, data) {
+        if (status === 200) {
+            this.setItemDataAction(data.request_data[0])
+        } else {
+            console.error(data)
+            this.addError("Item fetch error...")
+        }
+    }
+
+    setSingleItemPostState({databaseId, dataKeys = null}) {
+        if (!isNotEmpty(dataKeys)) {
+            console.error("Single Item data keys is either empty or undefined.")
+            return;
+        }
+
+        // const parseJson = JSON.parse(dataKeys)
+        // if (!Array.isArray(parseJson?.api_data_keys_list)) {
+        //     console.error("Single item (api_data_keys_list) is not a valid array.")
+        //     return;
+        // }
+
+        // let dataKeyObject = buildDataKeyObject(parseJson.api_data_keys_list, databaseId);
+        this.setItemIdAction(databaseId)
+        this.setItemDataAction(dataKeys)
+    }
+
+    getCustomItem = (item, category) => {
+        const gridConfig = listingsGridConfig.gridItems;
+        if (!isSet(gridConfig[category])) {
+            return null;
+        }
+        if (!isSet(gridConfig[category][LISTINGS_GRID_CUSTOM])) {
+            return null;
+        }
+        const CustomItem = gridConfig[category][LISTINGS_GRID_CUSTOM];
+        return <CustomItem data={item} />
+    }
+
+
+    getGridItemColumns = (listingsGrid) => {
+        switch (listingsGrid) {
+            case LISTINGS_GRID_COMPACT:
+                return {
+                    sm: 12,
+                    md: 6,
+                    lg: 4
+                };
+            case LISTINGS_GRID_LIST:
+                return {
+                    sm: 12,
+                    md: 12,
+                    lg: 12
+                };
+            case LISTINGS_GRID_DETAILED:
+                return {
+                    sm: 12,
+                    md: 6,
+                    lg: 6
+                };
+            default:
+                return {
+                    sm: 12,
+                    md: 6,
+                    lg: 4
+                };
+        }
+    }
+
+    getItemViewUrl(item, category) {
+        let data = {
+            item_id: item.item_id
+        }
+        if (item?.custom_item) {
+            return sprintf(ItemRoutes.internalItemView, data);
+        } else if (isNotEmpty(item?.provider)) {
+            data.category = category
+            data.provider = item.provider
+            return sprintf(ItemRoutes.externalItemView, data);
+        } else {
+            return null;
+        }
+    }
+
+    getComparisonItemViewUrl(item, category) {
+        let data = {
+            item_slug: item.item_slug,
+            listings_category: category
+        }
+
+        return sprintf(ItemRoutes.comparisonItemView, data);
+    }
 
     replaceItemDataPlaceholders(pageTitle, item) {
         const test = new RegExp("\\\[+(.*?)\\]", "g");
@@ -33,7 +197,7 @@ export class ItemssEngine {
         });
     }
 
-    export const itemDataTextFilter = (text) => {
+     itemDataTextFilter(text) {
         const itemState = {...store.getState().item};
         const postDataState = {...store.getState().page.postData};
 
@@ -42,7 +206,7 @@ export class ItemssEngine {
         }
         if (isNotEmpty(postDataState)) {
             if (!isObjectEmpty(postDataState)) {
-                return replaceItemDataPlaceholders(text, {
+                return this.replaceItemDataPlaceholders(text, {
                     post_title: postDataState.title,
                     title: postDataState.title
                 })
@@ -50,14 +214,14 @@ export class ItemssEngine {
         }
         if (isNotEmpty(itemState.itemId)) {
             if (!isObjectEmpty(itemState.data)) {
-                return replaceItemDataPlaceholders(text, itemState.data)
+                return this.replaceItemDataPlaceholders(text, itemState.data)
             }
             return "Loading...";
         }
         return text;
     }
 
-    export const convertLinkToHttps = (url) => {
+     convertLinkToHttps(url) {
         if (!isNotEmpty(url)) {
             return url;
         }
@@ -67,27 +231,27 @@ export class ItemssEngine {
         return url;
     }
 
-    const getItemImage = (url, label) => {
-        return <img src={convertLinkToHttps(url)} alt={label}/>
+    getItemImage(url, label) {
+        return <Image src={this.convertLinkToHttps(url)} alt={label}/>
     }
 
-    const getItemLink = (url, label) => {
+    getItemLink(url, label) {
         return <a href={url}>{label}</a>
     }
 
-    const getItemDate = (dateString) => {
+    getItemDate(dateString) {
         return <div>{formatDate(dateString)}</div>
     }
 
-    const getItemText = (text) => {
+    getItemText(text) {
         return <div>{HtmlParser(text)}</div>
     }
 
-    const getItemPrice = (price) => {
+    getItemPrice(price) {
         return <div>{price}</div>
     }
 
-    const getItemList = (config, data) => {
+    getItemList(config, data) {
         if (!isSet(config) || !isSet(data)) {
             return null;
         }
@@ -100,7 +264,7 @@ export class ItemssEngine {
                     <li key={index}>
                         {config.keys.map((key, keyIndex) => (
                             <div key={keyIndex}>
-                                {getItemContentType(key.type, key.name, item, key)}
+                                {this.getItemContentType(key.type, key.name, item, key)}
                             </div>
                         ))}
                     </li>
@@ -109,7 +273,7 @@ export class ItemssEngine {
         )
     }
 
-    const getListIds = (data, itemId) => {
+    getListIds(data, itemId) {
         if (!isSet(data) || data === null || data === "") {
             return itemId;
         }
@@ -119,7 +283,7 @@ export class ItemssEngine {
         return data;
     }
 
-    const getItemContentComponent = (type, key, dataItem, config = null) => {
+    getItemContentComponent(type, key, dataItem, config = null) {
         switch (type) {
             case "image":
                 return <ImageLoader
@@ -129,63 +293,56 @@ export class ItemssEngine {
             case "list":
                 return <ListLoader
                     item={dataItem}
-                    listIds={getListIds(dataItem[key]?.data, dataItem?.item_id)}
+                    listIds={this.getListIds(dataItem[key]?.data, dataItem?.item_id)}
                     listData={dataItem[key]}
                     listKeys={config.config.keys}
                 />;
             default:
-                return getItemContentType(type, key, dataItem, config);
+                return this.getItemContentType(type, key, dataItem, config);
         }
     }
 
-    export const getItemContentType = (type, key, dataItem, config = null) => {
+     getItemContentType(type, key, dataItem, config = null) {
         switch (type) {
             case "image":
-                return getItemImage(dataItem[key], config.label);
+                return this.getItemImage(dataItem[key], config.label);
             case "link":
-                return getItemLink(dataItem[key], config.label);
+                return this.getItemLink(dataItem[key], config.label);
             case "date":
-                return getItemDate(dataItem[key]);
+                return this.getItemDate(dataItem[key]);
             case "price":
-                return getItemPrice(dataItem[key]);
+                return this.getItemPrice(dataItem[key]);
             case "list":
-                return getItemList(config.config, dataItem[key]);
+                return this.getItemList(config.config, dataItem[key]);
             default:
-                return getItemText(dataItem[key]);
+                return this.getItemText(dataItem[key]);
         }
     }
 
-    filterItemIdDataType(itemId) {
-        if (!isNaN(itemId)) {
-            itemId = parseInt(itemId);
-        }
-        return itemId;
-    }
-
-    const getItemContent = (type, key, dataItem, config = null) => {
+    getItemContent(type, key, dataItem, config = null) {
         if (isSet(dataItem[key]) &&
             dataItem[key] !== null &&
             isSet(dataItem[key].request_item) &&
             isSet(dataItem[key].request_item.request_operation)
         ) {
-            return getItemContentComponent(type, key, dataItem, config)
+            return this.getItemContentComponent(type, key, dataItem, config)
         }
-        return getItemContentType(type, key, dataItem, config);
+        return this.getItemContentType(type, key, dataItem, config);
     }
 
-    export const getListItemData = (item, dataItem) => {
+     getListItemData(item, dataItem) {
         return (
             <>
                 {!Array.isArray(item.dataKey)
                     ?
                     <>
-                        {getItemContent(item.type, item.dataKey, dataItem, item)}
+                        {this.getItemContent(item.type, item.dataKey, dataItem, item)}
                     </>
                     :
                     <>
                         {item.dataKey.map((dataKeyName, keyIndex) => (
                             <React.Fragment key={keyIndex.toString()}>
-                                {getItemContent(item.type, item.dataKey, dataItem, item)}
+                                {this.getItemContent(item.type, item.dataKey, dataItem, item)}
                             </React.Fragment>
                         ))}
                     </>
@@ -194,7 +351,7 @@ export class ItemssEngine {
         )
     }
 
-    export const getDataKeyValue = (dataItem) => {
+     getDataKeyValue(dataItem) {
         switch (dataItem.value_type) {
             case "text":
                 return dataItem.data_item_value;
@@ -221,13 +378,13 @@ export class ItemssEngine {
         }
     }
 
-    export const buildDataKeyObject = (dataKeyList, itemId, itemSlug = null) => {
+    buildDataKeyObject(dataKeyList, itemId, itemSlug = null) {
         let cloneDataKeyList = {...dataKeyList};
-        let dataKeyObject = convertDataKeysDataArray(cloneDataKeyList);
-        return renderDataKeyObject(dataKeyObject, itemId, itemSlug);
+        let dataKeyObject = this.convertDataKeysDataArray(cloneDataKeyList);
+        return this.renderDataKeyObject(dataKeyObject, itemId, itemSlug);
     }
 
-    export const renderDataKeyObject = (dataKeyObject = {}, itemId, itemSlug = null) => {
+    renderDataKeyObject(dataKeyObject = {}, itemId, itemSlug = null) {
         dataKeyObject.item_id = itemId;
         if (isNotEmpty(itemSlug)) {
             dataKeyObject.item_slug = itemSlug;
@@ -238,14 +395,14 @@ export class ItemssEngine {
         return dataKeyObject;
     }
 
-    export const convertDataKeysDataArrayObject = (dataKeyList) => {
+    convertDataKeysDataArrayObject(dataKeyList) {
         let dataKeyObject = {};
         dataKeyList.map((item) => {
-            dataKeyObject[item.data_item_key] = getDataKeyValue(item)
+            dataKeyObject[item.data_item_key] = this.getDataKeyValue(item)
         })
         return dataKeyObject;
     }
-    export const convertDataKeysDataArray = (dataKeyList) => {
+    convertDataKeysDataArray(dataKeyList) {
         let dataKeyObject = {};
         // dataKeyList.map((item) => {
         //     dataKeyObject[item.data_item_key] = getDataKeyValue(item)
@@ -253,15 +410,15 @@ export class ItemssEngine {
         return dataKeyList;
     }
 
-    export const buildCustomItem = (item) => {
+    buildCustomItem(item) {
         if (!item) {
             return null;
         }
         const dataKeyList = item.data.api_data_keys_list;
-        return buildDataKeyObject(dataKeyList, item.post_type.ID);
+        return this.buildDataKeyObject(dataKeyList, item.post_type.ID);
     }
 
-    export const buildCustomItemsArray = (itemsData) => {
+    buildCustomItemsArray(itemsData) {
         return itemsData.map(item => {
             if (
                 item.item_type !== "post" ||
@@ -269,11 +426,11 @@ export class ItemssEngine {
             ) {
                 return null;
             }
-            return buildCustomItem(item.item_post)
+            return this.buildCustomItem(item.item_post)
         });
     }
 
-    export const getGridItem = (item, category, listingsGrid, userId, showInfoCallback, index = false) => {
+    getGridItem(item, category, listingsGrid, userId, showInfoCallback, index = false) {
         let gridItem = {...item};
         if (isSet(gridItem.image_list)) {
             gridItem.image_list = convertImageObjectsToArray(gridItem.image_list);
@@ -293,7 +450,7 @@ export class ItemssEngine {
                 searchCategory={category}
                 showInfoCallback={showInfoCallback}
                 savedItem={
-                    isSavedItemAction(
+                    this.isSavedItemAction(
                         isSet(item?.item_id) ? item.item_id : null,
                         isSet(item?.provider) ? item.provider : null,
                         category,
@@ -301,7 +458,7 @@ export class ItemssEngine {
                     )
                 }
                 ratingsData={
-                    getItemRatingDataAction(
+                    this.getItemRatingDataAction(
                         isSet(item?.item_id) ? item.item_id : null,
                         isSet(item?.provider) ? item.provider : null,
                         category,
@@ -312,22 +469,22 @@ export class ItemssEngine {
         )
     }
 
-    export const globalItemLinkClick = (trackData = {}) => {
+    globalItemLinkClick(trackData = {}) {
         tagManagerSendDataLayer(trackData)
     }
 
-    export const getItemLinkProps = (category, item, showInfoCallback, e, trackData = {}) => {
+    getItemLinkProps(category, item, showInfoCallback, e, trackData = {}) {
         const listingsData = store.getState().listings?.listingsData;
         if (isSet(listingsData?.item_view_display) && listingsData.item_view_display === "page") {
             return {
                 onClick: (e) => {
                     // e.preventDefault()
-                    globalItemLinkClick(trackData)
+                    this.globalItemLinkClick(trackData)
                 }
             };
         }
         return {
-            href: getItemViewUrl(item, category),
+            href: this.getItemViewUrl(item, category),
             onClick: showInfoCallback.bind(e, item, category)
         }
     }
@@ -349,7 +506,7 @@ export class ItemssEngine {
                     if (!isObject(item?.single_item_id?.api_data_keys?.data_keys)) {
                         return;
                     }
-                    listData.push(buildDataKeyObject(
+                    listData.push(this.buildDataKeyObject(
                         item?.single_item_id?.api_data_keys.data_keys,
                         item?.single_item_id?.ID,
                         item?.single_item_id?.post_name
@@ -369,10 +526,47 @@ export class ItemssEngine {
                 ID: post?.ID,
                 post_title: post?.post_title,
                 post_type: post?.post_type,
-                item_list: extractItemListFromPost({post})
+                item_list: this.extractItemListFromPost({post})
             })
         })
         return listData;
+    }
+
+    getUserItemsListAction(data, provider, category) {
+        if (data.length === 0) {
+            return false;
+        }
+        const session = {...store.getState().session};
+
+        if (!session[SESSION_AUTHENTICATED]) {
+            return;
+        }
+        const userId = session[SESSION_USER][SESSION_USER_ID]
+
+        const itemsList = data.map((item) =>  {
+            return item.item_id;
+        })
+
+        const requestData = {
+            provider_name: provider,
+            category: category,
+            id_list: itemsList,
+            user_id: userId
+        }
+        protectedApiRequest(
+            buildWpApiUrl(wpApiConfig.endpoints.savedItemsList),
+            requestData,
+            this.getUserItemsListCallback
+        )
+    }
+
+    getUserItemsListCallback(error, data) {
+        if (error) {
+            return false;
+        }
+        console.log({data})
+        this.setSavedItemsListAction(data?.savedItems || []);
+        this.setItemRatingsListAction(data?.itemRatings || []);
     }
 
 }

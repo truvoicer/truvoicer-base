@@ -13,8 +13,8 @@ import {produce} from "immer";
 import {isSet} from "@/truvoicer-base/library/utils";
 import {
     setCategory,
-    setExtraData, setPageControls,
-    setProvider, setRequestService, setSearchError,
+    setExtraData, setItemRatingsList, setPageControls,
+    setProvider, setRequestService, setSavedItemsList, setSearchError,
     setSearchList,
     setSearchOperation, setSearchStatus
 } from "@/truvoicer-base/redux/reducers/search-reducer";
@@ -34,6 +34,12 @@ import {addArrayItem, addListingsQueryDataString} from "@/truvoicer-base/redux/m
 import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {addQueryDataObjectAction, addQueryDataString} from "@/truvoicer-base/redux/actions/listings-actions";
 import {runSearch, setSearchRequestStatusAction} from "@/truvoicer-base/redux/actions/search-actions";
+import {ItemEngine} from "@/truvoicer-base/library/listings/item-engine";
+import {SESSION_AUTHENTICATED} from "@/truvoicer-base/redux/constants/session-constants";
+import {setModalContentAction} from "@/truvoicer-base/redux/actions/page-actions";
+import {componentsConfig} from "@/config/components-config";
+import {buildWpApiUrl, protectedApiRequest} from "@/truvoicer-base/library/api/wp/middleware";
+import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
 
 export class SearchEngine {
     constructor() {
@@ -58,8 +64,25 @@ export class SearchEngine {
             error: {},
             updateData: () => {}
         }
+        this.itemEngine = new ItemEngine();
     }
 
+    setSearchContext(context) {
+        this.searchContext = context;
+    }
+    updateContext({key, value}) {
+        this.searchContext.updateData({key, value})
+    }
+
+    updatePageControls({key, value}) {
+        let pageControls = {...this.searchContext.pageControls}
+        pageControls[key] = value;
+        this.updateContext({key: "pageControls", value: pageControls})
+    }
+
+    addError(error) {
+        this.updateContext({key: "error", value: error})
+    }
     setSearchExtraDataAction(extraData, provider, listData) {
         const extraDataState = {...store.getState().search.extraData};
 
@@ -72,7 +95,7 @@ export class SearchEngine {
             }
             draftState[provider] = extraData;
         })
-        store.dispatch(setExtraData(nextState))
+        this.updateContext({key: "extraData", value: nextState})
     }
 
     setSearchListDataAction(listData) {
@@ -84,7 +107,7 @@ export class SearchEngine {
 
         const nextState = produce(searchState.searchList, (draftState) => {
             if ((searchOperation === NEW_SEARCH_REQUEST)) {
-                store.dispatch(setSearchOperation(APPEND_SEARCH_REQUEST));
+                this.updateContext({key: "searchOperation", value: APPEND_SEARCH_REQUEST})
                 draftState.splice(0, draftState.length + 1);
 
             } else if (searchOperation === APPEND_SEARCH_REQUEST) {
@@ -93,49 +116,49 @@ export class SearchEngine {
                 draftState.push(item)
             })
         })
-        store.dispatch(setSearchList(nextState))
+        this.updateContext({key: "searchList", value: nextState})
     }
 
     setSearchProviderAction(provider) {
-        store.dispatch(setProvider(provider))
+        this.updateContext({key: "provider", value: provider})
     }
 
     setSearchCategoryAction(category) {
-        store.dispatch(setCategory(category))
+        this.updateContext({key: "category", value: category})
     }
 
     setSearchRequestServiceAction(requestService) {
-        store.dispatch(setRequestService(requestService))
+        this.updateContext({key: "requestService", value: requestService})
     }
 
     setSearchRequestStatusAction(status) {
-        store.dispatch(setSearchStatus(status))
+        this.updateContext({key: "searchStatus", value: status})
     }
     setSearchRequestOperationAction(operation) {
-        store.dispatch(setSearchOperation(operation))
+        this.updateContext({key: "searchOperation", value: operation})
     }
 
     setSearchRequestErrorAction(error) {
-        store.dispatch(setSearchError(error))
+        this.addError(error)
     }
 
     searchResponseHandler(status, data, completed = false) {
         if (status === 200 && data.status === "success") {
-            getUserItemsListAction(data.request_data, data.provider, data.category)
-            setSearchListDataAction(data.request_data);
-            setSearchExtraDataAction(data.extra_data, data.provider, data.request_data)
-            setSearchRequestServiceAction(data.request_service)
-            setSearchProviderAction(data.provider)
-            setSearchCategoryAction(data.category)
-            setPageControlsAction(data.extra_data)
+            this.itemEngine.getUserItemsListAction(data.request_data, data.provider, data.category)
+            this.setSearchListDataAction(data.request_data);
+            this.setSearchExtraDataAction(data.extra_data, data.provider, data.request_data)
+            this.setSearchRequestServiceAction(data.request_service)
+            this.setSearchProviderAction(data.provider)
+            this.setSearchCategoryAction(data.category)
+            this.setPageControlsAction(data.extra_data)
 
         } else {
-            setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
-            setSearchRequestErrorAction(data.message)
+            this.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
+            this.setSearchRequestErrorAction(data.message)
         }
         if (completed) {
-            setHasMoreSearchPages()
-            setSearchRequestStatusAction(SEARCH_REQUEST_COMPLETED);
+            this.setHasMoreSearchPages()
+            this.setSearchRequestStatusAction(SEARCH_REQUEST_COMPLETED);
         }
     }
 
@@ -144,7 +167,7 @@ export class SearchEngine {
         const queryDataState = store.getState().listings.listingsQueryData;
         if (!isSet(listingsDataState.listings_category)) {
             console.log("No category found...")
-            setSearchRequestErrorAction("No category found...")
+            this.setSearchRequestErrorAction("No category found...")
             return false;
         }
         if (!isSet(queryDataState[fetcherApiConfig.searchLimitKey])) {
@@ -164,7 +187,7 @@ export class SearchEngine {
     filterSearchProviders(allProviders) {
         let filteredProviders = [];
         allProviders.map(provider => {
-            if (addProviderToSearch(provider)) {
+            if (this.addProviderToSearch(provider)) {
                 filteredProviders.push(provider)
             }
         })
@@ -192,8 +215,8 @@ export class SearchEngine {
 
     buildQueryData(allProviders, provider) {
         let queryData = {...store.getState().listings.listingsQueryData};
-        queryData["limit"] = calculateLimit(allProviders.length);
-        queryData = addPaginationQueryParameters(queryData, provider);
+        queryData["limit"] = this.calculateLimit(allProviders.length);
+        queryData = this.addPaginationQueryParameters(queryData, provider);
         queryData["provider"] = provider;
         console.log({queryData})
         return queryData;
@@ -201,24 +224,24 @@ export class SearchEngine {
 
     runSearch(operation = false) {
         console.log("runSearch")
-        setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
+        this.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
         const pageControlsState = store.getState().search.pageControls;
-        if (!validateSearchParams()) {
-            setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
+        if (!this.validateSearchParams()) {
+            this.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
             return false;
         }
 
         if (!pageControlsState[PAGE_CONTROL_PAGINATION_REQUEST]) {
-            setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, 1);
+            this.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, 1);
         }
-        const providers = getSearchProviders();
-        const filterProviders = filterSearchProviders(providers);
+        const providers = this.getSearchProviders();
+        const filterProviders = this.filterSearchProviders(providers);
         filterProviders.map((provider, index) => {
             fetchData(
                 "operation",
-                [getEndpointOperation()],
-                buildQueryData(filterProviders, provider),
-                searchResponseHandler,
+                [this.getEndpointOperation()],
+                this.buildQueryData(filterProviders, provider),
+                this.searchResponseHandler,
                 (filterProviders.length === index + 1)
             )
         })
@@ -231,7 +254,7 @@ export class SearchEngine {
     }
 
     initialSearch() {
-        store.dispatch(setSearchOperation(NEW_SEARCH_REQUEST));
+        this.updateContext({key: "searchOperation", value: NEW_SEARCH_REQUEST})
         const listingsDataState = store.getState().listings.listingsData;
 
         if (!Array.isArray(listingsDataState?.initial_load_search_params)) {
@@ -253,7 +276,7 @@ export class SearchEngine {
         });
         queryData[fetcherApiConfig.pageNumberKey] = 1;
         queryData[fetcherApiConfig.pageOffsetKey] = 0;
-        setSearchRequestServiceAction(fetcherApiConfig.searchOperation)
+        this.setSearchRequestServiceAction(fetcherApiConfig.searchOperation)
         addQueryDataObjectAction(queryData, true);
     }
 
@@ -306,38 +329,38 @@ export class SearchEngine {
 
     loadNextPageNumberMiddleware(pageNumber) {
         return function (dispatch) {
-            setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
-            setPageControlItemAction(PAGE_CONTROL_PAGINATION_REQUEST, true)
-            setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, parseInt(pageNumber))
+            this.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
+            this.setPageControlItemAction(PAGE_CONTROL_PAGINATION_REQUEST, true)
+            this.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, parseInt(pageNumber))
             // addQueryDataString("page_number", pageNumber, true)
-            runSearch()
+            this.runSearch()
         }
     }
 
     loadNextOffsetMiddleware(pageOffset) {
         return function (dispatch) {
-            setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
-            setPageControlItemAction(PAGE_CONTROL_PAGINATION_REQUEST, true)
-            setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, getCurrentPageFromOffset(parseInt(pageOffset)))
-            addQueryDataString("page_offset", pageOffset, true)
+            this.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
+            this.setPageControlItemAction(PAGE_CONTROL_PAGINATION_REQUEST, true)
+            this.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, this.getCurrentPageFromOffset(parseInt(pageOffset)))
+            this.addQueryDataString("page_offset", pageOffset, true)
         }
     }
 
     saveItemMiddleware(provider, category, itemId, user_id) {
         return function(dispatch) {
-            saveItemAction(provider, category, itemId, user_id)
+            this.saveItemAction(provider, category, itemId, user_id)
         }
     }
     saveItemRatingMiddleware(provider, category, itemId, user_id, rating) {
         return function(dispatch) {
-            saveItemRatingAction(provider, category, itemId, user_id, rating)
+            this.saveItemRatingAction(provider, category, itemId, user_id, rating)
         }
     }
 
 
     updateSavedItemMiddleware(data) {
         return function (dispatch) {
-            updateSavedItemAction(data);
+            this.updateSavedItemAction(data);
         }
     }
 
@@ -349,10 +372,10 @@ export class SearchEngine {
         }
         const pageControlsObject = Object.assign({}, pageControlsState, {
             hasMore: false,
-            totalItems: getTotalItems(pageControlsState, extraData),
-            totalPages: getTotalPages(pageControlsState, extraData),
+            totalItems: this.getTotalItems(pageControlsState, extraData),
+            totalPages: this.getTotalPages(pageControlsState, extraData),
         });
-        store.dispatch(setPageControls(pageControlsObject))
+        this.updateContext({key: "pageControls", value: pageControlsObject})
     }
 
     setPageControlItemAction(key, value) {
@@ -360,7 +383,7 @@ export class SearchEngine {
         const pageControlsObject = Object.assign({}, pageControlsState, {
             [key]: value
         });
-        store.dispatch(setPageControls(pageControlsObject))
+        this.updateContext({key: "pageControls", value: pageControlsObject})
     }
 
     getSearchLimit() {
@@ -422,11 +445,11 @@ export class SearchEngine {
         const pageControlsState = {...store.getState().search.pageControls}
         if (pageControlsState[PAGE_CONTROL_CURRENT_PAGE] > 0) {
             if (parseInt(pageControlsState[PAGE_CONTROL_CURRENT_PAGE]) < parseInt(pageControlsState[PAGE_CONTROL_TOTAL_PAGES])) {
-                setPageControlItemAction(PAGE_CONTROL_HAS_MORE, true);
+                this.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, true);
                 return true;
             }
         }
-        setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
+        this.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
         return false;
     }
 
@@ -454,7 +477,7 @@ export class SearchEngine {
             return true;
         }
         else if (isSet(extraData.total_items) && !isNaN(extraData.total_items)) {
-            if (providerHasMoreItems(
+            if (this.providerHasMoreItems(
                 pageControlsState[PAGE_CONTROL_CURRENT_PAGE],
                 pageControlsState[PAGE_CONTROL_PAGE_SIZE],
                 parseInt(extraData.total_items)
@@ -467,6 +490,206 @@ export class SearchEngine {
 
     providerHasMoreItems(currentPage, pageSize, providerTotalItems) {
         return (currentPage * pageSize) < parseInt(providerTotalItems);
+    }
+
+    setSavedItemsListAction(data) {
+        const searchState = {...store.getState().search};
+        const searchOperation = searchState.searchOperation;
+        const nextState = produce(searchState.savedItemsList, (draftState) => {
+            if ((searchOperation === NEW_SEARCH_REQUEST)) {
+                draftState.splice(0, draftState.length + 1);
+            }
+            data.map((item) => {
+                if (!this.isSavedItemAction(item.item_id, item.provider_name, item.category, item.user_id)) {
+                    draftState.push(item)
+                }
+            })
+        })
+        this.updateContext({key: "savedItemsList", value: nextState})
+    }
+
+    setItemRatingsListAction(data) {
+        const searchState = {...store.getState().search};
+        const searchOperation = searchState.searchOperation;
+        const nextState = produce(searchState.itemRatingsList, (draftState) => {
+            if ((searchOperation === NEW_SEARCH_REQUEST)) {
+                draftState.splice(0, draftState.length + 1);
+            }
+            data.map((item) => {
+                if (!this.getItemRatingDataAction(item.item_id, item.provider_name, item.category, item.user_id)) {
+                    draftState.push(item)
+                }
+            })
+        })
+        this.updateContext({key: "itemRatingsList", value: nextState})
+    }
+
+    isSavedItemAction(item_id, provider, category, user_id) {
+        const savedItemsList = [...store.getState().search.savedItemsList];
+        const isSaved = savedItemsList.filter(savedItem => {
+            const getItemFromList = this.getItem(savedItem, item_id, provider, category, user_id);
+            if (getItemFromList) {
+                return getItemFromList;
+            }
+        });
+        return isSaved.length > 0;
+    }
+
+    getItem(item, item_id, provider, category, user_id) {
+        if (item === null) {
+            return false;
+        }
+        const savedItemId = this.filterItemIdDataType(item.item_id)
+        const itemId = this.filterItemIdDataType(item_id)
+        if(
+            parseInt(item.user_id) === parseInt(user_id) &&
+            savedItemId === itemId &&
+            item.provider_name === provider &&
+            item.category === category
+        ) {
+            return item;
+        }
+        return false;
+    }
+
+    getItemRatingDataAction(item_id, provider, category, user_id) {
+        const itemRatingsList = [...store.getState().search.itemRatingsList];
+        const itemRatingData = itemRatingsList.filter(item => {
+            const getItemFromList = this.getItem(item, item_id, provider, category, user_id);
+            if (getItemFromList) {
+                return getItemFromList;
+            }
+        });
+        if (itemRatingData.length > 0) {
+            return itemRatingData[0];
+        }
+        return false;
+    }
+
+    showAuthModal() {
+        const authenticated = store.getState().session[SESSION_AUTHENTICATED];
+        if (!authenticated) {
+            setModalContentAction(
+                componentsConfig.components.authentication_login.name,
+                {},
+                true
+            );
+            return false;
+        }
+        return true;
+    }
+
+
+    saveItemAction(provider, category, itemId, user_id) {
+        if (!this.showAuthModal()) {
+            return;
+        }
+        const data = {
+            provider_name: provider,
+            category: category,
+            item_id: itemId,
+            user_id: user_id
+        }
+        protectedApiRequest(
+            buildWpApiUrl(wpApiConfig.endpoints.saveItem),
+            data,
+            this.saveItemRequestCallback
+        )
+        this.updateSavedItemAction(data)
+    }
+
+    updateSavedItemAction(data) {
+        const searchState = {...store.getState().search};
+        const nextState = produce(searchState.savedItemsList, (draftState) => {
+            if (this.isSavedItemAction(data.item_id, data.provider_name, data.category, data.user_id)) {
+                draftState.splice(this.getSavedItemIndexAction(data.item_id, data.provider_name, data.category, data.user_id), 1);
+            } else {
+                draftState.push(data)
+            }
+        })
+        this.updateContext({key: "savedItemsList", value: nextState})
+    }
+
+    getSavedItemIndexAction(item_id, provider, category, user_id) {
+        let index;
+        const savedItemsList = [...store.getState().search.savedItemsList];
+        savedItemsList.map((savedItem, savedItemIndex) => {
+            const savedItemId = this.filterItemIdDataType(savedItem.item_id)
+            const itemId = this.filterItemIdDataType(item_id)
+            if(
+                parseInt(savedItem.user_id) === parseInt(user_id) &&
+                savedItemId === itemId &&
+                savedItem.provider_name === provider &&
+                savedItem.category === category
+            ) {
+                index = savedItemIndex;
+            }
+        });
+        return index;
+    }
+
+    saveItemRatingAction(provider, category, itemId, user_id, rating) {
+        if (!this.showAuthModal()) {
+            return false;
+        }
+        const data = {
+            provider_name: provider,
+            category: category,
+            item_id: itemId,
+            user_id: user_id,
+            rating: rating,
+        }
+        protectedApiRequest(
+            buildWpApiUrl(wpApiConfig.endpoints.saveItemRating),
+            data,
+            this.updateItemRatingAction
+        )
+        this.updateItemRatingAction(data)
+    }
+
+    updateItemRatingAction(status, data) {
+        if (!isSet(data) || !isSet(data.data) ) {
+            return;
+        }
+        if (Array.isArray(data.data) && data.data.length > 0) {
+            const itemData = data.data[0];
+            const searchState = {...store.getState().search};
+            const nextState = produce(searchState.itemRatingsList, (draftState) => {
+                if (this.getItemRatingDataAction(itemData.item_id, itemData.provider_name, itemData.category, itemData.user_id)) {
+                    const getIndex = this.getItemRatingIndexAction(itemData.item_id, itemData.provider_name, itemData.category, itemData.user_id);
+                    draftState.splice(getIndex, 1);
+                }
+                draftState.push(itemData)
+            })
+            this.updateContext({key: "itemRatingsList", value: nextState})
+        }
+    }
+
+    filterItemIdDataType(itemId) {
+        if (!isNaN(itemId)) {
+            itemId = parseInt(itemId);
+        }
+        return itemId;
+    }
+    getItemRatingIndexAction(item_id, provider, category, user_id) {
+        let index;
+        const itemRatingsList = [...store.getState().search.itemRatingsList];
+        itemRatingsList.map((item, itemIndex) => {
+            const savedItemId = this.filterItemIdDataType(item.item_id)
+            const itemId = this.filterItemIdDataType(item_id)
+            if(
+                parseInt(item.user_id) === parseInt(user_id) &&
+                savedItemId === itemId &&
+                item.provider_name === provider &&
+                item.category === category
+            ) {
+                index = itemIndex;
+            }
+        });
+        return index;
+    }
+
+    saveItemRequestCallback(error, data) {
     }
 
 }

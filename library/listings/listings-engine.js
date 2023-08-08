@@ -33,6 +33,7 @@ import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/items";
 import {getUserItemsListAction} from "@/truvoicer-base/redux/actions/user-stored-items-actions";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import {SearchEngine} from "@/truvoicer-base/library/search/search-engine";
+import {ItemEngine} from "@/truvoicer-base/library/listings/item-engine";
 
 export class ListingsEngine {
     constructor() {
@@ -49,6 +50,28 @@ export class ListingsEngine {
             }
         };
         this.searchEngine = new SearchEngine();
+        this.itemsEngine = new ItemEngine();
+    }
+
+    setListingsContext(context) {
+        this.listingsContext = context;
+    }
+    setListingsContext(context) {
+        this.listingsContext = context;
+    }
+
+    updateContext({key, value}) {
+        this.listingsContext.updateData({key, value})
+    }
+
+    updateListingsData({key, value}) {
+        let listingsData = {...this.listingsContext.listingsData}
+        listingsData[key] = value;
+        this.updateContext({key: "listingsData", value: listingsData})
+    }
+
+    addError(error) {
+        this.updateContext({key: "error", value: error})
     }
 
     setListingsBlocksDataAction(data) {
@@ -56,16 +79,16 @@ export class ListingsEngine {
             return false;
         }
         if (data !== null) {
-            store.dispatch(setListingsData(data))
+            this.updateContext({key: "listingsData", value: data})
             switch (data?.source) {
                 case LISTINGS_BLOCK_SOURCE_WORDPRESS:
-                    store.dispatch(setCategory(data.listings_category))
+                    this.updateContext({key: "category", value: data.listings_category})
                     this.getListingsInitialLoad();
                     break;
                 case LISTINGS_BLOCK_SOURCE_API:
                 default:
                     if (isNotEmpty(data.api_listings_category)) {
-                        store.dispatch(setCategory(data.api_listings_category))
+                        this.updateContext({key: "category", value: data.api_listings_category})
                         this.getListingsProviders(data, "providers", this.getProvidersCallback)
                     }
                     break;
@@ -102,80 +125,124 @@ export class ListingsEngine {
 
     getProvidersCallback(status, data) {
         if (status === 200) {
-            store.dispatch(setListingsDataProviders(data.data))
+            this.updateListingsData({key: "providers", value: data.data})
             this.searchEngine.setPageControlItemAction(PAGE_CONTROL_PAGE_SIZE, this.searchEngine.getSearchLimit())
             this.getListingsInitialLoad();
         } else {
-            store.dispatch(setListingsError(data.message))
+            this.addError(data?.message)
         }
     }
 
     addArrayItem(key, value, search = false) {
-        return function (dispatch) {
-            let listingsQueryData = {...store.getState().listings.listingsQueryData}
-            const object = Object.assign({}, listingsQueryData, {
-                [key]: (isSet(listingsQueryData[key])) ? listingsQueryData[key].concat(value) : [value]
-            });
-            dispatch(setListingsQueryData(object))
-            if (search) {
-                runSearch();
-            }
+        let listingsQueryData = {...store.getState().listings.listingsQueryData}
+        const object = Object.assign({}, listingsQueryData, {
+            [key]: (isSet(listingsQueryData[key])) ? listingsQueryData[key].concat(value) : [value]
+        });
+
+        this.updateContext({key: "listingsQueryData", value: object})
+        if (search) {
+            this.searchEngine.runSearch();
         }
+        // return function (dispatch) {
+        //     let listingsQueryData = {...store.getState().listings.listingsQueryData}
+        //     const object = Object.assign({}, listingsQueryData, {
+        //         [key]: (isSet(listingsQueryData[key])) ? listingsQueryData[key].concat(value) : [value]
+        //     });
+        //
+        //     dispatch(setListingsQueryData(object))
+        //     if (search) {
+        //         this.searchEngine.runSearch();
+        //     }
+        // }
     }
 
     removeArrayItem(key, value, search = false) {
-        return function (dispatch) {
-            let listingsQueryData = {...store.getState().listings.listingsQueryData}
-            let index = listingsQueryData[key].indexOf(value);
-            const newArray = [...listingsQueryData[key]]
-            newArray.splice(index, 1)
-            if (index === -1) return;
+        let listingsQueryData = {...store.getState().listings.listingsQueryData}
+        let index = listingsQueryData[key].indexOf(value);
+        const newArray = [...listingsQueryData[key]]
+        newArray.splice(index, 1)
+        if (index === -1) return;
 
-            const object = Object.assign({}, listingsQueryData, {
-                [key]: newArray
-            });
-            dispatch(setListingsQueryData(object))
-            if (search) {
-                this.searchEngine.runSearch();
-            }
+        const object = Object.assign({}, listingsQueryData, {
+            [key]: newArray
+        });
+        this.updateContext({key: "listingsQueryData", value: object})
+        if (search) {
+            this.searchEngine.runSearch();
         }
+        // return function (dispatch) {
+        //     let listingsQueryData = {...store.getState().listings.listingsQueryData}
+        //     let index = listingsQueryData[key].indexOf(value);
+        //     const newArray = [...listingsQueryData[key]]
+        //     newArray.splice(index, 1)
+        //     if (index === -1) return;
+        //
+        //     const object = Object.assign({}, listingsQueryData, {
+        //         [key]: newArray
+        //     });
+        //     dispatch(setListingsQueryData(object))
+        //     if (search) {
+        //         this.searchEngine.runSearch();
+        //     }
+        // }
     }
 
     addListingsQueryDataString(key, value, search = false) {
-        return function (dispatch) {
-            let listingsQueryData = {...store.getState().listings.listingsQueryData}
+        let listingsQueryData = {...store.getState().listings.listingsQueryData}
 
-            const object = Object.assign({}, listingsQueryData, {
-                [key]: value
-            });
-            dispatch(setListingsQueryData(object))
-            if (search) {
-                this.searchEngine.runSearch();
-            }
+        const object = Object.assign({}, listingsQueryData, {
+            [key]: value
+        });
+        this.updateContext({key: "listingsQueryData", value: object})
+        if (search) {
+            this.searchEngine.runSearch();
         }
+        // return function (dispatch) {
+        //     let listingsQueryData = {...store.getState().listings.listingsQueryData}
+        //
+        //     const object = Object.assign({}, listingsQueryData, {
+        //         [key]: value
+        //     });
+        //     dispatch(setListingsQueryData(object))
+        //     if (search) {
+        //         this.searchEngine.runSearch();
+        //     }
+        // }
     }
 
     addQueryDataObjectMiddleware(queryData, search = false) {
-        return function (dispatch) {
-            let listingsQueryData = {...store.getState().listings.listingsQueryData}
-            let newQueryData = {};
-            Object.keys(queryData).map(value => {
-                newQueryData[value] = queryData[value];
+        let listingsQueryData = {...store.getState().listings.listingsQueryData}
+        let newQueryData = {};
+        Object.keys(queryData).map(value => {
+            newQueryData[value] = queryData[value];
 
-            });
-            const object = Object.assign({}, listingsQueryData, newQueryData);
-
-            dispatch(setListingsQueryData(object))
-            if (search) {
-                this.searchEngine.runSearch();
-            }
+        });
+        const object = Object.assign({}, listingsQueryData, newQueryData);
+        this.updateContext({key: "listingsQueryData", value: object})
+        if (search) {
+            this.searchEngine.runSearch();
         }
+        // return function (dispatch) {
+        //     let listingsQueryData = {...store.getState().listings.listingsQueryData}
+        //     let newQueryData = {};
+        //     Object.keys(queryData).map(value => {
+        //         newQueryData[value] = queryData[value];
+        //
+        //     });
+        //     const object = Object.assign({}, listingsQueryData, newQueryData);
+        //
+        //     dispatch(setListingsQueryData(object))
+        //     if (search) {
+        //         this.searchEngine.runSearch();
+        //     }
+        // }
     }
 
     setListingsGridMiddleware(listingsGrid) {
-        return function (dispatch) {
-            dispatch(setListingsGrid(listingsGrid))
-        }
+        this.updateContext({key: "listingsGrid", value: listingsGrid})
+        // return function (dispatch) {
+        //     dispatch(setListingsGrid(listingsGrid))
+        // }
     }
 
     addQueryDataString(key, value, search = false) {
@@ -184,7 +251,7 @@ export class ListingsEngine {
         const object = Object.assign({}, listingsQueryData, {
             [key]: value
         });
-        store.dispatch(setListingsQueryData(object))
+        this.updateContext({key: "listingsQueryData", value: object})
         if (search) {
             this.searchEngine.runSearch();
         }
@@ -199,18 +266,18 @@ export class ListingsEngine {
         });
         const object = Object.assign({}, listingsQueryData, newQueryData);
 
-        store.dispatch(setListingsQueryData(object))
+        this.updateContext({key: "listingsQueryData", value: object})
         if (search) {
             this.searchEngine.runSearch();
         }
     }
 
     setListingsGridAction(listingsGrid) {
-        store.dispatch(setListingsGrid(listingsGrid))
+        this.updateContext({key: "listingsGrid", value: listingsGrid})
     }
 
     setListingsScrollTopAction(show) {
-        store.dispatch(setListingsScrollTop(show))
+        this.updateContext({key: "listingsScrollTop", value: show})
     }
 
     getListingsInitialLoad() {
@@ -243,7 +310,7 @@ export class ListingsEngine {
         }
         store.dispatch(setSearchOperation(NEW_SEARCH_REQUEST));
         const category = listingsDataState.listings_category;
-        getUserItemsListAction(listData, siteConfig.internalProviderName, category)
+        this.itemsEngine.getUserItemsListAction(listData, siteConfig.internalProviderName, category)
         this.searchEngine.setSearchListDataAction(listData);
         this.searchEngine.setSearchCategoryAction(category)
         this.searchEngine.setSearchProviderAction(siteConfig.internalProviderName)
@@ -260,7 +327,7 @@ export class ListingsEngine {
         }
         switch (listingsDataState.initial_load) {
             case "search":
-                this.initialSearch();
+                this.searchEngine.initialSearch();
                 break;
             case "request":
                 this.initialRequest();
@@ -285,9 +352,9 @@ export class ListingsEngine {
         queryData[fetcherApiConfig.searchLimitKey] = requestOptions.request_limit;
         queryData[fetcherApiConfig.pageNumberKey] = 1;
         queryData[fetcherApiConfig.pageOffsetKey] = 0;
-        setSearchRequestServiceAction(requestOptions.request_name)
-        addQueryDataObjectAction(queryData, false);
-        runSearch()
+        this.searchEngine.setSearchRequestServiceAction(requestOptions.request_name)
+        this.addQueryDataObjectAction(queryData, false);
+        this.searchEngine.runSearch()
     }
 
 }
