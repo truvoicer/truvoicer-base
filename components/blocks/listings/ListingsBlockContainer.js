@@ -1,17 +1,18 @@
 import React, {useContext, useEffect, useRef} from "react";
 import {connect} from "react-redux";
 import {setListingsBlocksDataAction} from "../../../redux/actions/page-actions";
-import {scrollToRef} from "../../../library/utils";
+import {isObject, isObjectEmpty, scrollToRef} from "../../../library/utils";
 import {SESSION_AUTHENTICATED, SESSION_IS_AUTHENTICATING} from "../../../redux/constants/session-constants";
 import {ListingsEngine} from "@/truvoicer-base/library/listings/listings-engine";
 import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
+import {ItemContext} from "@/truvoicer-base/components/blocks/listings/contexts/ItemContext";
 
 const ListingsBlockContainer = ({data, session, listings, children}) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
-    const listingsEngine = new ListingsEngine();
-    listingsEngine.setListingsContext(listingsContext);
+    const itemContext = useContext(ItemContext);
+    const listingsEngine = new ListingsEngine(listingsContext, searchContext, itemContext);
 
     useEffect(() => {
         if (!session[SESSION_IS_AUTHENTICATING]) {
@@ -22,6 +23,16 @@ const ListingsBlockContainer = ({data, session, listings, children}) => {
             listingsEngine.setListingsBlocksDataAction(cloneData)
         }
     }, [session])
+
+    useEffect(() => {
+        if (session[SESSION_IS_AUTHENTICATING]) {
+            return;
+        }
+        if (!isObject(listingsContext?.listingsData) || isObjectEmpty(listingsContext?.listingsData)) {
+            return;
+        }
+        listingsEngine.getListingsInitialLoad();
+    }, [session, listingsContext?.listingsData])
     const myRef = useRef(null)
     if (listings.listingsScrollTop) {
         scrollToRef(myRef)

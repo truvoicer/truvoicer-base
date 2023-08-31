@@ -12,7 +12,8 @@ export const listingsData = {
     listingsRequestStatus: "",
     listingsScrollTop: false,
     error: {},
-    updateData: () => {}
+    updateData: () => {},
+    updateNestedObjectData: () => {}
 };
 
 export const ListingsContext = React.createContext(listingsData);

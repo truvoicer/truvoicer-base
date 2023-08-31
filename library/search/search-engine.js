@@ -40,9 +40,11 @@ import {setModalContentAction} from "@/truvoicer-base/redux/actions/page-actions
 import {componentsConfig} from "@/config/components-config";
 import {buildWpApiUrl, protectedApiRequest} from "@/truvoicer-base/library/api/wp/middleware";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
+import {ListingsEngineBase} from "@/truvoicer-base/library/listings/listings-engine-base";
 
-export class SearchEngine {
-    constructor() {
+export class SearchEngine extends ListingsEngineBase {
+    constructor(listingsContext, searchContext, itemsContext) {
+        super(searchContext, itemsContext);
         this.searchData = {
             searchStatus: SEARCH_REQUEST_IDLE,
             searchOperation: NEW_SEARCH_REQUEST,
@@ -253,10 +255,7 @@ export class SearchEngine {
         return Math.floor(pageSize / providerCount);
     }
 
-    initialSearch() {
-        this.updateContext({key: "searchOperation", value: NEW_SEARCH_REQUEST})
-        const listingsDataState = store.getState().listings.listingsData;
-
+    getInitialSearchQueryData(listingsDataState) {
         if (!Array.isArray(listingsDataState?.initial_load_search_params)) {
             setSearchError("Initial search data is not set on initial search...")
             return false;
@@ -276,8 +275,7 @@ export class SearchEngine {
         });
         queryData[fetcherApiConfig.pageNumberKey] = 1;
         queryData[fetcherApiConfig.pageOffsetKey] = 0;
-        this.setSearchRequestServiceAction(fetcherApiConfig.searchOperation)
-        addQueryDataObjectAction(queryData, true);
+        return queryData;
     }
 
 

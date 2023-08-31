@@ -1,4 +1,3 @@
-import {isSet} from "underscore";
 import {siteConfig} from "@/config/site-config";
 import {LISTINGS_GRID_COMPACT} from "@/truvoicer-base/redux/constants/listings-constants";
 import store from "@/truvoicer-base/redux/store";
@@ -12,8 +11,8 @@ import {
     LISTINGS_BLOCK_SOURCE_API,
     LISTINGS_BLOCK_SOURCE_WORDPRESS
 } from "@/truvoicer-base/redux/constants/general_constants";
-import {getListingsInitialLoad} from "@/truvoicer-base/redux/actions/listings-actions";
-import {isEmpty, isNotEmpty} from "@/truvoicer-base/library/utils";
+import {addQueryDataObjectAction, getListingsInitialLoad} from "@/truvoicer-base/redux/actions/listings-actions";
+import {isSet, isEmpty, isNotEmpty, isObject, isObjectEmpty} from "@/truvoicer-base/library/utils";
 import {getListingsProviders, getProvidersCallback} from "@/truvoicer-base/redux/middleware/listings-middleware";
 import {setSearchError, setSearchOperation} from "@/truvoicer-base/redux/reducers/search-reducer";
 import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
@@ -34,9 +33,11 @@ import {getUserItemsListAction} from "@/truvoicer-base/redux/actions/user-stored
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import {SearchEngine} from "@/truvoicer-base/library/search/search-engine";
 import {ItemEngine} from "@/truvoicer-base/library/listings/item-engine";
+import {ListingsEngineBase} from "@/truvoicer-base/library/listings/listings-engine-base";
 
-export class ListingsEngine {
-    constructor() {
+export class ListingsEngine extends ListingsEngineBase {
+    constructor(listingsContext, searchContext, itemsContext) {
+        super(searchContext, itemsContext);
         this.listingsData = {
             category: "",
             listingsGrid: isSet(siteConfig.defaultGridSize) ? siteConfig.defaultGridSize : LISTINGS_GRID_COMPACT,
@@ -49,25 +50,25 @@ export class ListingsEngine {
             updateData: () => {
             }
         };
-        this.searchEngine = new SearchEngine();
-        this.itemsEngine = new ItemEngine();
+        this.setListingsContext(listingsContext)
     }
 
     setListingsContext(context) {
         this.listingsContext = context;
     }
-    setListingsContext(context) {
-        this.listingsContext = context;
+    setSearchContext(context) {
+        this.searchEngine.setSearchContext(context);
     }
 
     updateContext({key, value}) {
         this.listingsContext.updateData({key, value})
     }
+    updateContextNestedObjectData({object, key, value}) {
+        this.listingsContext.updateNestedObjectData({object, key, value})
+    }
 
     updateListingsData({key, value}) {
-        let listingsData = {...this.listingsContext.listingsData}
-        listingsData[key] = value;
-        this.updateContext({key: "listingsData", value: listingsData})
+        this.updateContextNestedObjectData({object: "listingsData", key, value})
     }
 
     addError(error) {
@@ -75,9 +76,10 @@ export class ListingsEngine {
     }
 
     setListingsBlocksDataAction(data) {
-        if (!isSet(data)) {
+        if (!isObject(data) || isObjectEmpty(data)) {
             return false;
         }
+
         if (data !== null) {
             this.updateContext({key: "listingsData", value: data})
             switch (data?.source) {
@@ -89,7 +91,7 @@ export class ListingsEngine {
                 default:
                     if (isNotEmpty(data.api_listings_category)) {
                         this.updateContext({key: "category", value: data.api_listings_category})
-                        this.getListingsProviders(data, "providers", this.getProvidersCallback)
+                        this.getListingsProviders(data, "providers", this.getProvidersCallback.bind(this))
                     }
                     break;
             }
@@ -98,7 +100,7 @@ export class ListingsEngine {
 
 
     getListingsInitialLoad() {
-        const listingsDataState = store.getState().listings.listingsData;
+        const listingsDataState = this.listingsContext?.listingsData;
         if (isEmpty(listingsDataState)) {
             setSearchError("Listings data empty on initial search...")
             return false;
@@ -124,10 +126,11 @@ export class ListingsEngine {
     }
 
     getProvidersCallback(status, data) {
+        console.log({status, data})
         if (status === 200) {
             this.updateListingsData({key: "providers", value: data.data})
             this.searchEngine.setPageControlItemAction(PAGE_CONTROL_PAGE_SIZE, this.searchEngine.getSearchLimit())
-            this.getListingsInitialLoad();
+            // this.getListingsInitialLoad();
         } else {
             this.addError(data?.message)
         }
@@ -258,7 +261,7 @@ export class ListingsEngine {
     }
 
     addQueryDataObjectAction(queryData, search = false) {
-        let listingsQueryData = {...store.getState().listings.listingsQueryData}
+        let listingsQueryData = this.listingsContext?.listingsQueryData
         let newQueryData = {};
         Object.keys(queryData).map(value => {
             newQueryData[value] = queryData[value];
@@ -278,24 +281,6 @@ export class ListingsEngine {
 
     setListingsScrollTopAction(show) {
         this.updateContext({key: "listingsScrollTop", value: show})
-    }
-
-    getListingsInitialLoad() {
-        const listingsDataState = store.getState().listings.listingsData;
-        if (isEmpty(listingsDataState)) {
-            setSearchError("Listings data empty on initial search...")
-            return false;
-        }
-        switch (listingsDataState?.source) {
-            case LISTINGS_BLOCK_SOURCE_WORDPRESS:
-                this.postsListingsInitialLoad(listingsDataState)
-                break;
-            case LISTINGS_BLOCK_SOURCE_API:
-            default:
-                this.apiListingsInitialLoad(listingsDataState)
-                break;
-        }
-
     }
 
     postsListingsInitialLoad(listingsDataState) {
@@ -327,7 +312,10 @@ export class ListingsEngine {
         }
         switch (listingsDataState.initial_load) {
             case "search":
-                this.searchEngine.initialSearch();
+                this.searchEngine.updateContext({key: "searchOperation", value: NEW_SEARCH_REQUEST})
+                const queryData = this.searchEngine.getInitialSearchQueryData(listingsDataState);
+                this.searchEngine.setSearchRequestServiceAction(fetcherApiConfig.searchOperation)
+                this.addQueryDataObjectAction(queryData, true);
                 break;
             case "request":
                 this.initialRequest();
