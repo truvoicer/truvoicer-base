@@ -3,16 +3,18 @@ import {connect} from "react-redux";
 import {setListingsBlocksDataAction} from "../../../redux/actions/page-actions";
 import {isObject, isObjectEmpty, scrollToRef} from "../../../library/utils";
 import {SESSION_AUTHENTICATED, SESSION_IS_AUTHENTICATING} from "../../../redux/constants/session-constants";
-import {ListingsEngine} from "@/truvoicer-base/library/listings/listings-engine";
+import {ListingsEngine} from "@/truvoicer-base/library/listings/engine/listings-engine";
 import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
 import {ItemContext} from "@/truvoicer-base/components/blocks/listings/contexts/ItemContext";
+import {ListingsEngineBase} from "@/truvoicer-base/library/listings/engine/listings-engine-base";
+import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 const ListingsBlockContainer = ({data, session, listings, children}) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const itemContext = useContext(ItemContext);
-    const listingsEngine = new ListingsEngine(listingsContext, searchContext, itemContext);
+    const listingsManager = new ListingsManager(listingsContext, searchContext, itemContext);
 
     useEffect(() => {
         if (!session[SESSION_IS_AUTHENTICATING]) {
@@ -20,7 +22,7 @@ const ListingsBlockContainer = ({data, session, listings, children}) => {
             if (Array.isArray(cloneData?.listings_category_id)) {
                 cloneData.listings_category = cloneData.listings_category_id[0]?.slug
             }
-            listingsEngine.setListingsBlocksDataAction(cloneData)
+            listingsManager.setListingsBlocksDataAction(cloneData)
         }
     }, [session])
 
@@ -31,7 +33,10 @@ const ListingsBlockContainer = ({data, session, listings, children}) => {
         if (!isObject(listingsContext?.listingsData) || isObjectEmpty(listingsContext?.listingsData)) {
             return;
         }
-        listingsEngine.getListingsInitialLoad();
+        if (!Array.isArray(listingsContext?.listingsData?.providers)) {
+            return;
+        }
+        listingsManager.getListingsInitialLoad();
     }, [session, listingsContext?.listingsData])
     const myRef = useRef(null)
     if (listings.listingsScrollTop) {

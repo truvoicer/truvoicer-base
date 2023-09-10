@@ -33,40 +33,19 @@ import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import {addArrayItem, addListingsQueryDataString} from "@/truvoicer-base/redux/middleware/listings-middleware";
 import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {addQueryDataObjectAction, addQueryDataString} from "@/truvoicer-base/redux/actions/listings-actions";
-import {runSearch, setSearchRequestStatusAction} from "@/truvoicer-base/redux/actions/search-actions";
-import {ItemEngine} from "@/truvoicer-base/library/listings/item-engine";
+import {setSearchRequestStatusAction} from "@/truvoicer-base/redux/actions/search-actions";
+import {ItemEngine} from "@/truvoicer-base/library/listings/engine/item-engine";
 import {SESSION_AUTHENTICATED} from "@/truvoicer-base/redux/constants/session-constants";
 import {setModalContentAction} from "@/truvoicer-base/redux/actions/page-actions";
 import {componentsConfig} from "@/config/components-config";
 import {buildWpApiUrl, protectedApiRequest} from "@/truvoicer-base/library/api/wp/middleware";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
-import {ListingsEngineBase} from "@/truvoicer-base/library/listings/listings-engine-base";
+import {ListingsEngineBase} from "@/truvoicer-base/library/listings/engine/listings-engine-base";
+import {th} from "date-fns/locale";
 
-export class SearchEngine extends ListingsEngineBase {
-    constructor(listingsContext, searchContext, itemsContext) {
-        super(searchContext, itemsContext);
-        this.searchData = {
-            searchStatus: SEARCH_REQUEST_IDLE,
-            searchOperation: NEW_SEARCH_REQUEST,
-            extraData: {},
-            searchList: [],
-            savedItemsList: [],
-            itemRatingsList: [],
-            pageControls: {
-                paginationRequest: false,
-                hasMore: false,
-                totalItems: 0,
-                totalPages: 0,
-                currentPage: 0,
-                pageSize: 0
-            },
-            requestService: "",
-            provider: "",
-            category: "",
-            error: {},
-            updateData: () => {}
-        }
-        this.itemEngine = new ItemEngine();
+export class SearchEngine {
+    constructor(context) {
+        this.setSearchContext(context)
     }
 
     setSearchContext(context) {
@@ -86,7 +65,7 @@ export class SearchEngine extends ListingsEngineBase {
         this.updateContext({key: "error", value: error})
     }
     setSearchExtraDataAction(extraData, provider, listData) {
-        const extraDataState = {...store.getState().search.extraData};
+        const extraDataState = this.searchContext.extraData;
 
         const nextState = produce(extraDataState, (draftState) => {
             if (!isSet(draftState[provider])) {
@@ -101,7 +80,7 @@ export class SearchEngine extends ListingsEngineBase {
     }
 
     setSearchListDataAction(listData) {
-        const searchState = {...store.getState().search};
+        const searchState = this.searchContext;
         if (listData.length === 0) {
             return
         }
@@ -146,7 +125,8 @@ export class SearchEngine extends ListingsEngineBase {
 
     searchResponseHandler(status, data, completed = false) {
         if (status === 200 && data.status === "success") {
-            this.itemEngine.getUserItemsListAction(data.request_data, data.provider, data.category)
+            console.log(data)
+            // this.itemEngine.getUserItemsListAction(data.request_data, data.provider, data.category)
             this.setSearchListDataAction(data.request_data);
             this.setSearchExtraDataAction(data.extra_data, data.provider, data.request_data)
             this.setSearchRequestServiceAction(data.request_service)
@@ -164,22 +144,22 @@ export class SearchEngine extends ListingsEngineBase {
         }
     }
 
-    validateSearchParams() {
-        const listingsDataState = store.getState().listings.listingsData;
-        const queryDataState = store.getState().listings.listingsQueryData;
-        if (!isSet(listingsDataState.listings_category)) {
+    validateSearchParams(listingsData, listingsQueryData) {
+        // const listingsDataState = store.getState().listings.listingsData;
+        // const queryDataState = store.getState().listings.listingsQueryData;
+        if (!isSet(listingsData.listings_category)) {
             console.log("No category found...")
             this.setSearchRequestErrorAction("No category found...")
             return false;
         }
-        if (!isSet(queryDataState[fetcherApiConfig.searchLimitKey])) {
+        if (!isSet(listingsQueryData[fetcherApiConfig.searchLimitKey])) {
             addListingsQueryDataString(fetcherApiConfig.searchLimitKey, fetcherApiConfig.defaultSearchLimit);
         }
         return true;
     }
 
     getEndpointOperation() {
-        const searchState = store.getState().search;
+        const searchState = this.searchContext;
         if (isSet(searchState.requestService) && searchState.requestService !== "") {
             return searchState.requestService;
         }
@@ -196,61 +176,18 @@ export class SearchEngine extends ListingsEngineBase {
         return filteredProviders;
     }
 
-    getSearchProviders() {
-        const queryDataState = {...store.getState().listings.listingsQueryData};
-        const listingsDataState = {...store.getState().listings.listingsData};
-        let providers = [];
-        if (!isSet(queryDataState.providers) || queryDataState.providers.length === 0) {
-            providers = listingsDataState.providers.map(provider => {
-                return provider.provider_name;
-            });
-            providers.map((provider) => {
-                addArrayItem("providers", provider)
-            });
-        } else {
-            providers = queryDataState.providers.map(provider => {
-                return provider;
-            });
-        }
-        return providers
-    }
 
-    buildQueryData(allProviders, provider) {
-        let queryData = {...store.getState().listings.listingsQueryData};
-        queryData["limit"] = this.calculateLimit(allProviders.length);
-        queryData = this.addPaginationQueryParameters(queryData, provider);
-        queryData["provider"] = provider;
-        console.log({queryData})
-        return queryData;
-    }
-
-    runSearch(operation = false) {
-        console.log("runSearch")
-        this.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
-        const pageControlsState = store.getState().search.pageControls;
-        if (!this.validateSearchParams()) {
-            this.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
-            return false;
-        }
-
-        if (!pageControlsState[PAGE_CONTROL_PAGINATION_REQUEST]) {
-            this.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, 1);
-        }
-        const providers = this.getSearchProviders();
-        const filterProviders = this.filterSearchProviders(providers);
-        filterProviders.map((provider, index) => {
-            fetchData(
-                "operation",
-                [this.getEndpointOperation()],
-                this.buildQueryData(filterProviders, provider),
-                this.searchResponseHandler,
-                (filterProviders.length === index + 1)
-            )
-        })
+    buildQueryData(allProviders, provider, queryData = {}) {
+        let cloneQueryData = {...queryData};
+        cloneQueryData["limit"] = this.calculateLimit(allProviders.length);
+        cloneQueryData = this.addPaginationQueryParameters(cloneQueryData, provider);
+        cloneQueryData["provider"] = provider;
+        console.log({cloneQueryData})
+        return cloneQueryData;
     }
 
     calculateLimit(providerCount) {
-        const pageControlsState = {...store.getState().search.pageControls}
+        const pageControlsState = this.searchContext.pageControls;
         let pageSize = pageControlsState[PAGE_CONTROL_PAGE_SIZE];
         return Math.floor(pageSize / providerCount);
     }
@@ -331,7 +268,7 @@ export class SearchEngine extends ListingsEngineBase {
             this.setPageControlItemAction(PAGE_CONTROL_PAGINATION_REQUEST, true)
             this.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, parseInt(pageNumber))
             // addQueryDataString("page_number", pageNumber, true)
-            this.runSearch()
+            // this.runSearch()
         }
     }
 
@@ -452,8 +389,8 @@ export class SearchEngine extends ListingsEngineBase {
     }
 
     addPaginationQueryParameters(queryData, providerName = null) {
-        const pageControlsState = {...store.getState().search.pageControls};
-        const extraData = store.getState().search.extraData[providerName];
+        const pageControlsState = this.searchContext.pageControls;
+        const extraData = this.searchContext.extraData[providerName];
         const currentPage = pageControlsState[PAGE_CONTROL_CURRENT_PAGE];
 
         if (!isSet(extraData)) {
@@ -466,8 +403,8 @@ export class SearchEngine extends ListingsEngineBase {
     }
 
     addProviderToSearch(provider) {
-        const pageControlsState = {...store.getState().search.pageControls};
-        const extraData = store.getState().search.extraData[provider];
+        const pageControlsState = this.searchContext?.pageControls;
+        const extraData = this.searchContext?.extraData[provider];
         if (!isSet(extraData)) {
             return true;
         }

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import Row from "react-bootstrap/Row";
 import {connect} from "react-redux";
 import {addListingsQueryDataString} from "../../../../redux/middleware/listings-middleware";
@@ -17,8 +17,12 @@ import {useRouter} from "next/router";
 import {getGridItemColumns} from "../../../../redux/actions/item-actions";
 import {buildCustomItemsArray, extractItemListFromPost, getGridItem} from "../../../../library/helpers/items";
 import {siteConfig} from "../../../../../config/site-config";
+import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
+import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
 
 const GridItems = (props) => {
+    const listingsContext = useContext(ListingsContext);
+    const searchContext = useContext(SearchContext);
     const router = useRouter();
     const [modalData, setModalData] = useState({
         show: false,
@@ -40,14 +44,14 @@ const GridItems = (props) => {
 
     const GetModal = () => {
         const gridConfig = listingsGridConfig.gridItems;
-        if (!isSet(gridConfig[props.search.category])) {
+        if (!isSet(gridConfig[searchContext.category])) {
             return null
         }
-        if (!isSet(gridConfig[props.search.category].modal)) {
+        if (!isSet(gridConfig[searchContext.category].modal)) {
             return null;
         }
-        const ItemModal = gridConfig[props.search.category].modal;
-        return <ItemModal data={modalData} category={props.search.category} close={closeModal}/>
+        const ItemModal = gridConfig[searchContext.category].modal;
+        return <ItemModal data={modalData} category={searchContext.category} close={closeModal}/>
 
     }
 
@@ -60,7 +64,7 @@ const GridItems = (props) => {
     }
 
     const getCustomItemsData = (listPosition) => {
-        const listingsData = props.listings.listingsData;
+        const listingsData = listingsContext.listingsData;
         let itemsData;
         switch (listPosition) {
             case "list_start":
@@ -116,7 +120,7 @@ const GridItems = (props) => {
     }
 
     const insertCustomPositionItems = (searchList) => {
-        const listingsData = props.listings.listingsData;
+        const listingsData = listingsContext.listingsData;
         if (!isNotEmpty(listingsData.insert_index) || isNaN(listingsData.insert_index)) {
             return searchList;
         }
@@ -161,38 +165,38 @@ const GridItems = (props) => {
 
     useEffect(() => {
 
-        if (props.listings?.listingsData?.list_start) {
+        if (listingsContext?.listingsData?.list_start) {
             setListPosition("list_start")
         }
-        if (props.listings?.listingsData?.list_end) {
+        if (listingsContext?.listingsData?.list_end) {
             setListPosition("list_end")
         }
-        if (props.listings?.listingsData?.custom_position) {
+        if (listingsContext?.listingsData?.custom_position) {
             setListPosition("custom_position")
         }
 
     }, [
-        props.listings?.listingsData?.list_start,
-        props.listings?.listingsData?.list_end,
-        props.listings?.listingsData?.custom_position,
+        listingsContext?.listingsData?.list_start,
+        listingsContext?.listingsData?.list_end,
+        listingsContext?.listingsData?.custom_position,
     ])
 
     function getSearchList() {
-        let searchList = [...props.search.searchList];
+        let searchList = [...searchContext.searchList];
         if (
-            !props.listings?.listingsData?.list_start &&
-            !props.listings?.listingsData?.list_end &&
-            !props.listings?.listingsData?.custom_position
+            !listingsContext?.listingsData?.list_start &&
+            !listingsContext?.listingsData?.list_end &&
+            !listingsContext?.listingsData?.custom_position
         ) {
             return searchList;
         }
-        if (props.listings?.listingsData?.list_start) {
+        if (listingsContext?.listingsData?.list_start) {
             searchList = insertListStartItems(searchList);
         }
-        if (props.listings?.listingsData?.list_end) {
+        if (listingsContext?.listingsData?.list_end) {
             searchList = insertListEndItems(searchList)
         }
-        if (props.listings?.listingsData?.custom_position) {
+        if (listingsContext?.listingsData?.custom_position) {
             searchList = insertCustomPositionItems(searchList)
         }
         return searchList;
@@ -202,11 +206,11 @@ const GridItems = (props) => {
             <Row>
                 {getSearchList().map((item, index) => (
                     <React.Fragment key={index}>
-                        <Col {...getGridItemColumns(props.listings.listingsGrid)}>
+                        <Col {...getGridItemColumns(listingsContext.listingsGrid)}>
                             {getGridItem(
                                 item,
-                                props.search.category,
-                                props.listings.listingsGrid,
+                                searchContext.category,
+                                listingsContext.listingsGrid,
                                 props.user[SESSION_USER_ID],
                                 showInfo,
                                 index
@@ -226,8 +230,6 @@ const GridItems = (props) => {
 function mapStateToProps(state) {
     return {
         user: state.session[SESSION_USER],
-        listings: state.listings,
-        search: state.search
     };
 }
 

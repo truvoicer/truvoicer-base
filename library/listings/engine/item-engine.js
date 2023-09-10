@@ -41,19 +41,12 @@ import {
 import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {sprintf} from "sprintf";
 import {ItemRoutes} from "@/config/item-routes";
+import {ListingsEngineBase} from "@/truvoicer-base/library/listings/engine/listings-engine-base";
 
 
 export class ItemEngine {
-    constructor() {
-        this.itemData = {
-            data: {},
-            provider: "",
-            category: "",
-            itemId: "",
-            error: {},
-            updateData: () => {
-            }
-        };
+    constructor(context) {
+        this.setItemContext(context);
     }
 
     setItemContext(context) {
