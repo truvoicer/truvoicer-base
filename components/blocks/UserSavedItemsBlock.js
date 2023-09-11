@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {connect} from "react-redux";
 import {isNotEmpty, isObjectEmpty, isSet, uCaseFirst} from "../../library/utils";
-import {siteConfig} from "../../../config/site-config";
+import {siteConfig} from "@/config/site-config";
 import {buildDataKeyObject} from "../../library/helpers/items";
 import {SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-constants";
 import {buildWpApiUrl, protectedApiRequest} from "../../library/api/wp/middleware";
@@ -10,9 +10,11 @@ import {setSearchRequestOperationAction} from "../../redux/actions/search-action
 import {NEW_SEARCH_REQUEST} from "../../redux/constants/search-constants";
 import {setSavedItemsListAction} from "../../redux/actions/user-stored-items-actions";
 import SavedItemsVerticalTabs from "../tabs/SavedItemsVerticalTabs";
+import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
 
 function UserSavedItemsBlock(props) {
     const [tabData, setTabData] = useState({});
+    const searchContext = useContext(SearchContext);
 
     const buildSavedItemsList = (data) => {
         let tabDataObject = {};
@@ -54,9 +56,9 @@ function UserSavedItemsBlock(props) {
 
     useEffect(() => {
         setTabData(tabData => {
-            return buildSavedItemsList(props.savedItemsList);
+            return buildSavedItemsList(searchContext?.savedItemsList);
         });
-    }, [props.savedItemsList])
+    }, [searchContext?.savedItemsList])
 
     useEffect(() => {
         let isCancelled = false;
@@ -101,7 +103,6 @@ function UserSavedItemsBlock(props) {
 function mapStateToProps(state) {
     // console.log(state.page)
     return {
-        savedItemsList: state.search.savedItemsList,
         session: state.session,
     };
 }

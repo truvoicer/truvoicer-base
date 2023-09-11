@@ -1,12 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import Row from "react-bootstrap/Row";
 import {connect} from "react-redux";
-import {addListingsQueryDataString} from "../../../../redux/middleware/listings-middleware";
-import {
-    setSearchRequestOperationMiddleware,
-    setSearchRequestStatusMiddleware,
-} from "../../../../redux/middleware/search-middleware";
-import {listingsGridConfig} from "../../../../../config/listings-grid-config";
+import {listingsGridConfig} from "@/config/listings-grid-config";
 import {isNotEmpty, isSet} from "../../../../library/utils";
 import {SESSION_USER, SESSION_USER_ID} from "../../../../redux/constants/session-constants";
 import {
@@ -15,8 +10,8 @@ import {
 import Col from "react-bootstrap/Col";
 import {useRouter} from "next/router";
 import {getGridItemColumns} from "../../../../redux/actions/item-actions";
-import {buildCustomItemsArray, extractItemListFromPost, getGridItem} from "../../../../library/helpers/items";
-import {siteConfig} from "../../../../../config/site-config";
+import {extractItemListFromPost, getGridItem} from "../../../../library/helpers/items";
+import {siteConfig} from "@/config/site-config";
 import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
 
@@ -235,9 +230,5 @@ function mapStateToProps(state) {
 
 export default connect(
     mapStateToProps,
-    {
-        addListingsQueryDataString,
-        setSearchRequestOperationMiddleware,
-        setSearchRequestStatusMiddleware
-    }
+    null
 )(GridItems);

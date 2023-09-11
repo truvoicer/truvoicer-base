@@ -1,10 +1,12 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {NEW_SEARCH_REQUEST} from "../../redux/constants/search-constants";
 import {connect} from "react-redux";
-import {addQueryDataObjectMiddleware} from "../../redux/middleware/listings-middleware";
-import {setSearchRequestOperationMiddleware} from "../../redux/middleware/search-middleware";
 import {fetcherApiConfig} from "../../config/fetcher-api-config";
 import {setListingsScrollTopAction} from "../../redux/actions/listings-actions";
+import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
+import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
+import {ItemContext} from "@/truvoicer-base/components/blocks/listings/contexts/ItemContext";
+import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 const SearchBlock = (props) => {
     const categories = props.data?.search?.search_options?.categories.data;
@@ -14,13 +16,18 @@ const SearchBlock = (props) => {
     const [category, setCategory] = useState("")
     const [searchData, setSearchData] = useState({})
 
+    const listingsContext = useContext(ListingsContext);
+    const searchContext = useContext(SearchContext);
+    const itemContext = useContext(ItemContext);
+    const listingsManager = new ListingsManager(listingsContext, searchContext, itemContext);
+
     const categoriesClickHandler = (value, e) => {
         e.preventDefault();
         let getSearchData = {...searchData};
         getSearchData[fetcherApiConfig.queryKey] = value.replace("_", " ");
         setSearchData(getSearchData)
-        props.setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
-        props.addQueryDataObjectMiddleware(getSearchData, true);
+        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+        listingsManager.getListingsEngine().addQueryDataObjectMiddleware(getSearchData, true);
         setListingsScrollTopAction(true);
     }
 
@@ -48,8 +55,8 @@ const SearchBlock = (props) => {
 
     const formSubmitHandler = (e) => {
         e.preventDefault();
-        props.setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
-        props.addQueryDataObjectMiddleware(searchData, true);
+        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+        listingsManager.getListingsEngine().addQueryDataObjectMiddleware(searchData, true);
         setListingsScrollTopAction(true);
     }
     return (
@@ -122,8 +129,5 @@ const SearchBlock = (props) => {
 }
 export default connect(
     null,
-    {
-        addQueryDataObjectMiddleware,
-        setSearchRequestOperationMiddleware
-    }
+    null
 )(SearchBlock);

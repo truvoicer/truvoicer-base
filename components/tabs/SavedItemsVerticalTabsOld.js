@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import {convertImageObjectsToArray, isSet} from "../../library/utils";
-import {defaultListingsGrid, listingsGridConfig} from "../../../config/listings-grid-config";
+import {defaultListingsGrid, listingsGridConfig} from "@/config/listings-grid-config";
 import {
     LISTINGS_GRID_COMPACT,
     LISTINGS_GRID_DETAILED,
@@ -16,10 +16,12 @@ import {SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-const
 import {connect} from "react-redux";
 // import makeStyles from "@mui/material/styles/makeStyles";
 import {useRouter} from "next/router";
+import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
 
 const SavedItemsVerticalTabsOld = (props) => {
+    const listingsContext = useContext(ListingsContext);
     const router = useRouter();
-    const listingsGrid = isSet(defaultListingsGrid)? defaultListingsGrid : props.listingsGrid;
+    const listingsGrid = isSet(defaultListingsGrid)? defaultListingsGrid : listingsContext.listingsGrid;
     const [modalData, setModalData] = useState({
         show: false,
         item: {},
@@ -268,7 +270,6 @@ const SavedItemsVerticalTabsOld = (props) => {
 
 function mapStateToProps(state) {
     return {
-        listingsGrid: state.listings.listingsGrid,
         user: state.session[SESSION_USER]
     };
 }

@@ -31,9 +31,7 @@ const BlogSidebar = () => {
 }
 
 function mapStateToProps(state) {
-    return {
-        listings: state.listings
-    };
+    return {};
 }
 
 export default connect(

@@ -1,14 +1,17 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import Nav from "react-bootstrap/Nav";
 import Tab from "react-bootstrap/Tab";
 import {fetchData} from "../../../../truvoicer-base/library/api/fetcher/middleware";
 import {uCaseFirst} from "../../../../truvoicer-base/library/utils";
 import RequestItemCarousel from "../Carousel/RequestItemCarousel";
+import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
 
 const RequestCarouselTabsBlock = (props) => {
     const requestConfig = props.data.request_tabs.request_options;
     const [data, setData] = useState([]);
+
+    const listingsContext = useContext(ListingsContext);
 
     const getDataCallback = (status, requestData) => {
         if (status === 200) {
@@ -21,8 +24,8 @@ const RequestCarouselTabsBlock = (props) => {
     }
 
     useEffect(() => {
-        if (Array.isArray(props.providers) && props.providers.length > 0) {
-            props.providers.map(provider => {
+        if (Array.isArray(listingsContext?.listingsData?.providers) && listingsContext?.listingsData?.providers.length > 0) {
+            listingsContext?.listingsData?.providers.map(provider => {
                 fetchData(
                     "operation",
                     [requestConfig.request_name],
@@ -34,7 +37,7 @@ const RequestCarouselTabsBlock = (props) => {
                 )
             })
         }
-    }, [props.data.request_tabs, props.providers])
+    }, [props.data.request_tabs, listingsContext?.listingsData?.providers])
 
     return (
         <>
@@ -87,7 +90,6 @@ const RequestCarouselTabsBlock = (props) => {
 
 function mapStateToProps(state) {
     return {
-        providers: state.listings.listingsData.providers,
         tabsData: state.page.blocksData?.tru_fetcher_tabs
     };
 }

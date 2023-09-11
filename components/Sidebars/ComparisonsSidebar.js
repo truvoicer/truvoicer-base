@@ -1,18 +1,20 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {getSidebar} from "../../library/api/wp/middleware";
 import LoaderComponent from "../widgets/Loader";
 import Error from "next";
 import {siteConfig} from "../../../config/site-config";
 import {buildSidebar} from "../../redux/actions/sidebar-actions";
+import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
 
 const ComparisonsSidebar = (props) => {
+    const listingsContext = useContext(ListingsContext);
     const { sidebarData, isLoading, isError } = getSidebar(siteConfig.comparisonsSidebarName)
 
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        setData(buildSidebar({sidebarData: sidebarData, listingsData: props.listings.listingsData}));
+        setData(buildSidebar({sidebarData: sidebarData, listingsData: listingsContext?.listingsData}));
     }, [sidebarData])
 
     const getContent = () => {
@@ -38,9 +40,7 @@ const ComparisonsSidebar = (props) => {
 }
 
 function mapStateToProps(state) {
-    return {
-        listings: state.listings
-    };
+    return {};
 }
 
 export default connect(

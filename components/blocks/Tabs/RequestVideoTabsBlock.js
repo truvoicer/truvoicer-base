@@ -1,14 +1,19 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import Nav from "react-bootstrap/Nav";
 import Tab from "react-bootstrap/Tab";
-import YoutubePlayer from "../../../../truvoicer-base/components/widgets/Video/YoutubePlayer";
-import {isSet} from "../../../../truvoicer-base/library/utils";
-import {fetchData} from "../../../../truvoicer-base/library/api/fetcher/middleware";
+import YoutubePlayer from "@/truvoicer-base/components/widgets/Video/YoutubePlayer";
+import {isSet} from "@/truvoicer-base/library/utils";
+import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
+import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
+import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
 
 const RequestVideoTabsBlock = (props) => {
     const requestConfig = props.data.request_tabs.request_options;
     const [data, setData] = useState([]);
+
+    const listingsContext = useContext(ListingsContext);
+    const searchContext = useContext(SearchContext);
     const getDataCallback = (status, requestData) => {
         if (status === 200) {
             requestData.map(item => {
@@ -27,19 +32,19 @@ const RequestVideoTabsBlock = (props) => {
     }
 
     useEffect(() => {
-        if (!Array.isArray(props.searchList) || props.searchList.length === 0) {
+        if (!Array.isArray(searchContext?.searchList) || searchContext?.searchList.length === 0) {
             return;
         }
-        if (!Array.isArray(props.providers) || props.providers.length === 0) {
+        if (!Array.isArray(listingsContext?.listingsData?.providers) || listingsContext?.listingsData?.providers.length === 0) {
             return;
         }
-        getGameVideoData(props.searchList)
-        props.providers.map(provider => {
+        getGameVideoData(searchContext?.searchList)
+        listingsContext?.listingsData?.providers.map(provider => {
             fetchData(
                 "operation",
                 [requestConfig.request_name],
                 {
-                    query: getGameRequestIds(props.searchList, provider.provider_name),
+                    query: getGameRequestIds(searchContext?.searchList, provider.provider_name),
                     provider: provider.provider_name,
                     limit: requestConfig.request_limit,
                     query_type: "array"
@@ -48,7 +53,7 @@ const RequestVideoTabsBlock = (props) => {
             )
         })
 
-    }, [props.data.request_tabs, props.searchList, props.providers])
+    }, [props.data.request_tabs, searchContext?.searchList, listingsContext?.listingsData?.providers])
 
     const getVideo = (tab) => {
         return <YoutubePlayer video_id={tab.video_id} video_name={tab.video_name} />
@@ -137,8 +142,6 @@ const RequestVideoTabsBlock = (props) => {
 
 function mapStateToProps(state) {
     return {
-        searchList: state.search.searchList,
-        providers: state.listings.listingsData.providers,
         tabsData: state.page.blocksData?.tru_fetcher_tabs
     };
 }

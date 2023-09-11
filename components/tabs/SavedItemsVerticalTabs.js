@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
@@ -14,6 +14,7 @@ import {filterItemIdDataType, getGridItem} from "../../library/helpers/items";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {siteConfig} from "../../../config/site-config";
+import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
 
 
 // const useStyles = makeStyles((theme) => ({
@@ -32,8 +33,9 @@ import {siteConfig} from "../../../config/site-config";
 // }));
 
 const SavedItemsVerticalTabs = (props) => {
+    const listingsContext = useContext(ListingsContext);
     const router = useRouter();
-    const listingsGrid = isSet(defaultListingsGrid)? defaultListingsGrid : props.listingsGrid;
+    const listingsGrid = isSet(defaultListingsGrid)? defaultListingsGrid : listingsContext.listingsGrid;
     const [modalData, setModalData] = useState({
         show: false,
         item: {},
@@ -267,7 +269,6 @@ const SavedItemsVerticalTabs = (props) => {
 
 function mapStateToProps(state) {
     return {
-        listingsGrid: state.listings.listingsGrid,
         user: state.session[SESSION_USER]
     };
 }

@@ -1,18 +1,25 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {connect} from "react-redux";
-import {addListingsQueryDataString} from "../../redux/middleware/listings-middleware";
-import {setSearchRequestOperationMiddleware} from "../../redux/middleware/search-middleware";
 import {fetcherApiConfig} from "../../config/fetcher-api-config";
 import {NEW_SEARCH_REQUEST} from "../../redux/constants/search-constants";
 import {setListingsScrollTopAction} from "../../redux/actions/listings-actions";
+import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
+import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
+import {ItemContext} from "@/truvoicer-base/components/blocks/listings/contexts/ItemContext";
+import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 const TopbarSearch = (props) => {
     const [query, setQuery] = useState("");
 
+    const listingsContext = useContext(ListingsContext);
+    const searchContext = useContext(SearchContext);
+    const itemContext = useContext(ItemContext);
+    const listingsManager = new ListingsManager(listingsContext, searchContext, itemContext);
+
     const formSubmitHandler = (e) => {
         e.preventDefault();
-        props.setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
-        props.addListingsQueryDataString(fetcherApiConfig.queryKey, query, true)
+        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+        listingsManager.getListingsEngine().addListingsQueryDataString(fetcherApiConfig.queryKey, query, true)
         setListingsScrollTopAction(true);
     }
 
@@ -41,8 +48,5 @@ const TopbarSearch = (props) => {
 
 export default connect(
     null,
-    {
-        addListingsQueryDataString,
-        setSearchRequestOperationMiddleware
-    }
+    null
 )(TopbarSearch);

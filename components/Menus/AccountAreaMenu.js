@@ -1,22 +1,28 @@
 import {connect} from "react-redux";
-import React from 'react';
+import React, {useContext} from 'react';
 import {
     getPageDataMiddleware,
     setModalContentMiddleware
 } from "../../redux/middleware/page-middleware";
 import {useRouter} from "next/router";
-import {
-    setSearchRequestOperationMiddleware,
-    setSearchRequestStatusMiddleware
-} from "../../redux/middleware/search-middleware";
-import {siteConfig} from "../../../config/site-config";
+import {siteConfig} from "@/config/site-config";
 import {logout} from "../../redux/actions/session-actions";
-import {componentsConfig} from "../../../config/components-config";
+import {componentsConfig} from "@/config/components-config";
 import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED} from "../../redux/constants/search-constants";
 import {getFontAwesomeMenuIcon} from "../../library/utils";
+import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
+import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
+import {ItemContext} from "@/truvoicer-base/components/blocks/listings/contexts/ItemContext";
+import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 const AccountAreaMenu = (props) => {
     const router = useRouter();
+
+    const listingsContext = useContext(ListingsContext);
+    const searchContext = useContext(SearchContext);
+    const itemContext = useContext(ItemContext);
+    const listingsManager = new ListingsManager(listingsContext, searchContext, itemContext);
+
     const logoutHandler = (e) => {
         e.preventDefault();
         logout();
@@ -24,8 +30,8 @@ const AccountAreaMenu = (props) => {
 
     const pageClickHandler = (item, e) => {
         e.preventDefault()
-        props.setSearchRequestStatusMiddleware(SEARCH_REQUEST_STARTED);
-        props.setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+        listingsManager.getSearchEngine().setSearchRequestStatusMiddleware(SEARCH_REQUEST_STARTED);
+        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         router.push(item.post_url, item.post_url)
     }
 
@@ -160,8 +166,6 @@ export default connect(
     mapStateToProps,
     {
         getPageDataMiddleware,
-        setSearchRequestOperationMiddleware,
-        setSearchRequestStatusMiddleware,
         setModalContentMiddleware
     }
 )(AccountAreaMenu);
