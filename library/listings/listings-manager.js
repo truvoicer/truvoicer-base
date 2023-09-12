@@ -16,11 +16,14 @@ import store from "@/truvoicer-base/redux/store";
 import {siteConfig} from "@/config/site-config";
 import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {addArrayItem, addListingsQueryDataString} from "@/truvoicer-base/redux/middleware/listings-middleware";
+import {buildWpApiUrl, protectedApiRequest} from "@/truvoicer-base/library/api/wp/middleware";
+import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
+import {SESSION_AUTHENTICATED, SESSION_USER, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
 
 export class ListingsManager extends ListingsEngineBase {
 
-    constructor(listingsContext, searchContext, itemsContext) {
-        super(listingsContext, searchContext, itemsContext);
+    constructor(listingsContext, searchContext) {
+        super(listingsContext, searchContext);
     }
     setListingsBlocksDataAction(data) {
         if (!isObject(data) || isObjectEmpty(data)) {
@@ -194,12 +197,69 @@ export class ListingsManager extends ListingsEngineBase {
                 "operation",
                 [this.searchEngine.getEndpointOperation()],
                 this.searchEngine.buildQueryData(filterProviders, provider, this.listingsEngine?.listingsContext?.listingsQueryData),
-                this.searchEngine.searchResponseHandler.bind(this.searchEngine),
+                this.searchResponseHandler.bind(this),
                 (filterProviders.length === index + 1)
             )
         })
     }
 
+    searchResponseHandler(status, data, completed = false) {
+        if (status === 200 && data.status === "success") {
+            console.log(data)
+            this.getUserItemsListAction(data.request_data, data.provider, data.category)
+            this.searchEngine.setSearchListDataAction(data.request_data);
+            this.searchEngine.setSearchExtraDataAction(data.extra_data, data.provider, data.request_data)
+            this.searchEngine.setSearchRequestServiceAction(data.request_service)
+            this.searchEngine.setSearchProviderAction(data.provider)
+            this.searchEngine.setSearchCategoryAction(data.category)
+            this.searchEngine.setPageControlsAction(data.extra_data)
+
+        } else {
+            this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
+            this.searchEngine.setSearchRequestErrorAction(data.message)
+        }
+        if (completed) {
+            this.searchEngine.setHasMoreSearchPages()
+            this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_COMPLETED);
+        }
+    }
+
+    getUserItemsListAction(data, provider, category) {
+        if (data.length === 0) {
+            return false;
+        }
+        const session = {...store.getState().session};
+
+        if (!session[SESSION_AUTHENTICATED]) {
+            return;
+        }
+        const userId = session[SESSION_USER][SESSION_USER_ID]
+
+        const itemsList = data.map((item) =>  {
+            return item.item_id;
+        })
+
+        const requestData = {
+            provider_name: provider,
+            category: category,
+            id_list: itemsList,
+            user_id: userId
+        }
+        protectedApiRequest(
+            buildWpApiUrl(wpApiConfig.endpoints.savedItemsList),
+            requestData,
+            this.getUserItemsListCallback.bind(this)
+        )
+    }
+
+    getUserItemsListCallback(error, data) {
+        if (error) {
+            return false;
+        }
+        console.log({data})
+        this.searchEngine.setSavedItemsListAction(data?.savedItems || []);
+        this.searchEngine.setItemRatingsListAction(data?.itemRatings || []);
+    }
     getSearchProviders() {
         const queryDataState = this.listingsEngine?.listingsContext?.listingsQueryData;
         const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;

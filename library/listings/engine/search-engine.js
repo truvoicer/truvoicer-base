@@ -12,36 +12,17 @@ import store from "@/truvoicer-base/redux/store";
 import {produce} from "immer";
 import {isSet} from "@/truvoicer-base/library/utils";
 import {
-    setCategory,
-    setExtraData, setItemRatingsList, setPageControls,
-    setProvider, setRequestService, setSavedItemsList, setSearchError,
-    setSearchList,
+    setCategory, setPageControls,
+    setProvider, setRequestService, setSearchError,
     setSearchOperation, setSearchStatus
 } from "@/truvoicer-base/redux/reducers/search-reducer";
-import {
-    getUserItemsListAction,
-    saveItemAction,
-    saveItemRatingAction, updateSavedItemAction
-} from "@/truvoicer-base/redux/actions/user-stored-items-actions";
-import {
-    addPaginationQueryParameters,
-    addProviderToSearch, getCurrentPageFromOffset,
-    setHasMoreSearchPages, setPageControlItemAction,
-    setPageControlsAction
-} from "@/truvoicer-base/redux/actions/pagination-actions";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
-import {addArrayItem, addListingsQueryDataString} from "@/truvoicer-base/redux/middleware/listings-middleware";
-import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
-import {addQueryDataObjectAction, addQueryDataString} from "@/truvoicer-base/redux/actions/listings-actions";
-import {setSearchRequestStatusAction} from "@/truvoicer-base/redux/actions/search-actions";
-import {ItemEngine} from "@/truvoicer-base/library/listings/engine/item-engine";
+import {addListingsQueryDataString} from "@/truvoicer-base/redux/middleware/listings-middleware";
 import {SESSION_AUTHENTICATED} from "@/truvoicer-base/redux/constants/session-constants";
 import {setModalContentAction} from "@/truvoicer-base/redux/actions/page-actions";
 import {componentsConfig} from "@/config/components-config";
 import {buildWpApiUrl, protectedApiRequest} from "@/truvoicer-base/library/api/wp/middleware";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
-import {ListingsEngineBase} from "@/truvoicer-base/library/listings/engine/listings-engine-base";
-import {th} from "date-fns/locale";
 
 export class SearchEngine {
     constructor(context) {
@@ -123,40 +104,6 @@ export class SearchEngine {
         this.addError(error)
     }
 
-    searchResponseHandler(status, data, completed = false) {
-        if (status === 200 && data.status === "success") {
-            console.log(data)
-            // this.itemEngine.getUserItemsListAction(data.request_data, data.provider, data.category)
-            this.setSearchListDataAction(data.request_data);
-            this.setSearchExtraDataAction(data.extra_data, data.provider, data.request_data)
-            this.setSearchRequestServiceAction(data.request_service)
-            this.setSearchProviderAction(data.provider)
-            this.setSearchCategoryAction(data.category)
-            this.setPageControlsAction(data.extra_data)
-
-        } else {
-            this.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
-            this.setSearchRequestErrorAction(data.message)
-        }
-        if (completed) {
-            this.setHasMoreSearchPages()
-            this.setSearchRequestStatusAction(SEARCH_REQUEST_COMPLETED);
-        }
-    }
-
-    validateSearchParams(listingsData, listingsQueryData) {
-        // const listingsDataState = store.getState().listings.listingsData;
-        // const queryDataState = store.getState().listings.listingsQueryData;
-        if (!isSet(listingsData.listings_category)) {
-            console.log("No category found...")
-            this.setSearchRequestErrorAction("No category found...")
-            return false;
-        }
-        if (!isSet(listingsQueryData[fetcherApiConfig.searchLimitKey])) {
-            addListingsQueryDataString(fetcherApiConfig.searchLimitKey, fetcherApiConfig.defaultSearchLimit);
-        }
-        return true;
-    }
 
     getEndpointOperation() {
         const searchState = this.searchContext;
@@ -263,40 +210,21 @@ export class SearchEngine {
 
 
     loadNextPageNumberMiddleware(pageNumber) {
-        return function (dispatch) {
-            this.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
-            this.setPageControlItemAction(PAGE_CONTROL_PAGINATION_REQUEST, true)
-            this.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, parseInt(pageNumber))
-            // addQueryDataString("page_number", pageNumber, true)
-            // this.runSearch()
-        }
-    }
-
-    loadNextOffsetMiddleware(pageOffset) {
-        return function (dispatch) {
-            this.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
-            this.setPageControlItemAction(PAGE_CONTROL_PAGINATION_REQUEST, true)
-            this.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, this.getCurrentPageFromOffset(parseInt(pageOffset)))
-            this.addQueryDataString("page_offset", pageOffset, true)
-        }
+        this.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
+        this.setPageControlItemAction(PAGE_CONTROL_PAGINATION_REQUEST, true)
+        this.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, parseInt(pageNumber))
     }
 
     saveItemMiddleware(provider, category, itemId, user_id) {
-        return function(dispatch) {
-            this.saveItemAction(provider, category, itemId, user_id)
-        }
+        this.saveItemAction(provider, category, itemId, user_id)
     }
     saveItemRatingMiddleware(provider, category, itemId, user_id, rating) {
-        return function(dispatch) {
-            this.saveItemRatingAction(provider, category, itemId, user_id, rating)
-        }
+        this.saveItemRatingAction(provider, category, itemId, user_id, rating)
     }
 
 
     updateSavedItemMiddleware(data) {
-        return function (dispatch) {
-            this.updateSavedItemAction(data);
-        }
+        this.updateSavedItemAction(data);
     }
 
 
@@ -428,7 +356,7 @@ export class SearchEngine {
     }
 
     setSavedItemsListAction(data) {
-        const searchState = {...store.getState().search};
+        const searchState = this.searchContext;
         const searchOperation = searchState.searchOperation;
         const nextState = produce(searchState.savedItemsList, (draftState) => {
             if ((searchOperation === NEW_SEARCH_REQUEST)) {
@@ -444,7 +372,7 @@ export class SearchEngine {
     }
 
     setItemRatingsListAction(data) {
-        const searchState = {...store.getState().search};
+        const searchState = this.searchContext;
         const searchOperation = searchState.searchOperation;
         const nextState = produce(searchState.itemRatingsList, (draftState) => {
             if ((searchOperation === NEW_SEARCH_REQUEST)) {
@@ -488,7 +416,10 @@ export class SearchEngine {
     }
 
     getItemRatingDataAction(item_id, provider, category, user_id) {
-        const itemRatingsList = [...store.getState().search.itemRatingsList];
+        let itemRatingsList = [];
+        if (Array.isArray(this.searchContext?.itemRatingsList)) {
+            itemRatingsList = [...this.searchContext?.itemRatingsList];
+        }
         const itemRatingData = itemRatingsList.filter(item => {
             const getItemFromList = this.getItem(item, item_id, provider, category, user_id);
             if (getItemFromList) {

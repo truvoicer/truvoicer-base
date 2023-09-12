@@ -13,12 +13,13 @@ const BlogSearch = (props) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const itemContext = useContext(ItemContext);
-    const listingsManager = new ListingsManager(listingsContext, searchContext, itemContext);
+    const listingsManager = new ListingsManager(listingsContext, searchContext);
 
     const formClickHandler = (e) => {
         e.preventDefault();
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         listingsManager.getListingsEngine().addListingsQueryDataString(fetcherApiConfig.queryKey, query, true)
+        listingsManager.runSearch();
     }
 
     const formChangeHandler = (e) => {

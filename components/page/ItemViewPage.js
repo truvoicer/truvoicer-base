@@ -6,7 +6,7 @@ import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import {
     setItemCategoryAction,
     setItemIdAction,
-    setItemProviderAction
+    setItemProviderAction, setSingleItemPostState
 } from "@/truvoicer-base/redux/actions/item-actions";
 import LoaderComponent from "@/truvoicer-base/components/widgets/Loader";
 import FetcherApp from "@/views/App";
@@ -18,7 +18,7 @@ import {
 import {getPageDataMiddleware} from "@/truvoicer-base/redux/middleware/page-middleware";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
 
-const ItemViewPage = ({settings, pageData, provider, item_id, category, getItemMiddleware}) => {
+const ItemViewPage = ({settings, pageData, provider, item_id, category, getItemMiddleware, type, itemData}) => {
     const [showLoader, setShowLoader] = useState(true);
     useEffect(() => {
         if (!isNotEmpty(pageData)) {
@@ -30,41 +30,47 @@ const ItemViewPage = ({settings, pageData, provider, item_id, category, getItemM
         loadBaseItemPage(pageData, settings)
     }, [pageData, settings])
 
+
+    function itemPageInit() {
+        switch (type) {
+            case 'internal':
+                if (!isNotEmpty(itemData)) {
+                    return;
+                }
+                setItemProviderAction(provider)
+                setItemCategoryAction(category)
+                setSingleItemPostState({
+                    dataKeys: itemData?.api_data_keys?.data_keys,
+                    databaseId:itemData?.ID
+                })
+                setShowLoader(false)
+                break;
+            case 'external':
+                if (!isNotEmpty(provider)) {
+                    return;
+                }
+                if (!isNotEmpty(item_id)) {
+                    return;
+                }
+
+                let data = {
+                    [fetcherApiConfig.queryKey]: item_id,
+                    provider: provider
+                }
+
+                getItemMiddleware(data);
+                setItemProviderAction(provider)
+                setItemCategoryAction(category)
+                setItemIdAction(item_id);
+                setShowLoader(false)
+                break;
+        }
+    }
+
     useEffect(() => {
-        if (!isNotEmpty(provider)) {
-            return;
-        }
-        if (!isNotEmpty(item_id)) {
-            return;
-        }
+        itemPageInit()
+    }, [provider, item_id, itemData])
 
-        let data = {
-            [fetcherApiConfig.queryKey]: item_id,
-            provider: provider
-        }
-
-        getItemMiddleware(data);
-        setItemProviderAction(provider)
-        setItemCategoryAction(category)
-        setItemIdAction(item_id)
-    }, [provider, item_id])
-
-    useEffect(() => {
-        if (!isNotEmpty(provider)) {
-            return;
-        }
-        if (!isNotEmpty(item_id)) {
-            return;
-        }
-
-        if (!isNotEmpty(pageData)) {
-            return;
-        }
-        if (!isNotEmpty(settings)) {
-            return;
-        }
-        setShowLoader(false)
-    }, [provider, item_id, pageData, settings])
 
     return (
         <>

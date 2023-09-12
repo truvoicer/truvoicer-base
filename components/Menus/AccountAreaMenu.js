@@ -21,7 +21,7 @@ const AccountAreaMenu = (props) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const itemContext = useContext(ItemContext);
-    const listingsManager = new ListingsManager(listingsContext, searchContext, itemContext);
+    const listingsManager = new ListingsManager(listingsContext, searchContext);
 
     const logoutHandler = (e) => {
         e.preventDefault();

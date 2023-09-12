@@ -19,7 +19,7 @@ const SearchBlock = (props) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const itemContext = useContext(ItemContext);
-    const listingsManager = new ListingsManager(listingsContext, searchContext, itemContext);
+    const listingsManager = new ListingsManager(listingsContext, searchContext);
 
     const categoriesClickHandler = (value, e) => {
         e.preventDefault();
@@ -28,6 +28,7 @@ const SearchBlock = (props) => {
         setSearchData(getSearchData)
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         listingsManager.getListingsEngine().addQueryDataObjectMiddleware(getSearchData, true);
+        listingsManager.runSearch();
         setListingsScrollTopAction(true);
     }
 
@@ -57,6 +58,7 @@ const SearchBlock = (props) => {
         e.preventDefault();
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         listingsManager.getListingsEngine().addQueryDataObjectMiddleware(searchData, true);
+        listingsManager.runSearch();
         setListingsScrollTopAction(true);
     }
     return (
