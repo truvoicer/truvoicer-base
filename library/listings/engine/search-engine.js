@@ -388,7 +388,10 @@ export class SearchEngine {
     }
 
     isSavedItemAction(item_id, provider, category, user_id) {
-        const savedItemsList = [...store.getState().search.savedItemsList];
+        let savedItemsList = [];
+        if (Array.isArray(this.searchContext?.savedItemsList)) {
+            savedItemsList = [...this.searchContext?.savedItemsList];
+        }
         const isSaved = savedItemsList.filter(savedItem => {
             const getItemFromList = this.getItem(savedItem, item_id, provider, category, user_id);
             if (getItemFromList) {
