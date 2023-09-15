@@ -87,11 +87,6 @@ export function loadNextOffsetMiddleware(pageOffset) {
     }
 }
 
-export function saveItemMiddleware(provider, category, itemId, user_id) {
-    return function(dispatch) {
-        saveItemAction(provider, category, itemId, user_id)
-    }
-}
 export function saveItemRatingMiddleware(provider, category, itemId, user_id, rating) {
     return function(dispatch) {
         saveItemRatingAction(provider, category, itemId, user_id, rating)

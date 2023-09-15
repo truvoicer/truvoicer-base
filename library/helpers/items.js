@@ -260,45 +260,6 @@ export const buildCustomItemsArray = (itemsData) => {
     });
 }
 
-export const getGridItem = (item, category, listingsGrid, userId, showInfoCallback, index = false) => {
-    let gridItem = {...item};
-    if (isSet(gridItem.image_list)) {
-        gridItem.image_list = convertImageObjectsToArray(gridItem.image_list);
-    }
-    const gridConfig = listingsGridConfig.gridItems;
-    if (!isSet(gridConfig[category])) {
-        return null;
-    }
-    if (!isSet(gridConfig[category][listingsGrid])) {
-        return null;
-    }
-    const GridItems = gridConfig[category][listingsGrid];
-    return (
-        <GridItems
-            index={index}
-            data={gridItem}
-            searchCategory={category}
-            showInfoCallback={showInfoCallback}
-            savedItem={
-                isSavedItemAction(
-                    isSet(item?.item_id) ? item.item_id : null,
-                    isSet(item?.provider) ? item.provider : null,
-                    category,
-                    userId
-                )
-            }
-            ratingsData={
-                getItemRatingDataAction(
-                    isSet(item?.item_id) ? item.item_id : null,
-                    isSet(item?.provider) ? item.provider : null,
-                    category,
-                    userId
-                )
-            }
-        />
-    )
-}
-
 export const globalItemLinkClick = (trackData = {}) => {
     tagManagerSendDataLayer(trackData)
 }

@@ -129,7 +129,6 @@ export class SearchEngine {
         cloneQueryData["limit"] = this.calculateLimit(allProviders.length);
         cloneQueryData = this.addPaginationQueryParameters(cloneQueryData, provider);
         cloneQueryData["provider"] = provider;
-        console.log({cloneQueryData})
         return cloneQueryData;
     }
 
@@ -215,21 +214,9 @@ export class SearchEngine {
         this.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, parseInt(pageNumber))
     }
 
-    saveItemMiddleware(provider, category, itemId, user_id) {
-        this.saveItemAction(provider, category, itemId, user_id)
-    }
-    saveItemRatingMiddleware(provider, category, itemId, user_id, rating) {
-        this.saveItemRatingAction(provider, category, itemId, user_id, rating)
-    }
-
-
-    updateSavedItemMiddleware(data) {
-        this.updateSavedItemAction(data);
-    }
-
 
     setPageControlsAction(extraData) {
-        let pageControlsState = {...store.getState().search.pageControls}
+        let pageControlsState = this.searchContext?.pageControls;
         if (pageControlsState[PAGE_CONTROL_PAGINATION_REQUEST]) {
             return false;
         }
@@ -242,23 +229,11 @@ export class SearchEngine {
     }
 
     setPageControlItemAction(key, value) {
-        let pageControlsState = {...store.getState().search.pageControls}
+        let pageControlsState = this.searchContext?.pageControls;
         const pageControlsObject = Object.assign({}, pageControlsState, {
             [key]: value
         });
         this.updateContext({key: "pageControls", value: pageControlsObject})
-    }
-
-    getSearchLimit() {
-        const listingsDataState = {...store.getState().listings.listingsData}
-        if (isSet(listingsDataState.search_limit) &&
-            listingsDataState.search_limit !== "" &&
-            listingsDataState.search_limit !== null &&
-            !isNaN(listingsDataState.search_limit)) {
-            return parseInt(listingsDataState.search_limit)
-        }
-        return fetcherApiConfig.defaultSearchLimit;
-
     }
 
     getTotalItems(pageControlsState, requestPageControls) {

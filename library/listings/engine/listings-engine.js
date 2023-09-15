@@ -4,6 +4,7 @@ import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {tagManagerSendDataLayer} from "@/truvoicer-base/library/api/global-scripts";
 import {sprintf} from "sprintf";
 import {ItemRoutes} from "@/config/item-routes";
+import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/items";
 
 export class ListingsEngine {
     constructor(context) {
@@ -494,5 +495,36 @@ export class ListingsEngine {
     }
 
 
+    getCustomItemsData(listPositions = []) {
+        const listingsData = this.listingsContext?.listingsData;
+        let itemsData;
+        let listData = [];
+        listPositions.forEach((listPosition) => {
+            switch (listPosition) {
+                case "list_start":
+                    itemsData = listingsData?.item_list_id__list_start_items;
+                    break;
+                case "list_end":
+                    itemsData = listingsData?.item_list_id__list_end_items;
+                    break;
+                case "custom_position":
+                    itemsData = listingsData?.item_list_id__custom_position_items;
+                    break;
+                default:
+                    return [];
+            }
+            if (!itemsData) {
+                return [];
+            }
+
+            let listPosData = extractItemListFromPost({post: itemsData});
+            if (!listPosData) {
+                console.error('Invalid item list post data...')
+                listPosData = [];
+            }
+            listData = [...listData, ...listPosData];
+        })
+        return listData;
+    }
 
 }

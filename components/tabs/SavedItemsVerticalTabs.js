@@ -10,11 +10,13 @@ import {connect} from "react-redux";
 // import makeStyles from "@mui/material/styles/makeStyles";
 import {useRouter} from "next/router";
 import {getGridItemColumns, getItemViewUrl} from "../../redux/actions/item-actions";
-import {filterItemIdDataType, getGridItem} from "../../library/helpers/items";
+import {filterItemIdDataType} from "../../library/helpers/items";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {siteConfig} from "../../../config/site-config";
 import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
+import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
+import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
 
 
 // const useStyles = makeStyles((theme) => ({
@@ -34,6 +36,7 @@ import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/conte
 
 const SavedItemsVerticalTabs = (props) => {
     const listingsContext = useContext(ListingsContext);
+    const searchContext = useContext(SearchContext);
     const router = useRouter();
     const listingsGrid = isSet(defaultListingsGrid)? defaultListingsGrid : listingsContext.listingsGrid;
     const [modalData, setModalData] = useState({
@@ -42,6 +45,7 @@ const SavedItemsVerticalTabs = (props) => {
         provider: ""
     });
 
+    const listingsGridManager = new ListingsGrid(listingsContext, searchContext);
     const getProviderDataByName = (index) => {
         let item = {};
         Object.keys(props.data).map((key, objectIndex) => {
@@ -164,7 +168,7 @@ const SavedItemsVerticalTabs = (props) => {
                 {isSet(data) &&
                 data.items_response.map((item, index) => (
                     <Col key={index} {...getGridItemColumns(listingsGrid)}>
-                        {getGridItem(
+                        {listingsGridManager.getGridItem(
                             item,
                             item.category,
                             listingsGrid,

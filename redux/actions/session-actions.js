@@ -84,7 +84,6 @@ export function validateToken() {
         protectedReq: true
     })
         .then((response) => {
-            console.log({response})
             if (response?.data?.status === 'success') {
 
                 setSessionUserAction(response.data.data, true)

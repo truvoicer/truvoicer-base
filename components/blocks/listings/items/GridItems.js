@@ -4,16 +4,15 @@ import {connect} from "react-redux";
 import {listingsGridConfig} from "@/config/listings-grid-config";
 import {isNotEmpty, isSet} from "../../../../library/utils";
 import {SESSION_USER, SESSION_USER_ID} from "../../../../redux/constants/session-constants";
-import {
-    getUserItemsListAction,
-} from "../../../../redux/actions/user-stored-items-actions";
 import Col from "react-bootstrap/Col";
 import {useRouter} from "next/router";
 import {getGridItemColumns} from "../../../../redux/actions/item-actions";
-import {extractItemListFromPost, getGridItem} from "../../../../library/helpers/items";
+import {extractItemListFromPost} from "../../../../library/helpers/items";
 import {siteConfig} from "@/config/site-config";
 import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
+import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
+import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 const GridItems = (props) => {
     const listingsContext = useContext(ListingsContext);
@@ -26,7 +25,8 @@ const GridItems = (props) => {
     });
     const [listPosition, setListPosition] = useState(null);
     // const [searchList, setSearchList] = useState([]);
-
+    const listingsGrid = new ListingsGrid(listingsContext, searchContext);
+    const listingsManager = new ListingsManager(listingsContext, searchContext);
     const showInfo = (item, category, e) => {
         e.preventDefault()
         setModalData({
@@ -58,36 +58,8 @@ const GridItems = (props) => {
         })
     }
 
-    const getCustomItemsData = (listPosition) => {
-        const listingsData = listingsContext.listingsData;
-        let itemsData;
-        switch (listPosition) {
-            case "list_start":
-                itemsData = listingsData?.item_list_id__list_start_items;
-                break;
-            case "list_end":
-                itemsData = listingsData?.item_list_id__list_end_items;
-                break;
-            case "custom_position":
-                itemsData = listingsData?.item_list_id__custom_position_items;
-                break;
-            default:
-                return [];
-        }
-        if (!itemsData) {
-            return [];
-        }
-
-        let listData = extractItemListFromPost({post: itemsData});
-        if (!listData) {
-            console.error('Invalid item list post data...')
-            listData = [];
-        }
-        return listData;
-    }
-
     const insertListStartItems = (searchList) => {
-        const itemsData = getCustomItemsData("list_start");
+        const itemsData = listingsManager.listingsEngine.getCustomItemsData(["list_start"]);
         if (itemsData.length === 0) {
             return searchList;
         }
@@ -101,7 +73,7 @@ const GridItems = (props) => {
     }
 
     const insertListEndItems = (searchList) => {
-        const itemsData = getCustomItemsData("list_end");
+        const itemsData = listingsManager.listingsEngine.getCustomItemsData(["list_end"]);
         if (itemsData.length === 0) {
             return searchList;
         }
@@ -123,9 +95,9 @@ const GridItems = (props) => {
             return searchList;
         }
 
-        const listStartItemsCount = getCustomItemsData("list_start").length;
+        const listStartItemsCount = listingsManager.listingsEngine.getCustomItemsData(["list_start"]).length;
 
-        let itemsData = getCustomItemsData("custom_position");
+        let itemsData = listingsManager.listingsEngine.getCustomItemsData(["custom_position"]);
         const newSearchList = [];
         const newItemsData = [];
         if (itemsData.length === 0) {
@@ -151,12 +123,6 @@ const GridItems = (props) => {
         })
         return newSearchList;
     }
-
-    useEffect(() => {
-        if (isNotEmpty(listPosition)) {
-            getUserItemsListAction(getSearchList(), siteConfig.internalProviderName, siteConfig.internalCategory)
-        }
-    }, [listPosition])
 
     useEffect(() => {
 
@@ -202,7 +168,7 @@ const GridItems = (props) => {
                 {getSearchList().map((item, index) => (
                     <React.Fragment key={index}>
                         <Col {...getGridItemColumns(listingsContext.listingsGrid)}>
-                            {getGridItem(
+                            {listingsGrid.getGridItem(
                                 item,
                                 searchContext.category,
                                 listingsContext.listingsGrid,

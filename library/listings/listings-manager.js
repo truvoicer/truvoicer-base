@@ -19,6 +19,7 @@ import {addArrayItem, addListingsQueryDataString} from "@/truvoicer-base/redux/m
 import {buildWpApiUrl, protectedApiRequest} from "@/truvoicer-base/library/api/wp/middleware";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
 import {SESSION_AUTHENTICATED, SESSION_USER, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
+import {ca} from "date-fns/locale";
 
 export class ListingsManager extends ListingsEngineBase {
 
@@ -45,7 +46,6 @@ export class ListingsManager extends ListingsEngineBase {
                             data,
                             "providers",
                             (status, data) => {
-                                console.log({status, data})
                                 this.getProvidersCallback(status, data)
                                 }
                             )
@@ -55,12 +55,23 @@ export class ListingsManager extends ListingsEngineBase {
         }
     }
 
+    getSearchLimit() {
+        const listingsDataState = this.listingsEngine.listingsContext?.listingsData;
+        console.log({listingsDataState})
+        if (isSet(listingsDataState.search_limit) &&
+            listingsDataState.search_limit !== "" &&
+            listingsDataState.search_limit !== null &&
+            !isNaN(listingsDataState.search_limit)) {
+            return parseInt(listingsDataState.search_limit)
+        }
+        return fetcherApiConfig.defaultSearchLimit;
+
+    }
     getProvidersCallback(status, data) {
-        console.log({status, data})
         if (status === 200) {
             this.listingsEngine.updateListingsData({key: "providers", value: data.data})
             this.listingsEngine.updateContext({key: "providers", value: data.data})
-            this.searchEngine.setPageControlItemAction(PAGE_CONTROL_PAGE_SIZE, this.searchEngine.getSearchLimit())
+            this.searchEngine.setPageControlItemAction(PAGE_CONTROL_PAGE_SIZE, this.getSearchLimit())
             // this.getListingsInitialLoad();
         } else {
             this.getListingsEngine().addError(data?.message)
@@ -68,7 +79,6 @@ export class ListingsManager extends ListingsEngineBase {
     }
 
     getListingsInitialLoad() {
-        console.log('getListingsInitialLoad')
         const listingsDataState = this.listingsEngine?.listingsContext.listingsData;
         if (isEmpty(listingsDataState)) {
             setSearchError("Listings data empty on initial search...")
@@ -87,7 +97,6 @@ export class ListingsManager extends ListingsEngineBase {
     }
 
     postsListingsInitialLoad(listingsDataState) {
-        console.log({listingsDataState})
         if (!Array.isArray(listingsDataState?.item_list_id)) {
             return;
         }
@@ -98,7 +107,7 @@ export class ListingsManager extends ListingsEngineBase {
         }
         store.dispatch(setSearchOperation(NEW_SEARCH_REQUEST));
         const category = listingsDataState.listings_category;
-        this.itemsEngine.getUserItemsListAction(listData, siteConfig.internalProviderName, category)
+        this.getUserItemsListAction(listData, siteConfig.internalProviderName, category)
         this.searchEngine.setSearchListDataAction(listData);
         this.searchEngine.setSearchCategoryAction(category)
         this.searchEngine.setSearchProviderAction(siteConfig.internalProviderName)
@@ -128,9 +137,8 @@ export class ListingsManager extends ListingsEngineBase {
     }
 
     initialRequest() {
-        console.log('initialRequest')
         store.dispatch(setSearchOperation(NEW_SEARCH_REQUEST));
-        const listingsDataState = store.getState().listings.listingsData;
+        const listingsDataState = this.listingsEngine.listingsContext?.listingsData;
         if (!isSet(listingsDataState.initial_request) || !isSet(listingsDataState.initial_request.request_options)) {
             setSearchError("Initial request options not set......")
             return false;
@@ -150,7 +158,7 @@ export class ListingsManager extends ListingsEngineBase {
     }
 
     addQueryDataObjectAction(queryData, search = false) {
-        let listingsQueryData = this.listingsContext?.listingsQueryData
+        let listingsQueryData = this.listingsEngine.listingsContext?.listingsQueryData
         let newQueryData = {};
         Object.keys(queryData).map(value => {
             newQueryData[value] = queryData[value];
@@ -178,7 +186,6 @@ export class ListingsManager extends ListingsEngineBase {
         return true;
     }
     runSearch(operation = false) {
-        console.log("runSearch")
         this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
         const pageControlsState = this.searchEngine.searchContext.pageControls;
         if (!this.validateSearchParams()) {
@@ -190,7 +197,6 @@ export class ListingsManager extends ListingsEngineBase {
             this.searchEngine.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, 1);
         }
         const providers = this.getSearchProviders();
-        console.log({providers})
         const filterProviders = this.searchEngine.filterSearchProviders(providers);
         filterProviders.map((provider, index) => {
             fetchData(
@@ -205,7 +211,7 @@ export class ListingsManager extends ListingsEngineBase {
 
     searchResponseHandler(status, data, completed = false) {
         if (status === 200 && data.status === "success") {
-            console.log(data)
+            console.log('searchResponseHandler', {data})
             this.getUserItemsListAction(data.request_data, data.provider, data.category)
             this.searchEngine.setSearchListDataAction(data.request_data);
             this.searchEngine.setSearchExtraDataAction(data.extra_data, data.provider, data.request_data)
@@ -235,14 +241,40 @@ export class ListingsManager extends ListingsEngineBase {
         }
         const userId = session[SESSION_USER][SESSION_USER_ID]
 
+        const listingsData = this.listingsEngine?.listingsContext?.listingsData;
+
+        let providers = [provider];
+        let listPositions = [];
+        if (listingsData?.list_start) {
+            listPositions.push('list_start');
+            if (providers.indexOf("internal") === -1) {
+                providers.push("internal");
+            }
+        }
+        if (listingsData?.list_end) {
+            listPositions.push('list_end');
+            if (providers.indexOf("internal") === -1) {
+                providers.push("internal");
+            }
+        }
+        if (listingsData?.custom_position) {
+            listPositions.push('custom_position');
+            if (providers.indexOf("internal") === -1) {
+                providers.push("internal");
+            }
+        }
+
         const itemsList = data.map((item) =>  {
+            return item.item_id;
+        })
+        const wpListIds = this.listingsEngine.getCustomItemsData(listPositions).map((item) =>  {
             return item.item_id;
         })
 
         const requestData = {
-            provider_name: provider,
+            provider_name: providers,
             category: category,
-            id_list: itemsList,
+            id_list: [...wpListIds, ...itemsList],
             user_id: userId
         }
         protectedApiRequest(
@@ -256,7 +288,6 @@ export class ListingsManager extends ListingsEngineBase {
         if (error) {
             return false;
         }
-        console.log({data})
         this.searchEngine.setSavedItemsListAction(data?.savedItems || []);
         this.searchEngine.setItemRatingsListAction(data?.itemRatings || []);
     }
