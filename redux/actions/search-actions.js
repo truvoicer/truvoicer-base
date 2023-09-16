@@ -59,7 +59,7 @@ export function setSearchListDataAction(listData) {
 
     const nextState = produce(searchState.searchList, (draftState) => {
         if ((searchOperation === NEW_SEARCH_REQUEST)) {
-            store.dispatch(setSearchOperation(APPEND_SEARCH_REQUEST));
+            // store.dispatch(setSearchOperation(APPEND_SEARCH_REQUEST));
             draftState.splice(0, draftState.length + 1);
 
         } else if (searchOperation === APPEND_SEARCH_REQUEST) {

@@ -6,6 +6,7 @@ import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/conte
 import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
 import {ItemContext} from "@/truvoicer-base/components/blocks/listings/contexts/ItemContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {PAGE_CONTROL_PAGE_SIZE} from "@/truvoicer-base/redux/constants/search-constants";
 
 const ListingsBlockContainer = ({data, session, children}) => {
     const listingsContext = useContext(ListingsContext);
@@ -33,8 +34,17 @@ const ListingsBlockContainer = ({data, session, children}) => {
         if (!Array.isArray(listingsContext?.listingsData?.providers)) {
             return;
         }
+        listingsManager.initialisePageControls();
+        if (!searchContext?.pageControls[PAGE_CONTROL_PAGE_SIZE]) {
+            return;
+        }
         listingsManager.getListingsInitialLoad();
-    }, [session, listingsContext?.listingsData])
+    }, [
+        session,
+        listingsContext?.listingsData,
+        searchContext?.pageControls[PAGE_CONTROL_PAGE_SIZE]
+    ])
+
     const myRef = useRef(null)
     if (listingsContext?.listingsScrollTop) {
         scrollToRef(myRef)

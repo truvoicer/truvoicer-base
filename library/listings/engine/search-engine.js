@@ -69,7 +69,7 @@ export class SearchEngine {
 
         const nextState = produce(searchState.searchList, (draftState) => {
             if ((searchOperation === NEW_SEARCH_REQUEST)) {
-                this.updateContext({key: "searchOperation", value: APPEND_SEARCH_REQUEST})
+                // this.updateContext({key: "searchOperation", value: APPEND_SEARCH_REQUEST})
                 draftState.splice(0, draftState.length + 1);
 
             } else if (searchOperation === APPEND_SEARCH_REQUEST) {
@@ -126,7 +126,7 @@ export class SearchEngine {
 
     buildQueryData(allProviders, provider, queryData = {}) {
         let cloneQueryData = {...queryData};
-        cloneQueryData["limit"] = this.calculateLimit(allProviders.length);
+        cloneQueryData[fetcherApiConfig.searchLimitKey] = this.calculateLimit(allProviders.length);
         cloneQueryData = this.addPaginationQueryParameters(cloneQueryData, provider);
         cloneQueryData["provider"] = provider;
         return cloneQueryData;
@@ -181,14 +181,10 @@ export class SearchEngine {
     }
 
     setSearchRequestStatusMiddleware(status) {
-        return function (dispatch) {
-            dispatch(setSearchStatus(status))
-        }
+        this.updateContext({key: "searchStatus", value: status})
     }
     setSearchRequestOperationMiddleware(operation) {
-        return function (dispatch) {
-            dispatch(setSearchOperation(operation))
-        }
+        this.updateContext({key: "searchOperation", value: operation})
     }
 
     setPageControlItemMiddleware(key, value) {
@@ -208,11 +204,6 @@ export class SearchEngine {
     }
 
 
-    loadNextPageNumberMiddleware(pageNumber) {
-        this.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
-        this.setPageControlItemAction(PAGE_CONTROL_PAGINATION_REQUEST, true)
-        this.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, parseInt(pageNumber))
-    }
 
 
     setPageControlsAction(extraData) {
@@ -301,14 +292,15 @@ export class SearchEngine {
         }
 
         queryData["page_number"] = currentPage;
-        queryData["page_offset"] = queryData["limit"] * currentPage;
+        queryData["page_offset"] = queryData["search_limit"] * currentPage;
         return queryData;
     }
 
     addProviderToSearch(provider) {
         const pageControlsState = this.searchContext?.pageControls;
         const extraData = this.searchContext?.extraData[provider];
-        if (!isSet(extraData)) {
+        console.log({extraData})
+        if (!isSet(extraData?.total_items)) {
             return true;
         }
         else if (pageControlsState[PAGE_CONTROL_CURRENT_PAGE] === 1) {

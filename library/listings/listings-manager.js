@@ -71,11 +71,16 @@ export class ListingsManager extends ListingsEngineBase {
         if (status === 200) {
             this.listingsEngine.updateListingsData({key: "providers", value: data.data})
             this.listingsEngine.updateContext({key: "providers", value: data.data})
-            this.searchEngine.setPageControlItemAction(PAGE_CONTROL_PAGE_SIZE, this.getSearchLimit())
             // this.getListingsInitialLoad();
         } else {
             this.getListingsEngine().addError(data?.message)
         }
+    }
+
+    initialisePageControls() {
+        console.log('initialisePageControls', this.getSearchLimit())
+        this.searchEngine.setPageControlItemAction(PAGE_CONTROL_PAGE_SIZE, this.getSearchLimit())
+        // this.searchEngine.setPageControlItemAction('initialized', true)
     }
 
     getListingsInitialLoad() {
@@ -185,10 +190,19 @@ export class ListingsManager extends ListingsEngineBase {
         }
         return true;
     }
-    runSearch(operation = false) {
+
+    loadNextPageNumberMiddleware(pageNumber) {
+        this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
+        this.searchEngine.setPageControlItemAction(PAGE_CONTROL_PAGINATION_REQUEST, true)
+        this.searchEngine.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, parseInt(pageNumber))
+        // this.runSearch()
+    }
+
+    runSearch() {
         this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
         const pageControlsState = this.searchEngine.searchContext.pageControls;
-        if (!this.validateSearchParams()) {
+        const validate = this.validateSearchParams();
+        if (!validate) {
             this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
             return false;
         }
@@ -197,8 +211,11 @@ export class ListingsManager extends ListingsEngineBase {
             this.searchEngine.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, 1);
         }
         const providers = this.getSearchProviders();
+        console.log('runSearch', {providers})
         const filterProviders = this.searchEngine.filterSearchProviders(providers);
+        console.log('runSearch', {filterProviders})
         filterProviders.map((provider, index) => {
+            console.log('runSearch', {provider, index})
             fetchData(
                 "operation",
                 [this.searchEngine.getEndpointOperation()],
@@ -210,6 +227,7 @@ export class ListingsManager extends ListingsEngineBase {
     }
 
     searchResponseHandler(status, data, completed = false) {
+        console.log('searchResponseHandler', {status, data, completed})
         if (status === 200 && data.status === "success") {
             console.log('searchResponseHandler', {data})
             this.getUserItemsListAction(data.request_data, data.provider, data.category)
@@ -227,6 +245,7 @@ export class ListingsManager extends ListingsEngineBase {
         if (completed) {
             this.searchEngine.setHasMoreSearchPages()
             this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_COMPLETED);
+            this.searchEngine.setSearchRequestOperationAction(null);
         }
     }
 

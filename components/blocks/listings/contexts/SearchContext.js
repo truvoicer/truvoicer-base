@@ -12,6 +12,7 @@ export const searchData = {
     savedItemsList: [],
     itemRatingsList: [],
     pageControls: {
+        initialized: false,
         paginationRequest: false,
         hasMore: false,
         totalItems: 0,
