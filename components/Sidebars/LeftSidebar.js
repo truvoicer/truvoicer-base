@@ -19,7 +19,7 @@ const LeftSidebar = (props) => {
         if (Array.isArray(sidebarData?.sidebar)) {
             setData(buildSidebar({sidebarData: sidebarData.sidebar, listingsData: listingsContext?.listingsData}))
         }
-    }, [sidebarData])
+    }, [sidebarData, listingsContext?.listingsData])
 
     const sidebarLoading = !sidebarError && !sidebarData
     if (sidebarLoading) return <></>

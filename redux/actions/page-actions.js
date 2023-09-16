@@ -10,7 +10,6 @@ import {
 } from "../reducers/page-reducer";
 import {setCategory, setListingsData} from "../reducers/listings-reducer";
 import {isNotEmpty, isObjectEmpty, isSet} from "../../library/utils";
-import {getListingsProviders, getProvidersCallback} from "../middleware/listings-middleware";
 import {buildWpApiUrl} from "../../library/api/wp/middleware";
 import {siteConfig} from "../../../config/site-config";
 import {componentsConfig} from "../../../config/components-config";
@@ -89,27 +88,6 @@ export function loadBaseItemPage(pageData, settings) {
     loadBasePageData(data);
 }
 
-export function setListingsBlocksDataAction(data) {
-    if (!isSet(data)) {
-        return false;
-    }
-    if (data !== null) {
-        store.dispatch(setListingsData(data))
-        switch (data?.source) {
-            case LISTINGS_BLOCK_SOURCE_WORDPRESS:
-                store.dispatch(setCategory(data.listings_category))
-                getListingsInitialLoad();
-                break;
-            case LISTINGS_BLOCK_SOURCE_API:
-            default:
-                if (isNotEmpty(data.api_listings_category)) {
-                    store.dispatch(setCategory(data.api_listings_category))
-                    getListingsProviders(data, "providers", getProvidersCallback)
-                }
-                break;
-        }
-    }
-}
 
 export function setPageDataAction(data) {
     store.dispatch(setPageData(data))

@@ -57,7 +57,6 @@ export class ListingsManager extends ListingsEngineBase {
 
     getSearchLimit() {
         const listingsDataState = this.listingsEngine.listingsContext?.listingsData;
-        console.log({listingsDataState})
         if (isSet(listingsDataState.search_limit) &&
             listingsDataState.search_limit !== "" &&
             listingsDataState.search_limit !== null &&
@@ -78,9 +77,7 @@ export class ListingsManager extends ListingsEngineBase {
     }
 
     initialisePageControls() {
-        console.log('initialisePageControls', this.getSearchLimit())
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_PAGE_SIZE, this.getSearchLimit())
-        // this.searchEngine.setPageControlItemAction('initialized', true)
     }
 
     getListingsInitialLoad() {
@@ -192,7 +189,6 @@ export class ListingsManager extends ListingsEngineBase {
     }
 
     loadNextPageNumberMiddleware(pageNumber) {
-        this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_PAGINATION_REQUEST, true)
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, parseInt(pageNumber))
         // this.runSearch()
@@ -211,11 +207,8 @@ export class ListingsManager extends ListingsEngineBase {
             this.searchEngine.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, 1);
         }
         const providers = this.getSearchProviders();
-        console.log('runSearch', {providers})
         const filterProviders = this.searchEngine.filterSearchProviders(providers);
-        console.log('runSearch', {filterProviders})
         filterProviders.map((provider, index) => {
-            console.log('runSearch', {provider, index})
             fetchData(
                 "operation",
                 [this.searchEngine.getEndpointOperation()],
@@ -227,9 +220,7 @@ export class ListingsManager extends ListingsEngineBase {
     }
 
     searchResponseHandler(status, data, completed = false) {
-        console.log('searchResponseHandler', {status, data, completed})
         if (status === 200 && data.status === "success") {
-            console.log('searchResponseHandler', {data})
             this.getUserItemsListAction(data.request_data, data.provider, data.category)
             this.searchEngine.setSearchListDataAction(data.request_data);
             this.searchEngine.setSearchExtraDataAction(data.extra_data, data.provider, data.request_data)

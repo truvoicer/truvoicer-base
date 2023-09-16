@@ -30,7 +30,7 @@ export const buildSidebar = ({sidebarData, listingsData = false}) => {
 }
 
 const getSidebarWidgetComponent = ({item, listingsData = false}) => {
-    if (isSet(item.search)) {
+    if (item?.search) {
         return (
             <>
                 <BlogSearch data={item.search}/>

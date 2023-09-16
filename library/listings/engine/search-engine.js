@@ -299,7 +299,6 @@ export class SearchEngine {
     addProviderToSearch(provider) {
         const pageControlsState = this.searchContext?.pageControls;
         const extraData = this.searchContext?.extraData[provider];
-        console.log({extraData})
         if (!isSet(extraData?.total_items)) {
             return true;
         }
