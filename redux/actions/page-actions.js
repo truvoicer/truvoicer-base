@@ -8,14 +8,11 @@ import {
     setSiteSettings,
     setUserAccountMenuData,
 } from "../reducers/page-reducer";
-import {setCategory, setListingsData} from "../reducers/listings-reducer";
-import {isNotEmpty, isObjectEmpty, isSet} from "../../library/utils";
+import {isNotEmpty, isSet} from "../../library/utils";
 import {buildWpApiUrl} from "../../library/api/wp/middleware";
 import {siteConfig} from "../../../config/site-config";
 import {componentsConfig} from "../../../config/components-config";
 import {wpApiConfig} from "../../config/wp-api-config";
-import {getListingsInitialLoad} from "./listings-actions";
-import {LISTINGS_BLOCK_SOURCE_API, LISTINGS_BLOCK_SOURCE_WORDPRESS} from "../constants/general_constants";
 
 const sprintf = require("sprintf").sprintf;
 export function setPageErrorAction(error) {

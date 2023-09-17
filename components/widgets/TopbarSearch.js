@@ -2,7 +2,6 @@ import React, {useContext, useState} from "react";
 import {connect} from "react-redux";
 import {fetcherApiConfig} from "../../config/fetcher-api-config";
 import {NEW_SEARCH_REQUEST} from "../../redux/constants/search-constants";
-import {setListingsScrollTopAction} from "../../redux/actions/listings-actions";
 import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
 import {ItemContext} from "@/truvoicer-base/components/blocks/listings/contexts/ItemContext";
@@ -21,7 +20,7 @@ const TopbarSearch = (props) => {
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         listingsManager.getListingsEngine().addListingsQueryDataString(fetcherApiConfig.queryKey, query, true)
         listingsManager.runSearch();
-        setListingsScrollTopAction(true);
+        listingsManager.getListingsEngine().setListingsScrollTopAction(true);
     }
 
     const formChangeHandler = (e) => {

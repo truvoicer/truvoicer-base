@@ -2,10 +2,8 @@ import React, {useContext, useState} from 'react';
 import {NEW_SEARCH_REQUEST} from "../../redux/constants/search-constants";
 import {connect} from "react-redux";
 import {fetcherApiConfig} from "../../config/fetcher-api-config";
-import {setListingsScrollTopAction} from "../../redux/actions/listings-actions";
 import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
-import {ItemContext} from "@/truvoicer-base/components/blocks/listings/contexts/ItemContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 const SearchBlock = (props) => {
@@ -18,7 +16,6 @@ const SearchBlock = (props) => {
 
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
-    const itemContext = useContext(ItemContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
 
     const categoriesClickHandler = (value, e) => {
@@ -29,7 +26,7 @@ const SearchBlock = (props) => {
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         listingsManager.getListingsEngine().addQueryDataObjectMiddleware(getSearchData, true);
         listingsManager.runSearch();
-        setListingsScrollTopAction(true);
+        listingsManager.getListingsEngine().setListingsScrollTopAction(true);
     }
 
     const formChangeHandler = (e) => {
@@ -59,7 +56,7 @@ const SearchBlock = (props) => {
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         listingsManager.getListingsEngine().addQueryDataObjectMiddleware(searchData, true);
         listingsManager.runSearch();
-        setListingsScrollTopAction(true);
+        listingsManager.getListingsEngine().setListingsScrollTopAction(true);
     }
     return (
         <div className="catagory_area">

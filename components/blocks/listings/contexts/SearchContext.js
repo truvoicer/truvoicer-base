@@ -17,7 +17,7 @@ export const searchData = {
         hasMore: false,
         totalItems: 0,
         totalPages: 0,
-        currentPage: 0,
+        currentPage: 1,
         pageSize: 0
     },
     requestService: "",

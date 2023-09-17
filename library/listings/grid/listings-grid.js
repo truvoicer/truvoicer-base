@@ -1,6 +1,5 @@
 import {convertImageObjectsToArray, isSet} from "@/truvoicer-base/library/utils";
 import {listingsGridConfig} from "@/config/listings-grid-config";
-import {getItemRatingDataAction, isSavedItemAction} from "@/truvoicer-base/redux/actions/user-stored-items-actions";
 import React from "react";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 

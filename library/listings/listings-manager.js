@@ -5,21 +5,18 @@ import {
     LISTINGS_BLOCK_SOURCE_WORDPRESS
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {
-    NEW_SEARCH_REQUEST, PAGE_CONTROL_CURRENT_PAGE,
-    PAGE_CONTROL_PAGE_SIZE, PAGE_CONTROL_PAGINATION_REQUEST,
+    NEW_SEARCH_REQUEST, PAGE_CONTROL_CURRENT_PAGE, PAGE_CONTROL_HAS_MORE,
+    PAGE_CONTROL_PAGE_SIZE, PAGE_CONTROL_PAGINATION_REQUEST, PAGE_CONTROL_REQ_PAGINATION_TYPE,
     SEARCH_REQUEST_COMPLETED, SEARCH_REQUEST_ERROR, SEARCH_REQUEST_STARTED
 } from "@/truvoicer-base/redux/constants/search-constants";
-import {setSearchError, setSearchOperation} from "@/truvoicer-base/redux/reducers/search-reducer";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/items";
 import store from "@/truvoicer-base/redux/store";
 import {siteConfig} from "@/config/site-config";
 import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
-import {addArrayItem, addListingsQueryDataString} from "@/truvoicer-base/redux/middleware/listings-middleware";
 import {buildWpApiUrl, protectedApiRequest} from "@/truvoicer-base/library/api/wp/middleware";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
 import {SESSION_AUTHENTICATED, SESSION_USER, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
-import {ca} from "date-fns/locale";
 
 export class ListingsManager extends ListingsEngineBase {
 
@@ -83,7 +80,7 @@ export class ListingsManager extends ListingsEngineBase {
     getListingsInitialLoad() {
         const listingsDataState = this.listingsEngine?.listingsContext.listingsData;
         if (isEmpty(listingsDataState)) {
-            setSearchError("Listings data empty on initial search...")
+            // setSearchError("Listings data empty on initial search...")
             return false;
         }
         switch (listingsDataState?.source) {
@@ -107,7 +104,7 @@ export class ListingsManager extends ListingsEngineBase {
             console.error('Invalid item list post data...')
             listData = [];
         }
-        store.dispatch(setSearchOperation(NEW_SEARCH_REQUEST));
+        this.searchEngine.setSearchRequestOperationAction(NEW_SEARCH_REQUEST);
         const category = listingsDataState.listings_category;
         this.getUserItemsListAction(listData, siteConfig.internalProviderName, category)
         this.searchEngine.setSearchListDataAction(listData);
@@ -121,7 +118,7 @@ export class ListingsManager extends ListingsEngineBase {
 
     apiListingsInitialLoad(listingsDataState) {
         if (!isSet(listingsDataState.initial_load)) {
-            setSearchError("Initial load data is not set...")
+            // setSearchError("Initial load data is not set...")
             return false;
         }
         switch (listingsDataState.initial_load) {
@@ -139,15 +136,15 @@ export class ListingsManager extends ListingsEngineBase {
     }
 
     initialRequest() {
-        store.dispatch(setSearchOperation(NEW_SEARCH_REQUEST));
+        this.searchEngine.setSearchRequestOperationAction(NEW_SEARCH_REQUEST);
         const listingsDataState = this.listingsEngine.listingsContext?.listingsData;
         if (!isSet(listingsDataState.initial_request) || !isSet(listingsDataState.initial_request.request_options)) {
-            setSearchError("Initial request options not set......")
+            // setSearchError("Initial request options not set......")
             return false;
         }
         let requestOptions = listingsDataState.initial_request.request_options;
         if (!isSet(requestOptions.request_name) || requestOptions.request_name === null || requestOptions.request_name === "") {
-            setSearchError("Initial request name not set...")
+            // setSearchError("Initial request name not set...")
             return false;
         }
         let queryData = {};
@@ -191,10 +188,10 @@ export class ListingsManager extends ListingsEngineBase {
     loadNextPageNumberMiddleware(pageNumber) {
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_PAGINATION_REQUEST, true)
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, parseInt(pageNumber))
-        // this.runSearch()
     }
 
     runSearch() {
+        this.searchEngine.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
         this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
         const pageControlsState = this.searchEngine.searchContext.pageControls;
         const validate = this.validateSearchParams();
@@ -227,14 +224,23 @@ export class ListingsManager extends ListingsEngineBase {
             this.searchEngine.setSearchRequestServiceAction(data.request_service)
             this.searchEngine.setSearchProviderAction(data.provider)
             this.searchEngine.setSearchCategoryAction(data.category)
-            this.searchEngine.setPageControlsAction(data.extra_data)
+            let pageControlData = {
+                [PAGE_CONTROL_REQ_PAGINATION_TYPE]: null
+            };
+            if (isNotEmpty(data?.extra_data) && isObject(data.extra_data)) {
+                pageControlData = {...pageControlData, ...data.extra_data};
+            }
+            if (isNotEmpty(data?.[PAGE_CONTROL_REQ_PAGINATION_TYPE])) {
+                pageControlData[PAGE_CONTROL_REQ_PAGINATION_TYPE] = data[PAGE_CONTROL_REQ_PAGINATION_TYPE];
+            }
+            this.searchEngine.setPageControlsAction(pageControlData)
 
         } else {
             this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
             this.searchEngine.setSearchRequestErrorAction(data.message)
         }
         if (completed) {
-            this.searchEngine.setHasMoreSearchPages()
+            // this.searchEngine.setHasMoreSearchPages()
             this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_COMPLETED);
             this.searchEngine.setSearchRequestOperationAction(null);
         }

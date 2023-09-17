@@ -1,31 +1,39 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {fetcherApiConfig} from "../../config/fetcher-api-config";
-import {NEW_SEARCH_REQUEST} from "../../redux/constants/search-constants";
+import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED} from "../../redux/constants/search-constants";
 import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
 import {ItemContext} from "@/truvoicer-base/components/blocks/listings/contexts/ItemContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {isNotEmpty} from "@/truvoicer-base/library/utils";
 
 const BlogSearch = (props) => {
     const [query, setQuery] = useState("");
 
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
-    const itemContext = useContext(ItemContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
 
     const formClickHandler = (e) => {
         e.preventDefault();
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         listingsManager.getListingsEngine().addListingsQueryDataString(fetcherApiConfig.queryKey, query, true)
-        listingsManager.runSearch();
     }
 
     const formChangeHandler = (e) => {
         setQuery(e.target.value);
     }
 
+    useEffect(() => {
+        if (
+            isNotEmpty(query) &&
+            searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
+            searchContext?.searchOperation === NEW_SEARCH_REQUEST
+        ) {
+            listingsManager.runSearch();
+        }
+    }, [searchContext?.searchOperation, query]);
     return (
         <aside className="single_sidebar_widget search_widget">
             <form method="post" onSubmit={formClickHandler}>

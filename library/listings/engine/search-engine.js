@@ -1,23 +1,23 @@
 import {
     APPEND_SEARCH_REQUEST,
     NEW_SEARCH_REQUEST,
-    PAGE_CONTROL_CURRENT_PAGE, PAGE_CONTROL_HAS_MORE, PAGE_CONTROL_PAGE_SIZE,
-    PAGE_CONTROL_PAGINATION_REQUEST, PAGE_CONTROL_TOTAL_ITEMS, PAGE_CONTROL_TOTAL_PAGES,
+    PAGE_CONTROL_CURRENT_PAGE,
+    PAGE_CONTROL_HAS_MORE,
+    PAGE_CONTROL_PAGE_SIZE,
+    PAGE_CONTROL_REQ_PAGINATION_OFFSET,
+    PAGE_CONTROL_REQ_PAGINATION_PAGE,
+    PAGE_CONTROL_PAGINATION_REQUEST, PAGE_CONTROL_REQ_PAGINATION_TYPE,
+    PAGE_CONTROL_TOTAL_ITEMS,
+    PAGE_CONTROL_TOTAL_PAGES,
     SEARCH_REQUEST_COMPLETED,
     SEARCH_REQUEST_ERROR,
     SEARCH_REQUEST_IDLE,
-    SEARCH_REQUEST_STARTED
+    SEARCH_REQUEST_STARTED, PAGE_CONTROL_REQ_TOTAL_ITEMS
 } from "@/truvoicer-base/redux/constants/search-constants";
 import store from "@/truvoicer-base/redux/store";
 import {produce} from "immer";
-import {isSet} from "@/truvoicer-base/library/utils";
-import {
-    setCategory, setPageControls,
-    setProvider, setRequestService, setSearchError,
-    setSearchOperation, setSearchStatus
-} from "@/truvoicer-base/redux/reducers/search-reducer";
+import {isNotEmpty, isSet} from "@/truvoicer-base/library/utils";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
-import {addListingsQueryDataString} from "@/truvoicer-base/redux/middleware/listings-middleware";
 import {SESSION_AUTHENTICATED} from "@/truvoicer-base/redux/constants/session-constants";
 import {setModalContentAction} from "@/truvoicer-base/redux/actions/page-actions";
 import {componentsConfig} from "@/config/components-config";
@@ -140,16 +140,16 @@ export class SearchEngine {
 
     getInitialSearchQueryData(listingsDataState) {
         if (!Array.isArray(listingsDataState?.initial_load_search_params)) {
-            setSearchError("Initial search data is not set on initial search...")
+            // setSearchError("Initial search data is not set on initial search...")
             return false;
         }
         if (!listingsDataState.initial_load_search_params.length) {
-            setSearchError("Initial search data is empty on initial search...")
+            // setSearchError("Initial search data is empty on initial search...")
             return false;
         }
         let initialSearch = listingsDataState.initial_load_search_params;
         if (!isSet(initialSearch.name || !isSet(initialSearch.value))) {
-            setSearchError("Initial search parameters are not set...")
+            // setSearchError("Initial search parameters are not set...")
             return false;
         }
         let queryData = {};
@@ -161,25 +161,6 @@ export class SearchEngine {
         return queryData;
     }
 
-
-    setSearchProviderMiddleware(provider) {
-        return function (dispatch) {
-            dispatch(setProvider(provider))
-        }
-    }
-
-    setSearchCategoryMiddleware(category) {
-        return function (dispatch) {
-            dispatch(setCategory(category))
-        }
-    }
-
-    setSearchRequestServiceMiddleware(requestService) {
-        return function (dispatch) {
-            dispatch(setRequestService(requestService))
-        }
-    }
-
     setSearchRequestStatusMiddleware(status) {
         this.updateContext({key: "searchStatus", value: status})
     }
@@ -187,38 +168,26 @@ export class SearchEngine {
         this.updateContext({key: "searchOperation", value: operation})
     }
 
-    setPageControlItemMiddleware(key, value) {
-        return function (dispatch) {
-            let pageControlsState = {...store.getState().search.pageControls}
-            const pageControlsObject = Object.assign({}, pageControlsState, {
-                [key]: value
-            });
-            dispatch(setPageControls(pageControlsObject))
-        }
-    }
-
-    setSearchRequestErrorMiddleware(error) {
-        return function (dispatch) {
-            dispatch(setSearchError(error))
-        }
-    }
-
-
-
-
     setPageControlsAction(extraData) {
         let pageControlsState = this.searchContext?.pageControls;
         if (pageControlsState[PAGE_CONTROL_PAGINATION_REQUEST]) {
             return false;
         }
-        const pageControlsObject = Object.assign({}, pageControlsState, {
-            hasMore: false,
-            totalItems: this.getTotalItems(pageControlsState, extraData),
-            totalPages: this.getTotalPages(pageControlsState, extraData),
+        const hasMorePages = this.hasMore(pageControlsState, extraData);
+        const totalItems = this.getTotalItems(pageControlsState, extraData);
+        const totalPages = this.getTotalPages(pageControlsState, extraData);
+        this.setPageControlObjectAction({
+            [PAGE_CONTROL_HAS_MORE]: hasMorePages,
+            [PAGE_CONTROL_TOTAL_ITEMS]: totalItems,
+            [PAGE_CONTROL_TOTAL_PAGES]: totalPages
         });
-        this.updateContext({key: "pageControls", value: pageControlsObject})
     }
 
+    setPageControlObjectAction(object) {
+        let pageControlsState = this.searchContext?.pageControls;
+        const pageControlsObject = Object.assign({}, pageControlsState, object);
+        this.updateContext({key: "pageControls", value: pageControlsObject})
+    }
     setPageControlItemAction(key, value) {
         let pageControlsState = this.searchContext?.pageControls;
         const pageControlsObject = Object.assign({}, pageControlsState, {
@@ -227,6 +196,55 @@ export class SearchEngine {
         this.updateContext({key: "pageControls", value: pageControlsObject})
     }
 
+    hasMore(pageControlsState, requestPageControls) {
+        switch (requestPageControls[PAGE_CONTROL_REQ_PAGINATION_TYPE]) {
+            case PAGE_CONTROL_REQ_PAGINATION_OFFSET:
+                return this.hasMoreOffsetItems(pageControlsState, requestPageControls);
+            case PAGE_CONTROL_REQ_PAGINATION_PAGE:
+                return this.hasMorePages(pageControlsState, requestPageControls);
+            default:
+                return false;
+        }
+    }
+    hasMoreOffsetItems(pageControlsState, requestPageControls) {
+        let currentPage = pageControlsState[PAGE_CONTROL_CURRENT_PAGE];
+        if (isNotEmpty(requestPageControls?.[PAGE_CONTROL_CURRENT_PAGE])) {
+            currentPage = parseInt(requestPageControls[PAGE_CONTROL_CURRENT_PAGE]);
+        }
+        if (currentPage === 0) {
+            return false;
+        }
+        if (!isNotEmpty(requestPageControls?.[PAGE_CONTROL_REQ_TOTAL_ITEMS])) {
+            return false;
+        }
+
+        const totalItems = parseInt(requestPageControls[PAGE_CONTROL_REQ_TOTAL_ITEMS]);
+        if (totalItems === 0) {
+            return false;
+        }
+        if (!isNotEmpty(pageControlsState?.[PAGE_CONTROL_PAGE_SIZE])) {
+            return false;
+        }
+
+        const pageSize = parseInt(pageControlsState[PAGE_CONTROL_PAGE_SIZE]);
+        if (pageSize === 0) {
+            return false;
+        }
+
+        return (currentPage * pageSize) < totalItems;
+
+    }
+    hasMorePages(pageControlsState, requestPageControls) {
+        let currentPage = pageControlsState[PAGE_CONTROL_CURRENT_PAGE];
+        if (isNotEmpty(requestPageControls?.[PAGE_CONTROL_CURRENT_PAGE])) {
+            currentPage = parseInt(requestPageControls[PAGE_CONTROL_CURRENT_PAGE]);
+        }
+        if (currentPage === 0) {
+            return false;
+        }
+        return parseInt(pageControlsState[PAGE_CONTROL_CURRENT_PAGE]) < parseInt(pageControlsState[PAGE_CONTROL_TOTAL_PAGES]);
+
+    }
     getTotalItems(pageControlsState, requestPageControls) {
         let totalItems = pageControlsState[PAGE_CONTROL_TOTAL_ITEMS];
         let requestTotalItems = requestPageControls.total_items;
@@ -270,17 +288,6 @@ export class SearchEngine {
         return parseInt(pageSize) * parseInt(pageNumber);
     }
 
-    setHasMoreSearchPages() {
-        const pageControlsState = {...store.getState().search.pageControls}
-        if (pageControlsState[PAGE_CONTROL_CURRENT_PAGE] > 0) {
-            if (parseInt(pageControlsState[PAGE_CONTROL_CURRENT_PAGE]) < parseInt(pageControlsState[PAGE_CONTROL_TOTAL_PAGES])) {
-                this.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, true);
-                return true;
-            }
-        }
-        this.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
-        return false;
-    }
 
     addPaginationQueryParameters(queryData, providerName = null) {
         const pageControlsState = this.searchContext.pageControls;

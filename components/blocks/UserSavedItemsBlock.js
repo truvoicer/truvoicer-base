@@ -6,16 +6,17 @@ import {buildDataKeyObject} from "../../library/helpers/items";
 import {SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-constants";
 import {buildWpApiUrl, protectedApiRequest} from "../../library/api/wp/middleware";
 import {wpApiConfig} from "../../config/wp-api-config";
-import {setSearchRequestOperationAction} from "../../redux/actions/search-actions";
 import {NEW_SEARCH_REQUEST} from "../../redux/constants/search-constants";
-import {setSavedItemsListAction} from "../../redux/actions/user-stored-items-actions";
 import SavedItemsVerticalTabs from "../tabs/SavedItemsVerticalTabs";
 import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
+import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
+import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 function UserSavedItemsBlock(props) {
     const [tabData, setTabData] = useState({});
     const searchContext = useContext(SearchContext);
-
+    const listingsContext = useContext(ListingsContext);
+    const listingsManager = new ListingsManager(listingsContext, searchContext);
     const buildSavedItemsList = (data) => {
         let tabDataObject = {};
         data.map((savedItem) => {
@@ -71,8 +72,8 @@ function UserSavedItemsBlock(props) {
         )
             .then((response) => {
                 if (!isCancelled) {
-                    setSearchRequestOperationAction(NEW_SEARCH_REQUEST);
-                    setSavedItemsListAction(response.data.data)
+                    listingsManager.searchEngine.setSearchRequestOperationAction(NEW_SEARCH_REQUEST);
+                    listingsManager.searchEngine.setSavedItemsListAction(response.data.data)
                 }
             })
             .catch(error => {

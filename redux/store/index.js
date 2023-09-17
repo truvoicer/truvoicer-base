@@ -5,8 +5,6 @@ import {
 
 import thunk from "redux-thunk";
 import {pageReducer} from "../reducers/page-reducer";
-import {listingsReducer} from "../reducers/listings-reducer";
-import {searchReducer} from "../reducers/search-reducer";
 import {sessionReducer} from "../reducers/session-reducer";
 import {itemReducer} from "../reducers/item-reducer";
 import {getStoreReducers} from "../../library/helpers/redux";
@@ -17,8 +15,6 @@ const middleware = [
 ];
 const defaultReducers = {
     page: pageReducer,
-    listings: listingsReducer,
-    search: searchReducer,
     item: itemReducer,
     session: sessionReducer
 }

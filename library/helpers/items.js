@@ -5,8 +5,6 @@ import ImageLoader from "../../components/loaders/ImageLoader";
 import ListLoader from "../../components/loaders/ListLoader";
 import store from "../../redux/store";
 import {siteConfig} from "../../../config/site-config";
-import {listingsGridConfig} from "../../../config/listings-grid-config";
-import {getItemRatingDataAction, isSavedItemAction} from "../../redux/actions/user-stored-items-actions";
 import {getItemViewUrl} from "../../redux/actions/item-actions";
 import {tagManagerSendDataLayer} from "../api/global-scripts";
 

@@ -11,15 +11,18 @@ import {
 } from "../../redux/constants/listings-constants";
 import {fetchData} from "../../library/api/fetcher/middleware";
 import Grid from "@mui/material/Grid";
-import {getItemRatingDataAction, isSavedItemAction} from "../../redux/actions/user-stored-items-actions";
 import {SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-constants";
 import {connect} from "react-redux";
 // import makeStyles from "@mui/material/styles/makeStyles";
 import {useRouter} from "next/router";
 import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
+import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
+import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 const SavedItemsVerticalTabsOld = (props) => {
+    const searchContext = useContext(SearchContext);
     const listingsContext = useContext(ListingsContext);
+    const listingsManager = new ListingsManager(listingsContext, searchContext);
     const router = useRouter();
     const listingsGrid = isSet(defaultListingsGrid)? defaultListingsGrid : listingsContext.listingsGrid;
     const [modalData, setModalData] = useState({
@@ -163,7 +166,7 @@ const SavedItemsVerticalTabsOld = (props) => {
                           searchCategory={category}
                           showInfoCallback={showInfo}
                           savedItem={
-                              isSavedItemAction(
+                              listingsManager.searchEngine.isSavedItemAction(
                                   gridItem.item_id,
                                   gridItem.provider,
                                   category,
@@ -171,7 +174,7 @@ const SavedItemsVerticalTabsOld = (props) => {
                               )
                           }
                           ratingsData={
-                              getItemRatingDataAction(
+                              listingsManager.searchEngine.getItemRatingDataAction(
                                   gridItem.item_id,
                                   gridItem.provider,
                                   category,
