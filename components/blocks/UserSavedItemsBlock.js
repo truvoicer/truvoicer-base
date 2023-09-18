@@ -8,8 +8,8 @@ import {buildWpApiUrl, protectedApiRequest} from "../../library/api/wp/middlewar
 import {wpApiConfig} from "../../config/wp-api-config";
 import {NEW_SEARCH_REQUEST} from "../../redux/constants/search-constants";
 import SavedItemsVerticalTabs from "../tabs/SavedItemsVerticalTabs";
-import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
-import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
+import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
+import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 function UserSavedItemsBlock(props) {

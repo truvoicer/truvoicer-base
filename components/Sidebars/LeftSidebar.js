@@ -7,7 +7,7 @@ import {siteConfig} from "@/config/site-config";
 import {buildSidebar} from "../../redux/actions/sidebar-actions";
 import useSWR from "swr";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
-import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
+import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 
 const LeftSidebar = (props) => {
     const [data, setData] = useState([]);

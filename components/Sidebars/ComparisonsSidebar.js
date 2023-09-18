@@ -5,7 +5,7 @@ import LoaderComponent from "../widgets/Loader";
 import Error from "next";
 import {siteConfig} from "../../../config/site-config";
 import {buildSidebar} from "../../redux/actions/sidebar-actions";
-import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
+import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 
 const ComparisonsSidebar = (props) => {
     const listingsContext = useContext(ListingsContext);

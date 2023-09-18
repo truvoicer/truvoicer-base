@@ -5,7 +5,7 @@ import {getSidebar} from "../../library/api/wp/middleware";
 import LoaderComponent from "../widgets/Loader";
 import Error from "next";
 import {siteConfig} from "@/config/site-config";
-import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
+import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 
 const FeedsSidebar = (props) => {
     const listingsContext = useContext(ListingsContext);

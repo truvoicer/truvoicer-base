@@ -11,9 +11,8 @@ import {componentsConfig} from "@/config/components-config";
 import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED} from "../../redux/constants/search-constants";
 import Dropdown from "react-bootstrap/Dropdown";
 import {CustomDropdownMenu} from "../dropdown/CustomDropdown";
-import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
-import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
-import {ItemContext} from "@/truvoicer-base/components/blocks/listings/contexts/ItemContext";
+import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
+import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 const sprintf = require("sprintf").sprintf
@@ -22,7 +21,6 @@ const DropdownMenuList = (props) => {
 
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
-    const itemContext = useContext(ItemContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
 
     const logoutHandler = (e) => {

@@ -5,7 +5,7 @@ import Tab from "react-bootstrap/Tab";
 import {fetchData} from "../../../../truvoicer-base/library/api/fetcher/middleware";
 import {uCaseFirst} from "../../../../truvoicer-base/library/utils";
 import RequestItemCarousel from "../Carousel/RequestItemCarousel";
-import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
+import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 
 const RequestCarouselTabsBlock = (props) => {
     const requestConfig = props.data.request_tabs.request_options;

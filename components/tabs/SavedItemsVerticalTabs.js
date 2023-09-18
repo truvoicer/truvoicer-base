@@ -14,8 +14,8 @@ import {filterItemIdDataType} from "../../library/helpers/items";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {siteConfig} from "../../../config/site-config";
-import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
-import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
+import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
+import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
 
 

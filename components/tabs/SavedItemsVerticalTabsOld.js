@@ -15,8 +15,8 @@ import {SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-const
 import {connect} from "react-redux";
 // import makeStyles from "@mui/material/styles/makeStyles";
 import {useRouter} from "next/router";
-import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
-import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
+import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
+import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 const SavedItemsVerticalTabsOld = (props) => {

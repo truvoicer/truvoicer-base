@@ -9,8 +9,8 @@ import {useRouter} from "next/router";
 import {getGridItemColumns} from "../../../../redux/actions/item-actions";
 import {extractItemListFromPost} from "../../../../library/helpers/items";
 import {siteConfig} from "@/config/site-config";
-import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
-import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
+import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
+import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 

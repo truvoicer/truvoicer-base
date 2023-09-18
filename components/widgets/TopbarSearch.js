@@ -2,9 +2,8 @@ import React, {useContext, useState} from "react";
 import {connect} from "react-redux";
 import {fetcherApiConfig} from "../../config/fetcher-api-config";
 import {NEW_SEARCH_REQUEST} from "../../redux/constants/search-constants";
-import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
-import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
-import {ItemContext} from "@/truvoicer-base/components/blocks/listings/contexts/ItemContext";
+import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
+import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 const TopbarSearch = (props) => {
@@ -12,7 +11,6 @@ const TopbarSearch = (props) => {
 
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
-    const itemContext = useContext(ItemContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
 
     const formSubmitHandler = (e) => {

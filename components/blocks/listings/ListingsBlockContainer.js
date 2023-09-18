@@ -2,16 +2,14 @@ import React, {useContext, useEffect, useRef} from "react";
 import {connect} from "react-redux";
 import {isObject, isObjectEmpty, scrollToRef} from "../../../library/utils";
 import {SESSION_AUTHENTICATED, SESSION_IS_AUTHENTICATING} from "../../../redux/constants/session-constants";
-import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
-import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
-import {ItemContext} from "@/truvoicer-base/components/blocks/listings/contexts/ItemContext";
+import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
+import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {PAGE_CONTROL_PAGE_SIZE} from "@/truvoicer-base/redux/constants/search-constants";
 
 const ListingsBlockContainer = ({data, session, children}) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
-    const itemContext = useContext(ItemContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
 
     useEffect(() => {

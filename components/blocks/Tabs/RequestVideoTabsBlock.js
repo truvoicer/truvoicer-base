@@ -5,8 +5,8 @@ import Tab from "react-bootstrap/Tab";
 import YoutubePlayer from "@/truvoicer-base/components/widgets/Video/YoutubePlayer";
 import {isSet} from "@/truvoicer-base/library/utils";
 import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
-import {ListingsContext} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsContext";
-import {SearchContext} from "@/truvoicer-base/components/blocks/listings/contexts/SearchContext";
+import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
+import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 
 const RequestVideoTabsBlock = (props) => {
     const requestConfig = props.data.request_tabs.request_options;
