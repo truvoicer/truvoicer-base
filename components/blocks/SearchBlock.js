@@ -58,6 +58,7 @@ const SearchBlock = (props) => {
         listingsManager.runSearch();
         listingsManager.getListingsEngine().setListingsScrollTopAction(true);
     }
+    console.log(props)
     return (
         <div className="catagory_area">
             <form onSubmit={formSubmitHandler}>

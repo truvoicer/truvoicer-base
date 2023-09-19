@@ -13,7 +13,7 @@ import {
     listingsTemplateData
 } from "@/truvoicer-base/library/listings/contexts/ListingsTemplateContext";
 
-const ListingsBlockInterface = ({data, layout = null}) => {
+const ListingsBlockInterface = ({data, layoutComponent = null, paginationComponent = null, infiniteScrollComponent = null}) => {
     const loadListings = () => {
         switch (data?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
@@ -26,7 +26,9 @@ const ListingsBlockInterface = ({data, layout = null}) => {
     const [listingsTemplateContextState, setListingsTemplateContextState] = useState({
         ...listingsTemplateData,
         ...{
-            layout: layout,
+            layout: layoutComponent,
+            paginationComponent: paginationComponent,
+            infiniteScrollComponent: infiniteScrollComponent,
         }
     })
     const [listingsContextState, setListingsContextState] = useState({
