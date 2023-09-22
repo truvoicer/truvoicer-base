@@ -9,7 +9,7 @@ import {
     setItemProviderAction, setSingleItemPostState
 } from "@/truvoicer-base/redux/actions/item-actions";
 import LoaderComponent from "@/truvoicer-base/components/widgets/Loader";
-import FetcherApp from "@/views/App";
+import FetcherApp from "@/truvoicer-base/App";
 import {
     getItemMiddleware,
     setItemCategoryMiddleWare,

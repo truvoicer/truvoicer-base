@@ -176,7 +176,7 @@ export class ListingsManager extends ListingsEngineBase {
         const listingsQueryData = this.listingsEngine?.listingsContext?.listingsQueryData;
         if (!isSet(listingsDataState.listings_category)) {
             console.log("No category found...")
-            this.setSearchRequestErrorAction("No category found...")
+            // this.setSearchRequestErrorAction("No category found...")
             return false;
         }
         if (!isSet(listingsQueryData[fetcherApiConfig.searchLimitKey])) {

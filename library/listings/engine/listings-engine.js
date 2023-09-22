@@ -70,7 +70,7 @@ export class ListingsEngine {
     }
 
     addQueryDataObjectMiddleware(queryData, search = false) {
-        let listingsQueryData = {...store.getState().listings.listingsQueryData}
+        let listingsQueryData = this.listingsContext?.listingsQueryData
         let newQueryData = {};
         Object.keys(queryData).map(value => {
             newQueryData[value] = queryData[value];
