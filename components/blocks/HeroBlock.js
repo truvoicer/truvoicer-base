@@ -4,7 +4,7 @@ import {itemDataTextFilter} from "../../library/helpers/items";
 import {isNotEmpty} from "../../library/utils";
 import {getExtraDataValue} from "../../library/helpers/pages";
 import {setModalContentAction} from "../../redux/actions/page-actions";
-import {componentsConfig} from "@/config/components-config";
+import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
 
 const HeroBlock = (props) => {
     let heroType = "full";
@@ -16,7 +16,7 @@ const HeroBlock = (props) => {
     }
     const buttonClickHandler = (e) => {
         e.preventDefault();
-        setModalContentAction(componentsConfig.components.authentication_register.name, {}, true)
+        setModalContentAction(blockComponentsConfig.components.authentication_register.name, {}, true)
     }
 
     const defaultButtonLabel = "Start Searching";

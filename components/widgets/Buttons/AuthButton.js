@@ -4,14 +4,14 @@ import {
     getPageDataMiddleware,
     setModalContentMiddleware
 } from "../../../redux/middleware/page-middleware";
-import {componentsConfig} from "../../../../config/components-config";
+import {blockComponentsConfig} from "../../../config/block-components-config";
 import {siteConfig} from "../../../../config/site-config";
 import {logout} from "../../../redux/actions/session-actions";
 
 const AuthButton = (props) => {
     const options = props.data.auth_options;
     const showAuthLoginModal = () => {
-        props.setModalContentMiddleware(componentsConfig.components.authentication_login.name, {}, true)
+        props.setModalContentMiddleware(blockComponentsConfig.components.authentication_login.name, {}, true)
     }
     const logoutHandler = (e) => {
         e.preventDefault();

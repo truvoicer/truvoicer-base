@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {buildSidebar} from "../../redux/actions/sidebar-actions";
 import {getSidebar} from "../../library/api/wp/middleware";
-import {siteConfig} from "../../../config/site-config";
+import {siteConfig} from "@/config/site-config";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 /**
  *
@@ -13,8 +14,13 @@ const BlogSidebar = () => {
     const [data, setData] = useState([]);
     const { sidebarData, isLoading, isError } = getSidebar(siteConfig.blogSidebarName)
 
+    const templateContext = useContext(TemplateContext);
+
     useEffect(() => {
-        setData(buildSidebar({sidebarData: sidebarData}))
+        setData(buildSidebar({
+            sidebarData: sidebarData,
+            templateContext,
+        }))
     }, [sidebarData])
 
     return (

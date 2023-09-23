@@ -7,7 +7,7 @@ import {connect} from "react-redux";
 import {getPageDataMiddleware} from "../../redux/middleware/page-middleware";
 import {isNotEmpty, isObjectEmpty} from "../../library/utils";
 import {setModalContentAction} from "../../redux/actions/page-actions";
-import {componentsConfig} from "../../../config/components-config";
+import {blockComponentsConfig} from "../../config/block-components-config";
 import {siteConfig} from "../../../config/site-config";
 
 const ProfileMenu = ({data, siteSettings}) => {
@@ -20,7 +20,7 @@ const ProfileMenu = ({data, siteSettings}) => {
                     <a
                         className={"text-white"}
                         onClick={() => {
-                            setModalContentAction(componentsConfig.components.authentication_login.name, {}, true)
+                            setModalContentAction(blockComponentsConfig.components.authentication_login.name, {}, true)
                         }}
                     >
                         {!siteSettings?.profile_menu_login_text ? siteConfig.defaultProfileMenuLoginText : siteSettings.profile_menu_login_text}
@@ -30,7 +30,7 @@ const ProfileMenu = ({data, siteSettings}) => {
                     <a
                         className={"text-white"}
                         onClick={() => {
-                            setModalContentAction(componentsConfig.components.authentication_register.name, {}, true)
+                            setModalContentAction(blockComponentsConfig.components.authentication_register.name, {}, true)
                         }}
                     >
                         {!siteSettings?.profile_menu_register_text ? siteConfig.defaultProfileMenuRegisterText : siteSettings.profile_menu_register_text}

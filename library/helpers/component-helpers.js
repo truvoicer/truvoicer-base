@@ -1,9 +1,9 @@
 import {isFunction} from "underscore";
+import {isComponentFunction} from "@/truvoicer-base/library/utils";
 
 export function buildComponent(component, props = {}) {
-    if (!isFunction(component) && !isFunction(component?.type)) {
+    if (!isComponentFunction(component)) {
         return null;
     }
-    const Component = component;
-    return <Component {...props}/>
+    return component;
 }

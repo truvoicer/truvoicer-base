@@ -7,6 +7,8 @@ import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchCo
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
 import {buildFilterList} from "@/truvoicer-base/library/helpers/wp-helpers";
+import {AppContext} from "@/truvoicer-base/config/contexts/AppContext";
+import {AppManager} from "@/truvoicer-base/library/app/AppManager";
 
 const SearchBlock = (props) => {
     const [query, setQuery] = useState("")
@@ -14,10 +16,14 @@ const SearchBlock = (props) => {
     const [category, setCategory] = useState("")
     const [searchData, setSearchData] = useState({})
 
-    const listingsContext = useContext(ListingsContext);
-    const searchContext = useContext(SearchContext);
+    const appContext = useContext(AppContext);
+
+    const appManager = new AppManager(appContext);
+    const listingsContext = appManager.findAppContextById(props?.data?.listing_block_id, "listingsContext");
+    const searchContext = appManager.findAppContextById(props?.data?.listing_block_id, "searchContext");
+
     const listingsManager = new ListingsManager(listingsContext, searchContext);
-    console.log({listingsContext})
+
     let showSearch = (props.data?.search);
     let categoriesPlaceholder = 'Categories';
     let featuredCategoriesLabel = 'Featured Categories';
@@ -53,16 +59,17 @@ const SearchBlock = (props) => {
         listingsManager.getListingsEngine().addQueryDataObjectMiddleware(getSearchData, true);
     }
 
+
     useEffect(() => {
         if (
             isNotEmpty(category) &&
-            searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
-            searchContext?.searchOperation === NEW_SEARCH_REQUEST
+            listingsManager.canRunSearch(NEW_SEARCH_REQUEST)
         ) {
             listingsManager.runSearch();
             listingsManager.getListingsEngine().setListingsScrollTopAction(true);
         }
-    }, [searchContext?.searchOperation, query, category]);
+    }, [searchContext?.searchOperation, category]);
+
     const formChangeHandler = (e) => {
         e.preventDefault();
         let getSearchData = {...searchData};
@@ -90,7 +97,7 @@ const SearchBlock = (props) => {
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         listingsManager.getListingsEngine().addQueryDataObjectMiddleware(searchData, true);
     }
-    console.log(props)
+
     return (
         <>
             {showSearch &&

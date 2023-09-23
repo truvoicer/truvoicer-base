@@ -11,7 +11,7 @@ import {
 import {isNotEmpty, isSet} from "../../library/utils";
 import {buildWpApiUrl} from "../../library/api/wp/middleware";
 import {siteConfig} from "../../../config/site-config";
-import {componentsConfig} from "../../../config/components-config";
+import {blockComponentsConfig} from "../../config/block-components-config";
 import {wpApiConfig} from "../../config/wp-api-config";
 
 const sprintf = require("sprintf").sprintf;
@@ -38,8 +38,8 @@ export function setModalContentAction(component, data, show) {
 }
 
 export function getWidget(component, data) {
-    if (isSet(componentsConfig.components[component]) && isSet(componentsConfig.components[component].component)) {
-        const ModalContent = componentsConfig.components[component].component;
+    if (isSet(blockComponentsConfig.components[component]) && isSet(blockComponentsConfig.components[component].component)) {
+        const ModalContent = blockComponentsConfig.components[component].component;
         return <ModalContent data={data} />;
     }
 }

@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {connect} from "react-redux";
 import AuthLoginForm from "./AuthLoginForm";
 import {siteConfig} from "../../../../config/site-config";
-import {componentsConfig} from "../../../../config/components-config";
+import {blockComponentsConfig} from "../../../config/block-components-config";
 import {setModalContentAction} from "../../../redux/actions/page-actions";
 import AuthGoogle from "./AuthGoogle";
 import AuthFacebook from "./AuthFacebook";
@@ -14,7 +14,7 @@ const LoginBlock = (props) => {
     });
     const showAuthRegisterModal = (e) => {
         e.preventDefault()
-        setModalContentAction(componentsConfig.components.authentication_register.name, {}, true)
+        setModalContentAction(blockComponentsConfig.components.authentication_register.name, {}, true)
     }
     const requestCallback = (error, data) => {
         if (error) {

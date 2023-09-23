@@ -6,15 +6,21 @@ import Error from "next";
 import {siteConfig} from "../../../config/site-config";
 import {buildSidebar} from "../../redux/actions/sidebar-actions";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ComparisonsSidebar = (props) => {
+    const templateContext = useContext(TemplateContext);
     const listingsContext = useContext(ListingsContext);
     const { sidebarData, isLoading, isError } = getSidebar(siteConfig.comparisonsSidebarName)
 
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        setData(buildSidebar({sidebarData: sidebarData, listingsData: listingsContext?.listingsData}));
+        setData(buildSidebar({
+            sidebarData: sidebarData,
+            listingsData: listingsContext?.listingsData,
+            templateContext,
+        }));
     }, [sidebarData])
 
     const getContent = () => {

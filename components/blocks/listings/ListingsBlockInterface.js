@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import FetcherApiListingsBlock from "../../../../views/Components/Blocks/Listings/ListingsBlock/Sources/FetcherApi/FetcherApiListingsBlock";
-import PostsListingsBlock from "../../../../views/Components/Blocks/Listings/ListingsBlock/Sources/Posts/PostsListingsBlock";
+import FetcherApiListingsBlock from "./sources/fetcher-api/FetcherApiListingsBlock";
+import PostsListingsBlock from "./sources/wp/posts/PostsListingsBlock";
 import {
     LISTINGS_BLOCK_SOURCE_API,
     LISTINGS_BLOCK_SOURCE_WORDPRESS
@@ -8,12 +8,8 @@ import {
 import {ListingsContext, listingsData} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext, searchData} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {updateStateNestedObjectData, updateStateObject} from "@/truvoicer-base/library/helpers/state-helpers";
-import {
-    ListingsTemplateContext,
-    listingsTemplateData
-} from "@/truvoicer-base/library/listings/contexts/ListingsTemplateContext";
 
-const ListingsBlockInterface = ({data, layoutComponent = null, paginationComponent = null, infiniteScrollComponent = null}) => {
+const ListingsBlockInterface = ({data}) => {
     const loadListings = () => {
         switch (data?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
@@ -23,14 +19,6 @@ const ListingsBlockInterface = ({data, layoutComponent = null, paginationCompone
                 return <FetcherApiListingsBlock data={data}/>
         }
     }
-    const [listingsTemplateContextState, setListingsTemplateContextState] = useState({
-        ...listingsTemplateData,
-        ...{
-            layout: layoutComponent,
-            paginationComponent: paginationComponent,
-            infiniteScrollComponent: infiniteScrollComponent,
-        }
-    })
     const [listingsContextState, setListingsContextState] = useState({
         ...listingsData,
         updateData: ({key, value}) => {
@@ -70,13 +58,11 @@ const ListingsBlockInterface = ({data, layoutComponent = null, paginationCompone
     })
 
     return (
-        <ListingsTemplateContext.Provider value={listingsTemplateContextState}>
             <ListingsContext.Provider value={listingsContextState}>
                 <SearchContext.Provider value={searchContextState}>
                     {loadListings()}
                 </SearchContext.Provider>
             </ListingsContext.Provider>
-        </ListingsTemplateContext.Provider>
     );
 };
 

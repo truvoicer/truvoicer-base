@@ -6,7 +6,7 @@ import {connect} from "react-redux";
 import {showPageModalMiddleware} from "../../../redux/middleware/page-middleware";
 import {siteConfig} from "../../../../config/site-config";
 import {setModalContentAction} from "../../../redux/actions/page-actions";
-import {componentsConfig} from "../../../../config/components-config";
+import {blockComponentsConfig} from "../../../config/block-components-config";
 
 const LoginDialog = (props) => {
     const [showLoginForm, setShowLoginForm] = useState(false);
@@ -16,11 +16,11 @@ const LoginDialog = (props) => {
     });
     const showAuthRegisterModal = (e) => {
         e.preventDefault()
-        setModalContentAction(componentsConfig.components.authentication_register.name, {}, true)
+        setModalContentAction(blockComponentsConfig.components.authentication_register.name, {}, true)
     }
     const showForgotPasswordModal = (e) => {
         e.preventDefault()
-        setModalContentAction(componentsConfig.components.authentication_password_reset.name, {}, true)
+        setModalContentAction(blockComponentsConfig.components.authentication_password_reset.name, {}, true)
     }
     const requestCallback = (error, data) => {
         if (error) {

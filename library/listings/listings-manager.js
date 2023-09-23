@@ -327,4 +327,18 @@ export class ListingsManager extends ListingsEngineBase {
         }
         return providers
     }
+    getListingBlockId() {
+        const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
+        if (!isNotEmpty(listingsDataState?.listing_block_id)) {
+            return null;
+        }
+        return listingsDataState.listing_block_id;
+    }
+
+    canRunSearch(operation) {
+        return (
+            this.searchEngine.searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
+            this.searchEngine.searchContext?.searchOperation === operation
+        )
+    }
 }

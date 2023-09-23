@@ -4,7 +4,7 @@ import Tabs from "@mui/material/Tabs";
 import AppBar from "@mui/material/AppBar";
 import Tab from "@mui/material/Tab";
 import {isSet} from "../../library/utils";
-import {componentsConfig} from "../../../config/components-config";
+import {blockComponentsConfig} from "../../config/block-components-config";
 
 const HorizontalTabLayout = (props) => {
     const [tabValue, setTabValue] = useState(props.tabIndex);
@@ -43,8 +43,8 @@ const HorizontalTabLayout = (props) => {
 
     const getTabComponent = (tabValue) => {
         const tabItem = props.data[tabValue];
-        if (isSet(componentsConfig.components[tabItem.tab_component])) {
-            const TabComponent = componentsConfig.components[tabItem.tab_component].component;
+        if (isSet(blockComponentsConfig.components[tabItem.tab_component])) {
+            const TabComponent = blockComponentsConfig.components[tabItem.tab_component].component;
             return <TabComponent data={tabItem} />
         }
         return null

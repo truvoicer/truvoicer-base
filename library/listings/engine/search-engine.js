@@ -20,7 +20,7 @@ import {isNotEmpty, isSet} from "@/truvoicer-base/library/utils";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import {SESSION_AUTHENTICATED} from "@/truvoicer-base/redux/constants/session-constants";
 import {setModalContentAction} from "@/truvoicer-base/redux/actions/page-actions";
-import {componentsConfig} from "@/config/components-config";
+import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
 import {buildWpApiUrl, protectedApiRequest} from "@/truvoicer-base/library/api/wp/middleware";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
 
@@ -412,7 +412,7 @@ export class SearchEngine {
         const authenticated = store.getState().session[SESSION_AUTHENTICATED];
         if (!authenticated) {
             setModalContentAction(
-                componentsConfig.components.authentication_login.name,
+                blockComponentsConfig.components.authentication_login.name,
                 {},
                 true
             );

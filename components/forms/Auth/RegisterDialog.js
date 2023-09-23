@@ -5,7 +5,7 @@ import AuthRegisterForm from "./AuthRegisterForm";
 import {connect} from "react-redux";
 import {showPageModalMiddleware} from "../../../redux/middleware/page-middleware";
 import {siteConfig} from "../../../../config/site-config";
-import {componentsConfig} from "../../../../config/components-config";
+import {blockComponentsConfig} from "../../../config/block-components-config";
 import {setModalContentAction} from "../../../redux/actions/page-actions";
 
 const RegisterDialog = (props) => {
@@ -34,7 +34,7 @@ const RegisterDialog = (props) => {
     }
     const showAuthLoginModal = (e) => {
         e.preventDefault();
-        setModalContentAction(componentsConfig.components.authentication_login.name, {}, true)
+        setModalContentAction(blockComponentsConfig.components.authentication_login.name, {}, true)
     }
     return (
         <div className={"auth-wrapper"}>

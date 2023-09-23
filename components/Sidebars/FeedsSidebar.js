@@ -6,11 +6,17 @@ import LoaderComponent from "../widgets/Loader";
 import Error from "next";
 import {siteConfig} from "@/config/site-config";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const FeedsSidebar = (props) => {
+    const templateContext = useContext(TemplateContext);
     const listingsContext = useContext(ListingsContext);
     const { sidebarData, isLoading, isError } = getSidebar(siteConfig.feedsSidebarName)
-    const [data, setData] = useState(buildSidebar({sidebarData: sidebarData, listingsData: listingsContext?.listingsData}));
+    const [data, setData] = useState(buildSidebar({
+        sidebarData: sidebarData,
+        listingsData: listingsContext?.listingsData,
+        templateContext,
+    }));
 
     if (isLoading) return <LoaderComponent />
     if (isError) return <Error />

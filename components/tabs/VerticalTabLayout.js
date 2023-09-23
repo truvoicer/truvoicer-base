@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import {isSet} from "../../library/utils";
-import {componentsConfig} from "../../../config/components-config";
+import {blockComponentsConfig} from "../../config/block-components-config";
 // import makeStyles from "@mui/material/styles/makeStyles";
 
 const VerticalTabLayout = (props) => {
@@ -55,8 +55,8 @@ const VerticalTabLayout = (props) => {
 
     const getTabComponent = (tabValue) => {
         const tabItem = props.data[tabValue];
-        if (isSet(componentsConfig.components[tabItem.tab_component])) {
-            const TabComponent = componentsConfig.components[tabItem.tab_component].component;
+        if (isSet(blockComponentsConfig.components[tabItem.tab_component])) {
+            const TabComponent = blockComponentsConfig.components[tabItem.tab_component].component;
             return <TabComponent data={tabItem} />
         }
         return null

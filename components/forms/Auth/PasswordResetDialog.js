@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {showPageModalMiddleware} from "../../../redux/middleware/page-middleware";
 import {siteConfig} from "../../../../config/site-config";
 import {setModalContentAction} from "../../../redux/actions/page-actions";
-import {componentsConfig} from "../../../../config/components-config";
+import {blockComponentsConfig} from "../../../config/block-components-config";
 import PasswordResetForm from "./PasswordResetForm";
 
 const PasswordResetDialog = (props) => {
@@ -15,11 +15,11 @@ const PasswordResetDialog = (props) => {
     });
     const showAuthRegisterModal = (e) => {
         e.preventDefault()
-        setModalContentAction(componentsConfig.components.authentication_register.name, {}, true)
+        setModalContentAction(blockComponentsConfig.components.authentication_register.name, {}, true)
     }
     const showAuthLoginModal = (e) => {
         e.preventDefault();
-        setModalContentAction(componentsConfig.components.authentication_login.name, {}, true)
+        setModalContentAction(blockComponentsConfig.components.authentication_login.name, {}, true)
     }
     const requestCallback = (error, data) => {
         if (error) {

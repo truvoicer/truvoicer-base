@@ -13,7 +13,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import {isSet} from "../../library/utils";
 import {siteConfig} from "@/config/site-config";
 // import makeStyles from "@mui/material/styles/makeStyles";
-import {componentsConfig} from "@/config/components-config";
+import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
 import ListSubheader from "@mui/material/ListSubheader";
 import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED} from "../../redux/constants/search-constants";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
@@ -53,10 +53,10 @@ const MaterialMenuList = (props) => {
     }
 
     const showAuthLoginModal = () => {
-        props.setModalContentMiddleware(componentsConfig.components.authentication_login.name, {}, true)
+        props.setModalContentMiddleware(blockComponentsConfig.components.authentication_login.name, {}, true)
     }
     const showAuthRegisterModal = () => {
-        props.setModalContentMiddleware(componentsConfig.components.authentication_register.name, {}, true)
+        props.setModalContentMiddleware(blockComponentsConfig.components.authentication_register.name, {}, true)
     }
 
     const getListItem = (item, isChild = false) => {

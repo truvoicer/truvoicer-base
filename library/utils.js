@@ -1,5 +1,6 @@
 import moment from 'moment';
 import {menuIcons} from "../../config/menu-icons";
+import {isFunction} from "underscore";
 
 export const formatDate = (dateString, formatString = "Do MMMM YYYY") => {
     moment.updateLocale('en', {
@@ -152,4 +153,8 @@ export const getAcceptedFileExtString = (allowedExtArray = null, allowedMessage)
     }
     const joinAcceptedFiles = allowedExtArray.map(type => type.extension).join(", ");
     return allowedMessage.replace("[accepted]", joinAcceptedFiles)
+}
+
+export function isComponentFunction(component) {
+    return (component || isFunction(component) || isFunction(component?.type));
 }

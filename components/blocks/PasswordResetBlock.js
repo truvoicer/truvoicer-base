@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {siteConfig} from "../../../config/site-config";
-import {componentsConfig} from "../../../config/components-config";
+import {blockComponentsConfig} from "../../config/block-components-config";
 import {setModalContentAction} from "../../redux/actions/page-actions";
 import {SESSION_PASSWORD_RESET_KEY, SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-constants";
 import {buildWpApiUrl, publicApiRequest} from "../../library/api/wp/middleware";
@@ -15,7 +15,7 @@ const PasswordResetBlock = (props) => {
 
     const showAuthRegisterModal = (e) => {
         e.preventDefault()
-        setModalContentAction(componentsConfig.components.authentication_register.name, {}, true)
+        setModalContentAction(blockComponentsConfig.components.authentication_register.name, {}, true)
     }
     const validateCallback = (error, data) => {
         if (error) {

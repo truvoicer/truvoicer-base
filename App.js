@@ -4,7 +4,7 @@ import {
     LoadEnvironment,
     tagManagerSendDataLayer
 } from "@/truvoicer-base/library/api/global-scripts"
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import Header from "../views/Layout/Header";
 import Footer from "../views/Layout/Footer";
 import {validateToken} from "@/truvoicer-base/redux/actions/session-actions";
@@ -17,37 +17,20 @@ import ReactHtmlParser from "react-html-parser";
 import AccountArea from "./components/layout/AccountArea";
 import HtmlHead from "./components/layout/HtmlHead";
 import {useRouter} from "next/router";
-import {listingsTemplateData} from "@/truvoicer-base/library/listings/contexts/ListingsTemplateContext";
+import {TemplateContext, templateData} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {AppContext, appContextData} from "@/truvoicer-base/config/contexts/AppContext";
-import {updateStateObject} from "@/truvoicer-base/library/helpers/state-helpers";
+import {updateStateNestedObjectData, updateStateObject} from "@/truvoicer-base/library/helpers/state-helpers";
+import AppLoader from "@/truvoicer-base/AppLoader";
 
-const htmlParserOptions = {
-    decodeEntities: true,
-    transform: filterHtml
-}
-const FetcherApp = ({modal, pageData, pageOptions, siteSettings}) => {
+const FetcherApp = ({modal, pageData, pageOptions, siteSettings, templateConfig = {}}) => {
     const router = useRouter();
-
-    const [appContextState, setAppContextState] = useState({
-        ...appContextData,
-        ...{
-            addContext: ({key, value}) => {
-                updateStateObject({
-                    key,
-                    value,
-                    setStateObj: setAppContextState
-                })
-            },
-            updateContext: (value) => {
-                updateStateObject({
-                    key: 'context',
-                    value,
-                    setStateObj: setAppContextState
-                })
-            },
+    const templateContext = useContext(TemplateContext);
+    const htmlParserOptions = {
+        decodeEntities: true,
+        transform: (node, index) => {
+            return filterHtml(node, index, templateContext)
         }
-    })
-
+    }
     useEffect(() => {
         AddAxiosInterceptors();
         LoadEnvironment();
@@ -77,7 +60,7 @@ const FetcherApp = ({modal, pageData, pageOptions, siteSettings}) => {
     }
     console.log({pageOptions, pageData})
     return (
-        <AppContext.Provider value={appContextState}>
+        <AppLoader templateConfig={templateConfig}>
             {pageOptions?.pageType === "user_account"
                 ?
                 <AccountArea data={pageData}/>
@@ -88,7 +71,7 @@ const FetcherApp = ({modal, pageData, pageOptions, siteSettings}) => {
                         {pageData
                             ?
                             <>
-                                <HtmlHead />
+                                <HtmlHead/>
                                 {ReactHtmlParser(pageData.post_content, htmlParserOptions)}
                             </>
                             :
@@ -99,7 +82,7 @@ const FetcherApp = ({modal, pageData, pageOptions, siteSettings}) => {
                 </div>
             }
             {getModal()}
-        </AppContext.Provider>
+        </AppLoader>
     )
 }
 
