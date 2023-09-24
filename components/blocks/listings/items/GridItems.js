@@ -13,6 +13,8 @@ import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/Listin
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const GridItems = (props) => {
     const listingsContext = useContext(ListingsContext);
@@ -27,6 +29,7 @@ const GridItems = (props) => {
     // const [searchList, setSearchList] = useState([]);
     const listingsGrid = new ListingsGrid(listingsContext, searchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const showInfo = (item, category, e) => {
         e.preventDefault()
         setModalData({
@@ -162,30 +165,52 @@ const GridItems = (props) => {
         }
         return searchList;
     }
-    return (
-        <>
-            <Row>
-                {getSearchList().map((item, index) => (
-                    <React.Fragment key={index}>
-                        <Col {...getGridItemColumns(listingsContext.listingsGrid)}>
-                            {listingsGrid.getGridItem(
-                                item,
-                                searchContext.category,
-                                listingsContext.listingsGrid,
-                                props.user[SESSION_USER_ID],
-                                showInfo,
-                                index
-                            )}
-                        </Col>
-                    </React.Fragment>
-                ))}
-            </Row>
+    function defaultView() {
+        return (
+            <>
+                <Row>
+                    {getSearchList().map((item, index) => (
+                        <React.Fragment key={index}>
+                            <Col {...getGridItemColumns(listingsContext.listingsGrid)}>
+                                {listingsGrid.getGridItem(
+                                    item,
+                                    searchContext.category,
+                                    listingsContext.listingsGrid,
+                                    props.user[SESSION_USER_ID],
+                                    showInfo,
+                                    index
+                                )}
+                            </Col>
+                        </React.Fragment>
+                    ))}
+                </Row>
 
-            {modalData.show &&
-            <GetModal/>
-            }
-        </>
-    )
+                {modalData.show &&
+                    <GetModal/>
+                }
+            </>
+        )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'listings',
+        templateId: 'gridItems',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            modalData: modalData,
+            setModalData: setModalData,
+            listPosition: listPosition,
+            setListPosition: setListPosition,
+            getSearchList: getSearchList,
+            showInfo: showInfo,
+            GetModal: GetModal,
+            closeModal: closeModal,
+            insertListStartItems: insertListStartItems,
+            insertListEndItems: insertListEndItems,
+            insertCustomPositionItems: insertCustomPositionItems,
+            ...props
+        }
+    });
 }
 
 function mapStateToProps(state) {

@@ -9,6 +9,8 @@ import GridItems from "../items/GridItems";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ListingsPaginate = (props) => {
     const [paginationLimit, setPaginationLimit] = useState(10);
@@ -17,6 +19,7 @@ const ListingsPaginate = (props) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const paginationClickHandler = (pageNumber) => {
         listingsManager.loadNextPageNumberMiddleware(pageNumber);
@@ -106,12 +109,28 @@ const ListingsPaginate = (props) => {
             listingsManager.runSearch();
         }
     }, [searchContext?.searchOperation]);
-    return (
-        <>
-            <GridItems/>
-            <GetPagination/>
-        </>
-    )
+    function defaultView() {
+        return (
+            <>
+                <GridItems/>
+                <GetPagination/>
+            </>
+        )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'listings',
+        templateId: 'listingsPaginate',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            paginationLimit: paginationLimit,
+            paginationRange: paginationRange,
+            paginationClickHandler: paginationClickHandler,
+            getPaginationRange: getPaginationRange,
+            GetPagination: GetPagination,
+            ...props
+        }
+    });
 }
 
 function mapStateToProps(state) {

@@ -1,7 +1,9 @@
 import Slider from "react-slick";
-import React from "react";
+import React, {useContext} from "react";
 import NextArrow from "../../arrows/NextArrow";
 import PrevArrow from "../../arrows/PrevArrow";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 /**
  *
@@ -10,6 +12,7 @@ import PrevArrow from "../../arrows/PrevArrow";
  * @constructor
  */
 const SpeechBubbleTestimonialsCarousel = (props) => {
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     if (!Array.isArray(props?.data?.item_list?.data)) {
         return null;
     }
@@ -44,24 +47,35 @@ const SpeechBubbleTestimonialsCarousel = (props) => {
         },
     };
 
-    return (
-        <div className="testimonial_area speech-bubble">
-            <Slider {...defaultSettings}>
-                {props.data.item_list.data.map((item, index) => (
-                    <div className="single_carousel" key={index}>
-                        <div className="row">
-                            <div className="col-lg-11">
-                                <div className="single_testimonial d-flex align-items-center">
-                                    <div className="info">
-                                        <p>{item.custom_item.item_text}</p>
+    function defaultView() {
+        return (
+            <div className="testimonial_area speech-bubble">
+                <Slider {...defaultSettings}>
+                    {props.data.item_list.data.map((item, index) => (
+                        <div className="single_carousel" key={index}>
+                            <div className="row">
+                                <div className="col-lg-11">
+                                    <div className="single_testimonial d-flex align-items-center">
+                                        <div className="info">
+                                            <p>{item.custom_item.item_text}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                ))}
-            </Slider>
-        </div>
-    )
+                    ))}
+                </Slider>
+            </div>
+        );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'carousel',
+        templateId: 'speechBubbleTestimonialsCarousel',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            ...props
+        }
+    })
 }
 export default SpeechBubbleTestimonialsCarousel;

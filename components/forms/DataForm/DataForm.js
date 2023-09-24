@@ -1,12 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {FieldArray, Formik, isObject} from "formik";
 import {isNotEmpty, isSet} from "../../../library/utils";
 import FormFieldLabel from "./Fields/FormFieldLabel";
 import FormFieldItem from "./Fields/FormFieldItem";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const sprintf = require("sprintf");
 const DataForm = (props) => {
 
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const formId = props?.formId ?? "fields";
 
     const getInitialDataObject = () => {
@@ -349,68 +352,98 @@ const DataForm = (props) => {
             </div>
         )
     }
-    return (
-        <Formik
-            initialValues={initialValues}
-            validate={values => validateForm(values)}
-            onSubmit={values => formSubmitHandler(values)}
-            enableReinitialize={true}
-        >
-            {({
-                  values,
-                  errors,
-                  touched,
-                  handleChange,
-                  handleBlur,
-                  handleSubmit,
-              }) => (
-                <>
-                    <form
-                        className={`site-form ${isNotEmpty(props.classes) ? props.classes : ""}`}
-                        onSubmit={handleSubmit}
-                    >
-                        {props.formType === "single"
-                            ?
-                            buildFormRows(props.data, errors, touched, handleBlur, handleChange, values)
-                            :
-                            <FieldArray
-                                name={formId}
-                                render={arrayHelpers => {
-                                    return (
-                                        <div>
-                                            {Array.isArray(values[formId]) && values[formId].map((item, index) => {
-                                                return (
-                                                    <React.Fragment key={index}>
-                                                        {buildFormRows(props.data, errors, touched, handleBlur, handleChange, values, index)}
-                                                    </React.Fragment>
-                                                )
-                                            })}
-                                            <button
-                                                type="button"
-                                                onClick={() => arrayHelpers.push(initialValues.dataObject)}
-                                            >
-                                                {props.addListItemButtonText}
-                                            </button>
-                                        </div>
-                                    )
-                                }}
-                            />
-                        }
-                        <div className="row form-group">
-                            <div className="col-md-12">
-                                <input type="submit"
-                                       value={props.submitButtonText}
-                                       className="btn btn-primary py-2 px-4 text-white"
+
+    function defaultView() {
+        return (
+            <Formik
+                initialValues={initialValues}
+                validate={values => validateForm(values)}
+                onSubmit={values => formSubmitHandler(values)}
+                enableReinitialize={true}
+            >
+                {({
+                    values,
+                    errors,
+                    touched,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                }) => (
+                    <>
+                        <form
+                            className={`site-form ${isNotEmpty(props.classes) ? props.classes : ""}`}
+                            onSubmit={handleSubmit}
+                        >
+                            {props.formType === "single"
+                                ?
+                                buildFormRows(props.data, errors, touched, handleBlur, handleChange, values)
+                                :
+                                <FieldArray
+                                    name={formId}
+                                    render={arrayHelpers => {
+                                        return (
+                                            <div>
+                                                {Array.isArray(values[formId]) && values[formId].map((item, index) => {
+                                                    return (
+                                                        <React.Fragment key={index}>
+                                                            {buildFormRows(props.data, errors, touched, handleBlur, handleChange, values, index)}
+                                                        </React.Fragment>
+                                                    )
+                                                })}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => arrayHelpers.push(initialValues.dataObject)}
+                                                >
+                                                    {props.addListItemButtonText}
+                                                </button>
+                                            </div>
+                                        )
+                                    }}
                                 />
+                            }
+                            <div className="row form-group">
+                                <div className="col-md-12">
+                                    <input type="submit"
+                                           value={props.submitButtonText}
+                                           className="btn btn-primary py-2 px-4 text-white"
+                                    />
+                                </div>
                             </div>
-                        </div>
 
-                        {props.children}
+                            {props.children}
 
-                    </form>
-                </>
-            )}
-        </Formik>
-    );
+                        </form>
+                    </>
+                )}
+            </Formik>
+        );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'dataForm',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            getInitialDataObject: getInitialDataObject,
+            getInitialValue: getInitialValue,
+            validationRules: validationRules,
+            getFieldByName: getFieldByName,
+            getIgnoredFields: getIgnoredFields,
+            validateForm: validateForm,
+            formSubmitHandler: formSubmitHandler,
+            dependsOnCheck: dependsOnCheck,
+            getFieldItemLabelPair: getFieldItemLabelPair,
+            getFieldRow: getFieldRow,
+            getFields: getFields,
+            getGridColumnClasses: getGridColumnClasses,
+            addRemovableFieldData: addRemovableFieldData,
+            buildFormRows: buildFormRows,
+            initialValues: initialValues,
+            setInitialValues: setInitialValues,
+            removableFieldData: removableFieldData,
+            setRemovableFieldData: setRemovableFieldData,
+            ...props
+        }
+    });
 }
 export default DataForm;

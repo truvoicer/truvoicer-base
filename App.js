@@ -21,14 +21,17 @@ import {TemplateContext, templateData} from "@/truvoicer-base/config/contexts/Te
 import {AppContext, appContextData} from "@/truvoicer-base/config/contexts/AppContext";
 import {updateStateNestedObjectData, updateStateObject} from "@/truvoicer-base/library/helpers/state-helpers";
 import AppLoader from "@/truvoicer-base/AppLoader";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import AccountAreaSidebar from "@/truvoicer-base/components/Sidebars/AccountAreaSidebar";
 
 const FetcherApp = ({modal, pageData, pageOptions, siteSettings, templateConfig = {}}) => {
     const router = useRouter();
     const templateContext = useContext(TemplateContext);
+    const templateManager = new TemplateManager(templateContext);
     const htmlParserOptions = {
         decodeEntities: true,
         transform: (node, index) => {
-            return filterHtml(node, index, templateContext)
+            return filterHtml(node, index)
         }
     }
     useEffect(() => {
@@ -66,19 +69,37 @@ const FetcherApp = ({modal, pageData, pageOptions, siteSettings, templateConfig 
                 <AccountArea data={pageData}/>
                 :
                 <div id={"public_area"}>
-                    <Header/>
+                    {
+                        templateManager.getTemplateComponent({
+                            category: 'public',
+                            templateId: 'header',
+                            defaultComponent: <Header />,
+                        })
+                    }
                     <>
                         {pageData
                             ?
                             <>
-                                <HtmlHead/>
+                                {
+                                    templateManager.getTemplateComponent({
+                                        category: 'public',
+                                        templateId: 'htmlHead',
+                                        defaultComponent: <HtmlHead />,
+                                    })
+                                }
                                 {ReactHtmlParser(pageData.post_content, htmlParserOptions)}
                             </>
                             :
                             <></>
                         }
                     </>
-                    <Footer/>
+                    {
+                        templateManager.getTemplateComponent({
+                            category: 'public',
+                            templateId: 'footer',
+                            defaultComponent: <Footer />,
+                        })
+                    }
                 </div>
             }
             {getModal()}

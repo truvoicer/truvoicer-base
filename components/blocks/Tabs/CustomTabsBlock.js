@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import {connect} from "react-redux";
 import Nav from "react-bootstrap/Nav";
 import Tab from "react-bootstrap/Tab";
@@ -12,8 +12,11 @@ import EducationForm from "../../User/Profile/Forms/EducationForm";
 import UserAccountLoader from "@/truvoicer-base/components/loaders/UserAccountLoader";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
 import CustomItemsCarousel from "@/truvoicer-base/components/blocks/carousel/CustomItemsCarousel";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const CustomTabsBlock = (props) => {
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const getCarousel = (tab) => {
         switch (tab.custom_carousel.carousel_data.carousel_content) {
             case "items":
@@ -89,85 +92,102 @@ const CustomTabsBlock = (props) => {
         return tabIndex;
     }
 console.log({props})
-    return (
-        <>
-            <Tab.Container
-                id="left-tabs-example"
-                defaultActiveKey={getDefaultActiveTab()}
-            >
-                <div className="container">
-                    {isNotEmpty(props?.data?.heading) &&
-                    <div className="row">
-                        <div className="col-12">
-                            {props?.data?.heading &&
-                            <h2 className="section-title mb-70 wow fadeInUp" data-wow-delay="100ms">
-                                {props?.data?.heading}
-                            </h2>
-                            }
-                            {props?.data?.sub_heading &&
-                            <p>{props?.data?.sub_heading}</p>
-                            }
-                        </div>
-                    </div>
-                    }
-                    {Array.isArray(props.data.tabs) &&
-                    <>
-                    {props?.data?.tabs_orientation === "vertical"
-                        ?
-                        <div className="row">
-                            <div className="col-2">
-                                <Nav
-                                    variant="pills"
-                                    className="flex-column"
-                                >
-                                    {props.data.tabs.map((tab, index) => (
-                                        <Nav.Item key={index}>
-                                            <Nav.Link eventKey={index}>{tab?.tab_heading || `Tab ${index}`}</Nav.Link>
-                                        </Nav.Item>
-                                    ))}
-                                </Nav>
-                            </div>
-                            <div className="col-10">
-                                <Tab.Content className={"wow fadeInUp"}>
-                                    {props.data.tabs.map((tab, index) => (
-                                        <Tab.Pane eventKey={index} key={index}>
-                                            {getTabContent(tab)}
-                                        </Tab.Pane>
-                                    ))}
-                                </Tab.Content>
-                            </div>
-                        </div>
-                        :
-                        <>
+    function defaultView() {
+        return (
+            <>
+                <Tab.Container
+                    id="left-tabs-example"
+                    defaultActiveKey={getDefaultActiveTab()}
+                >
+                    <div className="container">
+                        {isNotEmpty(props?.data?.heading) &&
                             <div className="row">
                                 <div className="col-12">
-                                    <Nav
-                                        variant="tabs"
-                                        className="wow fadeInUp"
-                                    >
-                                        {props.data.tabs.map((tab, index) => (
-                                            <Nav.Item key={index}>
-                                                <Nav.Link eventKey={index}>{tab?.tab_heading || `Tab ${index}`}</Nav.Link>
-                                            </Nav.Item>
-                                        ))}
-                                    </Nav>
+                                    {props?.data?.heading &&
+                                        <h2 className="section-title mb-70 wow fadeInUp" data-wow-delay="100ms">
+                                            {props?.data?.heading}
+                                        </h2>
+                                    }
+                                    {props?.data?.sub_heading &&
+                                        <p>{props?.data?.sub_heading}</p>
+                                    }
                                 </div>
                             </div>
-                            <Tab.Content className={"wow fadeInUp"}>
-                                {props.data.tabs.map((tab, index) => (
-                                    <Tab.Pane eventKey={index} key={index}>
-                                        {getTabContent(tab)}
-                                    </Tab.Pane>
-                                ))}
-                            </Tab.Content>
-                        </>
-                    }
-                    </>
-                    }
-                </div>
-            </Tab.Container>
-        </>
-    )
+                        }
+                        {Array.isArray(props.data.tabs) &&
+                            <>
+                                {props?.data?.tabs_orientation === "vertical"
+                                    ?
+                                    <div className="row">
+                                        <div className="col-2">
+                                            <Nav
+                                                variant="pills"
+                                                className="flex-column"
+                                            >
+                                                {props.data.tabs.map((tab, index) => (
+                                                    <Nav.Item key={index}>
+                                                        <Nav.Link
+                                                            eventKey={index}>{tab?.tab_heading || `Tab ${index}`}</Nav.Link>
+                                                    </Nav.Item>
+                                                ))}
+                                            </Nav>
+                                        </div>
+                                        <div className="col-10">
+                                            <Tab.Content className={"wow fadeInUp"}>
+                                                {props.data.tabs.map((tab, index) => (
+                                                    <Tab.Pane eventKey={index} key={index}>
+                                                        {getTabContent(tab)}
+                                                    </Tab.Pane>
+                                                ))}
+                                            </Tab.Content>
+                                        </div>
+                                    </div>
+                                    :
+                                    <>
+                                        <div className="row">
+                                            <div className="col-12">
+                                                <Nav
+                                                    variant="tabs"
+                                                    className="wow fadeInUp"
+                                                >
+                                                    {props.data.tabs.map((tab, index) => (
+                                                        <Nav.Item key={index}>
+                                                            <Nav.Link
+                                                                eventKey={index}>{tab?.tab_heading || `Tab ${index}`}</Nav.Link>
+                                                        </Nav.Item>
+                                                    ))}
+                                                </Nav>
+                                            </div>
+                                        </div>
+                                        <Tab.Content className={"wow fadeInUp"}>
+                                            {props.data.tabs.map((tab, index) => (
+                                                <Tab.Pane eventKey={index} key={index}>
+                                                    {getTabContent(tab)}
+                                                </Tab.Pane>
+                                            ))}
+                                        </Tab.Content>
+                                    </>
+                                }
+                            </>
+                        }
+                    </div>
+                </Tab.Container>
+            </>
+        );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'customTabsBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            getCarousel: getCarousel,
+            getForm: getForm,
+            getTabContent: getTabContent,
+            getDefaultActiveTab: getDefaultActiveTab,
+            ...props
+        }
+    });
 }
 
 function mapStateToProps(state) {

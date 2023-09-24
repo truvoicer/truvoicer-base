@@ -1,12 +1,15 @@
-import React from "react";
+import React, {useContext} from "react";
 import {connect} from "react-redux";
 import CustomTabsBlock from "./CustomTabsBlock";
 import RequestCarouselTabsBlock from "./RequestCarouselTabsBlock";
 import RequestVideoTabsBlock from "./RequestVideoTabsBlock";
 import UserAccountLoader from "@/truvoicer-base/components/loaders/UserAccountLoader";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const TabsBlock = (props) => {
 
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const getTabBlock = () => {
         switch (props.data.tabs_block_type) {
             case "request_video_tabs":
@@ -19,19 +22,32 @@ const TabsBlock = (props) => {
         }
     }
 
-    return (
-        <>
-            {props.data?.access_control === 'protected'
-                ? (
+    function defaultView() {
+        return (
+            <>
+                {props.data?.access_control === 'protected'
+                    ? (
 
-                    <UserAccountLoader>
-                        {getTabBlock()}
-                    </UserAccountLoader>
-                )
-                : getTabBlock()
-            }
-        </>
-    )
+                        <UserAccountLoader>
+                            {getTabBlock()}
+                        </UserAccountLoader>
+                    )
+                    : getTabBlock()
+                }
+            </>
+        );
+    }
+
+    return templateManager.getTemplateComponent({
+        category: 'tabs',
+        templateId: 'tabsBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            getTabBlock: getTabBlock,
+            ...props
+        }
+    });
 }
 
 function mapStateToProps(state) {

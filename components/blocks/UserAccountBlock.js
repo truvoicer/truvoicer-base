@@ -1,11 +1,14 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import HorizontalTabLayout from "../tabs/HorizontalTabLayout";
 import {connect} from "react-redux";
 import {getUserAccountMenuAction} from "../../redux/actions/page-actions";
 import VerticalTabLayout from "../tabs/VerticalTabLayout";
 import {isNotEmpty} from "../../library/utils";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const UserAccountBlock = (props) => {
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const defaultTabOrientation = "horizontal";
 
     const buildTabLayoutData = (menuData) => {
@@ -42,7 +45,8 @@ const UserAccountBlock = (props) => {
         // console.log(props.session[SESSION_AUTHENTICATED])
     }, [])  //TODO Login form appears on page load if user is authenticated
     console.log({props, tabData})
-    return (
+    function defaultView() {
+        return (
             <div className={"user-account-area"}>
                 {tabData.length > 0 &&
                     <>
@@ -62,7 +66,21 @@ const UserAccountBlock = (props) => {
                     </>
                 }
             </div>
-    );
+        );
+    }
+
+    return templateManager.getTemplateComponent({
+        category: 'account',
+        templateId: 'userAccountBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            tabData: tabData,
+            getPageIndex: getPageIndex,
+            getTabOrientation: getTabOrientation,
+            buildTabLayoutData: buildTabLayoutData,
+        }
+    })
 }
 
 function mapStateToProps(state) {

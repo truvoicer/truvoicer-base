@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Header from "../../../views/Layout/Header";
 import HtmlHead from "./HtmlHead";
 import ReactHtmlParser from "react-html-parser";
@@ -15,22 +15,42 @@ import {
 } from "../../redux/constants/session-constants";
 import {isNotEmpty} from "../../library/utils";
 import LoginBlock from "../forms/Auth/LoginBlock";
+import ListingsInfiniteScroll from "@/truvoicer-base/components/blocks/listings/pagination/ListingsInfiniteScroll";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 
-const htmlParserOptions = {
-    decodeEntities: true,
-    transform: filterHtml
-}
 const AccountArea = ({pageData, session}) => {
     const [loadKey, setLoadKey] = useState("show_loader")
 
+    const templateContext = useContext(TemplateContext);
+    const templateManager = new TemplateManager(templateContext);
+
+    const htmlParserOptions = {
+        decodeEntities: true,
+        transform: (node, index) => {
+            return filterHtml(node, index)
+        }
+    }
     const getAccountArea = () => {
         return (
             <>
-                <HtmlHead/>
+                {
+                    templateManager.getTemplateComponent({
+                        category: 'account',
+                        templateId: 'htmlHead',
+                        defaultComponent: <HtmlHead />,
+                    })
+                }
                 <div className={"container-fluid"}>
                     <div className={"d-flex"}>
                         <div className="d-none d-md-block left-sidebar pl-0 pr-0">
-                            <AccountAreaSidebar/>
+                            {
+                                templateManager.getTemplateComponent({
+                                    category: 'account',
+                                    templateId: 'accountAreaSidebar',
+                                    defaultComponent: <AccountAreaSidebar />,
+                                })
+                            }
                         </div>
                         <div className="account-content">
                             {ReactHtmlParser(pageData.content, htmlParserOptions)}
@@ -44,12 +64,24 @@ const AccountArea = ({pageData, session}) => {
     const loadAccountArea = (loadKey) => {
         switch (loadKey) {
             case "show_loader":
-                return <LoaderComponent />
+                return templateManager.getTemplateComponent({
+                    category: 'account',
+                    templateId: 'loaderComponent',
+                    defaultComponent: <LoaderComponent />,
+                });
             case "show_account_area":
-                return getAccountArea()
+                return templateManager.getTemplateComponent({
+                    category: 'account',
+                    templateId: 'accountArea',
+                    defaultComponent: getAccountArea(),
+                });
             case "show_login":
             default:
-                return <LoginBlock />
+                return templateManager.getTemplateComponent({
+                    category: 'account',
+                    templateId: 'loginBlock',
+                    defaultComponent: <LoginBlock />
+                });
         }
 
     }
@@ -69,9 +101,22 @@ const AccountArea = ({pageData, session}) => {
     return (
         <div id={"account_area"}>
             <>
-                <Header/>
+                {
+                    templateManager.getTemplateComponent({
+                        category: 'account',
+                        templateId: 'header',
+                        defaultComponent: <Header />
+                    })
+                }
                 {loadAccountArea(loadKey)}
-                <Footer fluidContainer={true}/>
+                {
+                    templateManager.getTemplateComponent({
+                        category: 'account',
+                        templateId: 'footer',
+                        defaultComponent: <Footer fluidContainer={true} />,
+                        props: {fluidContainer: true}
+                    })
+                }
             </>
         </div>
     );

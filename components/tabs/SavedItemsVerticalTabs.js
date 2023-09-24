@@ -17,6 +17,8 @@ import {siteConfig} from "../../../config/site-config";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 
 // const useStyles = makeStyles((theme) => ({
@@ -46,6 +48,7 @@ const SavedItemsVerticalTabs = (props) => {
     });
 
     const listingsGridManager = new ListingsGrid(listingsContext, searchContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const getProviderDataByName = (index) => {
         let item = {};
         Object.keys(props.data).map((key, objectIndex) => {
@@ -232,43 +235,72 @@ const SavedItemsVerticalTabs = (props) => {
         })
     }, [props.data])
 
-    return (
-        <div className={"tab-layout"}>
-            <Tabs
-                // action={getItemsRequest(getItemByIndex(0).name, true)}
-                orientation="vertical"
-                variant="scrollable"
-                value={tabValue}
-                onChange={handleTabChange}
-                aria-label="Vertical tabs example"
-                // className={classes.tabs}
-            >
-                {Object.keys(props.data).map((itemKey, index) => (
-                    <Tab
-                        label={props.data[itemKey].label}
-                        key={index.toString()}
-                        value={itemKey}
-                        {...tabProps(index)} />
-                ))}
-            </Tabs>
-            {Object.keys(props.data).map((itemKey, tabDataIndex) => (
-                <React.Fragment key={tabDataIndex.toString()}>
-                <TabPanel
+    function defaultView() {
+        return (
+            <div className={"tab-layout"}>
+                <Tabs
+                    // action={getItemsRequest(getItemByIndex(0).name, true)}
+                    orientation="vertical"
+                    variant="scrollable"
                     value={tabValue}
-                    index={itemKey}
-                    className={"tab-layout--panel" +
-                    ""}
+                    onChange={handleTabChange}
+                    aria-label="Vertical tabs example"
+                    // className={classes.tabs}
                 >
-                    {getItemList(panelData[itemKey])}
-                </TabPanel>
-                {modalData.show &&
-                    GetModal(panelData[itemKey].category)
-                }
-                </React.Fragment>
-            ))}
+                    {Object.keys(props.data).map((itemKey, index) => (
+                        <Tab
+                            label={props.data[itemKey].label}
+                            key={index.toString()}
+                            value={itemKey}
+                            {...tabProps(index)} />
+                    ))}
+                </Tabs>
+                {Object.keys(props.data).map((itemKey, tabDataIndex) => (
+                    <React.Fragment key={tabDataIndex.toString()}>
+                        <TabPanel
+                            value={tabValue}
+                            index={itemKey}
+                            className={"tab-layout--panel" +
+                                ""}
+                        >
+                            {getItemList(panelData[itemKey])}
+                        </TabPanel>
+                        {modalData.show &&
+                            GetModal(panelData[itemKey].category)
+                        }
+                    </React.Fragment>
+                ))}
 
-        </div>
-    );
+            </div>
+        );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'account',
+        templateId: 'savedItemsVerticalTabs',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            handleTabChange: handleTabChange,
+            getItemsRequest: getItemsRequest,
+            getItemList: getItemList,
+            getItemById: getItemById,
+            getItemIndexByItemId: getItemIndexByItemId,
+            getProviderDataByName: getProviderDataByName,
+            closeModal: closeModal,
+            GetModal: GetModal,
+            tabProps: tabProps,
+            showInfo: showInfo,
+            TabPanel: TabPanel,
+            getItemsResponseHandler: getItemsResponseHandler,
+            tabValue: tabValue,
+            panelData: panelData,
+            modalData: modalData,
+            setModalData: setModalData,
+            setTabValue: setTabValue,
+            setPanelData: setPanelData,
+            ...props
+        }
+    })
 }
 
 function mapStateToProps(state) {

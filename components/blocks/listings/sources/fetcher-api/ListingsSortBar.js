@@ -15,6 +15,8 @@ import {
     LISTINGS_GRID_DETAILED,
     LISTINGS_GRID_LIST
 } from "@/truvoicer-base/redux/constants/listings-constants";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 
 const ListingsSortBar = (props) => {
@@ -34,6 +36,7 @@ const ListingsSortBar = (props) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext)
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const layoutChangeHandler = (e) => {
         if (!isNotEmpty(e.target.value)) {
@@ -68,45 +71,66 @@ const ListingsSortBar = (props) => {
         }
     }, [searchContext?.searchOperation, limit]);
 
-    return (
-        <div className="listings--sortbar white-bg mb-3">
-            <div className="container">
-                <div className="row cat_search">
-                    <div className="col-lg-3 col-md-4">
-                        <div className="single_input">
-                            <select
-                                className="wide form-control rounded nice-select"
-                                name="limit"
-                                defaultValue={limit}
-                                onChange={limitChangeHandler}>
-                                <option value="">{'Limit'}</option>
-                                {limitOptions && limitOptions.map((item, index) => (
-                                    <option key={index} value={item.value}>{item.label}</option>
-                                ))}
-                            </select>
+    function defaultView() {
+        return (
+            <div className="listings--sortbar white-bg mb-3">
+                <div className="container">
+                    <div className="row cat_search">
+                        <div className="col-lg-3 col-md-4">
+                            <div className="single_input">
+                                <select
+                                    className="wide form-control rounded nice-select"
+                                    name="limit"
+                                    defaultValue={limit}
+                                    onChange={limitChangeHandler}>
+                                    <option value="">{'Limit'}</option>
+                                    {limitOptions && limitOptions.map((item, index) => (
+                                        <option key={index} value={item.value}>{item.label}</option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div className="col-lg-3 col-md-4">
-                        <div className="single_input">
-                            <select
-                                className="wide form-control rounded nice-select"
-                                name="layout"
-                                defaultValue={layout}
-                                onChange={layoutChangeHandler}>
-                                {layoutOptions && layoutOptions.map((item, index) => (
-                                    <option
-                                        key={index}
-                                        value={item.value}>
-                                        {item.label}
-                                    </option>
-                                ))}
-                            </select>
+                        <div className="col-lg-3 col-md-4">
+                            <div className="single_input">
+                                <select
+                                    className="wide form-control rounded nice-select"
+                                    name="layout"
+                                    defaultValue={layout}
+                                    onChange={layoutChangeHandler}>
+                                    {layoutOptions && layoutOptions.map((item, index) => (
+                                        <option
+                                            key={index}
+                                            value={item.value}>
+                                            {item.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'listings',
+        templateId: 'listingsSortBar',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            limit: limit,
+            setLimit: setLimit,
+            layout: layout,
+            setLayout: setLayout,
+            limitOptions: limitOptions,
+            setLimitOptions: setLimitOptions,
+            layoutOptions: layoutOptions,
+            setLayoutOptions: setLayoutOptions,
+            layoutChangeHandler: layoutChangeHandler,
+            limitChangeHandler: limitChangeHandler,
+            ...props
+        }
+    });
 }
 
 export default connect(

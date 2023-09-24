@@ -33,18 +33,10 @@ const SearchListingsBlock = (props) => {
                     <>
                         <ListingsSortBar/>
                         {listingsContext?.listingsData?.load_more_type === "pagination" &&
-                            templateManager.getTemplateComponent({
-                                category: 'listings',
-                                templateId: 'paginationComponent',
-                                defaultComponent: <Paginate />
-                            })
+                            <Paginate />
                         }
                         {listingsContext?.listingsData?.load_more_type === "infinite_scroll" &&
-                            templateManager.getTemplateComponent({
-                                category: 'listings',
-                                templateId: 'infiniteScrollComponent',
-                                defaultComponent: <ListingsInfiniteScroll />
-                            })
+                            <ListingsInfiniteScroll />
                         }
                     </>
                     :

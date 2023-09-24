@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {siteConfig} from "../../../config/site-config";
 import {blockComponentsConfig} from "../../config/block-components-config";
@@ -6,12 +6,17 @@ import {setModalContentAction} from "../../redux/actions/page-actions";
 import {SESSION_PASSWORD_RESET_KEY, SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-constants";
 import {buildWpApiUrl, publicApiRequest} from "../../library/api/wp/middleware";
 import {wpApiConfig} from "../../config/wp-api-config";
+import ListingsInfiniteScroll from "@/truvoicer-base/components/blocks/listings/pagination/ListingsInfiniteScroll";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 
 const PasswordResetBlock = (props) => {
     const [response, setResponse] = useState({
         success: false,
         message: "Please wait, we're Confirming your credentials..."
     });
+
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const showAuthRegisterModal = (e) => {
         e.preventDefault()
@@ -37,36 +42,50 @@ const PasswordResetBlock = (props) => {
             user_id: props.session[SESSION_USER][SESSION_USER_ID]
         }, validateCallback)
     }, [props.session[SESSION_PASSWORD_RESET_KEY], props.session[SESSION_USER][SESSION_USER_ID]])
-
-    return (
-        <div className="site-section">
-            <div className="container">
-                <div className="row justify-content-center">
-                    <div className="col-md-7 mb-5" data-aos="fade">
-                        <div className="row form-group bg-light">
-                            <div className="col-12">
-                                <p className={"text-center p-3 m-0 "}>
-                                    {response.message}
-                                </p>
+    function defaultView() {
+        return (
+            <div className="site-section">
+                <div className="container">
+                    <div className="row justify-content-center">
+                        <div className="col-md-7 mb-5" data-aos="fade">
+                            <div className="row form-group bg-light">
+                                <div className="col-12">
+                                    <p className={"text-center p-3 m-0 "}>
+                                        {response.message}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="row form-group">
-                            <div className="col-12">
-                                <p>No account yet? <a href={siteConfig.defaultRegisterHref}
-                                                      onClick={showAuthRegisterModal}>Register</a></p>
+                            <div className="row form-group">
+                                <div className="col-12">
+                                    <p>No account yet? <a href={siteConfig.defaultRegisterHref}
+                                                          onClick={showAuthRegisterModal}>Register</a></p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+    }
+
+    return templateManager.getTemplateComponent({
+        category: 'account',
+        templateId: 'passwordResetBlock',
+        defaultComponent: defaultView(),
+        props: {
+            showAuthRegisterModal: showAuthRegisterModal,
+            validateCallback: validateCallback,
+            defaultView: defaultView,
+            response: response,
+            setResponse: setResponse
+        }
+    })
 }
 
 function mapStateToProps(state) {
     return {
-        session: state.session
+        session: state.session,
     };
 }
 

@@ -9,6 +9,8 @@ import {isNotEmpty} from "@/truvoicer-base/library/utils";
 import {buildFilterList} from "@/truvoicer-base/library/helpers/wp-helpers";
 import {AppContext} from "@/truvoicer-base/config/contexts/AppContext";
 import {AppManager} from "@/truvoicer-base/library/app/AppManager";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const SearchBlock = (props) => {
     const [query, setQuery] = useState("")
@@ -23,6 +25,7 @@ const SearchBlock = (props) => {
     const searchContext = appManager.findAppContextById(props?.data?.listing_block_id, "searchContext");
 
     const listingsManager = new ListingsManager(listingsContext, searchContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     let showSearch = (props.data?.search);
     let categoriesPlaceholder = 'Categories';
@@ -98,77 +101,91 @@ const SearchBlock = (props) => {
         listingsManager.getListingsEngine().addQueryDataObjectMiddleware(searchData, true);
     }
 
-    return (
-        <>
-            {showSearch &&
-                <div className="catagory_area">
-                    <form onSubmit={formSubmitHandler}>
-                        <div className="container">
-                            <div className="row cat_search">
-                                <div className="col-lg-3 col-md-4">
-                                    <div className="single_input">
-                                        <input type="text"
-                                               className="form-control rounded"
-                                               placeholder={searchPlaceholder}
-                                               name={"query"}
-                                               value={query}
-                                               onChange={formChangeHandler}/>
+    function defaultView() {
+        return (
+            <>
+                {showSearch &&
+                    <div className="catagory_area">
+                        <form onSubmit={formSubmitHandler}>
+                            <div className="container">
+                                <div className="row cat_search">
+                                    <div className="col-lg-3 col-md-4">
+                                        <div className="single_input">
+                                            <input type="text"
+                                                   className="form-control rounded"
+                                                   placeholder={searchPlaceholder}
+                                                   name={"query"}
+                                                   value={query}
+                                                   onChange={formChangeHandler}/>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="col-lg-3 col-md-4">
-                                    <div className="single_input">
-                                        <input type="text"
-                                               className="form-control rounded"
-                                               placeholder={locationPlaceholder}
-                                               name={"location"}
-                                               value={location}
-                                               onChange={formChangeHandler}/>
-                                    </div>
+                                    <div className="col-lg-3 col-md-4">
+                                        <div className="single_input">
+                                            <input type="text"
+                                                   className="form-control rounded"
+                                                   placeholder={locationPlaceholder}
+                                                   name={"location"}
+                                                   value={location}
+                                                   onChange={formChangeHandler}/>
+                                        </div>
 
-                                </div>
-                                <div className="col-lg-3 col-md-4">
-                                    <div className="single_input">
-                                        <select
-                                            className="wide form-control rounded nice-select"
-                                            name="category"
-                                            defaultValue={category}
-                                            onChange={formChangeHandler}>
-                                            <option
-                                                value="all">{categoriesPlaceholder}</option>
-                                            {categories && categories.map((item, index) => (
-                                                <option key={index} value={item.name}>{item.label}</option>
-                                            ))}
-                                        </select>
+                                    </div>
+                                    <div className="col-lg-3 col-md-4">
+                                        <div className="single_input">
+                                            <select
+                                                className="wide form-control rounded nice-select"
+                                                name="category"
+                                                defaultValue={category}
+                                                onChange={formChangeHandler}>
+                                                <option
+                                                    value="all">{categoriesPlaceholder}</option>
+                                                {categories && categories.map((item, index) => (
+                                                    <option key={index} value={item.name}>{item.label}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-3 col-md-12">
+                                        <div className="job_btn">
+                                            <button type={"submit"}
+                                                    className="boxed-btn3">{searchButtonLabel}</button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="col-lg-3 col-md-12">
-                                    <div className="job_btn">
-                                        <button type={"submit"}
-                                                className="boxed-btn3">{searchButtonLabel}</button>
+
+                                <div className="row">
+                                    <div className="col-lg-12">
+                                        <div className="popular_search d-flex align-items-center">
+                                            <span>{featuredCategoriesLabel}</span>
+                                            <ul>
+                                                {featured_categories && featured_categories.map((item, index) => (
+                                                    <li key={index} value={item.name}>
+                                                        <a onClick={categoriesClickHandler.bind(this, item.name)}>{item.label}</a>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </form>
+                    </div>
+                }
+            </>
+        );
+    }
 
-                            <div className="row">
-                                <div className="col-lg-12">
-                                    <div className="popular_search d-flex align-items-center">
-                                        <span>{featuredCategoriesLabel}</span>
-                                        <ul>
-                                            {featured_categories && featured_categories.map((item, index) => (
-                                                <li key={index} value={item.name}>
-                                                    <a onClick={categoriesClickHandler.bind(this, item.name)}>{item.label}</a>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            }
-        </>
-    );
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'searchBlock',
+        defaultComponent: defaultView(),
+        props: {
+            formSubmitHandler: formSubmitHandler,
+            formChangeHandler: formChangeHandler,
+            categoriesClickHandler: categoriesClickHandler,
+            defaultView: defaultView
+        }
+    })
 }
 export default connect(
     null,

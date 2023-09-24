@@ -1,7 +1,9 @@
-import React from "react";
+import React, {useContext} from "react";
 import CardsCarousel from "@/truvoicer-base/components/blocks/carousel/types/CardsCarousel";
 import FullSingleTestimonialsCarousel
     from "@/truvoicer-base/components/blocks/carousel/types/Testimonials/FullSingleTestimonialsCarousel";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 /**
  *
@@ -10,6 +12,7 @@ import FullSingleTestimonialsCarousel
  * @constructor
  */
 const CustomItemsCarousel = (props) => {
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     if (!Array.isArray(props.data.carousel_data.item_list.data)) {
         return null;
     }
@@ -40,10 +43,24 @@ const CustomItemsCarousel = (props) => {
         }
     }
 
-    return (
-        <>
-        {getCarousel()}
-        </>
-    )
+    function defaultView() {
+        return (
+            <>
+                {getCarousel()}
+            </>
+        )
+    }
+
+    return templateManager.getTemplateComponent({
+        category: 'carousel',
+        templateId: 'customItemsCarousel',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            getCarousel: getCarousel,
+            getSetting: getSetting,
+            ...props
+        }
+    })
 }
 export default CustomItemsCarousel;

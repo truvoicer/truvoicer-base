@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import JobNewsItemListPost
     from "../../../../views/Components/Blocks/Listings/ListingsItems/Items/JobNews/JobNewsItemListPost";
 import {setPostListDataAction} from "../../../redux/actions/page-actions";
@@ -7,8 +7,12 @@ import {buildWpApiUrl, publicApiRequest} from "../../../library/api/wp/middlewar
 import {wpApiConfig} from "../../../config/wp-api-config";
 import {isNotEmpty} from "../../../library/utils";
 import BlogSidebar from "@/truvoicer-base/components/Sidebars/BlogSidebar";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
-const PostsBlock = ({data}) => {
+const PostsBlock = (props) => {
+    const {data} = props;
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     function useQueryParams() {
         const router = useRouter();
         return useMemo(() => {
@@ -55,31 +59,7 @@ const PostsBlock = ({data}) => {
     }
     useEffect(() => {
         let isCancelled = false;
-        publicApiRequest(
-            buildWpApiUrl(wpApiConfig.endpoints.postListRequest),
-            {
-                posts_per_page: data?.posts_per_page,
-                show_all_categories: data?.show_all_categories,
-                categories: data?.categories,
-                page_number: isNotEmpty(p) ? parseInt(p) : 1
-            },
-            false,
-            "post"
-        )
-            .then(response => {
-                if (!isCancelled) {
-                    if (response?.data?.status === "success" && Array.isArray(response.data?.data?.posts)) {
-                        setPosts(response.data.data.posts);
-                        setPostListDataAction(response.data.data.posts);
-                        setPaginationControls(response.data.data.controls)
-                    } else {
-                        console.log("Post list error")
-                    }
-                }
-            })
-            .catch(error => {
-                console.error(error)
-            })
+        fetchPosts(p, isCancelled);
         return () => {
             isCancelled = true;
         }
@@ -97,61 +77,80 @@ const PostsBlock = ({data}) => {
         return layoutClasses;
     }
 
-    return (
-        <section className="blog_area section-padding">
-            <div className="container">
-                <div className={"row"}>
-                    <div className={`${getClasses().content}`}>
-                        <div className="blog_left_sidebar">
-                            {posts.map((post, index) => {
-                                return (
-                                    <JobNewsItemListPost
-                                        key={index}
-                                        postIndex={index}
-                                        data={post}
-                                    />
-                                )
-                            })}
-                            <nav className="blog-pagination justify-content-center d-flex">
-                                <ul className="pagination">
-                                    <li className="page-item">
-                                        <a href="#" className="page-link" aria-label="Previous">
-                                            <i className="ti-angle-left"/>
-                                        </a>
-                                    </li>
-                                    {isNotEmpty(paginationControls?.total_pages)
-                                    && Array.from(Array(paginationControls.total_pages)).map((page, index) => (
-                                        <li key={index} className={`page-item ${paginationControls.current_page === (index + 1)? "active" : ""}`}>
-                                            <a
-                                                className="page-link"
-                                                onClick={() => {
-                                                    fetchPosts(index + 1)
-                                                }}
-                                            >
-                                                {index + 1}
+    function defaultView() {
+        return (
+            <section className="blog_area section-padding">
+                <div className="container">
+                    <div className={"row"}>
+                        <div className={`${getClasses().content}`}>
+                            <div className="blog_left_sidebar">
+                                {posts.map((post, index) => {
+                                    return (
+                                        <JobNewsItemListPost
+                                            key={index}
+                                            postIndex={index}
+                                            data={post}
+                                        />
+                                    )
+                                })}
+                                <nav className="blog-pagination justify-content-center d-flex">
+                                    <ul className="pagination">
+                                        <li className="page-item">
+                                            <a href="#" className="page-link" aria-label="Previous">
+                                                <i className="ti-angle-left"/>
                                             </a>
                                         </li>
-                                    ))}
-                                    <li className="page-item">
-                                        <a href="#" className="page-link" aria-label="Next">
-                                            <i className="ti-angle-right"/>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
+                                        {isNotEmpty(paginationControls?.total_pages)
+                                            && Array.from(Array(paginationControls.total_pages)).map((page, index) => (
+                                                <li key={index} className={`page-item ${paginationControls.current_page === (index + 1)? "active" : ""}`}>
+                                                    <a
+                                                        className="page-link"
+                                                        onClick={() => {
+                                                            fetchPosts(index + 1)
+                                                        }}
+                                                    >
+                                                        {index + 1}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        <li className="page-item">
+                                            <a href="#" className="page-link" aria-label="Next">
+                                                <i className="ti-angle-right"/>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
                         </div>
+                        {data?.show_sidebar &&
+                            <div className={`${getClasses().sidebar}`}>
+                                <div className="blog_right_sidebar">
+                                    <BlogSidebar/>
+                                </div>
+                            </div>
+                        }
                     </div>
-                    {data?.show_sidebar &&
-                    <div className={`${getClasses().sidebar}`}>
-                        <div className="blog_right_sidebar">
-                            <BlogSidebar/>
-                        </div>
-                    </div>
-                    }
                 </div>
-            </div>
-        </section>
-    );
+            </section>
+        );
+    }
+
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'postsBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            useQueryParams: useQueryParams,
+            fetchPosts: fetchPosts,
+            getClasses: getClasses,
+            posts: posts,
+            paginationControls: paginationControls,
+            setPosts: setPosts,
+            setPaginationControls: setPaginationControls,
+            ...props
+        }
+    })
 };
 
 export default PostsBlock;

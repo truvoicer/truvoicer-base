@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import AuthLoginForm from "./AuthLoginForm";
 import AuthGoogle from "./AuthGoogle";
 import AuthFacebook from "./AuthFacebook";
@@ -7,6 +7,8 @@ import {showPageModalMiddleware} from "../../../redux/middleware/page-middleware
 import {siteConfig} from "../../../../config/site-config";
 import {setModalContentAction} from "../../../redux/actions/page-actions";
 import {blockComponentsConfig} from "../../../config/block-components-config";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const LoginDialog = (props) => {
     const [showLoginForm, setShowLoginForm] = useState(false);
@@ -14,6 +16,7 @@ const LoginDialog = (props) => {
         show: false,
         message: ""
     });
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const showAuthRegisterModal = (e) => {
         e.preventDefault()
         setModalContentAction(blockComponentsConfig.components.authentication_register.name, {}, true)
@@ -35,54 +38,73 @@ const LoginDialog = (props) => {
         }
     }
 
-    return (
-        <div className={"auth-wrapper"}>
-            {!showLoginForm &&
-            <>
-                <h2 className="text-dark text-black">Sign In</h2>
-                {error.show &&
-                <div className={"site-form--error--block"}>
-                    {error.message}
-                </div>
+    function defaultView() {
+        return (
+            <div className={"auth-wrapper"}>
+                {!showLoginForm &&
+                    <>
+                        <h2 className="text-dark text-black">Sign In</h2>
+                        {error.show &&
+                            <div className={"site-form--error--block"}>
+                                {error.message}
+                            </div>
+                        }
+                        <div className={"auth-wrapper--login-form"}>
+                            <AuthLoginForm requestCallback={requestCallback}>
+                                <p className={"mb-0 text-center"}>
+                                    <a className={"text-danger"} href={siteConfig.defaultForgotPasswordHref} onClick={showForgotPasswordModal}>
+                                        Forgot Password?
+                                    </a>
+                                </p>
+                                <p className={"mb-0 text-center"}>
+                                    No account yet?
+                                    <a className={"text-primary ml-1"} href={siteConfig.defaultRegisterHref} onClick={showAuthRegisterModal}>
+                                        Register
+                                    </a>
+                                </p>
+                            </AuthLoginForm>
+                        </div>
+                        <div className={"horizontal-divider"}>
+                            <span>OR</span>
+                        </div>
+                        <div className={"auth-wrapper--google auth-wrapper--button"}>
+                            <AuthGoogle
+                                requestCallback={requestCallback}
+                                buttonClass={"google-light-red"}
+                                iconClass={"fa-google"}
+                                buttonLabel={"Sign in with Google"}
+                            />
+                        </div>
+                        <div className={"auth-wrapper--facebook auth-wrapper--button"}>
+                            <AuthFacebook
+                                requestCallback={requestCallback}
+                                buttonClass={"facebook-light-blue"}
+                                iconClass={"fa-facebook-f"}
+                                buttonLabel={"Sign in with Facebook"}
+                            />
+                        </div>
+                    </>
                 }
-                <div className={"auth-wrapper--login-form"}>
-                    <AuthLoginForm requestCallback={requestCallback}>
-                        <p className={"mb-0 text-center"}>
-                            <a className={"text-danger"} href={siteConfig.defaultForgotPasswordHref} onClick={showForgotPasswordModal}>
-                                Forgot Password?
-                            </a>
-                        </p>
-                        <p className={"mb-0 text-center"}>
-                            No account yet?
-                            <a className={"text-primary ml-1"} href={siteConfig.defaultRegisterHref} onClick={showAuthRegisterModal}>
-                                Register
-                            </a>
-                        </p>
-                    </AuthLoginForm>
-                </div>
-                <div className={"horizontal-divider"}>
-                    <span>OR</span>
-                </div>
-                <div className={"auth-wrapper--google auth-wrapper--button"}>
-                    <AuthGoogle
-                        requestCallback={requestCallback}
-                        buttonClass={"google-light-red"}
-                        iconClass={"fa-google"}
-                        buttonLabel={"Sign in with Google"}
-                    />
-                </div>
-                <div className={"auth-wrapper--facebook auth-wrapper--button"}>
-                    <AuthFacebook
-                        requestCallback={requestCallback}
-                        buttonClass={"facebook-light-blue"}
-                        iconClass={"fa-facebook-f"}
-                        buttonLabel={"Sign in with Facebook"}
-                    />
-                </div>
-            </>
-            }
-        </div>
-    )
+            </div>
+        );
+    }
+
+    return templateManager.getTemplateComponent({
+        category: 'auth',
+        templateId: 'loginDialog',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            showLoginForm: showLoginForm,
+            setShowLoginForm: setShowLoginForm,
+            showAuthRegisterModal: showAuthRegisterModal,
+            showForgotPasswordModal: showForgotPasswordModal,
+            requestCallback: requestCallback,
+            error: error,
+            setError: setError,
+            ...props
+        }
+    })
 }
 export default connect(
     null,

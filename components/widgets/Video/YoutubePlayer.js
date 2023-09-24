@@ -1,9 +1,12 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const YoutubePlayer = (props) => {
     const [video, setVideo] = useState(null);
     const [showVideo, setShowVideo] = useState(false);
 
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const getVideo = (e) => {
         e.preventDefault();
         setVideo(
@@ -18,22 +21,39 @@ const YoutubePlayer = (props) => {
         setShowVideo(true)
     }
 
-    
-    return (
-            <div className={"youtube-player thumbnail"} style={{backgroundImage: "url(https://img.youtube.com/vi/" + props.video_id + "/default.jpg)"}}>
+    function defaultView() {
+        return (
+            <div className={"youtube-player thumbnail"}
+                 style={{backgroundImage: "url(https://img.youtube.com/vi/" + props.video_id + "/default.jpg)"}}>
 
                 {showVideo
                     ?
                     video
                     :
-                <div className="play-btn">
-                    <a onClick={getVideo}
-                       className="play-button">
-                        <img src="/img/play.png" alt=""/>
-                    </a>
-                </div>
+                    <div className="play-btn">
+                        <a onClick={getVideo}
+                           className="play-button">
+                            <img src="/img/play.png" alt=""/>
+                        </a>
+                    </div>
                 }
             </div>
-    )
+        );
+    }
+
+    return templateManager.getTemplateComponent({
+        category: 'media',
+        templateId: 'youtubePlayer',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            getVideo: getVideo,
+            video: video,
+            setVideo: setVideo,
+            showVideo: showVideo,
+            setShowVideo: setShowVideo,
+            ...props
+        }
+    });
 }
 export default YoutubePlayer;

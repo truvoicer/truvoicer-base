@@ -9,6 +9,7 @@ import useSWR from "swr";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 
 const ListingsLeftSidebar = (props) => {
     const [data, setData] = useState([]);
@@ -16,6 +17,7 @@ const ListingsLeftSidebar = (props) => {
 
     const listingsContext = useContext(ListingsContext);
     const templateContext = useContext(TemplateContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     useEffect(() => {
         if (Array.isArray(sidebarData?.sidebar)) {
@@ -33,17 +35,33 @@ const ListingsLeftSidebar = (props) => {
     if (sidebarLoading) return <></>
     if (sidebarError) return <Error />
 
-    return (
-        <div className="job_filter white-bg">
-            <div className="form_inner white-bg">
-            {data.map((item, index) => (
-                <React.Fragment key={index.toString()}>
-                    {item}
-                </React.Fragment>
-            ))}
+    function defaultView() {
+        return (
+            <div className="job_filter white-bg">
+                <div className="form_inner white-bg">
+                    {data.map((item, index) => (
+                        <React.Fragment key={index.toString()}>
+                            {item}
+                        </React.Fragment>
+                    ))}
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'listings',
+        templateId: 'listingsLeftSidebar',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            data: data,
+            setData: setData,
+            sidebarData: sidebarData,
+            sidebarError: sidebarError,
+            sidebarLoading: sidebarLoading,
+            ...props
+        }
+    });
 }
 
 function mapStateToProps(state) {

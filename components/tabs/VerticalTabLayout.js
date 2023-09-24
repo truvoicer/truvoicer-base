@@ -1,13 +1,16 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import {isSet} from "../../library/utils";
 import {blockComponentsConfig} from "../../config/block-components-config";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 // import makeStyles from "@mui/material/styles/makeStyles";
 
 const VerticalTabLayout = (props) => {
     const [tabValue, setTabValue] = useState(props.tabIndex);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const handleTabChange = (e, value) => {
         setTabValue(value)
@@ -63,8 +66,9 @@ const VerticalTabLayout = (props) => {
     }
 
     // const classes = useStyles();
-    return (
-        <div className={''}>
+    function defaultView() {
+        return (
+            <div className={''}>
                 <Tabs
                     orientation="vertical"
                     value={tabValue}
@@ -81,16 +85,32 @@ const VerticalTabLayout = (props) => {
                         />
                     ))}
                 </Tabs>
-            {props.data.map((tabItem, index) => (
-                <TabPanel
-                    key={index.toString()}
-                    value={tabValue}
-                    index={index}
-                >
-                    {getTabComponent(tabValue)}
-                </TabPanel>
-            ))}
-        </div>
-    );
+                {props.data.map((tabItem, index) => (
+                    <TabPanel
+                        key={index.toString()}
+                        value={tabValue}
+                        index={index}
+                    >
+                        {getTabComponent(tabValue)}
+                    </TabPanel>
+                ))}
+            </div>
+        );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'tabs',
+        templateId: 'verticalTabLayout',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            handleTabChange: handleTabChange,
+            getTabComponent: getTabComponent,
+            tabProps: tabProps,
+            TabPanel: TabPanel,
+            tabValue: tabValue,
+            setTabValue: setTabValue,
+            ...props
+        }
+    });
 }
 export default VerticalTabLayout;

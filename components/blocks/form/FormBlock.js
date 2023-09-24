@@ -1,6 +1,6 @@
 import {isNotEmpty, isObject, isObjectEmpty, isSet} from "../../../library/utils";
 import DataForm from "../../forms/DataForm/DataForm";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
     buildWpApiUrl,
     protectedApiRequest,
@@ -14,11 +14,14 @@ import {SESSION_AUTH_TYPE, SESSION_USER} from "../../../redux/constants/session-
 import Snackbar from "@mui/material/Snackbar";
 import SnackbarContent from "@mui/material/SnackbarContent";
 import WPErrorDisplay from "@/truvoicer-base/components/errors/WPErrorDisplay";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const sprintf = require("sprintf").sprintf;
 
 const FormBlock = (props) => {
 
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const formData = props?.data;
     if (!formData || !isObject(formData) || isObjectEmpty(formData)) {
@@ -428,51 +431,71 @@ const FormBlock = (props) => {
             addListItemButtonText: (isNotEmpty(formData?.add_item_button_label) ? formData.add_item_button_label : addListItemButtonText)
         };
     }
-    return (
-        <div className={formData.layout_style === "full-width" ? "container-fluid" : "container"}>
-            <div className={"row justify-content-" + (isNotEmpty(formData.align) ? formData.align : "start")}>
-                <div className={isNotEmpty(formData.column_size) ? "col-" + formData.column_size : "col-12"}>
-                    {isNotEmpty(formData?.heading) &&
-                        <h1>{formData.heading}</h1>
-                    }
-                    {isNotEmpty(formData?.sub_heading) &&
-                    <p>{formData.sub_heading}</p>
-                    }
-                    {response.success &&
-                    <div className="bg-white p-3">
-                        <p className={"text-center text-success"}>{response.message}</p>
+    function defaultView() {
+        return (
+            <div className={formData.layout_style === "full-width" ? "container-fluid" : "container"}>
+                <div className={"row justify-content-" + (isNotEmpty(formData.align) ? formData.align : "start")}>
+                    <div className={isNotEmpty(formData.column_size) ? "col-" + formData.column_size : "col-12"}>
+                        {isNotEmpty(formData?.heading) &&
+                            <h1>{formData.heading}</h1>
+                        }
+                        {isNotEmpty(formData?.sub_heading) &&
+                            <p>{formData.sub_heading}</p>
+                        }
+                        {response.success &&
+                            <div className="bg-white p-3">
+                                <p className={"text-center text-success"}>{response.message}</p>
+                            </div>
+                        }
+                        {Array.isArray(response.errors) && response.errors.length > 0 && (
+                            <WPErrorDisplay errorData={response.errors} />
+                        )}
+                        {response.error &&
+                            <div className="bg-white">
+                                <p className={"text-danger text-danger"}>{response.message}</p>
+                            </div>
+                        }
+                        {!isObjectEmpty(formDataConfig) &&
+                            <DataForm
+                                {...getDataFormProps()}
+                            />
+                        }
                     </div>
-                    }
-                    {Array.isArray(response.errors) && response.errors.length > 0 && (
-                        <WPErrorDisplay errorData={response.errors} />
-                    )}
-                    {response.error &&
-                    <div className="bg-white">
-                        <p className={"text-danger text-danger"}>{response.message}</p>
-                    </div>
-                    }
-                    {!isObjectEmpty(formDataConfig) &&
-                    <DataForm
-                        {...getDataFormProps()}
-                    />
-                    }
                 </div>
+                <Snackbar open={response.showAlert}
+                          autoHideDuration={6000}
+                          onClose={() => {
+                              setResponse(response => {
+                                  return {...response, ...{showAlert: false}}
+                              })
+                          }}
+                >
+                    <SnackbarContent
+                        message={response.message}
+                        // role={response.success ? "success" : "error"}
+                    />
+                </Snackbar>
             </div>
-            <Snackbar open={response.showAlert}
-                      autoHideDuration={6000}
-                      onClose={() => {
-                          setResponse(response => {
-                              return {...response, ...{showAlert: false}}
-                          })
-                      }}
-            >
-                <SnackbarContent
-                    message={response.message}
-                    // role={response.success ? "success" : "error"}
-                />
-            </Snackbar>
-        </div>
-    )
+        );
+    }
+
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'formBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            formSubmitCallback: formSubmitCallback,
+            formDataConfig: formDataConfig,
+            response: response,
+            setResponse: setResponse,
+            setFormDataConfig: setFormDataConfig,
+            formData: formData,
+            userData: userData,
+            setUserData: setUserData,
+            ...props
+        }
+    })
 }
 
 

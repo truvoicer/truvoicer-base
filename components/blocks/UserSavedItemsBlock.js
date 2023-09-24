@@ -11,12 +11,15 @@ import SavedItemsVerticalTabs from "../tabs/SavedItemsVerticalTabs";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 function UserSavedItemsBlock(props) {
     const [tabData, setTabData] = useState({});
     const searchContext = useContext(SearchContext);
     const listingsContext = useContext(ListingsContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const buildSavedItemsList = (data) => {
         let tabDataObject = {};
         data.map((savedItem) => {
@@ -54,18 +57,7 @@ function UserSavedItemsBlock(props) {
         }
         return false;
     }
-
-    useEffect(() => {
-        setTabData(tabData => {
-            return buildSavedItemsList(searchContext?.savedItemsList);
-        });
-    }, [searchContext?.savedItemsList])
-
-    useEffect(() => {
-        let isCancelled = false;
-        if (!isNotEmpty(props.session[SESSION_USER][SESSION_USER_ID])) {
-            return;
-        }
+    function getUserSavedItems(isCancelled = false) {
         protectedApiRequest(
             buildWpApiUrl(wpApiConfig.endpoints.savedItemsListByUser),
             {"user_id": props.session[SESSION_USER][SESSION_USER_ID]}
@@ -79,12 +71,27 @@ function UserSavedItemsBlock(props) {
             .catch(error => {
                 console.error(error);
             })
+    }
+
+    useEffect(() => {
+        setTabData(tabData => {
+            return buildSavedItemsList(searchContext?.savedItemsList);
+        });
+    }, [searchContext?.savedItemsList])
+
+    useEffect(() => {
+        let isCancelled = false;
+        if (!isNotEmpty(props.session[SESSION_USER][SESSION_USER_ID])) {
+            return;
+        }
+        getUserSavedItems(isCancelled);
         return () => {
             isCancelled = true;
         }
     }, [props.session[SESSION_USER][SESSION_USER_ID]])
 
-    return (
+    function defaultView() {
+        return (
             <div className="job_listing_area pt-5">
                 <div className={"listings-block job_lists mt-0"}>
                     <div className="container">
@@ -92,14 +99,30 @@ function UserSavedItemsBlock(props) {
                             <div className="col-md-12 mb-5" data-aos="fade">
                                 <h2>My Saved Items</h2>
                                 {!isObjectEmpty(tabData) &&
-                                <SavedItemsVerticalTabs data={tabData}/>
+                                    <SavedItemsVerticalTabs data={tabData}/>
                                 }
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-    );
+        );
+    }
+
+    return templateManager.getTemplateComponent({
+        category: 'account',
+        templateId: 'userSavedItemsBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buildSavedItemsList: buildSavedItemsList,
+            tabData: tabData,
+            setTabData: setTabData,
+            getInternalItemsData: getInternalItemsData,
+            getUserSavedItems: getUserSavedItems,
+            ...props
+        }
+    })
 }
 function mapStateToProps(state) {
     // console.log(state.page)
