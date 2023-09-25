@@ -11,10 +11,13 @@ import JobNewsItemView from "../../../../../../../views/Components/Blocks/Listin
 import FeedsSidebar from "@/truvoicer-base/components/Sidebars/FeedsSidebar";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const FeedsListingsBlock = (props) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext))
     // const router = useRouter();
     const itemLinkClickHandler = (data, showItemView, e) => {
         // e.preventDefault();
@@ -62,53 +65,72 @@ const FeedsListingsBlock = (props) => {
             </>
         );
     }
-    return (
-        <BlogContext.Provider value={blogContextData}>
-            <section className="blog_area section-padding">
-                <div className="container">
-                    {!props.data.show_filters &&
-                    <div className="row align-items-center">
-                        <div className="col-lg-6">
-                            <div className="section_title">
-                                <h3>{listingsContext?.listingsData.listings_block_heading}</h3>
-                            </div>
-                        </div>
-                        <div className="col-lg-6">
-                            <div className="brouse_job text-right">
-                                <a
-                                    href={isNotEmpty(headerButtonUrl) ? headerButtonUrl : defaultHeadingButtonUrl}
-                                    className="boxed-btn4">
-                                    {isNotEmpty(headerButtonLabel) ? headerButtonLabel : defaultHeadingButtonLabel}
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    }
-                    <div className={"row"}>
-                        {props.data.show_filters
-                            ?
-                            <>
-                                <div className="col-lg-8 mb-5 mb-lg-0">
-                                    <div className="blog_left_sidebar">
-                                        {getListingsBlock()}
+    function defaultLayout() {
+        return (
+            <BlogContext.Provider value={blogContextData}>
+                <section className="blog_area section-padding">
+                    <div className="container">
+                        {!props.data.show_filters &&
+                            <div className="row align-items-center">
+                                <div className="col-lg-6">
+                                    <div className="section_title">
+                                        <h3>{listingsContext?.listingsData.listings_block_heading}</h3>
                                     </div>
                                 </div>
-                                <div className="col-lg-4">
-                                    <div className="blog_right_sidebar">
-                                        <FeedsSidebar/>
+                                <div className="col-lg-6">
+                                    <div className="brouse_job text-right">
+                                        <a
+                                            href={isNotEmpty(headerButtonUrl) ? headerButtonUrl : defaultHeadingButtonUrl}
+                                            className="boxed-btn4">
+                                            {isNotEmpty(headerButtonLabel) ? headerButtonLabel : defaultHeadingButtonLabel}
+                                        </a>
                                     </div>
                                 </div>
-                            </>
-                            :
-                            <div className="blog_left_sidebar">
-                                {getListingsBlock()}
                             </div>
                         }
+                        <div className={"row"}>
+                            {props.data.show_filters
+                                ?
+                                <>
+                                    <div className="col-lg-8 mb-5 mb-lg-0">
+                                        <div className="blog_left_sidebar">
+                                            {getListingsBlock()}
+                                        </div>
+                                    </div>
+                                    <div className="col-lg-4">
+                                        <div className="blog_right_sidebar">
+                                            <FeedsSidebar/>
+                                        </div>
+                                    </div>
+                                </>
+                                :
+                                <div className="blog_left_sidebar">
+                                    {getListingsBlock()}
+                                </div>
+                            }
+                        </div>
                     </div>
-                </div>
-            </section>
-        </BlogContext.Provider>
-    )
+                </section>
+            </BlogContext.Provider>
+        )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'listings',
+        templateId: 'feedsListingsBlock',
+        defaultComponent: defaultLayout(),
+        props: {
+            defaultLayout: defaultLayout,
+            getListingsBlock: getListingsBlock,
+            showListing: showListing,
+            setShowListing: setShowListing,
+            showItemView: showItemView,
+            setShowItemView: setShowItemView,
+            itemViewData: itemViewData,
+            setItemViewData: setItemViewData,
+            itemLinkClickHandler: itemLinkClickHandler,
+            ...props
+        }
+    });
 }
 
 function mapStateToProps(state) {

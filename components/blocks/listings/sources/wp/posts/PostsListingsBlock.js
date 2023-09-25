@@ -7,9 +7,13 @@ import ComparisonsListingsBlock from "@/truvoicer-base/components/blocks/listing
 import {siteConfig} from "@/config/site-config";
 import {connect} from "react-redux";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
-const PostsListingsBlock = ({data}) => {
+const PostsListingsBlock = (props) => {
+    const {data} = props;
     const listingsContext = useContext(ListingsContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const getListingsBlock = () => {
         switch (listingsContext?.listingsData?.listings_category) {
             case siteConfig.internalCategory:
@@ -20,11 +24,23 @@ const PostsListingsBlock = ({data}) => {
                 return <LoaderComponent />
         }
     }
-    return (
-        <ListingsBlockContainer data={data}>
-            {getListingsBlock()}
-        </ListingsBlockContainer>
-    )
+    function defaultView() {
+        return (
+            <ListingsBlockContainer data={data}>
+                {getListingsBlock()}
+            </ListingsBlockContainer>
+        )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'post_listings',
+        templateId: 'postsListingsBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            getListingsBlock: getListingsBlock,
+            ...props
+        }
+    });
 }
 
 

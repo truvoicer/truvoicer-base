@@ -12,11 +12,14 @@ import GridItems from "../../../../../../items/GridItems";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ListingsInfiniteScroll = (props) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const loadMore = () => {
         if (searchContext?.searchStatus !== SEARCH_REQUEST_COMPLETED) {
             return false;
@@ -25,18 +28,30 @@ const ListingsInfiniteScroll = (props) => {
         listingsManager.getSearchEngine().loadNextPageNumberMiddleware(searchContext?.pageControls[PAGE_CONTROL_CURRENT_PAGE] + 1);
     }
 
-    return (
-        <InfiniteScroll
-            pageStart={0}
-            initialLoad={false}
-            loadMore={loadMore}
-            hasMore={searchContext?.pageControls[PAGE_CONTROL_HAS_MORE]}
-            loader={<LoaderComponent key={"loader"}/>}
-        >
-            <GridItems/>
-        </InfiniteScroll>
+    function defaultView() {
+        return (
+            <InfiniteScroll
+                pageStart={0}
+                initialLoad={false}
+                loadMore={loadMore}
+                hasMore={searchContext?.pageControls[PAGE_CONTROL_HAS_MORE]}
+                loader={<LoaderComponent key={"loader"}/>}
+            >
+                <GridItems/>
+            </InfiniteScroll>
 
-    )
+        )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'post_listings',
+        templateId: 'listingsInfiniteScroll',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            loadMore: loadMore,
+            ...props
+        }
+    });
 }
 
 function mapStateToProps(state) {
