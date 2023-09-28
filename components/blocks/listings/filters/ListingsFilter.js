@@ -6,11 +6,14 @@ import ListingsFilterApiListItem from "./Items/ListingsFilterApiListItem";
 import {isSet} from "../../../../library/utils";
 import {connect} from "react-redux";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ListingsFilter = (props) => {
     const controlPrefix = "filter_control_";
 
     const listingsContext = useContext(ListingsContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const getDataList = (item) => {
         if (item.type === "list" && item.source === "wordpress") {
@@ -41,6 +44,7 @@ const ListingsFilter = (props) => {
     ) {
         return null;
     }
+    function defaultView() {
     return (
         <>
             {listingsFilterData?.filter_heading &&
@@ -67,6 +71,16 @@ const ListingsFilter = (props) => {
             ))}
         </>
     )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'listings',
+        templateId: 'listingsFilter',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            getDataList: getDataList,
+        }
+    })
 }
 
 function mapStateToProps(state) {

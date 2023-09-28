@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {connect} from "react-redux";
 import Search from "../widgets/Search";
 import {siteConfig} from "../../../config/site-config";
@@ -8,13 +8,17 @@ import AccountAreaMenu from "@/truvoicer-base/components/Menus/AccountAreaMenu";
 import {getSidebar} from "../../library/api/wp/middleware";
 import LoaderComponent from "../widgets/Loader";
 import Error from "next";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const AccountAreaSidebar = (props) => {
     const { sidebarData, isLoading, isError } = getSidebar(siteConfig.accountAreaSidebarName)
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     if (isLoading) return <LoaderComponent />
     if (isError) return <Error />
 
+    function defaultView() {
     return (
         <>
             <div id="sidebar-container" className="sidebar-expanded d-none d-md-block">
@@ -46,6 +50,16 @@ const AccountAreaSidebar = (props) => {
             </div>
         </>
     )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 }
 
 function mapStateToProps(state) {

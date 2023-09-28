@@ -10,11 +10,14 @@ import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/Listin
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {buildFilterList} from "@/truvoicer-base/library/helpers/wp-helpers";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ListingsFilterListItem = (props) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const formChangeHandler = (e) => {
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         if (e.target.checked) {
@@ -34,6 +37,7 @@ const ListingsFilterListItem = (props) => {
         }
     }, [searchContext?.searchOperation]);
 
+    function defaultView() {
     return (
         <div className="single_field">
             <label className="widget-title">{props.data.label}</label>
@@ -57,6 +61,17 @@ const ListingsFilterListItem = (props) => {
             </ul>
         </div>
     )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'listings',
+        templateId: 'listingsFilterListItem',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            formChangeHandler: formChangeHandler,
+            ...props
+        }
+    })
 }
 
 function mapStateToProps(state) {

@@ -6,6 +6,8 @@ import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/Listin
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const BlogSearch = (props) => {
     const [query, setQuery] = useState("");
@@ -13,6 +15,7 @@ const BlogSearch = (props) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const formClickHandler = (e) => {
         e.preventDefault();
@@ -33,6 +36,7 @@ const BlogSearch = (props) => {
             listingsManager.runSearch();
         }
     }, [searchContext?.searchOperation, query]);
+    function defaultView() {
     return (
         <aside className="single_sidebar_widget search_widget">
             <form method="post" onSubmit={formClickHandler}>
@@ -56,6 +60,16 @@ const BlogSearch = (props) => {
             </form>
         </aside>
     )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 }
 
 export default connect(

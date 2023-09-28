@@ -1,7 +1,7 @@
 import HeaderMenu from "@/truvoicer-base/components/Menus/HeaderMenu";
 import {connect} from "react-redux";
 import Search from "../widgets/Search";
-import React from "react";
+import React, {useContext} from "react";
 import ReactHtmlParser from "react-html-parser";
 import {siteConfig} from "@/config/site-config";
 import MobileDrawerMenu from "@/truvoicer-base/components/Menus/MobileDrawerMenu";
@@ -12,9 +12,12 @@ import {buildWpApiUrl, fetcher, getSidebar} from "@/truvoicer-base/library/api/w
 import {getSidebarMenuItem} from "@/truvoicer-base/library/helpers/pages";
 import useSWR from "swr";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const NavBar = (props) => {
     const { data: sidebarData, error: sidebarError } = useSWR(buildWpApiUrl(wpApiConfig.endpoints.sidebar, "nav-bar"), fetcher)
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const sidebarLoading = !sidebarError && !sidebarData
     if (sidebarLoading) return <></>
     if (sidebarError) return <Error />
@@ -24,6 +27,7 @@ const NavBar = (props) => {
         sidebarMenu = sidebarData.sidebar;
     }
     const mobileMenu = getSidebarMenuItem(siteConfig.mobileMenu, sidebarMenu);
+    function defaultView() {
     return (
         <>
             <div className="container-fluid">
@@ -84,6 +88,16 @@ const NavBar = (props) => {
             </div>
         </>
     )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 }
 
 function mapStateToProps(state) {

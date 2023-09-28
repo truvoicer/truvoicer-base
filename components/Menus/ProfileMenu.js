@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import Dropdown from "react-bootstrap/Dropdown";
 import {CustomDropdownToggle} from "../dropdown/CustomDropdown";
 import DropdownMenuList from "./DropdownMenuList";
@@ -9,9 +9,13 @@ import {isNotEmpty, isObjectEmpty} from "../../library/utils";
 import {setModalContentAction} from "../../redux/actions/page-actions";
 import {blockComponentsConfig} from "../../config/block-components-config";
 import {siteConfig} from "../../../config/site-config";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ProfileMenu = ({data, siteSettings}) => {
     const [userData, setUserData] = useState({});
+    const templateManager = new TemplateManager(useContext(TemplateContext));
+    function defaultView() {
     return (
         <>
             {isObjectEmpty(userData) &&
@@ -79,6 +83,16 @@ const ProfileMenu = ({data, siteSettings}) => {
             </UserAccountLoader>
         </>
     )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 }
 
 function mapStateToProps(state) {

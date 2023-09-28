@@ -1,13 +1,16 @@
 import {fetchLoaderDataAction} from "../../redux/actions/item-actions";
 import {isSet} from "../../library/utils";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {getItemContentType} from "../../library/helpers/items";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const {useEffect} = require("react");
 
 const ListLoader = (props) => {
     const [list, setList] = useState([]);
     const defaultLinkLabel = "Link";
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const fetchLoaderDataCallback = (status, data) => {
         if (status !== 200) {
@@ -38,6 +41,7 @@ const ListLoader = (props) => {
         }
         return config;
     }
+    function defaultView() {
     return (
         <ul>
             {list.map((item, index) => (
@@ -51,5 +55,15 @@ const ListLoader = (props) => {
             ))}
         </ul>
     );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 }
 export default ListLoader;

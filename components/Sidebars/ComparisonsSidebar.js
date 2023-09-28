@@ -7,10 +7,12 @@ import {siteConfig} from "../../../config/site-config";
 import {buildSidebar} from "../../redux/actions/sidebar-actions";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 
 const ComparisonsSidebar = (props) => {
     const templateContext = useContext(TemplateContext);
     const listingsContext = useContext(ListingsContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const { sidebarData, isLoading, isError } = getSidebar(siteConfig.comparisonsSidebarName)
 
     const [data, setData] = useState([]);
@@ -39,9 +41,20 @@ const ComparisonsSidebar = (props) => {
         )
     }
 
+    function defaultView() {
     return (
         <>{getContent()}</>
     )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 
 }
 

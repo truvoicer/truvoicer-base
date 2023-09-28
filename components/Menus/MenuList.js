@@ -9,12 +9,15 @@ import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED} from "../../redux/constants/
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const MenuList = (props) => {
 
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const logoutHandler = (e) => {
         e.preventDefault();
         logout();
@@ -89,6 +92,7 @@ const MenuList = (props) => {
                 return false;
         }
     }
+    function defaultView() {
     return (
         <ul id="navigation">
         {/*<ul className="site-menu js-clone-nav mr-auto d-none d-lg-block">*/}
@@ -120,6 +124,16 @@ const MenuList = (props) => {
             ))}
         </ul>
     )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 }
 
 function mapStateToProps(state) {

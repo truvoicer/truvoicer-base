@@ -18,11 +18,14 @@ import {useRouter} from "next/router";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const SavedItemsVerticalTabsOld = (props) => {
     const searchContext = useContext(SearchContext);
     const listingsContext = useContext(ListingsContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const router = useRouter();
     const listingsGrid = isSet(defaultListingsGrid)? defaultListingsGrid : listingsContext.listingsGrid;
     const [modalData, setModalData] = useState({
@@ -232,6 +235,7 @@ const SavedItemsVerticalTabsOld = (props) => {
         getItemsRequest(getItemByIndex(0).name, true)
     }, [])
 
+    function defaultView() {
     return (
         <div className={"tab-layout"}>
             <Tabs
@@ -269,6 +273,16 @@ const SavedItemsVerticalTabsOld = (props) => {
 
         </div>
     );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 }
 
 function mapStateToProps(state) {

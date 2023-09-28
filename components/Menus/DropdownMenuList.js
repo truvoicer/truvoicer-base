@@ -14,6 +14,8 @@ import {CustomDropdownMenu} from "../dropdown/CustomDropdown";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const sprintf = require("sprintf").sprintf
 const DropdownMenuList = (props) => {
@@ -22,6 +24,7 @@ const DropdownMenuList = (props) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const logoutHandler = (e) => {
         e.preventDefault();
@@ -97,6 +100,7 @@ const DropdownMenuList = (props) => {
                 return false;
         }
     }
+    function defaultView() {
     return (
         <Dropdown.Menu alignRight={true} as={CustomDropdownMenu}>
             {props.data.menu_items.map((item, index) => (
@@ -127,6 +131,16 @@ const DropdownMenuList = (props) => {
             ))}
         </Dropdown.Menu>
     )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 }
 
 function mapStateToProps(state) {

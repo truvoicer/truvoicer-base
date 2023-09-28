@@ -1,11 +1,14 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import {getListItemData} from "../../library/helpers/items";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ItemViewVerticalTabList = (props) => {
     const [tabValue, setTabValue] = useState(props.data.config.initialTab);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const handleTabChange = (e, value) => {
         setTabValue(value)
@@ -39,6 +42,7 @@ const ItemViewVerticalTabList = (props) => {
         );
     }
 
+    function defaultView() {
     return (
         <div className={"tab-layout"}>
             <Tabs
@@ -72,5 +76,15 @@ const ItemViewVerticalTabList = (props) => {
             ))}
         </div>
     );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 }
 export default ItemViewVerticalTabList;

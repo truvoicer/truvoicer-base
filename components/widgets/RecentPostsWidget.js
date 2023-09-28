@@ -1,12 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {buildWpApiUrl, publicApiRequest} from "../../library/api/wp/middleware";
 import {wpApiConfig} from "../../config/wp-api-config";
 import {formatDate, isNotEmpty} from "../../library/utils";
 import Link from "next/link";
 import {getPostItemUrl} from "../../library/helpers/posts";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const RecentPostsWidget = ({data}) => {
     const [postData, setPostData] = useState([]);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     useEffect(() => {
         publicApiRequest(
@@ -26,6 +29,7 @@ const RecentPostsWidget = ({data}) => {
             })
     }, [data])
 
+    function defaultView() {
     return (
         <aside className="single_sidebar_widget popular_post_widget">
             <h3 className="widget_title">{data?.title || "Recent Posts"}</h3>
@@ -53,6 +57,16 @@ const RecentPostsWidget = ({data}) => {
             ))}
         </aside>
     );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 };
 
 export default RecentPostsWidget;

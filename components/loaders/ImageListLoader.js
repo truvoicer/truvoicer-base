@@ -1,12 +1,15 @@
 import {fetchLoaderDataAction} from "../../redux/actions/item-actions";
 import {isNotEmpty, isSet} from "../../library/utils";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {convertLinkToHttps} from "../../library/helpers/items";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const {useEffect} = require("react");
 
 const ImageListLoader = (props) => {
     const [imageList, setImageList] = useState([]);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const fetchLoaderDataCallback = (status, data) => {
         if (status !== 200) {
@@ -79,10 +82,21 @@ const ImageListLoader = (props) => {
         }
     }, [props.imageData])
 
+    function defaultView() {
     return (
         <>
             {getList(imageList, props.item.provider)}
         </>
     );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'loaders',
+        templateId: 'imageListLoader',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 }
 export default ImageListLoader;

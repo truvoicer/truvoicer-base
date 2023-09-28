@@ -4,6 +4,8 @@ import {NEW_SEARCH_REQUEST} from "@/truvoicer-base/redux/constants/search-consta
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ListingsFilterTextItem = (props) => {
     const [query, setQuery] = useState();
@@ -11,6 +13,7 @@ const ListingsFilterTextItem = (props) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const formChangeHandler = (e) => {
         setQuery(e.target.value)
@@ -18,6 +21,7 @@ const ListingsFilterTextItem = (props) => {
         listingsManager.getListingsEngine().addListingsQueryDataString(props.data.name, e.target.value)
     }
 
+    function defaultView() {
     return (
         <div className="single_field">
             <label className="widget-title">{props.data.label}</label>
@@ -30,6 +34,17 @@ const ListingsFilterTextItem = (props) => {
             />
         </div>
     )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'listings',
+        templateId: 'listingsFilterTextItem',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            formChangeHandler: formChangeHandler,
+            ...props
+        }
+    })
 }
 
 export default connect(

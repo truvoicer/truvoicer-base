@@ -5,6 +5,8 @@ import {NEW_SEARCH_REQUEST} from "../../redux/constants/search-constants";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const TopbarSearch = (props) => {
     const [query, setQuery] = useState("");
@@ -12,6 +14,7 @@ const TopbarSearch = (props) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const formSubmitHandler = (e) => {
         e.preventDefault();
@@ -25,6 +28,7 @@ const TopbarSearch = (props) => {
         e.preventDefault()
         setQuery(e.target.value);
     }
+    function defaultView() {
     return (
         <div className="top-search-area">
             <form onSubmit={formSubmitHandler}>
@@ -42,6 +46,16 @@ const TopbarSearch = (props) => {
             </form>
         </div>
     )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 }
 
 export default connect(

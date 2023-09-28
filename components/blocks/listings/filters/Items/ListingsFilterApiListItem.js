@@ -7,6 +7,8 @@ import {
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ListingsFilterApiListItem = (props) => {
     const [listItems, setListItems] = useState([]);
@@ -14,6 +16,7 @@ const ListingsFilterApiListItem = (props) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const getListItemsCallback = (status, data) => {
         if (status === 200) {
@@ -44,27 +47,42 @@ const ListingsFilterApiListItem = (props) => {
         }
     }
 
-    return (
-        <div className="single_field">
-            <label className="widget-title">{props.data.label}</label>
-            <ul className="">
-                {listItems &&
-                listItems.map((item, index) => (
-                    <li key={"api_list_control_" + index.toString()}>
-                        <Form.Check
-                            type={"checkbox"}
-                            label={item.provider_label}
-                            id={props.controlPrefix + item.provider_name}
-                            name={props.data.api_endpoint + "[]"}
-                            value={item.provider_name}
-                            onChange={formChangeHandler}
-                        />
-                    </li>
-                ))
-                }
-            </ul>
-        </div>
-    )
+    function defaultView() {
+        return (
+            <div className="single_field">
+                <label className="widget-title">{props.data.label}</label>
+                <ul className="">
+                    {listItems &&
+                        listItems.map((item, index) => (
+                            <li key={"api_list_control_" + index.toString()}>
+                                <Form.Check
+                                    type={"checkbox"}
+                                    label={item.provider_label}
+                                    id={props.controlPrefix + item.provider_name}
+                                    name={props.data.api_endpoint + "[]"}
+                                    value={item.provider_name}
+                                    onChange={formChangeHandler}
+                                />
+                            </li>
+                        ))
+                    }
+                </ul>
+            </div>
+        )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'listings',
+        templateId: 'listingsFilterApiListItem',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            getListItemsCallback: getListItemsCallback,
+            listItems: listItems,
+            setListItems: setListItems,
+            formChangeHandler: formChangeHandler,
+            ...props
+        }
+    })
 }
 
 function mapStateToProps(state) {

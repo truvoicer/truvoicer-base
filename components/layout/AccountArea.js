@@ -19,7 +19,8 @@ import ListingsInfiniteScroll from "@/truvoicer-base/components/blocks/listings/
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 
-const AccountArea = ({pageData, session}) => {
+const AccountArea = (props) => {
+    const {pageData, session} = props;
     const [loadKey, setLoadKey] = useState("show_loader")
 
     const templateContext = useContext(TemplateContext);
@@ -98,6 +99,7 @@ const AccountArea = ({pageData, session}) => {
         }
     }, [session[SESSION_IS_AUTHENTICATING],session[SESSION_AUTHENTICATED], session[SESSION_USER][SESSION_USER_TOKEN]])
 
+    function defaultView() {
     return (
         <div id={"account_area"}>
             <>
@@ -120,6 +122,21 @@ const AccountArea = ({pageData, session}) => {
             </>
         </div>
     );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'layout',
+        templateId: 'accountArea',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            loadAccountArea: loadAccountArea,
+            loadKey: loadKey,
+            setLoadKey: setLoadKey,
+            getAccountArea: getAccountArea,
+            htmlParserOptions: htmlParserOptions,
+            ...props
+        }
+    })
 };
 
 function mapStateToProps(state) {

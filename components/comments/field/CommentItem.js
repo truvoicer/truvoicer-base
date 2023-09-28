@@ -1,14 +1,18 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import CommentTextForm from "./CommentTextForm";
 import {formatDate} from "../../../library/utils";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const CommentItem = (props) => {
     const [showReply, setShowReply] = useState(false);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const replyClickHandler = (e) => {
         e.preventDefault();
         setShowReply(!showReply);
     }
+    function defaultView() {
     return (
         <div className="media">
             <a className="pull-left" href="#">
@@ -45,5 +49,18 @@ const CommentItem = (props) => {
         </div>
 
     );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'comments',
+        templateId: 'commentItem',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            replyClickHandler: replyClickHandler,
+            showReply: showReply,
+            setShowReply: setShowReply,
+            ...props
+        }
+    })
 }
 export default CommentItem;

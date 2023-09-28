@@ -1,14 +1,17 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {buildWpApiUrl, publicApiRequest} from "../../library/api/wp/middleware";
 import {Formik} from "formik";
 import {responseHandler} from "../../library/api/fetcher/middleware";
 import {wpApiConfig} from "../../config/wp-api-config";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const EmailOptinWidget = ({data}) => {
     const [response, setResponse] = useState({
         status: "",
         message: ""
-    })
+    });
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const formResponseHandler = (status, data) => {
         if (data?.status === "success") {
@@ -24,6 +27,7 @@ const EmailOptinWidget = ({data}) => {
         }
     }
 
+    function defaultView() {
     return (
         <aside className="single_sidebar_widget newsletter_widget">
             <h4 className="widget_title">{data?.title || "Newsletter"}</h4>
@@ -88,6 +92,16 @@ const EmailOptinWidget = ({data}) => {
             </Formik>
         </aside>
     );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 }
 
 export default EmailOptinWidget;

@@ -1,8 +1,10 @@
 import {Carousel} from 'react-responsive-carousel';
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {isNotEmpty, isSet} from "../../library/utils";
 import {fetchLoaderDataAction} from "../../redux/actions/item-actions";
 import {convertLinkToHttps} from "../../library/helpers/items";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ImageListCarouselLoader = (props) => {
     const carouselClassName = "basic-carousel " + (props.className ? props.className : "");
@@ -10,6 +12,7 @@ const ImageListCarouselLoader = (props) => {
     const rightArrowClassName = "basic-carousel--right-arrow " + (props.rightArrowClassName ? props.rightArrowClassName : "");
 
     const [imageList, setImageList] = useState([]);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const fetchLoaderDataCallback = (status, data) => {
         if (status !== 200) {
@@ -19,6 +22,17 @@ const ImageListCarouselLoader = (props) => {
             setImageList(data.request_data)
         }
     }
+    function loaderDataRequest() {
+
+        fetchLoaderDataAction(
+            props.imageData.request_item.request_operation,
+            {
+                query: props.item.item_id,
+                provider: props.item.provider
+            },
+            fetchLoaderDataCallback
+        )
+    }
     useEffect(() => {
         if (isSet(props.request) && !props.request) {
             setImageList(props.imageData)
@@ -27,17 +41,11 @@ const ImageListCarouselLoader = (props) => {
         if (isNotEmpty(props.imageData) &&
             isSet(props.imageData.request_item) &&
             isSet(props.imageData.request_item.request_operation)) {
-            fetchLoaderDataAction(
-                props.imageData.request_item.request_operation,
-                {
-                    query: props.item.item_id,
-                    provider: props.item.provider
-                },
-                fetchLoaderDataCallback
-            )
+            loaderDataRequest();
         }
     }, [props.imageData])
 
+    function defaultView() {
     return (
         <>
             {Array.isArray(imageList) && imageList.length > 0 &&
@@ -74,5 +82,19 @@ const ImageListCarouselLoader = (props) => {
             }
         </>
     )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'loaders',
+        templateId: 'imageListCarouselLoader',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            loaderDataRequest: loaderDataRequest,
+            imageList: imageList,
+            setImageList: setImageList,
+            fetchLoaderDataCallback: fetchLoaderDataCallback,
+            ...props
+        }
+    })
 }
 export default ImageListCarouselLoader;

@@ -1,6 +1,9 @@
-import React from 'react';
+import React, {useContext} from 'react';
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ProsConsList = ({list, type}) => {
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const getProps = () => {
         let iconClass;
@@ -17,6 +20,7 @@ const ProsConsList = ({list, type}) => {
         }
     }
 
+    function defaultView() {
     return (
         <>
             {Array.isArray(list) &&
@@ -35,6 +39,16 @@ const ProsConsList = ({list, type}) => {
             }
         </>
     );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 };
 
 export default ProsConsList;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {connect} from "react-redux";
 import {
     getPageDataMiddleware,
@@ -7,9 +7,12 @@ import {
 import {blockComponentsConfig} from "../../../config/block-components-config";
 import {siteConfig} from "../../../../config/site-config";
 import {logout} from "../../../redux/actions/session-actions";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const AuthButton = (props) => {
     const options = props.data.auth_options;
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const showAuthLoginModal = () => {
         props.setModalContentMiddleware(blockComponentsConfig.components.authentication_login.name, {}, true)
     }
@@ -18,6 +21,7 @@ const AuthButton = (props) => {
         logout();
     }
 
+    function defaultView() {
     return (
         <div className="Appointment">
             {!props.session.authenticated &&
@@ -48,6 +52,16 @@ const AuthButton = (props) => {
             }
         </div>
     );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 }
 
 function mapStateToProps(state) {

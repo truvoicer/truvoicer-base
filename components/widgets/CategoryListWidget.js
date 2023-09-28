@@ -1,11 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {buildWpApiUrl, publicApiRequest} from "../../library/api/wp/middleware";
 import {wpApiConfig} from "../../config/wp-api-config";
 import Link from "next/link";
 import {getPostCategoryUrl} from "../../library/helpers/posts";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const CategoryListWidget = ({data}) => {
     const [categoryData, setCategoryData] = useState([]);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     useEffect(() => {
         publicApiRequest(
@@ -23,6 +26,7 @@ const CategoryListWidget = ({data}) => {
             })
     }, [data])
 
+    function defaultView() {
     return (
         <aside className="single_sidebar_widget post_category_widget">
             <h4 className="widget_title">{data?.title || "Categories"}</h4>
@@ -44,6 +48,16 @@ const CategoryListWidget = ({data}) => {
             }
         </aside>
     );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 };
 
 export default CategoryListWidget;

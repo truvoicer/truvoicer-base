@@ -1,5 +1,5 @@
 'use client';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {connect} from "react-redux";
 import {loadBaseItemPage} from "@/truvoicer-base/redux/actions/page-actions";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
@@ -17,9 +17,12 @@ import {
 } from "@/truvoicer-base/redux/middleware/item-middleware";
 import {getPageDataMiddleware} from "@/truvoicer-base/redux/middleware/page-middleware";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ItemViewPage = ({settings, pageData, provider, item_id, category, getItemMiddleware, type, itemData}) => {
     const [showLoader, setShowLoader] = useState(true);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     useEffect(() => {
         if (!isNotEmpty(pageData)) {
             return;
@@ -72,6 +75,7 @@ const ItemViewPage = ({settings, pageData, provider, item_id, category, getItemM
     }, [provider, item_id, itemData])
 
 
+    function defaultView() {
     return (
         <>
             {showLoader
@@ -82,6 +86,16 @@ const ItemViewPage = ({settings, pageData, provider, item_id, category, getItemM
             }
         </>
     )
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 }
 
 export default connect(

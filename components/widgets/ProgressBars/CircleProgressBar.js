@@ -1,7 +1,10 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {isNotEmpty} from "../../../library/utils";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 function CircleProgressBar({percent, textColor = null, ringColor = null, seconds = null}) {
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const textStyle = {}
     const ringColorStyle = {}
     const animationStyle = {}
@@ -19,6 +22,7 @@ function CircleProgressBar({percent, textColor = null, ringColor = null, seconds
     if (isNotEmpty(ringColor)) {
         ringColorStyle.backgroundColor = ringColor;
     }
+    function defaultView() {
     return (
         <div className="circle-progress-bar">
             <div className="circle">
@@ -34,6 +38,16 @@ function CircleProgressBar({percent, textColor = null, ringColor = null, seconds
             </div>
         </div>
     );
+    }
+    return templateManager.getTemplateComponent({
+        category: 'public',
+        templateId: 'heroBlock',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            buttonClickHandler: buttonClickHandler
+        }
+    })
 }
 
 export default CircleProgressBar;

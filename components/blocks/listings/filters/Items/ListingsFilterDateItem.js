@@ -7,6 +7,8 @@ import moment from 'moment';
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ListingsFilterDateItem = (props) => {
     const dateFormatString = "YYYYMMDD";
@@ -15,6 +17,7 @@ const ListingsFilterDateItem = (props) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
+    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const handleStartDateChange = (date) => {
         setStartDate(date);
@@ -23,20 +26,34 @@ const ListingsFilterDateItem = (props) => {
         listingsManager.runSearch();
     };
 
-    return (
-        <div className="single_field">
-            <label>{props.data.label}</label>
-            <DatePicker
-                className={"filter-datepicker form-control rounded"}
-                selected={startDate}
-                onChange={handleStartDateChange}
-                startDate={startDate}
-            />
-        </div>
-    )
+    function defaultView() {
+        return (
+            <div className="single_field">
+                <label>{props.data.label}</label>
+                <DatePicker
+                    className={"filter-datepicker form-control rounded"}
+                    selected={startDate}
+                    onChange={handleStartDateChange}
+                    startDate={startDate}
+                />
+            </div>
+        )
+    }
+
+    return templateManager.getTemplateComponent({
+        category: 'listings',
+        templateId: 'listingsFilterDateItem',
+        defaultComponent: defaultView(),
+        props: {
+            defaultView: defaultView,
+            startDate: startDate,
+            handleStartDateChange: handleStartDateChange,
+            setStartDate: setStartDate
+        }
+    })
 }
 
 export default connect(
     null,
-null
+    null
 )(ListingsFilterDateItem);
