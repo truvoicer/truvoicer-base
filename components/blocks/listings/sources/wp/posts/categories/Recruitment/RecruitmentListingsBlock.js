@@ -6,7 +6,7 @@ import {isNotEmpty} from "@/truvoicer-base/library/utils";
 import ListingsBlockContainer
     from "@/truvoicer-base/components/blocks/listings/ListingsBlockContainer";
 import {SEARCH_REQUEST_COMPLETED} from "@/truvoicer-base/redux/constants/search-constants";
-import LoaderComponent from "../../../../../../../widgets/Loader";
+import LoaderComponent from "../../../../../../../loaders/Loader";
 import GridItems from "../../../../../items/GridItems";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";

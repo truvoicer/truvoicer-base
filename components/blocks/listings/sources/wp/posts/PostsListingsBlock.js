@@ -2,7 +2,7 @@ import React, {useContext} from "react";
 import ListingsBlockContainer
     from "@/truvoicer-base/components/blocks/listings/ListingsBlockContainer";
 import RecruitmentListingsBlock from "@/truvoicer-base/components/blocks/listings/sources/wp/posts/categories/Recruitment/RecruitmentListingsBlock";
-import LoaderComponent from "@/truvoicer-base/components/widgets/Loader";
+import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
 import ComparisonsListingsBlock from "@/truvoicer-base/components/blocks/listings/sources/wp/posts/categories/Comparisons/ComparisonsListingsBlock";
 import {siteConfig} from "@/config/site-config";
 import {connect} from "react-redux";

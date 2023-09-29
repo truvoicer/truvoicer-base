@@ -96,7 +96,7 @@ function FormsProgressWidget(props) {
         );
     }
     return templateManager.getTemplateComponent({
-        category: 'account',
+        category: 'widgets',
         templateId: 'formsProgressWidget',
         defaultComponent: defaultView(),
         props: {

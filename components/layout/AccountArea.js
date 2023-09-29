@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import Header from "../../../views/Layout/Header";
 import HtmlHead from "./HtmlHead";
 import ReactHtmlParser from "react-html-parser";
-import LoaderComponent from "../widgets/Loader";
+import LoaderComponent from "../loaders/Loader";
 import Footer from "../../../views/Layout/Footer";
 import {connect} from "react-redux";
 import {filterHtml} from "../../library/html-parser";

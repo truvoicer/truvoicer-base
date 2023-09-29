@@ -7,7 +7,7 @@ import {
     SEARCH_REQUEST_COMPLETED,
 } from "@/truvoicer-base/redux/constants/search-constants";
 import InfiniteScroll from 'react-infinite-scroller';
-import LoaderComponent from "../../../../../../../../widgets/Loader";
+import LoaderComponent from "../../../../../../../../loaders/Loader";
 import GridItems from "../../../../../../items/GridItems";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";

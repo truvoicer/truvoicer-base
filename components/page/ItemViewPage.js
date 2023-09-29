@@ -8,7 +8,7 @@ import {
     setItemIdAction,
     setItemProviderAction, setSingleItemPostState
 } from "@/truvoicer-base/redux/actions/item-actions";
-import LoaderComponent from "@/truvoicer-base/components/widgets/Loader";
+import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
 import FetcherApp from "@/truvoicer-base/App";
 import {
     getItemMiddleware,
@@ -20,7 +20,8 @@ import {isNotEmpty} from "@/truvoicer-base/library/utils";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
-const ItemViewPage = ({settings, pageData, provider, item_id, category, getItemMiddleware, type, itemData}) => {
+const ItemViewPage = (props) => {
+    const {settings, pageData, provider, item_id, category, getItemMiddleware, type, itemData} = props;
     const [showLoader, setShowLoader] = useState(true);
     const templateManager = new TemplateManager(useContext(TemplateContext));
     useEffect(() => {
@@ -88,12 +89,15 @@ const ItemViewPage = ({settings, pageData, provider, item_id, category, getItemM
     )
     }
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'pages',
+        templateId: 'itemViewPage',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            itemPageInit: itemPageInit,
+            showLoader: showLoader,
+            setShowLoader: setShowLoader,
+            ...props
         }
     })
 }

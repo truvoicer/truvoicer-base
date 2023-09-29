@@ -14,12 +14,12 @@ const EditorContent = (props) => {
     )
     }
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'widgets',
+        templateId: 'editorContent',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            ...props
         }
     })
 }

@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {buildWpApiUrl, fetcher, getSidebar} from "../../../../library/api/wp/middleware";
-import LoaderComponent from "../../../widgets/Loader";
+import LoaderComponent from "../../../loaders/Loader";
 import Error from "next";
 import {siteConfig} from "@/config/site-config";
 import {buildSidebar} from "../../../../redux/actions/sidebar-actions";

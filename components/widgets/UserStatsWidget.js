@@ -61,7 +61,7 @@ function UserStatsWidget(props) {
     }
 
     return templateManager.getTemplateComponent({
-        category: 'public',
+        category: 'widgets',
         templateId: 'userStatsWidget',
         defaultComponent: defaultView(),
         props: {

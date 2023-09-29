@@ -36,38 +36,44 @@ const BlogSearch = (props) => {
             listingsManager.runSearch();
         }
     }, [searchContext?.searchOperation, query]);
+
     function defaultView() {
-    return (
-        <aside className="single_sidebar_widget search_widget">
-            <form method="post" onSubmit={formClickHandler}>
-                <div className="form-group">
-                    <div className="input-group mb-3">
-                        <input type="text" className="form-control"
-                               placeholder='Search Keyword'
-                               value={query}
-                               onChange={formChangeHandler}
-                        />
-                        <div className="input-group-append">
-                            <button className="btn"
-                                    type="button"
-                                    onClick={formClickHandler}
-                            >
-                                <i className="ti-search"/>
-                            </button>
+        return (
+            <aside className="single_sidebar_widget search_widget">
+                <form method="post" onSubmit={formClickHandler}>
+                    <div className="form-group">
+                        <div className="input-group mb-3">
+                            <input type="text" className="form-control"
+                                   placeholder='Search Keyword'
+                                   value={query}
+                                   onChange={formChangeHandler}
+                            />
+                            <div className="input-group-append">
+                                <button className="btn"
+                                        type="button"
+                                        onClick={formClickHandler}
+                                >
+                                    <i className="ti-search"/>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </form>
-        </aside>
-    )
+                </form>
+            </aside>
+        )
     }
+
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'widgets',
+        templateId: 'blogSearch',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            query,
+            setQuery,
+            formClickHandler,
+            formChangeHandler,
+            ...props
         }
     })
 }

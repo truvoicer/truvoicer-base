@@ -3,7 +3,8 @@ import {isNotEmpty} from "../../../library/utils";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
-function CircleProgressBar({percent, textColor = null, ringColor = null, seconds = null}) {
+function CircleProgressBar(props) {
+    const {percent, textColor = null, ringColor = null, seconds = null} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const textStyle = {}
     const ringColorStyle = {}
@@ -22,30 +23,36 @@ function CircleProgressBar({percent, textColor = null, ringColor = null, seconds
     if (isNotEmpty(ringColor)) {
         ringColorStyle.backgroundColor = ringColor;
     }
+
     function defaultView() {
-    return (
-        <div className="circle-progress-bar">
-            <div className="circle">
-                <div className="mask full" style={degStyle}>
-                    <div className="fill" style={{...degStyle, ...ringColorStyle, ...animationStyle}}/>
-                </div>
-                <div className="mask half">
-                    <div className="fill" style={{...degStyle, ...ringColorStyle}}/>
-                </div>
-                <div className="inside-circle" style={textStyle}>
-                {`${percent}%`}
+        return (
+            <div className="circle-progress-bar">
+                <div className="circle">
+                    <div className="mask full" style={degStyle}>
+                        <div className="fill" style={{...degStyle, ...ringColorStyle, ...animationStyle}}/>
+                    </div>
+                    <div className="mask half">
+                        <div className="fill" style={{...degStyle, ...ringColorStyle}}/>
+                    </div>
+                    <div className="inside-circle" style={textStyle}>
+                        {`${percent}%`}
+                    </div>
                 </div>
             </div>
-        </div>
-    );
+        );
     }
+
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'progress_bars',
+        templateId: 'circleProgressBar',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            textStyle,
+            ringColorStyle,
+            animationStyle,
+            degStyle,
+            ...props
         }
     })
 }

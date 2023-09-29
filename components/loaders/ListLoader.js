@@ -21,16 +21,21 @@ const ListLoader = (props) => {
         }
     }
 
+    function loaderDataRequest() {
+
+        fetchLoaderDataAction(
+            props.listData.request_item.request_operation,
+            {
+                query: props.listIds,
+                provider: props.item.provider
+            },
+            fetchLoaderDataCallback
+        )
+    }
+
     useEffect(() => {
         if (isSet(props.listData.request_item) && isSet(props.listData.request_item.request_operation)) {
-            fetchLoaderDataAction(
-                props.listData.request_item.request_operation,
-                {
-                    query: props.listIds,
-                    provider: props.item.provider
-                },
-                fetchLoaderDataCallback
-            )
+            loaderDataRequest();
         }
     }, [props.listData])
     const getConfigObject = (key, item) => {
@@ -41,28 +46,34 @@ const ListLoader = (props) => {
         }
         return config;
     }
+
     function defaultView() {
-    return (
-        <ul>
-            {list.map((item, index) => (
-                <li key={index}>
-                    {props.listKeys.map((key, keyIndex) => (
-                        <div key={keyIndex}>
-                            {getItemContentType(key.type, key.name, item, getConfigObject(key, item))}
-                        </div>
-                    ))}
-                </li>
-            ))}
-        </ul>
-    );
+        return (
+            <ul>
+                {list.map((item, index) => (
+                    <li key={index}>
+                        {props.listKeys.map((key, keyIndex) => (
+                            <div key={keyIndex}>
+                                {getItemContentType(key.type, key.name, item, getConfigObject(key, item))}
+                            </div>
+                        ))}
+                    </li>
+                ))}
+            </ul>
+        );
     }
+
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'loaders',
+        templateId: 'listLoader',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            fetchLoaderDataCallback: fetchLoaderDataCallback,
+            loaderDataRequest: loaderDataRequest,
+            list: list,
+            setList: setList,
+            ...props
         }
     })
 }

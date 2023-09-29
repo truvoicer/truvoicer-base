@@ -27,7 +27,7 @@ const BlogCategoryList = (props) => {
     }
 
     return templateManager.getTemplateComponent({
-        category: 'public',
+        category: 'widgets',
         templateId: 'blogCategoryList',
         defaultComponent: defaultView(),
         props: {

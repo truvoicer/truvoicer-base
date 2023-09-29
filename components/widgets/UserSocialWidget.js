@@ -92,7 +92,7 @@ function UserSocialWidget(props) {
         );
     }
     return templateManager.getTemplateComponent({
-        category: 'account',
+        category: 'widgets',
         templateId: 'userSocialWidget',
         defaultComponent: defaultView(),
         props: {

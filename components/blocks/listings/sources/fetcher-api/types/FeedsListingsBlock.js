@@ -1,6 +1,6 @@
 import React, {useContext, useState} from "react";
 import {connect} from "react-redux";
-import LoaderComponent from "@/truvoicer-base/components/widgets/Loader";
+import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
 import Paginate from "@/truvoicer-base/components/blocks/listings/pagination/ListingsPaginate";
 import ListingsInfiniteScroll from "@/truvoicer-base/components/blocks/listings/pagination/ListingsInfiniteScroll";
 import {SEARCH_REQUEST_COMPLETED} from "@/truvoicer-base/redux/constants/search-constants";

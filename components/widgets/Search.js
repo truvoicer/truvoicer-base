@@ -9,7 +9,7 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const Search = (props) => {
-    const [ query, setQuery] = useState("");
+    const [query, setQuery] = useState("");
 
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
@@ -28,28 +28,33 @@ const Search = (props) => {
     }
 
     function defaultView() {
-    return (
+        return (
             <form method="post" onSubmit={formClickHandler}>
-                    <input type="text"
-                           placeholder="Search"
-                           value={query}
-                           onChange={formChangeHandler}/>
+                <input type="text"
+                       placeholder="Search"
+                       value={query}
+                       onChange={formChangeHandler}/>
                 <span className={"search-icon"} onClick={formClickHandler}/>
             </form>
-    )
+        )
     }
+
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'widgets',
+        templateId: 'search',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            query,
+            setQuery,
+            formClickHandler,
+            formChangeHandler,
+            ...props
         }
     })
 }
 
 export default connect(
     null,
-  null
+    null
 )(Search);

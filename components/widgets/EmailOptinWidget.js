@@ -6,7 +6,8 @@ import {wpApiConfig} from "../../config/wp-api-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
-const EmailOptinWidget = ({data}) => {
+const EmailOptinWidget = (props) => {
+    const {data} = props;
     const [response, setResponse] = useState({
         status: "",
         message: ""
@@ -28,78 +29,82 @@ const EmailOptinWidget = ({data}) => {
     }
 
     function defaultView() {
-    return (
-        <aside className="single_sidebar_widget newsletter_widget">
-            <h4 className="widget_title">{data?.title || "Newsletter"}</h4>
-            {response.status === "success" &&
-            <p className={"text-success"}>{response.message}</p>
-            }
+        return (
+            <aside className="single_sidebar_widget newsletter_widget">
+                <h4 className="widget_title">{data?.title || "Newsletter"}</h4>
+                {response.status === "success" &&
+                    <p className={"text-success"}>{response.message}</p>
+                }
 
-            <Formik
-                initialValues={{email: ""}}
-                validate={values => {
-                    const errors = {};
-                    if (!values.email) {
-                        errors.email = "Email is required";
-                    }
-                    return errors;
-                }}
-                onSubmit={(values, {resetForm, setSubmitting}) => {
-                    publicApiRequest(
-                        buildWpApiUrl(wpApiConfig.endpoints.formsRedirectPublic),
-                        {
-                            ...values,
-                            ...{
-                                endpoint_providers: data?.endpoint_providers,
-                            }
-                        },
-                        formResponseHandler,
-                        "post"
-                    );
-                }}
-                enableReinitialize={true}
-            >
-                {({
-                      values,
-                      errors,
-                      handleChange,
-                      handleBlur,
-                      handleSubmit,
-                  }) => (
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            {errors.email &&
-                            <label className={"text-danger"}>{errors.email}</label>
-                            }
-                            <input
-                                type="email"
-                                className="form-control"
-                                name={"email"}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                placeholder={data?.placeholder || "Enter your email"}
-                                required
-                            />
-                        </div>
-                        <button
-                            className="button rounded-0 primary-bg text-white w-100 btn_1 boxed-btn"
-                            type="submit"
-                        >
-                            {data?.button_label || "Subscribe"}
-                        </button>
-                    </form>
-                )}
-            </Formik>
-        </aside>
-    );
+                <Formik
+                    initialValues={{email: ""}}
+                    validate={values => {
+                        const errors = {};
+                        if (!values.email) {
+                            errors.email = "Email is required";
+                        }
+                        return errors;
+                    }}
+                    onSubmit={(values, {resetForm, setSubmitting}) => {
+                        publicApiRequest(
+                            buildWpApiUrl(wpApiConfig.endpoints.formsRedirectPublic),
+                            {
+                                ...values,
+                                ...{
+                                    endpoint_providers: data?.endpoint_providers,
+                                }
+                            },
+                            formResponseHandler,
+                            "post"
+                        );
+                    }}
+                    enableReinitialize={true}
+                >
+                    {({
+                        values,
+                        errors,
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                    }) => (
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                {errors.email &&
+                                    <label className={"text-danger"}>{errors.email}</label>
+                                }
+                                <input
+                                    type="email"
+                                    className="form-control"
+                                    name={"email"}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    placeholder={data?.placeholder || "Enter your email"}
+                                    required
+                                />
+                            </div>
+                            <button
+                                className="button rounded-0 primary-bg text-white w-100 btn_1 boxed-btn"
+                                type="submit"
+                            >
+                                {data?.button_label || "Subscribe"}
+                            </button>
+                        </form>
+                    )}
+                </Formik>
+            </aside>
+        );
     }
+
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'widgets',
+        templateId: 'emailOptinWidget',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            response,
+            setResponse,
+            formResponseHandler,
+            ...props
         }
     })
 }

@@ -9,20 +9,22 @@ function PersonalForm(props) {
     if (!isObject(props?.data?.form_block)) {
         return null;
     }
+
     function defaultView() {
-    return (
-        <>
-            <FormBlock data={props.data.form_block} />
-        </>
-    );
+        return (
+            <>
+                <FormBlock data={props.data.form_block}/>
+            </>
+        );
     }
+
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'profile_forms',
+        templateId: 'personalForm',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            ...props
         }
     })
 }

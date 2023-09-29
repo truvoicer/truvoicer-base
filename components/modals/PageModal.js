@@ -19,34 +19,42 @@ const PageModal = (props) => {
     }
 
     function defaultView() {
-    return (
-        <Dialog
-            open={show}
-            onClose={handleClose}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-                timeout: 500,
-            }}
-            aria-labelledby="form-dialog-title"
-            fullWidth={fullWidth}
-            maxWidth={maxWidth}
-        >
+        return (
+            <Dialog
+                open={show}
+                onClose={handleClose}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                    timeout: 500,
+                }}
+                aria-labelledby="form-dialog-title"
+                fullWidth={fullWidth}
+                maxWidth={maxWidth}
+            >
                 {/*<DialogTitle id="form-dialog-title">Subscribe</DialogTitle>*/}
                 <DialogContent>
-                        {props.children}
+                    {props.children}
                 </DialogContent>
 
-        </Dialog>
-    )
+            </Dialog>
+        )
     }
+
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'modals',
+        templateId: 'pageModal',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            show: show,
+            fullWidth: fullWidth,
+            maxWidth: maxWidth,
+            setMaxWidth: setMaxWidth,
+            setFullWidth: setFullWidth,
+            setShow: setShow,
+            handleClose: handleClose,
+            ...props
         }
     })
 }

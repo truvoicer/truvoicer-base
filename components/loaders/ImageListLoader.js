@@ -67,18 +67,21 @@ const ImageListLoader = (props) => {
                 return getUnorderedList(imageList, provider);
         }
     }
+    function loaderDataRequest() {
+        fetchLoaderDataAction(
+            props.imageData.request_item.request_operation,
+            {
+                query: props.item.item_id,
+                provider: props.item.provider
+            },
+            fetchLoaderDataCallback
+        )
+    }
     useEffect(() => {
         if (isNotEmpty(props.imageData) &&
             isSet(props.imageData.request_item) &&
             isSet(props.imageData.request_item.request_operation)) {
-            fetchLoaderDataAction(
-                props.imageData.request_item.request_operation,
-                {
-                    query: props.item.item_id,
-                    provider: props.item.provider
-                },
-                fetchLoaderDataCallback
-            )
+            loaderDataRequest();
         }
     }, [props.imageData])
 
@@ -95,7 +98,15 @@ const ImageListLoader = (props) => {
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            fetchLoaderDataCallback: fetchLoaderDataCallback,
+            imageList: imageList,
+            setImageList: setImageList,
+            getList: getList,
+            getDivList: getDivList,
+            getOrderedList: getOrderedList,
+            getUnorderedList: getUnorderedList,
+            loaderDataRequest: loaderDataRequest,
+            ...props
         }
     })
 }

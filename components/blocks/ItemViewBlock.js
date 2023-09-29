@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import {listingsGridConfig} from "@/config/listings-grid-config";
 import {isObjectEmpty, isSet} from "@/truvoicer-base/library/utils";
-import LoaderComponent from "../widgets/Loader";
+import LoaderComponent from "../loaders/Loader";
 import {connect} from "react-redux";
 import Head from "next/head";
 import {getItemViewPageTitle} from "@/truvoicer-base/library/helpers/pages";

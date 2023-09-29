@@ -20,12 +20,12 @@ const FooterMenu = (props) => {
     )
     }
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'menus',
+        templateId: 'footerMenu',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            ...props
         }
     })
 }

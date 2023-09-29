@@ -28,32 +28,38 @@ const TopbarSearch = (props) => {
         e.preventDefault()
         setQuery(e.target.value);
     }
+
     function defaultView() {
-    return (
-        <div className="top-search-area">
-            <form onSubmit={formSubmitHandler}>
-                <input
-                    type="search"
-                    name="top-search"
-                    id="topSearch"
-                    placeholder="Search"
-                    value={query}
-                    onChange={formChangeHandler}
-                />
-                <button type="submit" className="btn">
-                    <i className="fa fa-search"/>
-                </button>
-            </form>
-        </div>
-    )
+        return (
+            <div className="top-search-area">
+                <form onSubmit={formSubmitHandler}>
+                    <input
+                        type="search"
+                        name="top-search"
+                        id="topSearch"
+                        placeholder="Search"
+                        value={query}
+                        onChange={formChangeHandler}
+                    />
+                    <button type="submit" className="btn">
+                        <i className="fa fa-search"/>
+                    </button>
+                </form>
+            </div>
+        )
     }
+
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'widgets',
+        templateId: 'topbarSearch',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            formSubmitHandler: formSubmitHandler,
+            formChangeHandler: formChangeHandler,
+            query,
+            setQuery,
+            ...props
         }
     })
 }

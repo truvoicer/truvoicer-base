@@ -27,7 +27,7 @@ const SavedItemsVerticalTabsOld = (props) => {
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const router = useRouter();
-    const listingsGrid = isSet(defaultListingsGrid)? defaultListingsGrid : listingsContext.listingsGrid;
+    const listingsGrid = isSet(defaultListingsGrid) ? defaultListingsGrid : listingsContext.listingsGrid;
     const [modalData, setModalData] = useState({
         show: false,
         item: {},
@@ -203,11 +203,11 @@ const SavedItemsVerticalTabsOld = (props) => {
         return (
             <Grid container className={""} spacing={2}>
                 {isSet(data) &&
-                data.items_response.map((item, index) => (
-                    <Grid item xs={gridItemSize} key={index}>
-                        {getGridItem(item, item.category)}
-                    </Grid>
-                ))
+                    data.items_response.map((item, index) => (
+                        <Grid item xs={gridItemSize} key={index}>
+                            {getGridItem(item, item.category)}
+                        </Grid>
+                    ))
                 }
             </Grid>
         )
@@ -236,51 +236,66 @@ const SavedItemsVerticalTabsOld = (props) => {
     }, [])
 
     function defaultView() {
-    return (
-        <div className={"tab-layout"}>
-            <Tabs
-                // action={getItemsRequest(getItemByIndex(0).name, true)}
-                orientation="vertical"
-                variant="scrollable"
-                value={tabValue}
-                onChange={handleTabChange}
-                aria-label="Vertical tabs example"
-                // className={classes.tabs}
-            >
-                {Object.keys(props.data).map((itemKey, index) => (
-                    <Tab
-                        label={props.data[itemKey].label}
-                        key={index.toString()}
-                        value={itemKey}
-                        {...tabProps(index)} />
-                ))}
-            </Tabs>
-            {Object.keys(props.data).map((itemKey, tabDataIndex) => (
-                <React.Fragment key={tabDataIndex.toString()}>
-                <TabPanel
+        return (
+            <div className={"tab-layout"}>
+                <Tabs
+                    // action={getItemsRequest(getItemByIndex(0).name, true)}
+                    orientation="vertical"
+                    variant="scrollable"
                     value={tabValue}
-                    index={itemKey}
-                    className={"tab-layout--panel" +
-                    ""}
+                    onChange={handleTabChange}
+                    aria-label="Vertical tabs example"
+                    // className={classes.tabs}
                 >
-                    {getItemList(panelData[itemKey])}
-                </TabPanel>
-                {modalData.show &&
-                    GetModal(panelData[itemKey].category)
-                }
-                </React.Fragment>
-            ))}
+                    {Object.keys(props.data).map((itemKey, index) => (
+                        <Tab
+                            label={props.data[itemKey].label}
+                            key={index.toString()}
+                            value={itemKey}
+                            {...tabProps(index)} />
+                    ))}
+                </Tabs>
+                {Object.keys(props.data).map((itemKey, tabDataIndex) => (
+                    <React.Fragment key={tabDataIndex.toString()}>
+                        <TabPanel
+                            value={tabValue}
+                            index={itemKey}
+                            className={"tab-layout--panel" +
+                                ""}
+                        >
+                            {getItemList(panelData[itemKey])}
+                        </TabPanel>
+                        {modalData.show &&
+                            GetModal(panelData[itemKey].category)
+                        }
+                    </React.Fragment>
+                ))}
 
-        </div>
-    );
+            </div>
+        );
     }
+
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'tabs',
+        templateId: 'savedItemsVerticalTabsOld',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            modalData,
+            setModalData,
+            getItemByIndex,
+            getItemsRequest,
+            handleTabChange,
+            getItemsResponseHandler,
+            tabProps,
+            TabPanel,
+            saveItemRequestCallback,
+            showInfo,
+            GetModal,
+            closeModal,
+            getGridItem,
+            getItemList,
+            ...props
         }
     })
 }

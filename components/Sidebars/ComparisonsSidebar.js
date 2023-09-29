@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {getSidebar} from "../../library/api/wp/middleware";
-import LoaderComponent from "../widgets/Loader";
+import LoaderComponent from "../loaders/Loader";
 import Error from "next";
 import {siteConfig} from "../../../config/site-config";
 import {buildSidebar} from "../../redux/actions/sidebar-actions";
@@ -13,7 +13,7 @@ const ComparisonsSidebar = (props) => {
     const templateContext = useContext(TemplateContext);
     const listingsContext = useContext(ListingsContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    const { sidebarData, isLoading, isError } = getSidebar(siteConfig.comparisonsSidebarName)
+    const {sidebarData, isLoading, isError} = getSidebar(siteConfig.comparisonsSidebarName)
 
     const [data, setData] = useState([]);
 
@@ -26,8 +26,8 @@ const ComparisonsSidebar = (props) => {
     }, [sidebarData])
 
     const getContent = () => {
-        if (isLoading) return <LoaderComponent />
-        if (isError) return <Error />
+        if (isLoading) return <LoaderComponent/>
+        if (isError) return <Error/>
         return (
             <div className="comparisons-sidebar job_filter white-bg">
                 <div className="form_inner white-bg">
@@ -42,17 +42,23 @@ const ComparisonsSidebar = (props) => {
     }
 
     function defaultView() {
-    return (
-        <>{getContent()}</>
-    )
+        return (
+            <>{getContent()}</>
+        )
     }
+
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'sidebars',
+        templateId: 'comparisonsSidebar',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            sidebarData,
+            isLoading,
+            isError,
+            data,
+            setData,
+            ...props
         }
     })
 

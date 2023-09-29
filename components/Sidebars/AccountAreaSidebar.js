@@ -6,7 +6,7 @@ import ReactHtmlParser from "react-html-parser";
 import ButtonWidget from "../widgets/ButtonWidget";
 import AccountAreaMenu from "@/truvoicer-base/components/Menus/AccountAreaMenu";
 import {getSidebar} from "../../library/api/wp/middleware";
-import LoaderComponent from "../widgets/Loader";
+import LoaderComponent from "../loaders/Loader";
 import Error from "next";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
@@ -52,12 +52,15 @@ const AccountAreaSidebar = (props) => {
     )
     }
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'sidebars',
+        templateId: 'accountAreaSidebar',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            sidebarData,
+            isLoading,
+            isError,
+            ...props
         }
     })
 }

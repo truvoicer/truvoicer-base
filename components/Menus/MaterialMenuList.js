@@ -150,53 +150,65 @@ const MaterialMenuList = (props) => {
     // }));
     // const classes = useStyles();
     function defaultView() {
-    return (
+        return (
             <List
                 component="div"
                 disablePadding
                 // className={classes.root}
                 subheader={
                     <ListSubheader component="div" id="nested-list-subheader">
-                        {props.data.title? props.data.title : siteConfig.defaultMobileMenuTitle}
+                        {props.data.title ? props.data.title : siteConfig.defaultMobileMenuTitle}
                     </ListSubheader>
                 }
             >
-            {props.data.menu_items.map((item, index) => (
-                <React.Fragment key={index}>
-                    {!siteConfig.authenticatedItems.includes(item.menu_item.post_type) &&
-                    !siteConfig.notAuthenticatedItems.includes(item.menu_item.post_type) &&
-                    getMenuItem(item)
-                    }
-                </React.Fragment>
-            ))}
-            {props.data.menu_items.map((item, index) => (
-                <React.Fragment key={index}>
-                    {props.sessionLinks && props.session.authenticated &&
-                    <>
-                        {siteConfig.authenticatedItems.includes(item.menu_item.post_type) &&
-                        getMenuItem(item)
+                {props.data.menu_items.map((item, index) => (
+                    <React.Fragment key={index}>
+                        {!siteConfig.authenticatedItems.includes(item.menu_item.post_type) &&
+                            !siteConfig.notAuthenticatedItems.includes(item.menu_item.post_type) &&
+                            getMenuItem(item)
                         }
-                    </>
-                    }
-                    {props.sessionLinks && !props.session.authenticated &&
-                    <>
-                        {siteConfig.notAuthenticatedItems.includes(item.menu_item.post_type) &&
-                        getMenuItem(item)
+                    </React.Fragment>
+                ))}
+                {props.data.menu_items.map((item, index) => (
+                    <React.Fragment key={index}>
+                        {props.sessionLinks && props.session.authenticated &&
+                            <>
+                                {siteConfig.authenticatedItems.includes(item.menu_item.post_type) &&
+                                    getMenuItem(item)
+                                }
+                            </>
                         }
-                    </>
-                    }
-                </React.Fragment>
-            ))}
+                        {props.sessionLinks && !props.session.authenticated &&
+                            <>
+                                {siteConfig.notAuthenticatedItems.includes(item.menu_item.post_type) &&
+                                    getMenuItem(item)
+                                }
+                            </>
+                        }
+                    </React.Fragment>
+                ))}
             </List>
-    )
+        )
     }
+
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'menus',
+        templateId: 'materialMenuList',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            expand: expand,
+            setExpand: setExpand,
+            logoutHandler: logoutHandler,
+            expandCLickHandler: expandCLickHandler,
+            pageClickHandler: pageClickHandler,
+            showAuthLoginModal: showAuthLoginModal,
+            showAuthRegisterModal: showAuthRegisterModal,
+            getListItem: getListItem,
+            getMenuItem: getMenuItem,
+            getCollapseListItem: getCollapseListItem,
+            getItemCallback: getItemCallback,
+            ...props
         }
     })
 }

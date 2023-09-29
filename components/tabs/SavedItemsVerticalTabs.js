@@ -275,7 +275,7 @@ const SavedItemsVerticalTabs = (props) => {
         );
     }
     return templateManager.getTemplateComponent({
-        category: 'account',
+        category: 'tabs',
         templateId: 'savedItemsVerticalTabs',
         defaultComponent: defaultView(),
         props: {

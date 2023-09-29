@@ -17,12 +17,12 @@ function EducationForm(props) {
     );
     }
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'profile_forms',
+        templateId: 'educationForm',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            ...props
         }
     })
 }

@@ -9,25 +9,28 @@ const ButtonWidget = (props) => {
     const getButton = () => {
         switch (props.data.button_type) {
             case "auth":
-                return <AuthButton data={props.data} />
+                return <AuthButton data={props.data}/>
             case "custom":
-                return <CustomButton data={props.data} />
+                return <CustomButton data={props.data}/>
         }
     }
+
     function defaultView() {
-    return (
-    <>
-        {getButton()}
-    </>
-    );
+        return (
+            <>
+                {getButton()}
+            </>
+        );
     }
+
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'widgets',
+        templateId: 'buttonWidget',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            getButton,
+            ...props
         }
     })
 }

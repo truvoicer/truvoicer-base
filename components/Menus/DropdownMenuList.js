@@ -133,12 +133,20 @@ const DropdownMenuList = (props) => {
     )
     }
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'menus',
+        templateId: 'dropdownMenuList',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            logoutHandler: logoutHandler,
+            pageClickHandler: pageClickHandler,
+            showAuthLoginModal: showAuthLoginModal,
+            showAuthRegisterModal: showAuthRegisterModal,
+            getListItem: getListItem,
+            getCollapseListItem: getCollapseListItem,
+            getMenuItem: getMenuItem,
+            getItemCallback: getItemCallback,
+            ...props
         }
     })
 }

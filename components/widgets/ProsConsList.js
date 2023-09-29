@@ -2,7 +2,8 @@ import React, {useContext} from 'react';
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
-const ProsConsList = ({list, type}) => {
+const ProsConsList = (props) => {
+    const {list, type} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const getProps = () => {
@@ -21,32 +22,34 @@ const ProsConsList = ({list, type}) => {
     }
 
     function defaultView() {
-    return (
-        <>
-            {Array.isArray(list) &&
-            <div className={`pros-cons ${type}`}>
-                <ul className={"pros-cons__ul fa-ul"}>
-                    {list.map((item, index) => (
-                        <li className="pros-cons__ul__li" key={index}>
+        return (
+            <>
+                {Array.isArray(list) &&
+                    <div className={`pros-cons ${type}`}>
+                        <ul className={"pros-cons__ul fa-ul"}>
+                            {list.map((item, index) => (
+                                <li className="pros-cons__ul__li" key={index}>
                             <span className="fa-li pros-cons__ul__li--icon">
                                 <i {...getProps()} />
                             </span>
-                            {item}
-                        </li>
-                    ))}
-                </ul>
-            </div>
-            }
-        </>
-    );
+                                    {item}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                }
+            </>
+        );
     }
+
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'widgets',
+        templateId: 'prosConsList',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            getProps,
+            ...props
         }
     })
 };

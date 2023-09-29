@@ -46,12 +46,18 @@ const MobileDrawerMenu = (props) => {
     )
     }
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'menus',
+        templateId: 'mobileDrawerMenu',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            showMenu: showMenu,
+            showOpener: showOpener,
+            setShowOpener: setShowOpener,
+            setShowMenu: setShowMenu,
+            openDrawer: openDrawer,
+            closeDrawer: closeDrawer,
+            ...props
         }
     })
 }

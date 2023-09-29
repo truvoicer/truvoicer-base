@@ -17,12 +17,12 @@ function CvForm(props) {
     );
     }
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'profile_forms',
+        templateId: 'cvForm',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            ...props
         }
     })
 }

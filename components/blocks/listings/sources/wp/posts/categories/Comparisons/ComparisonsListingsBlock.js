@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import ListingsBlockContainer
     from "@/truvoicer-base/components/blocks/listings/ListingsBlockContainer";
 import {SEARCH_REQUEST_COMPLETED} from "@/truvoicer-base/redux/constants/search-constants";
-import LoaderComponent from "@/truvoicer-base/components/widgets/Loader";
+import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
 import ComparisonsSidebar from "@/truvoicer-base/components/Sidebars/ComparisonsSidebar";
 import GridItems from "@/truvoicer-base/components/blocks/listings/items/GridItems";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";

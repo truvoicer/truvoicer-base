@@ -40,8 +40,8 @@ const MenuList = (props) => {
         return (
             <li>
                 <Link href={item.post_url} onClick={
-                        getCallback ? getCallback : pageClickHandler.bind(this, item)
-                    }>
+                    getCallback ? getCallback : pageClickHandler.bind(this, item)
+                }>
                     {item.post_title}
                 </Link>
             </li>
@@ -92,46 +92,56 @@ const MenuList = (props) => {
                 return false;
         }
     }
+
     function defaultView() {
-    return (
-        <ul id="navigation">
-        {/*<ul className="site-menu js-clone-nav mr-auto d-none d-lg-block">*/}
-            {props.data.menu_items.map((item, index) => (
-                <React.Fragment key={index}>
-                    {!siteConfig.authenticatedItems.includes(item.menu_item.post_type) &&
-                    !siteConfig.notAuthenticatedItems.includes(item.menu_item.post_type) &&
-                    getMenuItem(item)
-                    }
-                </React.Fragment>
-            ))}
-            {props.data.menu_items.map((item, index) => (
-                <React.Fragment key={index}>
-                    {props.sessionLinks && props.session.authenticated &&
-                    <>
-                        {siteConfig.authenticatedItems.includes(item.menu_item.post_type) &&
-                        getMenuItem(item)
+        return (
+            <ul id="navigation">
+                {/*<ul className="site-menu js-clone-nav mr-auto d-none d-lg-block">*/}
+                {props.data.menu_items.map((item, index) => (
+                    <React.Fragment key={index}>
+                        {!siteConfig.authenticatedItems.includes(item.menu_item.post_type) &&
+                            !siteConfig.notAuthenticatedItems.includes(item.menu_item.post_type) &&
+                            getMenuItem(item)
                         }
-                    </>
-                    }
-                    {props.sessionLinks && !props.session.authenticated &&
-                    <>
-                        {siteConfig.notAuthenticatedItems.includes(item.menu_item.post_type) &&
-                        getMenuItem(item)
+                    </React.Fragment>
+                ))}
+                {props.data.menu_items.map((item, index) => (
+                    <React.Fragment key={index}>
+                        {props.sessionLinks && props.session.authenticated &&
+                            <>
+                                {siteConfig.authenticatedItems.includes(item.menu_item.post_type) &&
+                                    getMenuItem(item)
+                                }
+                            </>
                         }
-                    </>
-                    }
-                </React.Fragment>
-            ))}
-        </ul>
-    )
+                        {props.sessionLinks && !props.session.authenticated &&
+                            <>
+                                {siteConfig.notAuthenticatedItems.includes(item.menu_item.post_type) &&
+                                    getMenuItem(item)
+                                }
+                            </>
+                        }
+                    </React.Fragment>
+                ))}
+            </ul>
+        )
     }
+
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'menus',
+        templateId: 'MenuList',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            logoutHandler: logoutHandler,
+            pageClickHandler: pageClickHandler,
+            showAuthLoginModal: showAuthLoginModal,
+            showAuthRegisterModal: showAuthRegisterModal,
+            getListItem: getListItem,
+            getCollapseListItem: getCollapseListItem,
+            getMenuItem: getMenuItem,
+            getItemCallback: getItemCallback,
+            ...props
         }
     })
 }

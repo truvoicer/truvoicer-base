@@ -78,12 +78,17 @@ const ItemViewVerticalTabList = (props) => {
     );
     }
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'tabs',
+        templateId: 'itemViewVerticalTabList',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            tabValue,
+            setTabValue,
+            handleTabChange,
+            tabProps,
+            TabPanel,
+            ...props
         }
     })
 }

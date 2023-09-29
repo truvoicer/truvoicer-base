@@ -39,7 +39,7 @@ const BlogSidebar = (props) => {
         );
     }
     return templateManager.getTemplateComponent({
-        category: 'public',
+        category: 'sidebars',
         templateId: 'blogSidebar',
         defaultComponent: defaultView(),
         props: {

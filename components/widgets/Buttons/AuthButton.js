@@ -22,44 +22,48 @@ const AuthButton = (props) => {
     }
 
     function defaultView() {
-    return (
-        <div className="Appointment">
-            {!props.session.authenticated &&
-            <div className="phone_num d-none d-xl-block">
-                <a onClick={showAuthLoginModal}>
-                    {options.login_label}
-                </a>
+        return (
+            <div className="Appointment">
+                {!props.session.authenticated &&
+                    <div className="phone_num d-none d-xl-block">
+                        <a onClick={showAuthLoginModal}>
+                            {options.login_label}
+                        </a>
+                    </div>
+                }
+                {props.session.authenticated &&
+                    <>
+                        <div className="phone_num d-none d-xl-block">
+                            <a href={siteConfig.defaultUserAccountHref}>
+                                <span className={"d-none d-md-block"}>{options.account_label}</span>
+                                <span className={"d-block d-md-none"}><i className="fas fa-user-circle"/></span>
+                            </a>
+                        </div>
+                        <div className="phone_num d-none d-xl-block">
+                            <a
+                                href={siteConfig.defaultLogoutHref}
+                                onClick={logoutHandler}
+                            >
+                                <span className={"d-none d-md-block"}>{"Logout"}</span>
+                                <span className={"d-block d-md-none"}><i className="fas fa-sign-out-alt"/></span>
+                            </a>
+                        </div>
+                    </>
+                }
             </div>
-            }
-            {props.session.authenticated &&
-            <>
-                <div className="phone_num d-none d-xl-block">
-                    <a href={siteConfig.defaultUserAccountHref}>
-                        <span className={"d-none d-md-block"}>{options.account_label}</span>
-                        <span className={"d-block d-md-none"}><i className="fas fa-user-circle"/></span>
-                    </a>
-                </div>
-                <div className="phone_num d-none d-xl-block">
-                    <a
-                        href={siteConfig.defaultLogoutHref}
-                        onClick={logoutHandler}
-                    >
-                        <span className={"d-none d-md-block"}>{"Logout"}</span>
-                        <span className={"d-block d-md-none"}><i className="fas fa-sign-out-alt"/></span>
-                    </a>
-                </div>
-            </>
-            }
-        </div>
-    );
+        );
     }
+
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'buttons',
+        templateId: 'authButton',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            options: options,
+            showAuthLoginModal,
+            logoutHandler,
+            ...props
         }
     })
 }

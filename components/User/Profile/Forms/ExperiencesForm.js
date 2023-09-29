@@ -17,12 +17,12 @@ function ExperiencesForm(props) {
     );
     }
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'profile_forms',
+        templateId: 'experiencesForm',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            ...props
         }
     })
 }

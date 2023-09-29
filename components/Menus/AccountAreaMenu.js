@@ -158,12 +158,20 @@ const AccountAreaMenu = (props) => {
     )
     }
     return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
+        category: 'menus',
+        templateId: 'accountAreaMenu',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
+            logoutHandler: logoutHandler,
+            pageClickHandler: pageClickHandler,
+            showAuthLoginModal: showAuthLoginModal,
+            showAuthRegisterModal: showAuthRegisterModal,
+            getMenuItem: getMenuItem,
+            getItemCallback: getItemCallback,
+            getListItem: getListItem,
+            getCollapseListItem: getCollapseListItem,
+            ...props
         }
     })
 }
