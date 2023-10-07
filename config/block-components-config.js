@@ -81,8 +81,8 @@ export const blockComponentsConfig = {
             name: "user_saved_items_block",
             component: UserSavedItemsBlock
         },
-        optin_block: {
-            name: "optin_block",
+        opt_in_block: {
+            name: "opt_in_block",
             component: OptinBlock
         },
         posts_block: {

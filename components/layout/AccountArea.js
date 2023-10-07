@@ -15,7 +15,6 @@ import {
 } from "../../redux/constants/session-constants";
 import {isNotEmpty} from "../../library/utils";
 import LoginBlock from "../forms/Auth/LoginBlock";
-import ListingsInfiniteScroll from "@/truvoicer-base/components/blocks/listings/pagination/ListingsInfiniteScroll";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 
@@ -35,23 +34,11 @@ const AccountArea = (props) => {
     const getAccountArea = () => {
         return (
             <>
-                {
-                    templateManager.getTemplateComponent({
-                        category: 'account',
-                        templateId: 'htmlHead',
-                        defaultComponent: <HtmlHead />,
-                    })
-                }
+                <HtmlHead />
                 <div className={"container-fluid"}>
                     <div className={"d-flex"}>
                         <div className="d-none d-md-block left-sidebar pl-0 pr-0">
-                            {
-                                templateManager.getTemplateComponent({
-                                    category: 'account',
-                                    templateId: 'accountAreaSidebar',
-                                    defaultComponent: <AccountAreaSidebar />,
-                                })
-                            }
+                            <AccountAreaSidebar />
                         </div>
                         <div className="account-content">
                             {ReactHtmlParser(pageData.content, htmlParserOptions)}
@@ -65,24 +52,12 @@ const AccountArea = (props) => {
     const loadAccountArea = (loadKey) => {
         switch (loadKey) {
             case "show_loader":
-                return templateManager.getTemplateComponent({
-                    category: 'account',
-                    templateId: 'loaderComponent',
-                    defaultComponent: <LoaderComponent />,
-                });
+                return <LoaderComponent />;
             case "show_account_area":
-                return templateManager.getTemplateComponent({
-                    category: 'account',
-                    templateId: 'accountArea',
-                    defaultComponent: getAccountArea(),
-                });
+                return getAccountArea();
             case "show_login":
             default:
-                return templateManager.getTemplateComponent({
-                    category: 'account',
-                    templateId: 'loginBlock',
-                    defaultComponent: <LoginBlock />
-                });
+                return <LoginBlock />;
         }
 
     }
@@ -103,22 +78,9 @@ const AccountArea = (props) => {
     return (
         <div id={"account_area"}>
             <>
-                {
-                    templateManager.getTemplateComponent({
-                        category: 'account',
-                        templateId: 'header',
-                        defaultComponent: <Header />
-                    })
-                }
+                <Header />
                 {loadAccountArea(loadKey)}
-                {
-                    templateManager.getTemplateComponent({
-                        category: 'account',
-                        templateId: 'footer',
-                        defaultComponent: <Footer fluidContainer={true} />,
-                        props: {fluidContainer: true}
-                    })
-                }
+                <Footer fluidContainer={true} />
             </>
         </div>
     );

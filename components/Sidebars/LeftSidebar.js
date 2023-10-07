@@ -1,21 +1,20 @@
 import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
-import {buildWpApiUrl, fetcher, getSidebar} from "../../../../library/api/wp/middleware";
-import LoaderComponent from "../../../loaders/Loader";
+import {buildWpApiUrl, fetcher, getSidebar} from "@/truvoicer-base/library/api/wp/middleware";
+import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
 import Error from "next";
 import {siteConfig} from "@/config/site-config";
-import {buildSidebar} from "../../../../redux/actions/sidebar-actions";
+import {buildSidebar} from "/truvoicer-base/redux/actions/sidebar-actions";
 import useSWR from "swr";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
-import ListingsFilter from "@/truvoicer-base/components/blocks/listings/filters/ListingsFilter";
 import Left from "@/truvoicer-base/components/blocks/listings/sidebars/Left";
 
-const ListingsLeftSidebar = (props) => {
+const LeftSidebar = (props) => {
     const [data, setData] = useState([]);
-    const { data: sidebarData, error: sidebarError } = useSWR(buildWpApiUrl(wpApiConfig.endpoints.sidebar, siteConfig.rightSidebarName), fetcher)
+    const { data: sidebarData, error: sidebarError } = useSWR(buildWpApiUrl(wpApiConfig.endpoints.sidebar, siteConfig.leftSidebarName), fetcher)
 
     const listingsContext = useContext(ListingsContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
@@ -24,11 +23,11 @@ const ListingsLeftSidebar = (props) => {
         if (Array.isArray(sidebarData?.sidebar)) {
             setData(
                 buildSidebar({
-                    sidebarData: sidebarData.sidebar
+                    sidebarData: sidebarData.sidebar,
                 })
             )
         }
-    }, [sidebarData, listingsContext?.listingsData])
+    }, [sidebarData])
 
     const sidebarLoading = !sidebarError && !sidebarData
     if (sidebarLoading) return <></>
@@ -38,20 +37,21 @@ const ListingsLeftSidebar = (props) => {
         return (
             <div className="job_filter white-bg">
                 <div className="form_inner white-bg">
-                    <Left />
-                    <ListingsFilter  listingsContextGroup={{listingsContext}}/>
+
                     {data.map((item, index) => (
                         <React.Fragment key={index.toString()}>
                             {item}
                         </React.Fragment>
                     ))}
+
+                    <Left />
                 </div>
             </div>
         )
     }
     return templateManager.getTemplateComponent({
-        category: 'listings',
-        templateId: 'listingsLeftSidebar',
+        category: 'sidebars',
+        templateId: 'leftSidebar',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
@@ -72,4 +72,4 @@ function mapStateToProps(state) {
 export default connect(
     mapStateToProps,
     null
-)(ListingsLeftSidebar);
+)(LeftSidebar);

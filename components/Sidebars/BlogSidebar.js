@@ -21,7 +21,6 @@ const BlogSidebar = (props) => {
     useEffect(() => {
         setData(buildSidebar({
             sidebarData: sidebarData,
-            templateContext,
         }))
     }, [sidebarData])
 

@@ -25,7 +25,7 @@ const FetcherApiListingsBlock = (props) => {
     )
     }
     return templateManager.getTemplateComponent({
-        category: 'l',
+        category: 'listings',
         templateId: 'fetcherApiListingsBlock',
         defaultComponent: defaultView(),
         props: {

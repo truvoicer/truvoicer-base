@@ -24,4 +24,15 @@ export class AppManager {
         }
         return false;
     }
+
+    findContextGroupsByContextId(contextId) {
+        const appContexts = this.appContext.contexts;
+        let contexts = [];
+        Object.keys(appContexts).forEach(key => {
+            if (appContexts?.[key]?.[contextId]) {
+                contexts.push(appContexts[key]);
+            }
+        });
+        return contexts;
+    }
 }

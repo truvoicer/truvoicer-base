@@ -4,7 +4,7 @@ import LoaderComponent from "../../../../../loaders/Loader";
 import Paginate from "@/truvoicer-base/components/blocks/listings/pagination/ListingsPaginate";
 import ListingsInfiniteScroll from "@/truvoicer-base/components/blocks/listings/pagination/ListingsInfiniteScroll";
 import {SEARCH_REQUEST_COMPLETED} from "@/truvoicer-base/redux/constants/search-constants";
-import LeftSidebar from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsLeftSidebar";
+import ListingsLeftSidebar from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsLeftSidebar";
 import {getExtraDataValue} from "@/truvoicer-base/library/helpers/pages";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
@@ -46,6 +46,7 @@ const SearchListingsBlock = (props) => {
         );
     }
 
+
     function defaultLayout() {
         return (
             <div className={"listings-container"}>
@@ -55,12 +56,12 @@ const SearchListingsBlock = (props) => {
                     </div>
                 }
                 <div>
-                    {props.data?.show_filters_toggle
+                    {props.data?.show_listings_sidebar
                         ?
                         <>
                             {filtersPosition === 'left' &&
                                 <div>
-                                    <LeftSidebar/>
+                                    <ListingsLeftSidebar/>
                                 </div>
                             }
                             <div>
@@ -71,7 +72,7 @@ const SearchListingsBlock = (props) => {
 
                             {filtersPosition === 'right' &&
                                 <div>
-                                    <LeftSidebar/>
+                                    <ListingsLeftSidebar/>
                                 </div>
                             }
                         </>

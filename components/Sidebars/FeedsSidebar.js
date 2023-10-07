@@ -10,14 +10,11 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 
 const FeedsSidebar = (props) => {
-    const templateContext = useContext(TemplateContext);
     const listingsContext = useContext(ListingsContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const {sidebarData, isLoading, isError} = getSidebar(siteConfig.feedsSidebarName)
     const [data, setData] = useState(buildSidebar({
         sidebarData: sidebarData,
-        listingsData: listingsContext?.listingsData,
-        templateContext,
     }));
 
     if (isLoading) return <LoaderComponent/>

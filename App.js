@@ -23,6 +23,8 @@ import {updateStateNestedObjectData, updateStateObject} from "@/truvoicer-base/l
 import AppLoader from "@/truvoicer-base/AppLoader";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import AccountAreaSidebar from "@/truvoicer-base/components/Sidebars/AccountAreaSidebar";
+import FullWidthTemplate from "@/truvoicer-base/components/templates/FullWidthTemplate";
+import SidebarTemplate from "@/truvoicer-base/components/templates/SidebarTemplate";
 
 const FetcherApp = ({modal, pageData, pageOptions, siteSettings, templateConfig = {}}) => {
     const router = useRouter();
@@ -64,45 +66,8 @@ const FetcherApp = ({modal, pageData, pageOptions, siteSettings, templateConfig 
     console.log({pageOptions, pageData})
     return (
         <AppLoader templateConfig={templateConfig}>
-            {pageOptions?.pageType === "user_account"
-                ?
-                <AccountArea data={pageData}/>
-                :
-                <div id={"public_area"}>
-                    {
-                        templateManager.getTemplateComponent({
-                            category: 'public',
-                            templateId: 'header',
-                            defaultComponent: <Header />,
-                        })
-                    }
-                    <>
-                        {pageData
-                            ?
-                            <>
-                                {
-                                    templateManager.getTemplateComponent({
-                                        category: 'public',
-                                        templateId: 'htmlHead',
-                                        defaultComponent: <HtmlHead />,
-                                    })
-                                }
-                                {ReactHtmlParser(pageData.post_content, htmlParserOptions)}
-                            </>
-                            :
-                            <></>
-                        }
-                    </>
-                    {
-                        templateManager.getTemplateComponent({
-                            category: 'public',
-                            templateId: 'footer',
-                            defaultComponent: <Footer />,
-                        })
-                    }
-                </div>
-            }
-            {getModal()}
+            <FullWidthTemplate />
+            {/*<SidebarTemplate />*/}
         </AppLoader>
     )
 }

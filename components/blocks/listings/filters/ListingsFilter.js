@@ -10,9 +10,11 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ListingsFilter = (props) => {
+    const {listingsContextGroup} = props;
+
     const controlPrefix = "filter_control_";
 
-    const listingsContext = useContext(ListingsContext);
+    const listingsContext = listingsContextGroup?.listingsContext;
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const getDataList = (item) => {
@@ -79,6 +81,7 @@ const ListingsFilter = (props) => {
         props: {
             defaultView: defaultView,
             getDataList: getDataList,
+            ...props
         }
     })
 }

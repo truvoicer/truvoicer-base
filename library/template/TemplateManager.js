@@ -36,6 +36,7 @@ export class TemplateManager {
             ),
             props
         )
+
         if (!TemplateComponent) {
             return defaultComponent;
         }

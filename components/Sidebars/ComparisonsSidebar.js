@@ -10,7 +10,6 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 
 const ComparisonsSidebar = (props) => {
-    const templateContext = useContext(TemplateContext);
     const listingsContext = useContext(ListingsContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const {sidebarData, isLoading, isError} = getSidebar(siteConfig.comparisonsSidebarName)
@@ -20,8 +19,6 @@ const ComparisonsSidebar = (props) => {
     useEffect(() => {
         setData(buildSidebar({
             sidebarData: sidebarData,
-            listingsData: listingsContext?.listingsData,
-            templateContext,
         }));
     }, [sidebarData])
 
