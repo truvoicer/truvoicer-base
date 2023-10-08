@@ -18,6 +18,7 @@ import UserSavedItemsBlock from "../components/blocks/UserSavedItemsBlock";
 import OptinBlock from "../components/blocks/optin/OptinBlock";
 import PostsBlock from "../components/blocks/posts/PostsBlock";
 import TabsBlock from "@/truvoicer-base/components/blocks/Tabs/TabsBlock";
+import CarouselInterface from "@/truvoicer-base/components/blocks/carousel/CarouselInterface";
 
 export const blockComponentsConfig = {
     components: {
@@ -71,7 +72,7 @@ export const blockComponentsConfig = {
         },
         carousel_block: {
             name: "carousel_block",
-            component: CustomItemsCarousel
+            component: CarouselInterface
         },
         form_block: {
             name: "form_block",

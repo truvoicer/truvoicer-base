@@ -55,7 +55,7 @@ export function getPageTitle(siteTitle, pageTitle) {
     return null;
 }
 
-export function loadBasePageData({page, options, settings, post = {}, postNavigation = {}}) {
+export function loadBasePageData({page, settings, post = {}, postNavigation = {}}) {
     const postNavState = store.getState().page.postNavData;
 
     const pageData = {...page};
@@ -65,7 +65,7 @@ export function loadBasePageData({page, options, settings, post = {}, postNaviga
     );
     setSiteSettingsAction(settings);
     setPageDataAction(pageData);
-    setPageDataOptionsAction(options);
+    setPageDataOptionsAction(page?.page_options);
     setPostDataAction(post)
 
     if (!postNavState.fromList) {

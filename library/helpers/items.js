@@ -301,6 +301,9 @@ export function extractItemListFromPost({post}) {
                         item?.single_item_id?.post_name
                 ));
                 break;
+            case "custom":
+                listData.push(item);
+                break;
         }
     });
     return listData;

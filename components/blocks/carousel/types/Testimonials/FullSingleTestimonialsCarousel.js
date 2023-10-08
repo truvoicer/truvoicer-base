@@ -13,7 +13,7 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
  */
 const FullSingleTestimonialsCarousel = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    if (!Array.isArray(props?.data?.item_list?.data)) {
+    if (!Array.isArray(props?.data?.item_list)) {
         return null;
     }
     const defaultSettings = {
@@ -41,20 +41,20 @@ const FullSingleTestimonialsCarousel = (props) => {
                         <div className="col-xl-12">
                             <div className="testmonial_active">
                                 <Slider {...defaultSettings}>
-                                    {props.data.item_list.data.map((item, index) => (
+                                    {props.data.item_list.map((item, index) => (
                                         <div className="single_carousel" key={index}>
                                             <div className="row">
                                                 <div className="col-lg-11">
                                                     <div className="single_testmonial d-flex align-items-center">
                                                         <div className="thumb">
-                                                            <img src={item.custom_item.item_image} alt=""/>
+                                                            <img src={item.item_image} alt=""/>
                                                             <div className="quote_icon">
                                                                 <i className="Flaticon flaticon-quote"/>
                                                             </div>
                                                         </div>
                                                         <div className="info">
-                                                            <p>{item.custom_item.item_text}</p>
-                                                            <span>- {item.custom_item.item_header}</span>
+                                                            <p>{item.item_text}</p>
+                                                            <span>- {item.item_header}</span>
                                                         </div>
                                                     </div>
                                                 </div>

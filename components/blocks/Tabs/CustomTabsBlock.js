@@ -11,22 +11,12 @@ import CvForm from "../../User/Profile/Forms/CVForm";
 import EducationForm from "../../User/Profile/Forms/EducationForm";
 import UserAccountLoader from "@/truvoicer-base/components/loaders/UserAccountLoader";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
-import CustomItemsCarousel from "@/truvoicer-base/components/blocks/carousel/CustomItemsCarousel";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import CarouselInterface from "@/truvoicer-base/components/blocks/carousel/CarouselInterface";
 
 const CustomTabsBlock = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    const getCarousel = (tab) => {
-        switch (tab.custom_carousel.carousel_data.carousel_content) {
-            case "items":
-                return <CustomItemsCarousel data={tab.custom_carousel.carousel_data.item_list}
-                                            cta={props.data.carousel_item_cta}/>
-            case "request":
-            default:
-                return null
-        }
-    }
 
     const getForm = (tab) => {
         let FormComponent = null;
@@ -65,7 +55,7 @@ const CustomTabsBlock = (props) => {
     const getTabContent = (tab) => {
         switch (tab.custom_tabs_type) {
             case "custom_carousel":
-                return getCarousel(tab)
+                return <CarouselInterface data={tab?.carousel_block}/>
             case "form":
                 return getForm(tab)
             case "custom_content":
@@ -181,7 +171,6 @@ console.log({props})
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            getCarousel: getCarousel,
             getForm: getForm,
             getTabContent: getTabContent,
             getDefaultActiveTab: getDefaultActiveTab,

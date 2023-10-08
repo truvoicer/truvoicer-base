@@ -13,7 +13,7 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
  */
 const CardsCarousel = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    if (!Array.isArray(props.data.item_list.data)) {
+    if (!Array.isArray(props.data.item_list)) {
         return null;
     }
     const defaultSettings = {
@@ -60,15 +60,15 @@ const CardsCarousel = (props) => {
                         <div className="col-lg-12">
                             <div className="candidate_active">
                                 <Slider {...defaultSettings}>
-                                    {props.data.item_list.data.map((item, index) => (
+                                    {props.data.item_list.map((item, index) => (
                                         <div className="single_company" key={index}>
                                             <div className="thumb">
-                                                <img src={item.custom_item.item_image} alt=""/>
+                                                <img src={item.item_image} alt=""/>
                                             </div>
-                                            <a href={item.custom_item.item_link}><h3>{item.custom_item.item_header}</h3>
+                                            <a href={item.item_link}><h3>{item.item_header}</h3>
                                             </a>
                                             <p>
-                                                <span>{item.custom_item.item_badge_text}</span> {item.custom_item.item_link_text}
+                                                <span>{item.item_badge_text}</span> {item.item_link_text}
                                             </p>
                                         </div>
                                     ))}

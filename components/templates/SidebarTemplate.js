@@ -12,6 +12,8 @@ import HtmlHead from "@/truvoicer-base/components/layout/HtmlHead";
 import Loader from "@/truvoicer-base/components/loaders/Loader";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import LeftSidebar from "@/truvoicer-base/components/Sidebars/LeftSidebar";
+import RightSidebar from "@/truvoicer-base/components/Sidebars/RightSidebar";
 
 const SidebarTemplate = (props) => {
     const {modal, pageData, pageOptions} = props;
@@ -47,7 +49,21 @@ const SidebarTemplate = (props) => {
                                 ?
                                 <>
                                     <HtmlHead/>
-                                    {ReactHtmlParser(pageData.post_content, htmlParserOptions)}
+                                    <div className={"row"}>
+                                        {templateManager.isTemplateLayout(pageData, 'left-sidebar') &&
+                                            <div className="col-12 col-sm-9 col-md-4 col-lg-2 d-none d-lg-block">
+                                                <LeftSidebar/>
+                                            </div>
+                                        }
+                                        <div className="col-12 col-lg-10">
+                                            {ReactHtmlParser(pageData.post_content, htmlParserOptions)}
+                                        </div>
+                                        {templateManager.isTemplateLayout(pageData, 'right-sidebar') &&
+                                            <div className="col-12 col-sm-9 col-md-6 col-lg-3 d-none d-lg-block">
+                                                <RightSidebar />
+                                            </div>
+                                        }
+                                    </div>
                                 </>
                                 :
                                 <Loader></Loader>

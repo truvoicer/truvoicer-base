@@ -4,7 +4,7 @@ import Nav from "react-bootstrap/Nav";
 import Tab from "react-bootstrap/Tab";
 import {fetchData} from "../../../../truvoicer-base/library/api/fetcher/middleware";
 import {uCaseFirst} from "../../../../truvoicer-base/library/utils";
-import RequestItemCarousel from "../Carousel/RequestItemCarousel";
+import ApiRequestItemCarousel from "../carousel/ApiRequestItemCarousel";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
@@ -84,7 +84,7 @@ const RequestCarouselTabsBlock = (props) => {
                         <Tab.Content className={"wow fadeInUp"}>
                             {data.map((tab, index) => (
                                 <Tab.Pane eventKey={index} key={index}>
-                                    <RequestItemCarousel data={tab.request_data}/>
+                                    <ApiRequestItemCarousel data={tab.request_data}/>
                                 </Tab.Pane>
                             ))}
                         </Tab.Content>

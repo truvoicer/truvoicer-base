@@ -14,6 +14,7 @@ import useSWR from "swr";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import Link from "next/link";
 
 const NavBar = (props) => {
     const {
@@ -22,7 +23,8 @@ const NavBar = (props) => {
     } = useSWR(buildWpApiUrl(wpApiConfig.endpoints.sidebar, "nav-bar"), fetcher)
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const sidebarLoading = !sidebarError && !sidebarData
-    if (sidebarLoading) return <></>
+
+    if (sidebarLoading || !sidebarData) return <></>
     if (sidebarError) return <Error/>
 
     let sidebarMenu = [];
@@ -39,9 +41,9 @@ const NavBar = (props) => {
                         <div className="row align-items-center">
                             <div className="col-lg-1">
                                 <div className="logo">
-                                    <a href="/">
-                                        {props.siteData.blogname}
-                                    </a>
+                                    {/*<Link href="/">*/}
+                                    {/*    {props.siteData.blogname}*/}
+                                    {/*</Link>*/}
                                 </div>
                             </div>
                             {Array.isArray(sidebarMenu) && sidebarMenu.length > 0 &&

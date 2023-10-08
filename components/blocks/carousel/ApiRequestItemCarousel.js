@@ -6,7 +6,7 @@ import PrevArrow from "@/truvoicer-base/components/blocks/carousel/arrows/PrevAr
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
-const RequestItemCarousel = (props) => {
+const ApiRequestItemCarousel = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const settings = {
         initialSlide: Math.round(props.data.length / 2),
@@ -71,4 +71,4 @@ const RequestItemCarousel = (props) => {
         }
     });
 }
-export default RequestItemCarousel;
+export default ApiRequestItemCarousel;

@@ -259,6 +259,17 @@ const FormBlock = (props) => {
         return fieldConfig;
     }
 
+    function getEndpointUrlByType(endpoint) {
+        const buildPublicEndpointUrl =  `${publicEndpoint}/${endpoint}`;
+        const buildProtectedEndpointUrl =  `${protectedEndpoint}/${endpoint}`;
+        switch (formData?.endpoint_type) {
+            case "protected":
+                return buildProtectedEndpointUrl;
+            case "public":
+            default:
+                return buildPublicEndpointUrl;
+        }
+    }
     const getEndpointData = (endpoint) => {
         const buildPublicEndpointUrl =  `${publicEndpoint}${formData?.endpoint_url}`;
         const buildProtectedEndpointUrl =  `${protectedEndpoint}${formData?.endpoint_url}`;
@@ -268,6 +279,7 @@ const FormBlock = (props) => {
 
         switch (endpoint) {
             case "email":
+                configData.endpoint = getEndpointUrlByType(formData?.endpoint_url);
                 configData.data = {
                     recipient: formData.email.recipient,
                     subject: formData.email.subject,
@@ -287,11 +299,13 @@ const FormBlock = (props) => {
                 configData.endpoint = customEndpoint;
                 configData.data = {};
                 break;
-            case "redirect":
-                break;
             case "user_profile":
             case "user_meta":
                 configData.endpoint = buildProtectedEndpointUrl;
+                configData.data = {};
+                break;
+            case "external_provider":
+                configData.endpoint = getEndpointUrlByType('forms/external-providers');
                 configData.data = {};
                 break;
             default:
@@ -355,14 +369,13 @@ const FormBlock = (props) => {
         if (!isObjectEmpty(files)) {
             getFileUploadRequest(files, endpointData);
         }
-
         processRequest(
             endpointData,
             {
                 ...requestData,
                 ...endpointData.data,
                 ...{
-                    endpoint_providers: formData?.endpoint_providers,
+                    external_providers: formData?.external_providers,
                     redirect_url: formData?.redirect_url
                 }
             }
@@ -391,6 +404,7 @@ const FormBlock = (props) => {
                 );
                 break;
             default:
+                console.warn("Invalid endpoint type")
                 return;
         }
     }

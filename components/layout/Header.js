@@ -27,7 +27,7 @@ const Header = (props) => {
                 <header ref={ref}>
                     <div className="header-area" id={"header"}>
                         <div id="sticky-header" className={`main-header-area${isSticky ? ' sticky' : ''}`}>
-                            <NavBar/>
+                            {/*<NavBar/>*/}
                         </div>
                     </div>
                 </header>

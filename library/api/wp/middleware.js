@@ -204,7 +204,6 @@ export async function getSiteSettings() {
     return results?.data;
 }
 export async function getSinglePage(slug) {
-    console.log({slug})
     const results = await wpResourceRequest({
         endpoint: `${wpApiConfig.endpoints.page}`,
         query: {
@@ -230,16 +229,15 @@ export async function getPostWithTemplate(slug, type, preview) {
     );
 }
 
-export async function getCategoryTemplate(slug, preview) {
-    return await fetchAPI(
-        categoryTemplateQuery(),
-        {
-            variables: {
-                slug: slug,
-                preview,
-            },
-        }
-    );
+export async function getPageTemplate(postType, category) {
+    const results = await wpResourceRequest({
+        endpoint: sprintf(wpApiConfig.endpoints.pageTemplate, {
+            category,
+            post_type: postType,
+        }),
+        method: 'GET',
+    })
+    return results?.data;
 }
 
 export function protectedFileUploadApiRequest(endpoint, requestData, callback = false, headers = {}) {

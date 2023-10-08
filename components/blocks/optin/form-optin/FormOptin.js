@@ -5,6 +5,10 @@ import SpeechBubbleTestimonialsCarousel
     from "@/truvoicer-base/components/blocks/carousel/types/Testimonials/SpeechBubbleTestimonialsCarousel";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {isFunction} from "underscore";
+import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/items";
+import {isObject} from "@/truvoicer-base/library/utils";
+import CarouselInterface from "@/truvoicer-base/components/blocks/carousel/CarouselInterface";
 
 const FormOptin = (props) => {
     const {data} = props;
@@ -21,7 +25,7 @@ const FormOptin = (props) => {
                                     <h1 className="mb-3">{data?.heading}</h1>
                                     <>{HtmlParser(data?.text)}</>
                                     {data?.show_carousel &&
-                                        <SpeechBubbleTestimonialsCarousel data={data.carousel.carousel_data}/>
+                                        <CarouselInterface data={data?.carousel_block}/>
                                     }
                                 </div>
                                 {/*<div className="col clockinner1 clockinner">*/}
@@ -44,7 +48,9 @@ const FormOptin = (props) => {
                         </div>
                         <div className="col-lg-4 offset-lg-1">
                             <div className="register_form">
-                                <FormBlock data={data}/>
+                                {data?.form_block &&
+                                    <FormBlock data={data.form_block}/>
+                                }
                             </div>
                         </div>
                     </div>
