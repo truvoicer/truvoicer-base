@@ -43,6 +43,7 @@ const PostsBlock = (props) => {
             "post"
         )
             .then(response => {
+                console.log({response})
                 if (!isCancelled) {
                     if (response?.data?.status === "success" && Array.isArray(response.data?.data?.posts)) {
                         setPosts(response.data.data.posts);
