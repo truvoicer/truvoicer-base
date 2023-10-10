@@ -134,6 +134,7 @@ export async function runRequest({
   protectedReq = false,
 }) {
   const requestUrl = buildRequestUrl(`${config.apiBaseUrl}${endpoint}`, query);
+  console.log({requestUrl})
   const buildHeadersData = buildHeaders({
     protectedReq,
     upload,

@@ -8,7 +8,7 @@ export const wpApiConfig = {
         validateToken: protectedEndpoint + "/auth/token/check",
         settings: publicEndpoint + "/settings",
         page: publicEndpoint + "/pages/page",
-        pageTemplate: publicEndpoint + "/pages/template/%(post_type)s/%(category)s",
+        pageTemplate: publicEndpoint + "/pages/template/%(post_type)s/%(taxonomy)s/%(category)s",
         singleItemPost: publicEndpoint + "/posts/post/%(post_id)d/type/%(post_type)s",
         menu: publicEndpoint + "/pages/menu/%s",
         sidebar: publicEndpoint + "/pages/sidebar/%s",
@@ -57,6 +57,10 @@ export const wpApiConfig = {
       filterList: 'trf_filter_list',
       categoryTemplate: 'trf_category_tpl',
       postTemplate: 'trf_post_tpl',
+    },
+    taxonomies: {
+        category: 'category',
+        listingsCategory: 'trf_listings_category'
     },
     headers: {
         'Content-Type': 'application/json',

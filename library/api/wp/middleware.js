@@ -183,6 +183,7 @@ export async function getItemViewTemplate(category, postType, preview) {
         endpoint: sprintf(wpApiConfig.endpoints.pageTemplate, {
             category: category,
             post_type: postType,
+            taxonomy: wpApiConfig.taxonomies.listingsCategory,
         }),
         method: 'GET',
     })
@@ -234,9 +235,11 @@ export async function getPageTemplate(postType, category) {
         endpoint: sprintf(wpApiConfig.endpoints.pageTemplate, {
             category,
             post_type: postType,
+            taxonomy: wpApiConfig.taxonomies.category,
         }),
         method: 'GET',
     })
+    console.log({results})
     return results?.data;
 }
 

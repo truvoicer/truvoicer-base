@@ -23,6 +23,7 @@ const FullWidthTemplate = (props) => {
         }
     }
 
+    console.log('fwt tb')
     const getModal = () => {
         if (isSet(modal.component) && !isObjectEmpty(modal.component) && modal.show) {
             return (
@@ -62,7 +63,7 @@ const FullWidthTemplate = (props) => {
 
     return templateManager.getTemplateComponent({
         category: 'templates',
-        templateId: 'fullSidebarWidthTemplate',
+        templateId: 'fullWidthTemplate',
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,

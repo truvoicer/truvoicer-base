@@ -15,19 +15,21 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const Footer = (props) => {
+    const swr = useSWR;
     const {session, fluidContainer = false} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    const { data: sidebarData, error: sidebarError } = useSWR(buildWpApiUrl(wpApiConfig.endpoints.sidebar, siteConfig.footerName), fetcher)
-    const sidebarLoading = !sidebarError && !sidebarData
-    if (sidebarLoading) return <></>
-    if (sidebarError) return <Error />
-
-    let sidebarMenu = [];
-    if (Array.isArray(sidebarData?.sidebar)) {
-        sidebarMenu = sidebarData.sidebar;
-    }
 
     function defaultView() {
+        console.log('tb footer')
+        const { data: sidebarData, error: sidebarError } = swr(buildWpApiUrl(wpApiConfig.endpoints.sidebar, siteConfig.footerName), fetcher)
+        const sidebarLoading = !sidebarError && !sidebarData
+        if (sidebarLoading) return <></>
+        if (sidebarError) return <Error />
+
+        let sidebarMenu = [];
+        if (Array.isArray(sidebarData?.sidebar)) {
+            sidebarMenu = sidebarData.sidebar;
+        }
         return (
             <footer className={`footer ${!session[SESSION_AUTHENTICATED] ? "ml-0" : ""}`}>
                 <div className="footer_top">
@@ -65,9 +67,6 @@ const Footer = (props) => {
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            sidebarData: sidebarData,
-            sidebarError: sidebarError,
-            sidebarLoading: sidebarLoading,
             ...props
         }
     });

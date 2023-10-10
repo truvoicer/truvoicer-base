@@ -9,10 +9,14 @@ import {isNotEmpty} from "../../../library/utils";
 import BlogSidebar from "@/truvoicer-base/components/Sidebars/BlogSidebar";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
+import {sprintf} from "sprintf";
 
 const PostsBlock = (props) => {
     const {data} = props;
+
     const templateManager = new TemplateManager(useContext(TemplateContext));
+
     function useQueryParams() {
         const router = useRouter();
         return useMemo(() => {
@@ -31,24 +35,23 @@ const PostsBlock = (props) => {
     const [paginationControls, setPaginationControls] = useState(null);
 
     const fetchPosts = (pageNumber = null, isCancelled = false) => {
-        publicApiRequest(
-            buildWpApiUrl(wpApiConfig.endpoints.postListRequest),
-            {
+        wpResourceRequest({
+            endpoint: wpApiConfig.endpoints.postListRequest,
+            method: 'POST',
+            data: {
                 posts_per_page: data?.posts_per_page,
                 show_all_categories: data?.show_all_categories,
                 categories: data?.categories,
                 page_number: isNotEmpty(pageNumber) ? parseInt(pageNumber) : 1
-            },
-            false,
-            "post"
-        )
+            }
+        })
             .then(response => {
                 console.log({response})
                 if (!isCancelled) {
-                    if (response?.data?.status === "success" && Array.isArray(response.data?.data?.posts)) {
-                        setPosts(response.data.data.posts);
-                        setPostListDataAction(response.data.data.posts);
-                        setPaginationControls(response.data.data.controls)
+                    if (response?.data?.status === "success" && Array.isArray(response.data?.postList)) {
+                        setPosts(response.data.postList);
+                        setPostListDataAction(response.data.postList);
+                        setPaginationControls(response.data.pagination)
                     } else {
                         console.log("Post list error")
                     }
@@ -103,7 +106,8 @@ const PostsBlock = (props) => {
                                         </li>
                                         {isNotEmpty(paginationControls?.total_pages)
                                             && Array.from(Array(paginationControls.total_pages)).map((page, index) => (
-                                                <li key={index} className={`page-item ${paginationControls.current_page === (index + 1)? "active" : ""}`}>
+                                                <li key={index}
+                                                    className={`page-item ${paginationControls.current_page === (index + 1) ? "active" : ""}`}>
                                                     <a
                                                         className="page-link"
                                                         onClick={() => {

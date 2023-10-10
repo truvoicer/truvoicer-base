@@ -17,23 +17,23 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 import Link from "next/link";
 
 const NavBar = (props) => {
-    const {
-        data: sidebarData,
-        error: sidebarError
-    } = useSWR(buildWpApiUrl(wpApiConfig.endpoints.sidebar, "nav-bar"), fetcher)
+    const swr = useSWR;
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    const sidebarLoading = !sidebarError && !sidebarData
-
-    if (sidebarLoading || !sidebarData) return <></>
-    if (sidebarError) return <Error/>
-
-    let sidebarMenu = [];
-    if (Array.isArray(sidebarData?.sidebar)) {
-        sidebarMenu = sidebarData.sidebar;
-    }
-    const mobileMenu = getSidebarMenuItem(siteConfig.mobileMenu, sidebarMenu);
-
     function defaultView() {
+        const {
+            data: sidebarData,
+            error: sidebarError
+        } = swr(buildWpApiUrl(wpApiConfig.endpoints.sidebar, "nav-bar"), fetcher)
+        const sidebarLoading = !sidebarError && !sidebarData
+
+        if (sidebarLoading || !sidebarData) return <></>
+        if (sidebarError) return <Error/>
+
+        let sidebarMenu = [];
+        if (Array.isArray(sidebarData?.sidebar)) {
+            sidebarMenu = sidebarData.sidebar;
+        }
+        const mobileMenu = getSidebarMenuItem(siteConfig.mobileMenu, sidebarMenu);
         return (
             <>
                 <div className="container-fluid">
@@ -102,11 +102,6 @@ const NavBar = (props) => {
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            sidebarData,
-            sidebarError,
-            sidebarLoading,
-            sidebarMenu,
-            mobileMenu,
             ...props
         }
     })
