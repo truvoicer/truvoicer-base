@@ -1,10 +1,10 @@
 import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {buildSidebar} from "../../redux/actions/sidebar-actions";
-import {getSidebar} from "../../library/api/wp/middleware";
 import {siteConfig} from "@/config/site-config";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {fetchSidebarRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 
 /**
  *
@@ -12,17 +12,27 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
  * @constructor
  */
 const BlogSidebar = (props) => {
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const [data, setData] = useState([]);
-    const { sidebarData, isLoading, isError } = getSidebar(siteConfig.blogSidebarName)
 
-    const templateContext = useContext(TemplateContext);
-    const templateManager = new TemplateManager(templateContext);
+    async function sidebarRequest() {
+        try {
+            const fetchSidebar = await fetchSidebarRequest(siteConfig.blogSidebarName);
+            const sidebar = fetchSidebar?.data?.sidebar;
+            if (Array.isArray(sidebar)) {
+
+                setData(buildSidebar({
+                    sidebarData: sidebar,
+                }))
+            }
+        } catch (e) {
+            console.warn(e.message);
+        }
+    }
 
     useEffect(() => {
-        setData(buildSidebar({
-            sidebarData: sidebarData,
-        }))
-    }, [sidebarData])
+        sidebarRequest();
+    }, []);
 
     function defaultView() {
         return (
@@ -45,9 +55,6 @@ const BlogSidebar = (props) => {
             defaultView: defaultView,
             data: data,
             setData: setData,
-            sidebarData: sidebarData,
-            isLoading: isLoading,
-            isError: isError,
             ...props
         }
     });

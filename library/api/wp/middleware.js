@@ -9,7 +9,6 @@ import useSWR from "swr";
 import {allSingleItemPostsQuery} from "../../graphql/queries/all-single-item-posts";
 import {postWithTemplateQuery} from "../../graphql/queries/post-with-template";
 import {allCategoriesQuery} from "../../graphql/queries/all-categories-uri";
-import {categoryTemplateQuery} from "../../graphql/queries/category-list-template";
 import {comparisonItemTemplateQuery} from "../../graphql/queries/single-comparison-item-post-template";
 import {allComparisonItemsPostsQuery} from "../../graphql/queries/all-comparison-items-posts";
 import {isNotEmpty} from "../../utils";
@@ -19,19 +18,9 @@ const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
 const API_URL = process.env.NEXT_PUBLIC_WP_GRAPHQL_URL
 
-export const fetcher = (...args) => fetch(...args).then(res => res.json())
 
 export const buildWpApiUrl = (endpoint, param = "") => {
     return sprintf(wpApiConfig.apiBaseUrl + endpoint, param);
-}
-
-export function getSidebar (sidebar) {
-    const { data, error } = useSWR(buildWpApiUrl(wpApiConfig.endpoints.sidebar, sidebar), fetcher)
-    return {
-        sidebarData: data,
-        isLoading: !error && !data,
-        isError: error
-    }
 }
 
 async function fetchAPI(query, {variables} = {}) {

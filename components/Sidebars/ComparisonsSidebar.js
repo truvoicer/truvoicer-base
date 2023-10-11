@@ -1,30 +1,35 @@
 import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
-import {getSidebar} from "../../library/api/wp/middleware";
-import LoaderComponent from "../loaders/Loader";
-import Error from "next";
-import {siteConfig} from "../../../config/site-config";
+import {siteConfig} from "@/config/site-config";
 import {buildSidebar} from "../../redux/actions/sidebar-actions";
-import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {fetchSidebarRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 
 const ComparisonsSidebar = (props) => {
-    const listingsContext = useContext(ListingsContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    const {sidebarData, isLoading, isError} = getSidebar(siteConfig.comparisonsSidebarName)
-
     const [data, setData] = useState([]);
 
+    async function sidebarRequest() {
+        try {
+            const fetchSidebar = await fetchSidebarRequest(siteConfig.comparisonsSidebarName);
+            const sidebar = fetchSidebar?.data?.sidebar;
+            if (Array.isArray(sidebar)) {
+
+                setData(buildSidebar({
+                    sidebarData: sidebar,
+                }))
+            }
+        } catch (e) {
+            console.warn(e.message);
+        }
+    }
+
     useEffect(() => {
-        setData(buildSidebar({
-            sidebarData: sidebarData,
-        }));
-    }, [sidebarData])
+        sidebarRequest();
+    }, []);
 
     const getContent = () => {
-        if (isLoading) return <LoaderComponent/>
-        if (isError) return <Error/>
         return (
             <div className="comparisons-sidebar job_filter white-bg">
                 <div className="form_inner white-bg">
@@ -50,9 +55,6 @@ const ComparisonsSidebar = (props) => {
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            sidebarData,
-            isLoading,
-            isError,
             data,
             setData,
             ...props

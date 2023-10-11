@@ -1,24 +1,33 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {buildSidebar} from "../../redux/actions/sidebar-actions";
-import {getSidebar} from "../../library/api/wp/middleware";
-import LoaderComponent from "../loaders/Loader";
-import Error from "next";
 import {siteConfig} from "@/config/site-config";
-import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {fetchSidebarRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 
 const FeedsSidebar = (props) => {
-    const listingsContext = useContext(ListingsContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    const {sidebarData, isLoading, isError} = getSidebar(siteConfig.feedsSidebarName)
-    const [data, setData] = useState(buildSidebar({
-        sidebarData: sidebarData,
-    }));
+    const [data, setData] = useState([]);
 
-    if (isLoading) return <LoaderComponent/>
-    if (isError) return <Error/>
+    async function sidebarRequest() {
+        try {
+            const fetchSidebar = await fetchSidebarRequest(siteConfig.feedsSidebarName);
+            const sidebar = fetchSidebar?.data?.sidebar;
+            if (Array.isArray(sidebar)) {
+
+                setData(buildSidebar({
+                    sidebarData: sidebar,
+                }))
+            }
+        } catch (e) {
+            console.warn(e.message);
+        }
+    }
+
+    useEffect(() => {
+        sidebarRequest();
+    }, []);
 
     function defaultView() {
         return (
@@ -40,9 +49,6 @@ const FeedsSidebar = (props) => {
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
-            sidebarData,
-            isLoading,
-            isError,
             data,
             setData,
             ...props

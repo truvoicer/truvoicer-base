@@ -1,39 +1,40 @@
 import HeaderMenu from "@/truvoicer-base/components/Menus/HeaderMenu";
 import {connect} from "react-redux";
 import Search from "../widgets/Search";
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import ReactHtmlParser from "react-html-parser";
 import {siteConfig} from "@/config/site-config";
 import MobileDrawerMenu from "@/truvoicer-base/components/Menus/MobileDrawerMenu";
 import ButtonWidget from "../widgets/ButtonWidget";
 import ProfileMenu from "@/truvoicer-base/components/Menus/ProfileMenu";
-import Error from "next";
-import {buildWpApiUrl, fetcher, getSidebar} from "@/truvoicer-base/library/api/wp/middleware";
 import {getSidebarMenuItem} from "@/truvoicer-base/library/helpers/pages";
-import useSWR from "swr";
-import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
-import Link from "next/link";
+import {fetchSidebarRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 
 const NavBar = (props) => {
-    const swr = useSWR;
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    function defaultView() {
-        const {
-            data: sidebarData,
-            error: sidebarError
-        } = swr(buildWpApiUrl(wpApiConfig.endpoints.sidebar, "nav-bar"), fetcher)
-        const sidebarLoading = !sidebarError && !sidebarData
+    const [data, setData] = React.useState([]);
 
-        if (sidebarLoading || !sidebarData) return <></>
-        if (sidebarError) return <Error/>
+    const mobileMenu = getSidebarMenuItem(siteConfig.mobileMenu, data);
 
-        let sidebarMenu = [];
-        if (Array.isArray(sidebarData?.sidebar)) {
-            sidebarMenu = sidebarData.sidebar;
+    async function sidebarRequest() {
+        try {
+            const fetchSidebar = await fetchSidebarRequest("nav-bar");
+            const sidebar = fetchSidebar?.data?.sidebar;
+            if (Array.isArray(sidebar)) {
+                setData(sidebar);
+            }
+        } catch (e) {
+            console.warn(e.message);
         }
-        const mobileMenu = getSidebarMenuItem(siteConfig.mobileMenu, sidebarMenu);
+    }
+
+    useEffect(() => {
+        sidebarRequest();
+    }, []);
+
+    function defaultView() {
         return (
             <>
                 <div className="container-fluid">
@@ -46,9 +47,9 @@ const NavBar = (props) => {
                                     {/*</Link>*/}
                                 </div>
                             </div>
-                            {Array.isArray(sidebarMenu) && sidebarMenu.length > 0 &&
+                            {Array.isArray(data) && data.length > 0 &&
                                 <>
-                                    {sidebarMenu.map((item, index) => (
+                                    {data.map((item, index) => (
                                         <React.Fragment key={index}>
                                             {item.search &&
                                                 <div>
@@ -102,6 +103,8 @@ const NavBar = (props) => {
         defaultComponent: defaultView(),
         props: {
             defaultView: defaultView,
+            data: data,
+            setData: setData,
             ...props
         }
     })

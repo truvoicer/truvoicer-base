@@ -6,7 +6,7 @@ import {getSignedJwt} from "@/truvoicer-base/library/api/auth/jwt-helpers";
 import {getSessionObject} from "@/truvoicer-base/redux/actions/session-actions";
 
 const axios = require('axios');
-
+const sprintf = require("sprintf").sprintf;
 
 function getHeaders(config) {
   return config.headers;
@@ -55,6 +55,22 @@ export function checkSessionTokenRequest({
     return false;
   }
 }
+
+
+export async function fetchSidebarRequest (sidebar) {
+  if (!isNotEmpty(sidebar)) {
+    console.warn('Sidebar not set');
+    return false;
+  }
+  return wpResourceRequest({
+    endpoint: sprintf(wpApiConfig.endpoints.sidebar, sidebar),
+    method: 'GET',
+    query: {
+        sidebar,
+    }
+  });
+}
+
 export async function wpResourceRequest({
   endpoint,
   query = {},
