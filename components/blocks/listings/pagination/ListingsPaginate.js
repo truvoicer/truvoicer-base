@@ -112,7 +112,13 @@ const ListingsPaginate = (props) => {
     function defaultView() {
         return (
             <>
-                <GridItems/>
+                <GridItems
+                    listStart={listingsContext?.listingsData?.list_start}
+                    listEnd={listingsContext?.listingsData?.list_end}
+                    customPosition={listingsContext?.listingsData?.custom_position}
+                    grid={listingsContext?.listingsGrid}
+                    listItems={searchContext.searchList}
+                />
                 <GetPagination/>
             </>
         )

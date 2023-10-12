@@ -17,6 +17,7 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const GridItems = (props) => {
+    const {listStart, listEnd, customPosition, grid, listItems, category} = props;
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const router = useRouter();
@@ -129,38 +130,38 @@ const GridItems = (props) => {
 
     useEffect(() => {
 
-        if (listingsContext?.listingsData?.list_start) {
+        if (listStart) {
             setListPosition("list_start")
         }
-        if (listingsContext?.listingsData?.list_end) {
+        if (listEnd) {
             setListPosition("list_end")
         }
-        if (listingsContext?.listingsData?.custom_position) {
+        if (customPosition) {
             setListPosition("custom_position")
         }
 
     }, [
-        listingsContext?.listingsData?.list_start,
-        listingsContext?.listingsData?.list_end,
-        listingsContext?.listingsData?.custom_position,
+        listStart,
+        listEnd,
+        customPosition,
     ])
 
     function getSearchList() {
-        let searchList = [...searchContext.searchList];
+        let searchList = [...listItems];
         if (
-            !listingsContext?.listingsData?.list_start &&
-            !listingsContext?.listingsData?.list_end &&
-            !listingsContext?.listingsData?.custom_position
+            !listStart &&
+            !listEnd &&
+            !customPosition
         ) {
             return searchList;
         }
-        if (listingsContext?.listingsData?.list_start) {
+        if (listStart) {
             searchList = insertListStartItems(searchList);
         }
-        if (listingsContext?.listingsData?.list_end) {
+        if (listEnd) {
             searchList = insertListEndItems(searchList)
         }
-        if (listingsContext?.listingsData?.custom_position) {
+        if (customPosition) {
             searchList = insertCustomPositionItems(searchList)
         }
         return searchList;
@@ -171,11 +172,11 @@ const GridItems = (props) => {
                 <Row>
                     {getSearchList().map((item, index) => (
                         <React.Fragment key={index}>
-                            <Col {...getGridItemColumns(listingsContext.listingsGrid)}>
+                            <Col {...getGridItemColumns(grid)}>
                                 {listingsGrid.getGridItem(
                                     item,
                                     searchContext.category,
-                                    listingsContext.listingsGrid,
+                                    grid,
                                     props.user[SESSION_USER_ID],
                                     showInfo,
                                     index
