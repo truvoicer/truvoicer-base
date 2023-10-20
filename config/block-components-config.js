@@ -88,7 +88,7 @@ export const blockComponentsConfig = {
         },
         posts_block: {
             name: "posts_block",
-            component: PostsBlock
+            component: ListingsBlockInterface
         },
         post_item_block: {
             name: "post_item_block",

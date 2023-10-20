@@ -17,13 +17,15 @@ const FetcherApiListingsBlock = (props) => {
                 return <SearchListingsBlock data={props.data}/>
         }
     }
+
     function defaultView() {
-    return (
-        <ListingsBlockContainer data={props.data}>
-            {getListingsBlock(props.data?.listing_block_type)}
-        </ListingsBlockContainer>
-    )
+        return (
+            <ListingsBlockContainer data={props.data}>
+                {getListingsBlock(props.data?.listing_block_type)}
+            </ListingsBlockContainer>
+        )
     }
+
     return templateManager.getTemplateComponent({
         category: 'listings',
         templateId: 'fetcherApiListingsBlock',

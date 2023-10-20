@@ -1,19 +1,31 @@
 import React, {useState} from 'react';
 import FetcherApiListingsBlock from "./sources/fetcher-api/FetcherApiListingsBlock";
-import PostsListingsBlock from "./sources/wp/posts/PostsListingsBlock";
+import PostsListingsBlock from "@/truvoicer-base/components/blocks/listings/sources/wp/items/PostsListingsBlock";
 import {
     LISTINGS_BLOCK_SOURCE_API,
-    LISTINGS_BLOCK_SOURCE_WORDPRESS
+    LISTINGS_BLOCK_SOURCE_WORDPRESS, LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST, LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {ListingsContext, listingsData} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext, searchData} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {updateStateNestedObjectData, updateStateObject} from "@/truvoicer-base/library/helpers/state-helpers";
+import PostsBlock from "@/truvoicer-base/components/blocks/posts/PostsBlock";
 
 const ListingsBlockInterface = ({data}) => {
+
+    function getWpListings() {
+        switch (data?.wordpress_data_source) {
+            case LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST:
+                return <PostsListingsBlock data={data}/>
+            case LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS:
+                return <PostsBlock data={data}/>
+            default:
+                return null;
+        }
+    }
     const loadListings = () => {
         switch (data?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
-                return <PostsListingsBlock data={data}/>
+                return getWpListings();
             case LISTINGS_BLOCK_SOURCE_API:
             default:
                 return <FetcherApiListingsBlock data={data}/>
@@ -56,7 +68,8 @@ const ListingsBlockInterface = ({data}) => {
             })
         },
     })
-
+console.log({data})
+    return null;
     return (
             <ListingsContext.Provider value={listingsContextState}>
                 <SearchContext.Provider value={searchContextState}>

@@ -495,8 +495,7 @@ export class ListingsEngine {
     }
 
 
-    getCustomItemsData(listPositions = []) {
-        const listingsData = this.listingsContext?.listingsData;
+    static getCustomItemsData(listPositions = [], listingsData = null) {
         let itemsData;
         let listData = [];
         listPositions.forEach((listPosition) => {

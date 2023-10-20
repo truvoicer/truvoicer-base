@@ -2,7 +2,7 @@ import {ListingsEngineBase} from "@/truvoicer-base/library/listings/engine/listi
 import {isEmpty, isNotEmpty, isObject, isObjectEmpty, isSet} from "@/truvoicer-base/library/utils";
 import {
     LISTINGS_BLOCK_SOURCE_API,
-    LISTINGS_BLOCK_SOURCE_WORDPRESS
+    LISTINGS_BLOCK_SOURCE_WORDPRESS, LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST, LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {
     NEW_SEARCH_REQUEST, PAGE_CONTROL_CURRENT_PAGE, PAGE_CONTROL_HAS_MORE,
@@ -17,6 +17,11 @@ import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {buildWpApiUrl, protectedApiRequest} from "@/truvoicer-base/library/api/wp/middleware";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
 import {SESSION_AUTHENTICATED, SESSION_USER, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
+import PostsListingsBlock from "@/truvoicer-base/components/blocks/listings/sources/wp/items/PostsListingsBlock";
+import PostsBlock from "@/truvoicer-base/components/blocks/posts/PostsBlock";
+import React from "react";
+import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
+import {setPostListDataAction} from "@/truvoicer-base/redux/actions/page-actions";
 
 export class ListingsManager extends ListingsEngineBase {
 
@@ -32,8 +37,7 @@ export class ListingsManager extends ListingsEngineBase {
             this.listingsEngine.updateContext({key: "listingsData", value: data})
             switch (data?.source) {
                 case LISTINGS_BLOCK_SOURCE_WORDPRESS:
-                    this.listingsEngine.updateContext({key: "category", value: data.listings_category})
-                    this.getListingsInitialLoad();
+                    this.setPostsBlocksDataAction(data);
                     break;
                 case LISTINGS_BLOCK_SOURCE_API:
                 default:
@@ -49,6 +53,17 @@ export class ListingsManager extends ListingsEngineBase {
                     }
                     break;
             }
+        }
+    }
+    setPostsBlocksDataAction(data) {
+        switch (data?.wordpress_data_source) {
+            case LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST:
+                this.listingsEngine.updateContext({key: "category", value: data?.listings_category})
+                this.getListingsInitialLoad();
+                break;
+            case LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS:
+                this.listingsEngine.updateContext({key: "category", value: data?.category_id})
+                break;
         }
     }
 
@@ -85,11 +100,22 @@ export class ListingsManager extends ListingsEngineBase {
         }
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
-                this.postsListingsInitialLoad(listingsDataState)
+                this.getWordpressInitialLoad(listingsDataState)
                 break;
             case LISTINGS_BLOCK_SOURCE_API:
             default:
                 this.apiListingsInitialLoad(listingsDataState)
+                break;
+        }
+
+    }
+    getWordpressInitialLoad(listingsData) {
+        switch (listingsData?.wordpress_data_source) {
+            case LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST:
+                this.postsListingsInitialLoad(listingsData)
+                break;
+            case LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS:
+                this.postsInitialLoad(listingsData)
                 break;
         }
 
@@ -114,6 +140,22 @@ export class ListingsManager extends ListingsEngineBase {
         // setSearchExtraDataAction(data.extra_data, data.provider, data.request_data)
         // setSearchRequestServiceAction(data.request_service)
         // setPageControlsAction(data.extra_data)
+    }
+    postsInitialLoad(listingsDataState) {
+        if (!Array.isArray(listingsDataState?.item_list_id)) {
+            return;
+        }
+        let listData = extractItemListFromPost({post: listingsDataState?.item_list_id});
+        if (!listData) {
+            console.error('Invalid item list post data...')
+            listData = [];
+        }
+        this.searchEngine.setSearchRequestOperationAction(NEW_SEARCH_REQUEST);
+        const category = listingsDataState.category_id;
+        // this.getUserItemsListAction(listData, siteConfig.internalProviderName, category)
+        this.searchEngine.setSearchListDataAction(listData);
+        this.searchEngine.setSearchCategoryAction(category)
+        // this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_COMPLETED);
     }
 
     apiListingsInitialLoad(listingsDataState) {
@@ -191,6 +233,83 @@ export class ListingsManager extends ListingsEngineBase {
     }
 
     runSearch() {
+        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
+
+        switch (listingsDataState?.source) {
+            case LISTINGS_BLOCK_SOURCE_WORDPRESS:
+                switch (listingsDataState?.wordpress_data_source) {
+                    case LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST:
+                        this.runFetcherApiListingsSearch()
+                        break;
+                    case LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS:
+                        this.runFetcherApiListingsSearch()
+                        break;
+                    default:
+                        console.warn('Invalid wordpress data source...')
+                        break
+                }
+                break;
+            case LISTINGS_BLOCK_SOURCE_API:
+                this.runFetcherApiListingsSearch()
+                break;
+            default:
+                console.warn('Invalid listings source...')
+                break;
+        }
+    }
+    runFetcherApiListingsSearch() {
+        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
+        this.searchEngine.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
+        this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
+        const pageControlsState = this.searchEngine.searchContext.pageControls;
+        const validate = this.validateSearchParams();
+        if (!validate) {
+            this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
+            return false;
+        }
+
+        if (!pageControlsState[PAGE_CONTROL_PAGINATION_REQUEST]) {
+            this.searchEngine.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, 1);
+        }
+        // const providers = this.getSearchProviders();
+        // const filterProviders = this.searchEngine.filterSearchProviders(providers);
+        // filterProviders.map((provider, index) => {
+        //     fetchData(
+        //         "operation",
+        //         [this.searchEngine.getEndpointOperation()],
+        //         this.searchEngine.buildQueryData(filterProviders, provider, this.listingsEngine?.listingsContext?.listingsQueryData),
+        //         this.searchResponseHandler.bind(this),
+        //         (filterProviders.length === index + 1)
+        //     )
+        // })
+        wpResourceRequest({
+            endpoint: wpApiConfig.endpoints.postListRequest,
+            method: 'POST',
+            data: {
+                posts_per_page: listingsDataState?.posts_per_page,
+                show_all_categories: listingsDataState?.show_all_categories,
+                categories: listingsDataState?.categories,
+                page_number: isNotEmpty(pageNumber) ? parseInt(pageNumber) : 1
+            }
+        })
+            .then(response => {
+                console.log({response})
+                if (!isCancelled) {
+                    if (response?.data?.status === "success" && Array.isArray(response.data?.postList)) {
+                        setPosts(response.data.postList);
+                        setPostListDataAction(response.data.postList);
+                        setPaginationControls(response.data.pagination)
+                    } else {
+                        console.log("Post list error")
+                    }
+                }
+            })
+            .catch(error => {
+                console.error(error)
+            })
+    }
+
+    runFetcherApiListingsSearch() {
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
         this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
         const pageControlsState = this.searchEngine.searchContext.pageControls;

@@ -63,7 +63,10 @@ const GridItems = (props) => {
     }
 
     const insertListStartItems = (searchList) => {
-        const itemsData = listingsManager.listingsEngine.getCustomItemsData(["list_start"]);
+        const itemsData = ListingsManager.getCustomItemsData(
+            ["list_start"],
+            listingsManager.listingsContext?.listingsData
+        );
         if (itemsData.length === 0) {
             return searchList;
         }
@@ -77,7 +80,10 @@ const GridItems = (props) => {
     }
 
     const insertListEndItems = (searchList) => {
-        const itemsData = listingsManager.listingsEngine.getCustomItemsData(["list_end"]);
+        const itemsData = ListingsManager.getCustomItemsData(
+            ["list_end"],
+            listingsManager.listingsContext?.listingsData
+        );
         if (itemsData.length === 0) {
             return searchList;
         }
@@ -99,9 +105,15 @@ const GridItems = (props) => {
             return searchList;
         }
 
-        const listStartItemsCount = listingsManager.listingsEngine.getCustomItemsData(["list_start"]).length;
+        const listStartItemsCount = ListingsManager.getCustomItemsData(
+            ["list_start"],
+            listingsManager.listingsContext?.listingsData
+        ).length;
 
-        let itemsData = listingsManager.listingsEngine.getCustomItemsData(["custom_position"]);
+        let itemsData = ListingsManager.getCustomItemsData(
+            ["custom_position"],
+            listingsManager.listingsContext?.listingsData
+        );
         const newSearchList = [];
         const newItemsData = [];
         if (itemsData.length === 0) {
