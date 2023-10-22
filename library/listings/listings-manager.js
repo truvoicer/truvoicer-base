@@ -18,7 +18,6 @@ import {buildWpApiUrl, protectedApiRequest} from "@/truvoicer-base/library/api/w
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
 import {SESSION_AUTHENTICATED, SESSION_USER, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
 import PostsListingsBlock from "@/truvoicer-base/components/blocks/listings/sources/wp/items/PostsListingsBlock";
-import PostsBlock from "@/truvoicer-base/components/blocks/posts/PostsBlock";
 import React from "react";
 import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 import {setPostListDataAction} from "@/truvoicer-base/redux/actions/page-actions";

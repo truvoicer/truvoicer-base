@@ -16,7 +16,6 @@ import PasswordResetDialog from "../components/forms/Auth/PasswordResetDialog";
 import FormBlock from "../components/blocks/form/FormBlock";
 import UserSavedItemsBlock from "../components/blocks/UserSavedItemsBlock";
 import OptinBlock from "../components/blocks/optin/OptinBlock";
-import PostsBlock from "../components/blocks/posts/PostsBlock";
 import TabsBlock from "@/truvoicer-base/components/blocks/Tabs/TabsBlock";
 import CarouselInterface from "@/truvoicer-base/components/blocks/carousel/CarouselInterface";
 
@@ -86,12 +85,8 @@ export const blockComponentsConfig = {
             name: "opt_in_block",
             component: OptinBlock
         },
-        posts_block: {
-            name: "posts_block",
-            component: ListingsBlockInterface
-        },
-        post_item_block: {
-            name: "post_item_block",
+        post_block: {
+            name: "post_block",
             component: PostItemBlock
         },
         widget_board_block: {

@@ -7,7 +7,6 @@ import store from "../../../redux/store";
 import {SESSION_USER, SESSION_USER_ID} from "../../../redux/constants/session-constants";
 import useSWR from "swr";
 import {allSingleItemPostsQuery} from "../../graphql/queries/all-single-item-posts";
-import {postWithTemplateQuery} from "../../graphql/queries/post-with-template";
 import {allCategoriesQuery} from "../../graphql/queries/all-categories-uri";
 import {comparisonItemTemplateQuery} from "../../graphql/queries/single-comparison-item-post-template";
 import {allComparisonItemsPostsQuery} from "../../graphql/queries/all-comparison-items-posts";
@@ -204,19 +203,12 @@ export async function getSinglePage(slug) {
     return results?.data;
 }
 
-export async function getPostWithTemplate(slug, type, preview) {
-    return await fetchAPI(
-        postWithTemplateQuery(),
-        {
-            variables: {
-                id: slug,
-                idType: type,
-                slug: slug,
-                onlyEnabled: !preview,
-                preview,
-            },
-        }
-    );
+export async function getPostWithTemplate(slug) {
+    const results = await wpResourceRequest({
+        endpoint: sprintf(wpApiConfig.endpoints.postWithTemplate, {slug}),
+        method: 'GET',
+    })
+    return results?.data;
 }
 
 export async function getPageTemplate(postType, category) {
@@ -228,7 +220,6 @@ export async function getPageTemplate(postType, category) {
         }),
         method: 'GET',
     })
-    console.log({results})
     return results?.data;
 }
 

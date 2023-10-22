@@ -11,6 +11,7 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 
 const PostItemBlock = ({data, post, postList, postNav}) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
+    console.log({data, post, postNav})
     const getPostColumnClasses = () => {
         return (data?.show_sidebar) ? "col-12 col-md-8 col-lg-8" : "col-12";
     }
@@ -53,6 +54,16 @@ const PostItemBlock = ({data, post, postList, postNav}) => {
     const prevPost = getPrevPost();
     const nextPost = getNextPost();
 
+    function getCategory(categories) {
+        if (Array.isArray(categories) && categories?.length > 0) {
+            return categories[0]
+        }
+        return null
+    }
+
+    const prevPostCategory = getCategory(prevPost?.categories);
+    const nextPostCategory = getCategory(nextPost?.categories);
+
     function defaultView() {
         return (
             <section className="blog_area single-post-area section-padding">
@@ -60,17 +71,17 @@ const PostItemBlock = ({data, post, postList, postNav}) => {
                     <div className="row">
                         <div className={`${getPostColumnClasses()} posts-list`}>
                             <div className="single-post">
-                                <h1>{post?.title}</h1>
+                                <h1>{post?.post_title}</h1>
                                 <div className="feature-img">
-                                    <img className="img-fluid" src={post?.featuredImage?.node?.mediaItemUrl} alt=""/>
+                                    <img className="img-fluid" src={post?.featured_image} alt=""/>
                                 </div>
                                 <div className="blog_details">
-                                    <h2>{post?.title}</h2>
+                                    <h2>{post?.post_title}</h2>
                                     <BlogCategoryList
-                                        categories={post?.categories?.nodes}
+                                        categories={post?.categories}
                                         classes={"blog-info-link mt-3 mb-4"}
                                     />
-                                    <>{HtmlParser(post?.content ? post.content : "")}</>
+                                    <>{HtmlParser(post?.post_content ? post.post_content : "")}</>
                                 </div>
                             </div>
                             <div className="navigation-top">
@@ -99,20 +110,20 @@ const PostItemBlock = ({data, post, postList, postNav}) => {
                                                     <div className="thumb">
                                                         <Link
                                                             href={getPostItemUrl({
-                                                                post_name: prevPost?.slug || prevPost?.post_name,
-                                                                category_name: prevPost?.post_options?.postTemplateCategory?.slug || prevPost?.post_template_category?.slug
+                                                                post_name:  prevPost?.post_name,
+                                                                category_name: prevPostCategory?.slug
                                                             })}
                                                             onClick={prevPostClickHandler}>
                                                             <img className="img-fluid"
-                                                                 src={prevPost?.featuredImage?.node?.mediaItemUrl || prevPost?.featured_image}
+                                                                 src={prevPost?.featured_image}
                                                                  alt=""/>
                                                         </Link>
                                                     </div>
                                                     <div className="arrow">
                                                         <Link
                                                             href={getPostItemUrl({
-                                                                post_name: prevPost?.slug || prevPost?.post_name,
-                                                                category_name: prevPost?.post_options?.postTemplateCategory?.slug || prevPost?.post_template_category?.slug
+                                                                post_name:  prevPost?.post_name,
+                                                                category_name: prevPostCategory?.slug
                                                             })}
                                                             onClick={prevPostClickHandler}>
                                                             <span className="lnr text-white ti-arrow-left"/>
@@ -123,11 +134,11 @@ const PostItemBlock = ({data, post, postList, postNav}) => {
                                                         <p>Prev Post</p>
                                                         <Link
                                                             href={getPostItemUrl({
-                                                                post_name: prevPost?.slug || prevPost?.post_name,
-                                                                category_name: prevPost?.post_options?.postTemplateCategory?.slug || prevPost?.post_template_category?.slug
+                                                                post_name:  prevPost?.post_name,
+                                                                category_name: prevPostCategory?.slug
                                                             })}
                                                             onClick={prevPostClickHandler}>
-                                                            <h4>{prevPost?.title || prevPost?.post_title}</h4>
+                                                            <h4>{prevPost?.post_title}</h4>
 
                                                         </Link>
                                                     </div>
@@ -142,19 +153,19 @@ const PostItemBlock = ({data, post, postList, postNav}) => {
                                                         <p>Next Post</p>
                                                         <Link
                                                             href={getPostItemUrl({
-                                                                post_name: nextPost?.slug || nextPost?.post_name,
-                                                                category_name: nextPost?.post_options?.postTemplateCategory?.slug || nextPost?.post_template_category?.slug
+                                                                post_name:  nextPost?.post_name,
+                                                                category_name: nextPostCategory?.slug
                                                             })}
                                                             onClick={nextPostClickHandler}>
-                                                            <h4>{nextPost?.title || nextPost?.post_title}</h4>
+                                                            <h4>{nextPost?.post_title}</h4>
 
                                                         </Link>
                                                     </div>
                                                     <div className="arrow">
                                                         <Link
                                                             href={getPostItemUrl({
-                                                                post_name: nextPost?.slug || nextPost?.post_name,
-                                                                category_name: nextPost?.post_options?.postTemplateCategory?.slug || nextPost?.post_template_category?.slug
+                                                                post_name:  nextPost?.post_name,
+                                                                category_name: nextPostCategory?.slug
                                                             })}
                                                             onClick={nextPostClickHandler}>
                                                             <span className="lnr text-white ti-arrow-right"/>
@@ -164,12 +175,12 @@ const PostItemBlock = ({data, post, postList, postNav}) => {
                                                     <div className="thumb">
                                                         <Link
                                                             href={getPostItemUrl({
-                                                                post_name: nextPost?.slug || nextPost?.post_name,
-                                                                category_name: nextPost?.post_options?.postTemplateCategory?.slug || nextPost?.post_template_category?.slug
+                                                                post_name:  nextPost?.post_name,
+                                                                category_name: nextPostCategory?.slug
                                                             })}
                                                             onClick={nextPostClickHandler}>
                                                             <img className="img-fluid"
-                                                                 src={nextPost?.featuredImage?.node?.mediaItemUrl || nextPost?.featured_image}
+                                                                 src={nextPost?.featured_image}
                                                                  alt=""/>
 
                                                         </Link>
