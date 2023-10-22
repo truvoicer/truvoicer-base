@@ -10,13 +10,13 @@ export const APPEND_SEARCH_REQUEST = "APPEND_SEARCH_REQUEST";
 
 export const SEARCH_RESET = "SEARCH_RESET";
 export const PAGE_CONTROL_HAS_MORE = "hasMore";
-export const PAGE_CONTROL_TOTAL_ITEMS = "totalItems";
-export const PAGE_CONTROL_TOTAL_PAGES = "totalPages";
-export const PAGE_CONTROL_CURRENT_PAGE = "currentPage";
-export const PAGE_CONTROL_PAGE_SIZE = "pageSize";
 export const PAGE_CONTROL_PAGINATION_REQUEST = "paginationRequest";
 export const PAGE_CONTROL_REQ_PAGINATION_TYPE = "pagination_type";
 export const PAGE_CONTROL_REQ_PAGINATION_OFFSET = "offset";
-export const PAGE_CONTROL_REQ_PAGINATION_PAGE = "page";
-export const PAGE_CONTROL_REQ_TOTAL_ITEMS = "total_items";
-export const PAGE_CONTROL_REQ_PAGE_SIZE = "item_count";
+
+export const PAGINATION_TOTAL_PAGES = "total_pages";
+export const PAGINATION_PAGE_SIZE = "page_size";
+export const PAGINATION_OFFSET = "offset";
+export const PAGINATION_PAGE_NUMBER = "page_number";
+export const PAGINATION_TOTAL_ITEMS = "total_items";
+

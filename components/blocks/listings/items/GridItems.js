@@ -15,6 +15,7 @@ import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {ListingsEngine} from "@/truvoicer-base/library/listings/engine/listings-engine";
 
 const GridItems = (props) => {
     const {listStart, listEnd, customPosition, grid, listItems, category} = props;
@@ -63,7 +64,7 @@ const GridItems = (props) => {
     }
 
     const insertListStartItems = (searchList) => {
-        const itemsData = ListingsManager.getCustomItemsData(
+        const itemsData = ListingsEngine.getCustomItemsData(
             ["list_start"],
             listingsManager.listingsContext?.listingsData
         );
@@ -80,7 +81,7 @@ const GridItems = (props) => {
     }
 
     const insertListEndItems = (searchList) => {
-        const itemsData = ListingsManager.getCustomItemsData(
+        const itemsData = ListingsEngine.getCustomItemsData(
             ["list_end"],
             listingsManager.listingsContext?.listingsData
         );
@@ -105,12 +106,12 @@ const GridItems = (props) => {
             return searchList;
         }
 
-        const listStartItemsCount = ListingsManager.getCustomItemsData(
+        const listStartItemsCount = ListingsEngine.getCustomItemsData(
             ["list_start"],
             listingsManager.listingsContext?.listingsData
         ).length;
 
-        let itemsData = ListingsManager.getCustomItemsData(
+        let itemsData = ListingsEngine.getCustomItemsData(
             ["custom_position"],
             listingsManager.listingsContext?.listingsData
         );

@@ -68,7 +68,7 @@ const SearchBlock = (props) => {
             isNotEmpty(category) &&
             listingsManager.canRunSearch(NEW_SEARCH_REQUEST)
         ) {
-            listingsManager.runSearch();
+            listingsManager.runSearch('searchblock');
             listingsManager.getListingsEngine().setListingsScrollTopAction(true);
         }
     }, [searchContext?.searchOperation, category]);

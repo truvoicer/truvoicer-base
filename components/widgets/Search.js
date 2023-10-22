@@ -20,7 +20,7 @@ const Search = (props) => {
         e.preventDefault();
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         listingsManager.getListingsEngine().addListingsQueryDataString(fetcherApiConfig.queryKey, query, true)
-        listingsManager.runSearch();
+        listingsManager.runSearch('Search');
     }
 
     const formChangeHandler = (e) => {

@@ -2,8 +2,8 @@ import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {
     NEW_SEARCH_REQUEST,
-    PAGE_CONTROL_CURRENT_PAGE,
-    PAGE_CONTROL_TOTAL_PAGES, SEARCH_REQUEST_COMPLETED, SEARCH_REQUEST_STARTED,
+    PAGINATION_PAGE_NUMBER,
+    PAGINATION_TOTAL_PAGES, SEARCH_REQUEST_COMPLETED, SEARCH_REQUEST_STARTED,
 } from "@/truvoicer-base/redux/constants/search-constants";
 import GridItems from "../items/GridItems";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
@@ -47,11 +47,11 @@ const ListingsPaginate = (props) => {
 
     const GetPagination = () => {
         const pageControls = searchContext?.pageControls;
-        let range = getPaginationRange(pageControls[PAGE_CONTROL_CURRENT_PAGE]);
+        let range = getPaginationRange(pageControls[PAGINATION_PAGE_NUMBER]);
         return (
             <div className="pagination">
                 <ul>
-                    {pageControls[PAGE_CONTROL_CURRENT_PAGE] > paginationLimit - paginationRange &&
+                    {pageControls[PAGINATION_PAGE_NUMBER] > paginationLimit - paginationRange &&
                     <li className="pagination--list-item">
                         <a
                             className={"pagination--list-item__a"}
@@ -66,7 +66,7 @@ const ListingsPaginate = (props) => {
                     }
                     {range.map((num, index) => (
                         <React.Fragment key={index.toString()}>
-                            {num === pageControls[PAGE_CONTROL_CURRENT_PAGE]
+                            {num === pageControls[PAGINATION_PAGE_NUMBER]
                                 ?
                                 <li className="pagination--list-item">
                                     <a className={"pagination--list-item__a active"}
@@ -83,15 +83,15 @@ const ListingsPaginate = (props) => {
                             }
                         </React.Fragment>
                     ))}
-                    {pageControls[PAGE_CONTROL_TOTAL_PAGES] > 0 &&
+                    {pageControls[PAGINATION_TOTAL_PAGES] > 0 &&
                     <>
                         <li className="pagination--list-item">
                             <span className="more-page">...</span>
                         </li>
                         <li className="pagination--list-item">
                             <a className={"pagination--list-item__a"}
-                               onClick={paginationClickHandler.bind(this, pageControls[PAGE_CONTROL_TOTAL_PAGES])}>
-                                <span>{pageControls[PAGE_CONTROL_TOTAL_PAGES]}</span>
+                               onClick={paginationClickHandler.bind(this, pageControls[PAGINATION_TOTAL_PAGES])}>
+                                <span>{pageControls[PAGINATION_TOTAL_PAGES]}</span>
                             </a>
                         </li>
                     </>
@@ -106,9 +106,10 @@ const ListingsPaginate = (props) => {
             searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
             searchContext?.searchOperation === NEW_SEARCH_REQUEST
         ) {
-            listingsManager.runSearch();
+            listingsManager.runSearch('listingsPaginate');
         }
     }, [searchContext?.searchOperation]);
+    console.log({searchContext})
     function defaultView() {
         return (
             <>
@@ -117,7 +118,7 @@ const ListingsPaginate = (props) => {
                     listEnd={listingsContext?.listingsData?.list_end}
                     customPosition={listingsContext?.listingsData?.custom_position}
                     grid={listingsContext?.listingsGrid}
-                    listItems={searchContext.searchList}
+                    listItems={searchContext?.searchList || []}
                 />
                 <GetPagination/>
             </>

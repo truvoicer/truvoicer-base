@@ -5,7 +5,7 @@ import {SESSION_AUTHENTICATED, SESSION_IS_AUTHENTICATING} from "../../../redux/c
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
-import {PAGE_CONTROL_PAGE_SIZE} from "@/truvoicer-base/redux/constants/search-constants";
+import {PAGINATION_PAGE_SIZE} from "@/truvoicer-base/redux/constants/search-constants";
 import {AppContext} from "@/truvoicer-base/config/contexts/AppContext";
 import {AppManager} from "@/truvoicer-base/library/app/AppManager";
 
@@ -37,14 +37,14 @@ const ListingsBlockContainer = ({data, session, children}) => {
             return;
         }
         listingsManager.initialisePageControls();
-        if (!searchContext?.pageControls[PAGE_CONTROL_PAGE_SIZE]) {
+        if (!searchContext?.pageControls[PAGINATION_PAGE_SIZE]) {
             return;
         }
         listingsManager.getListingsInitialLoad();
     }, [
         session,
         listingsContext?.listingsData,
-        searchContext?.pageControls[PAGE_CONTROL_PAGE_SIZE]
+        searchContext?.pageControls[PAGINATION_PAGE_SIZE]
     ])
     useEffect(() => {
         if (!isObject(listingsContext?.listingsData) || isObjectEmpty(listingsContext?.listingsData)) {

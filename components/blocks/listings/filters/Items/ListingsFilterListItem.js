@@ -33,7 +33,7 @@ const ListingsFilterListItem = (props) => {
             searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
             searchContext?.searchOperation === NEW_SEARCH_REQUEST
         ) {
-            listingsManager.runSearch();
+            listingsManager.runSearch('ListingsFilterListItem');
         }
     }, [searchContext?.searchOperation]);
 

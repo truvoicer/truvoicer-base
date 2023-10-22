@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useRef} from "react";
 import {connect} from "react-redux";
-import {isNotEmpty, isObject, isObjectEmpty, scrollToRef} from "../../../library/utils";
-import {SESSION_AUTHENTICATED, SESSION_IS_AUTHENTICATING} from "../../../redux/constants/session-constants";
+import {isNotEmpty, isObject, isObjectEmpty, scrollToRef} from "@/truvoicer-base/library/utils";
+import {SESSION_AUTHENTICATED, SESSION_IS_AUTHENTICATING} from "@/truvoicer-base/redux/constants/session-constants";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
-import {PAGE_CONTROL_PAGE_SIZE} from "@/truvoicer-base/redux/constants/search-constants";
+import {PAGINATION_PAGE_SIZE} from "@/truvoicer-base/redux/constants/search-constants";
 import {AppContext} from "@/truvoicer-base/config/contexts/AppContext";
 import {AppManager} from "@/truvoicer-base/library/app/AppManager";
 
@@ -33,15 +33,42 @@ const PostsBlockContainer = ({data, session, children}) => {
         if (!isObject(listingsContext?.listingsData) || isObjectEmpty(listingsContext?.listingsData)) {
             return;
         }
+        if (searchContext?.initialRequestHasRun) {
+            return;
+        }
         listingsManager.initialisePageControls();
-        if (!searchContext?.pageControls[PAGE_CONTROL_PAGE_SIZE]) {
+        if (!searchContext?.pageControls[PAGINATION_PAGE_SIZE]) {
+            return;
+        }
+        listingsManager.searchEngine.updateContext({key: "initialRequestHasRun", value: true})
+        return () => {
+            listingsManager.searchEngine.updateContext({key: "initialRequestHasRun", value: true})
+        }
+    }, [
+        session,
+        listingsContext?.listingsData,
+        searchContext?.pageControls[PAGINATION_PAGE_SIZE],
+        searchContext?.initialRequestHasRun
+    ])
+    useEffect(() => {
+        if (session[SESSION_IS_AUTHENTICATING]) {
+            return;
+        }
+        if (!isObject(listingsContext?.listingsData) || isObjectEmpty(listingsContext?.listingsData)) {
+            return;
+        }
+        if (searchContext?.initialRequestHasRun) {
+            return;
+        }
+        if (!searchContext?.pageControls[PAGINATION_PAGE_SIZE]) {
             return;
         }
         listingsManager.getListingsInitialLoad();
     }, [
         session,
         listingsContext?.listingsData,
-        searchContext?.pageControls[PAGE_CONTROL_PAGE_SIZE]
+        searchContext?.pageControls[PAGINATION_PAGE_SIZE],
+        searchContext?.initialRequestHasRun
     ])
     useEffect(() => {
         if (!isObject(listingsContext?.listingsData) || isObjectEmpty(listingsContext?.listingsData)) {

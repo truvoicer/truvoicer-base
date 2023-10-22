@@ -7,6 +7,7 @@ import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_IDLE} from "@/truvoicer-base/redux/co
 export const searchData = {
     searchStatus: SEARCH_REQUEST_IDLE,
     searchOperation: NEW_SEARCH_REQUEST,
+    initialRequestHasRun: false,
     extraData: {},
     searchList: [],
     savedItemsList: [],
@@ -15,10 +16,10 @@ export const searchData = {
         initialized: false,
         paginationRequest: false,
         hasMore: false,
-        totalItems: 0,
-        totalPages: 0,
-        currentPage: 1,
-        pageSize: 0
+        total_items: 0,
+        total_pages: 0,
+        current_page: 1,
+        page_size: 0
     },
     requestService: "",
     provider: "",

@@ -66,6 +66,7 @@ export const wpApiConfig = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
     },
+
     appSecret: process.env.NEXT_PUBLIC_APP_SECRET,
 }
 

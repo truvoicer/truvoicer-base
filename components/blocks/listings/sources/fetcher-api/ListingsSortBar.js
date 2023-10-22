@@ -66,7 +66,7 @@ const ListingsSortBar = (props) => {
             isNotEmpty(limit) &&
             listingsManager.canRunSearch(NEW_SEARCH_REQUEST)
         ) {
-            listingsManager.runSearch();
+            listingsManager.runSearch('ListingsSortBar');
             listingsManager.getListingsEngine().setListingsScrollTopAction(true);
         }
     }, [searchContext?.searchOperation, limit]);

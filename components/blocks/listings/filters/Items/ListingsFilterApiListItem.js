@@ -40,10 +40,10 @@ const ListingsFilterApiListItem = (props) => {
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         if (e.target.checked) {
             listingsManager.getListingsEngine().addArrayItem(props.data.api_endpoint, e.target.value, true)
-            listingsManager.runSearch();
+            listingsManager.runSearch('ListingsFilterApiListItem');
         } else {
             listingsManager.getListingsEngine().removeArrayItem(props.data.api_endpoint, e.target.value, true)
-            listingsManager.runSearch();
+            listingsManager.runSearch('ListingsFilterApiListItem');
         }
     }
 

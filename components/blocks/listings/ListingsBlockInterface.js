@@ -8,7 +8,7 @@ import {
 import {ListingsContext, listingsData} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext, searchData} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {updateStateNestedObjectData, updateStateObject} from "@/truvoicer-base/library/helpers/state-helpers";
-import PostsBlock from "@/truvoicer-base/components/blocks/posts/PostsBlock";
+import PostsBlock from "@/truvoicer-base/components/blocks/listings/sources/wp/posts/PostsBlock";
 
 const ListingsBlockInterface = ({data}) => {
 
@@ -68,8 +68,7 @@ const ListingsBlockInterface = ({data}) => {
             })
         },
     })
-console.log({data})
-    return null;
+
     return (
             <ListingsContext.Provider value={listingsContextState}>
                 <SearchContext.Provider value={searchContextState}>

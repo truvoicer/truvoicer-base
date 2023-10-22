@@ -23,7 +23,7 @@ const ListingsFilterDateItem = (props) => {
         setStartDate(date);
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         listingsManager.getListingsEngine().addListingsQueryDataString("start_date", moment(date).format(dateFormatString), true)
-        listingsManager.runSearch();
+        listingsManager.runSearch('ListingsFilterDateItem');
     };
 
     function defaultView() {

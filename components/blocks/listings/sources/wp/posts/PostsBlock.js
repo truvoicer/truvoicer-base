@@ -1,8 +1,4 @@
 import React, {useContext} from 'react';
-import FeedsListingsBlock from "./types/FeedsListingsBlock";
-import SearchListingsBlock from "./types/SearchListingsBlock";
-import ListingsBlockContainer
-    from "../../ListingsBlockContainer";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import PostsBlockContainer from "@/truvoicer-base/components/blocks/listings/sources/wp/posts/PostsBlockContainer";
@@ -43,44 +39,50 @@ const PostsBlock = (props) => {
         );
     }
 
+    console.log({props, listingsContext, searchContext})
 
     function defaultLayout() {
         return (
             <PostsBlockContainer data={props.data}>
-                <div className={"listings-container"}>
-                    {isNotEmpty(listingsContext?.listingsData?.heading) &&
-                        <div className={"listings-heading"}>
-                            <h3>{listingsContext.listingsData.heading}</h3>
-                        </div>
-                    }
-                    <div>
-                        {props.data?.show_listings_sidebar
-                            ?
-                            <>
-                                {filtersPosition === 'left' &&
-                                    <div>
-                                        <ListingsLeftSidebar/>
-                                    </div>
-                                }
-                                <div>
-                                    <div className={"listings-block"}>
+                <section className="blog_area section-padding">
+                    <div className="container">
+                        <div className={"row"}>
+                            {isNotEmpty(listingsContext?.listingsData?.heading) &&
+                                <div className={"listings-heading"}>
+                                    <h3>{listingsContext.listingsData.heading}</h3>
+                                </div>
+                            }
+
+                                {props.data?.show_listings_sidebar
+                                    ?
+                                    <>
+                                        {filtersPosition === 'left' &&
+
+                                            <div className="col-12 col-sm-9 col-md-6 col-lg-3 d-none d-lg-block">
+                                                <ListingsLeftSidebar/>
+                                            </div>
+                                        }
+
+                                        <div className="col-12 col-lg-9">
+                                            <div className="blog_left_sidebar">
+                                                {getListingsBlock()}
+                                            </div>
+                                        </div>
+
+                                        {filtersPosition === 'right' &&
+                                            <div className="col-12 col-sm-9 col-md-6 col-lg-3 d-none d-lg-block">
+                                                <ListingsLeftSidebar/>
+                                            </div>
+                                        }
+                                    </>
+                                    :
+                                    <div className="blog_left_sidebar">
                                         {getListingsBlock()}
                                     </div>
-                                </div>
-
-                                {filtersPosition === 'right' &&
-                                    <div>
-                                        <ListingsLeftSidebar/>
-                                    </div>
                                 }
-                            </>
-                            :
-                            <div className={"listings-block"}>
-                                {getListingsBlock()}
-                            </div>
-                        }
+                        </div>
                     </div>
-                </div>
+                </section>
             </PostsBlockContainer>
         )
     }

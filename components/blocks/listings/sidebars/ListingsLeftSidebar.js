@@ -7,10 +7,15 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import ListingsFilter from "@/truvoicer-base/components/blocks/listings/filters/ListingsFilter";
 import Left from "@/truvoicer-base/components/blocks/listings/sidebars/Left";
 import {fetchSidebarRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
+import {AppContext} from "@/truvoicer-base/config/contexts/AppContext";
+import {AppManager} from "@/truvoicer-base/library/app/AppManager";
 
 const ListingsLeftSidebar = (props) => {
     const [data, setData] = useState([]);
+    const appContext = useContext(AppContext);
+    const appManager = new AppManager(appContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
+    const fetchListingsContextGroups = appManager.findContextGroupsByContextId("listingsContext");
     async function sidebarRequest() {
         try {
             const fetchSidebar = await fetchSidebarRequest(siteConfig.leftSidebarName);
@@ -35,7 +40,7 @@ const ListingsLeftSidebar = (props) => {
             <div className="job_filter white-bg">
                 <div className="form_inner white-bg">
                     <Left />
-                    <ListingsFilter  listingsContextGroup={{listingsContext}}/>
+                    <ListingsFilter  listingsContextGroup={{fetchListingsContextGroups}}/>
                     {data.map((item, index) => (
                         <React.Fragment key={index.toString()}>
                             {item}

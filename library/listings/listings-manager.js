@@ -5,8 +5,8 @@ import {
     LISTINGS_BLOCK_SOURCE_WORDPRESS, LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST, LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {
-    NEW_SEARCH_REQUEST, PAGE_CONTROL_CURRENT_PAGE, PAGE_CONTROL_HAS_MORE,
-    PAGE_CONTROL_PAGE_SIZE, PAGE_CONTROL_PAGINATION_REQUEST, PAGE_CONTROL_REQ_PAGINATION_TYPE,
+    NEW_SEARCH_REQUEST, PAGINATION_PAGE_NUMBER, PAGE_CONTROL_HAS_MORE,
+    PAGINATION_PAGE_SIZE, PAGE_CONTROL_PAGINATION_REQUEST, PAGE_CONTROL_REQ_PAGINATION_TYPE,
     SEARCH_REQUEST_COMPLETED, SEARCH_REQUEST_ERROR, SEARCH_REQUEST_STARTED
 } from "@/truvoicer-base/redux/constants/search-constants";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
@@ -22,6 +22,7 @@ import PostsBlock from "@/truvoicer-base/components/blocks/posts/PostsBlock";
 import React from "react";
 import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 import {setPostListDataAction} from "@/truvoicer-base/redux/actions/page-actions";
+import {extractCategoryIds} from "@/truvoicer-base/library/helpers/wp-helpers";
 
 export class ListingsManager extends ListingsEngineBase {
 
@@ -69,11 +70,9 @@ export class ListingsManager extends ListingsEngineBase {
 
     getSearchLimit() {
         const listingsDataState = this.listingsEngine.listingsContext?.listingsData;
-        if (isSet(listingsDataState.search_limit) &&
-            listingsDataState.search_limit !== "" &&
-            listingsDataState.search_limit !== null &&
-            !isNaN(listingsDataState.search_limit)) {
-            return parseInt(listingsDataState.search_limit)
+        if (isNotEmpty(listingsDataState?.posts_per_page) &&
+            !isNaN(listingsDataState.posts_per_page)) {
+            return parseInt(listingsDataState.posts_per_page)
         }
         return fetcherApiConfig.defaultSearchLimit;
 
@@ -89,10 +88,11 @@ export class ListingsManager extends ListingsEngineBase {
     }
 
     initialisePageControls() {
-        this.searchEngine.setPageControlItemAction(PAGE_CONTROL_PAGE_SIZE, this.getSearchLimit())
+        this.searchEngine.setPageControlItemAction(PAGINATION_PAGE_SIZE, this.getSearchLimit())
     }
 
     getListingsInitialLoad() {
+        console.log('getListingsInitialLoad')
         const listingsDataState = this.listingsEngine?.listingsContext.listingsData;
         if (isEmpty(listingsDataState)) {
             // setSearchError("Listings data empty on initial search...")
@@ -142,20 +142,13 @@ export class ListingsManager extends ListingsEngineBase {
         // setPageControlsAction(data.extra_data)
     }
     postsInitialLoad(listingsDataState) {
-        if (!Array.isArray(listingsDataState?.item_list_id)) {
-            return;
-        }
-        let listData = extractItemListFromPost({post: listingsDataState?.item_list_id});
-        if (!listData) {
-            console.error('Invalid item list post data...')
-            listData = [];
-        }
         this.searchEngine.setSearchRequestOperationAction(NEW_SEARCH_REQUEST);
-        const category = listingsDataState.category_id;
+        const category = listingsDataState?.category_id;
         // this.getUserItemsListAction(listData, siteConfig.internalProviderName, category)
-        this.searchEngine.setSearchListDataAction(listData);
+        // this.searchEngine.setSearchListDataAction(listData);
         this.searchEngine.setSearchCategoryAction(category)
         // this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_COMPLETED);
+        this.runSearch('postsInitialLoad');
     }
 
     apiListingsInitialLoad(listingsDataState) {
@@ -226,13 +219,21 @@ export class ListingsManager extends ListingsEngineBase {
         }
         return true;
     }
+    validateWpPostsRequestParams() {
+        const listingsQueryData = this.listingsEngine?.listingsContext?.listingsQueryData;
+        if (!isSet(listingsQueryData[fetcherApiConfig.searchLimitKey])) {
+            this.listingsEngine.addListingsQueryDataString(fetcherApiConfig.searchLimitKey, fetcherApiConfig.defaultSearchLimit);
+        }
+        return true;
+    }
 
     loadNextPageNumberMiddleware(pageNumber) {
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_PAGINATION_REQUEST, true)
-        this.searchEngine.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, parseInt(pageNumber))
+        this.searchEngine.setPageControlItemAction(PAGINATION_PAGE_NUMBER, parseInt(pageNumber))
     }
 
-    runSearch() {
+    runSearch(source = null) {
+        console.log('runSearch', {source})
         const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
 
         switch (listingsDataState?.source) {
@@ -242,7 +243,7 @@ export class ListingsManager extends ListingsEngineBase {
                         this.runFetcherApiListingsSearch()
                         break;
                     case LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS:
-                        this.runFetcherApiListingsSearch()
+                        this.runWpPostsSearch()
                         break;
                     default:
                         console.warn('Invalid wordpress data source...')
@@ -257,52 +258,35 @@ export class ListingsManager extends ListingsEngineBase {
                 break;
         }
     }
-    runFetcherApiListingsSearch() {
+    runWpPostsSearch() {
         const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
         this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
         const pageControlsState = this.searchEngine.searchContext.pageControls;
-        const validate = this.validateSearchParams();
+        const validate = this.validateWpPostsRequestParams();
         if (!validate) {
             this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
+            console.error("Invalid search params...")
             return false;
         }
 
         if (!pageControlsState[PAGE_CONTROL_PAGINATION_REQUEST]) {
-            this.searchEngine.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, 1);
+            this.searchEngine.setPageControlItemAction(PAGINATION_PAGE_NUMBER, 1);
         }
-        // const providers = this.getSearchProviders();
-        // const filterProviders = this.searchEngine.filterSearchProviders(providers);
-        // filterProviders.map((provider, index) => {
-        //     fetchData(
-        //         "operation",
-        //         [this.searchEngine.getEndpointOperation()],
-        //         this.searchEngine.buildQueryData(filterProviders, provider, this.listingsEngine?.listingsContext?.listingsQueryData),
-        //         this.searchResponseHandler.bind(this),
-        //         (filterProviders.length === index + 1)
-        //     )
-        // })
         wpResourceRequest({
             endpoint: wpApiConfig.endpoints.postListRequest,
             method: 'POST',
             data: {
                 posts_per_page: listingsDataState?.posts_per_page,
                 show_all_categories: listingsDataState?.show_all_categories,
-                categories: listingsDataState?.categories,
-                page_number: isNotEmpty(pageNumber) ? parseInt(pageNumber) : 1
+                categories: extractCategoryIds(listingsDataState?.categories),
+                pagination_type: 'offset'
+
+                // page_number: isNotEmpty(pageNumber) ? parseInt(pageNumber) : 1
             }
         })
             .then(response => {
-                console.log({response})
-                if (!isCancelled) {
-                    if (response?.data?.status === "success" && Array.isArray(response.data?.postList)) {
-                        setPosts(response.data.postList);
-                        setPostListDataAction(response.data.postList);
-                        setPaginationControls(response.data.pagination)
-                    } else {
-                        console.log("Post list error")
-                    }
-                }
+                this.postsRequestResponseHandler(response, true);
             })
             .catch(error => {
                 console.error(error)
@@ -320,7 +304,7 @@ export class ListingsManager extends ListingsEngineBase {
         }
 
         if (!pageControlsState[PAGE_CONTROL_PAGINATION_REQUEST]) {
-            this.searchEngine.setPageControlItemAction(PAGE_CONTROL_CURRENT_PAGE, 1);
+            this.searchEngine.setPageControlItemAction(PAGINATION_PAGE_NUMBER, 1);
         }
         const providers = this.getSearchProviders();
         const filterProviders = this.searchEngine.filterSearchProviders(providers);
@@ -357,6 +341,33 @@ export class ListingsManager extends ListingsEngineBase {
         } else {
             this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
             this.searchEngine.setSearchRequestErrorAction(data.message)
+        }
+        if (completed) {
+            // this.searchEngine.setHasMoreSearchPages()
+            this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_COMPLETED);
+            this.searchEngine.setSearchRequestOperationAction(null);
+        }
+    }
+    postsRequestResponseHandler(response, completed = false) {
+        console.log({response})
+        if (response?.status === 200 && response?.data.status === "success") {
+            // this.getUserItemsListAction(data.request_data, data.provider, data.category)
+            this.searchEngine.setSearchListDataAction(response?.data?.postList);
+            // this.searchEngine.setSearchExtraDataAction(data.extra_data, data.provider, data.request_data)
+            // this.searchEngine.setSearchRequestServiceAction(data.request_service)
+            // this.searchEngine.setSearchProviderAction(data.provider)
+            this.searchEngine.setSearchCategoryAction('posts')
+            let pageControlData = {
+                [PAGE_CONTROL_REQ_PAGINATION_TYPE]: null
+            };
+            if (isNotEmpty(response?.data?.pagination) && isObject(response?.data.pagination)) {
+                pageControlData = {...pageControlData, ...response?.data.pagination};
+            }
+            this.searchEngine.setPageControlsAction(pageControlData)
+
+        } else {
+            this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
+            this.searchEngine.setSearchRequestErrorAction(response?.data.message)
         }
         if (completed) {
             // this.searchEngine.setHasMoreSearchPages()

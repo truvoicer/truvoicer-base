@@ -2,8 +2,8 @@ import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {
     NEW_SEARCH_REQUEST,
-    PAGE_CONTROL_CURRENT_PAGE,
-    PAGE_CONTROL_TOTAL_PAGES,
+    PAGINATION_PAGE_NUMBER,
+    PAGINATION_TOTAL_PAGES,
 } from "@/truvoicer-base/redux/constants/search-constants";
 import GridItems from "../../../../../../items/GridItems";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
@@ -47,14 +47,14 @@ const ListingsPaginate = (props) => {
 
     const GetPagination = () => {
         const pageControls = searchContext?.pageControls;
-        let range = getPaginationRange(pageControls[PAGE_CONTROL_CURRENT_PAGE]);
+        let range = getPaginationRange(pageControls[PAGINATION_PAGE_NUMBER]);
         return (
             <div className="row">
                 <div className="col-lg-12">
                     <div className="pagination_wrap">
                         <ul>
 
-                            {pageControls[PAGE_CONTROL_CURRENT_PAGE] > paginationLimit - paginationRange &&
+                            {pageControls[PAGINATION_PAGE_NUMBER] > paginationLimit - paginationRange &&
                             <li className="">
                                 <a
                                     className={""}
@@ -69,7 +69,7 @@ const ListingsPaginate = (props) => {
                             }
                             {range.map((num, index) => (
                                 <React.Fragment key={index.toString()}>
-                                    {num === pageControls[PAGE_CONTROL_CURRENT_PAGE]
+                                    {num === pageControls[PAGINATION_PAGE_NUMBER]
                                         ?
                                         <li className="">
                                             <a className={"active"}
@@ -86,15 +86,15 @@ const ListingsPaginate = (props) => {
                                     }
                                 </React.Fragment>
                             ))}
-                            {pageControls[PAGE_CONTROL_TOTAL_PAGES] > 0 &&
+                            {pageControls[PAGINATION_TOTAL_PAGES] > 0 &&
                             <>
                                 <li className="page-item">
                                     <span className="more-page">...</span>
                                 </li>
                                 <li className="">
                                     <a className={""}
-                                       onClick={paginationClickHandler.bind(this, pageControls[PAGE_CONTROL_TOTAL_PAGES])}>
-                                        <span>{pageControls[PAGE_CONTROL_TOTAL_PAGES]}</span>
+                                       onClick={paginationClickHandler.bind(this, pageControls[PAGINATION_TOTAL_PAGES])}>
+                                        <span>{pageControls[PAGINATION_TOTAL_PAGES]}</span>
                                     </a>
                                 </li>
                             </>
@@ -111,7 +111,7 @@ const ListingsPaginate = (props) => {
             searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
             searchContext?.searchOperation === NEW_SEARCH_REQUEST
         ) {
-            listingsManager.runSearch();
+            listingsManager.runSearch('ListingsPaginate');
         }
     }, [searchContext?.searchOperation]);
     function defaultView() {

@@ -1,18 +1,17 @@
 import {
     APPEND_SEARCH_REQUEST,
     NEW_SEARCH_REQUEST,
-    PAGE_CONTROL_CURRENT_PAGE,
+    PAGINATION_PAGE_NUMBER,
     PAGE_CONTROL_HAS_MORE,
-    PAGE_CONTROL_PAGE_SIZE,
+    PAGINATION_PAGE_SIZE,
     PAGE_CONTROL_REQ_PAGINATION_OFFSET,
-    PAGE_CONTROL_REQ_PAGINATION_PAGE,
     PAGE_CONTROL_PAGINATION_REQUEST, PAGE_CONTROL_REQ_PAGINATION_TYPE,
-    PAGE_CONTROL_TOTAL_ITEMS,
-    PAGE_CONTROL_TOTAL_PAGES,
+    PAGINATION_TOTAL_ITEMS,
+    PAGINATION_TOTAL_PAGES,
     SEARCH_REQUEST_COMPLETED,
     SEARCH_REQUEST_ERROR,
     SEARCH_REQUEST_IDLE,
-    SEARCH_REQUEST_STARTED, PAGE_CONTROL_REQ_TOTAL_ITEMS
+    SEARCH_REQUEST_STARTED
 } from "@/truvoicer-base/redux/constants/search-constants";
 import store from "@/truvoicer-base/redux/store";
 import {produce} from "immer";
@@ -134,7 +133,7 @@ export class SearchEngine {
 
     calculateLimit(providerCount) {
         const pageControlsState = this.searchContext.pageControls;
-        let pageSize = pageControlsState[PAGE_CONTROL_PAGE_SIZE];
+        let pageSize = pageControlsState[PAGINATION_PAGE_SIZE];
         return Math.floor(pageSize / providerCount);
     }
 
@@ -176,10 +175,14 @@ export class SearchEngine {
         const hasMorePages = this.hasMore(pageControlsState, extraData);
         const totalItems = this.getTotalItems(pageControlsState, extraData);
         const totalPages = this.getTotalPages(pageControlsState, extraData);
+
         this.setPageControlObjectAction({
-            [PAGE_CONTROL_HAS_MORE]: hasMorePages,
-            [PAGE_CONTROL_TOTAL_ITEMS]: totalItems,
-            [PAGE_CONTROL_TOTAL_PAGES]: totalPages
+            ...extraData,
+            ...{
+                [PAGE_CONTROL_HAS_MORE]: hasMorePages,
+                [PAGINATION_TOTAL_ITEMS]: totalItems,
+                [PAGINATION_TOTAL_PAGES]: totalPages
+            }
         });
     }
 
@@ -200,33 +203,33 @@ export class SearchEngine {
         switch (requestPageControls[PAGE_CONTROL_REQ_PAGINATION_TYPE]) {
             case PAGE_CONTROL_REQ_PAGINATION_OFFSET:
                 return this.hasMoreOffsetItems(pageControlsState, requestPageControls);
-            case PAGE_CONTROL_REQ_PAGINATION_PAGE:
+            case PAGINATION_PAGE_NUMBER:
                 return this.hasMorePages(pageControlsState, requestPageControls);
             default:
                 return false;
         }
     }
     hasMoreOffsetItems(pageControlsState, requestPageControls) {
-        let currentPage = pageControlsState[PAGE_CONTROL_CURRENT_PAGE];
-        if (isNotEmpty(requestPageControls?.[PAGE_CONTROL_CURRENT_PAGE])) {
-            currentPage = parseInt(requestPageControls[PAGE_CONTROL_CURRENT_PAGE]);
+        let currentPage = pageControlsState[PAGINATION_PAGE_NUMBER];
+        if (isNotEmpty(requestPageControls?.[PAGINATION_PAGE_NUMBER])) {
+            currentPage = parseInt(requestPageControls[PAGINATION_PAGE_NUMBER]);
         }
         if (currentPage === 0) {
             return false;
         }
-        if (!isNotEmpty(requestPageControls?.[PAGE_CONTROL_REQ_TOTAL_ITEMS])) {
+        if (!isNotEmpty(requestPageControls?.[PAGINATION_TOTAL_ITEMS])) {
             return false;
         }
 
-        const totalItems = parseInt(requestPageControls[PAGE_CONTROL_REQ_TOTAL_ITEMS]);
+        const totalItems = parseInt(requestPageControls[PAGINATION_TOTAL_ITEMS]);
         if (totalItems === 0) {
             return false;
         }
-        if (!isNotEmpty(pageControlsState?.[PAGE_CONTROL_PAGE_SIZE])) {
+        if (!isNotEmpty(pageControlsState?.[PAGINATION_PAGE_SIZE])) {
             return false;
         }
 
-        const pageSize = parseInt(pageControlsState[PAGE_CONTROL_PAGE_SIZE]);
+        const pageSize = parseInt(pageControlsState[PAGINATION_PAGE_SIZE]);
         if (pageSize === 0) {
             return false;
         }
@@ -235,19 +238,23 @@ export class SearchEngine {
 
     }
     hasMorePages(pageControlsState, requestPageControls) {
-        let currentPage = pageControlsState[PAGE_CONTROL_CURRENT_PAGE];
-        if (isNotEmpty(requestPageControls?.[PAGE_CONTROL_CURRENT_PAGE])) {
-            currentPage = parseInt(requestPageControls[PAGE_CONTROL_CURRENT_PAGE]);
+        let currentPage = pageControlsState[PAGINATION_PAGE_NUMBER];
+        if (isNotEmpty(requestPageControls?.[PAGINATION_PAGE_NUMBER])) {
+            currentPage = parseInt(requestPageControls[PAGINATION_PAGE_NUMBER]);
         }
         if (currentPage === 0) {
             return false;
         }
-        return parseInt(pageControlsState[PAGE_CONTROL_CURRENT_PAGE]) < parseInt(pageControlsState[PAGE_CONTROL_TOTAL_PAGES]);
+        return parseInt(pageControlsState[PAGINATION_PAGE_NUMBER]) < parseInt(pageControlsState[PAGINATION_TOTAL_PAGES]);
 
     }
     getTotalItems(pageControlsState, requestPageControls) {
-        let totalItems = pageControlsState[PAGE_CONTROL_TOTAL_ITEMS];
+        let totalItems = pageControlsState[PAGINATION_TOTAL_ITEMS];
+        if (isNaN(totalItems)) {
+            totalItems = 0;
+        }
         let requestTotalItems = requestPageControls.total_items;
+
         if (isSet(requestTotalItems) && requestTotalItems !== "" && !isNaN(requestTotalItems)) {
             return totalItems + parseInt(requestTotalItems)
         }
@@ -255,7 +262,10 @@ export class SearchEngine {
     }
 
     getTotalPages(pageControlsState, requestPageControls) {
-        let totalPages = pageControlsState[PAGE_CONTROL_TOTAL_PAGES];
+        let totalPages = pageControlsState[PAGINATION_TOTAL_PAGES];
+        if (isNaN(totalPages)) {
+            totalPages = 0;
+        }
         let requestTotalPages;
         if (isSet(requestPageControls.page_number)) {
             requestTotalPages = requestPageControls.page_count;
@@ -270,9 +280,9 @@ export class SearchEngine {
 
     getCurrentPageFromOffset(pageOffset) {
         const pageControlsState = {...store.getState().search.pageControls}
-        let totalItems = pageControlsState[PAGE_CONTROL_TOTAL_ITEMS];
-        let totalPages = pageControlsState[PAGE_CONTROL_TOTAL_PAGES];
-        let pageSize = pageControlsState[PAGE_CONTROL_PAGE_SIZE];
+        let totalItems = pageControlsState[PAGINATION_TOTAL_ITEMS];
+        let totalPages = pageControlsState[PAGINATION_TOTAL_PAGES];
+        let pageSize = pageControlsState[PAGINATION_PAGE_SIZE];
         let offsetPageCount = Math.floor(totalItems - pageOffset)
 
         if (pageOffset === 0) {
@@ -284,7 +294,7 @@ export class SearchEngine {
 
     getOffsetFromPageNUmber(pageNumber) {
         const pageControlsState = {...store.getState().search.pageControls}
-        let pageSize = pageControlsState[PAGE_CONTROL_PAGE_SIZE];
+        let pageSize = pageControlsState[PAGINATION_PAGE_SIZE];
         return parseInt(pageSize) * parseInt(pageNumber);
     }
 
@@ -292,7 +302,7 @@ export class SearchEngine {
     addPaginationQueryParameters(queryData, providerName = null) {
         const pageControlsState = this.searchContext.pageControls;
         const extraData = this.searchContext.extraData[providerName];
-        const currentPage = pageControlsState[PAGE_CONTROL_CURRENT_PAGE];
+        const currentPage = pageControlsState[PAGINATION_PAGE_NUMBER];
 
         if (!isSet(extraData)) {
             return queryData;
@@ -309,13 +319,13 @@ export class SearchEngine {
         if (!isSet(extraData?.total_items)) {
             return true;
         }
-        else if (pageControlsState[PAGE_CONTROL_CURRENT_PAGE] === 1) {
+        else if (pageControlsState[PAGINATION_PAGE_NUMBER] === 1) {
             return true;
         }
         else if (isSet(extraData.total_items) && !isNaN(extraData.total_items)) {
             if (this.providerHasMoreItems(
-                pageControlsState[PAGE_CONTROL_CURRENT_PAGE],
-                pageControlsState[PAGE_CONTROL_PAGE_SIZE],
+                pageControlsState[PAGINATION_PAGE_NUMBER],
+                pageControlsState[PAGINATION_PAGE_SIZE],
                 parseInt(extraData.total_items)
             )) {
                 return true;

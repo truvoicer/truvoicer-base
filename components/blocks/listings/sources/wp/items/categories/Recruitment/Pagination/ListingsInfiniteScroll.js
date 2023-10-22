@@ -2,7 +2,7 @@ import React, {useContext} from "react";
 import {connect} from "react-redux";
 import {
     APPEND_SEARCH_REQUEST,
-    PAGE_CONTROL_CURRENT_PAGE,
+    PAGINATION_PAGE_NUMBER,
     PAGE_CONTROL_HAS_MORE,
     SEARCH_REQUEST_COMPLETED,
 } from "@/truvoicer-base/redux/constants/search-constants";
@@ -25,7 +25,7 @@ const ListingsInfiniteScroll = (props) => {
             return false;
         }
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(APPEND_SEARCH_REQUEST);
-        listingsManager.getSearchEngine().loadNextPageNumberMiddleware(searchContext?.pageControls[PAGE_CONTROL_CURRENT_PAGE] + 1);
+        listingsManager.getSearchEngine().loadNextPageNumberMiddleware(searchContext?.pageControls[PAGINATION_PAGE_NUMBER] + 1);
     }
 
     function defaultView() {

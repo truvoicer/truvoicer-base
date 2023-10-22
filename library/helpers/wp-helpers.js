@@ -27,3 +27,14 @@ export function buildCarouselData(data) {
     return dataClone;
 }
 
+export function extractCategoryIds(categories) {
+    if (!Array.isArray(categories)) {
+        return [];
+    }
+    return categories.map(category => {
+        if (!isObject(category)) {
+            return null;
+        }
+        return category.ID;
+    }).filter(categoryId => categoryId !== null);
+}

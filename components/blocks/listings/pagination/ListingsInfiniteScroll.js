@@ -2,7 +2,7 @@ import React, {useContext, useEffect} from "react";
 import {connect} from "react-redux";
 import {
     APPEND_SEARCH_REQUEST, NEW_SEARCH_REQUEST,
-    PAGE_CONTROL_CURRENT_PAGE,
+    PAGINATION_PAGE_NUMBER,
     PAGE_CONTROL_HAS_MORE,
     SEARCH_REQUEST_COMPLETED, SEARCH_REQUEST_STARTED,
 } from "@/truvoicer-base/redux/constants/search-constants";
@@ -27,7 +27,7 @@ const ListingsInfiniteScroll = (props) => {
             return false;
         }
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(APPEND_SEARCH_REQUEST);
-        listingsManager.loadNextPageNumberMiddleware(searchContext.pageControls[PAGE_CONTROL_CURRENT_PAGE] + 1);
+        listingsManager.loadNextPageNumberMiddleware(searchContext.pageControls[PAGINATION_PAGE_NUMBER] + 1);
     }
 
     useEffect(() => {
@@ -35,7 +35,7 @@ const ListingsInfiniteScroll = (props) => {
             searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
             searchContext?.searchOperation === APPEND_SEARCH_REQUEST
         ) {
-            listingsManager.runSearch();
+            listingsManager.runSearch('ListingsInfiniteScroll');
         }
     }, [searchContext?.searchOperation]);
 
@@ -48,7 +48,13 @@ const ListingsInfiniteScroll = (props) => {
                 hasMore={searchContext.pageControls[PAGE_CONTROL_HAS_MORE]}
                 loader={<LoaderComponent key={"loader"}/>}
             >
-                <GridItems/>
+                <GridItems
+                    listStart={listingsContext?.listingsData?.list_start}
+                    listEnd={listingsContext?.listingsData?.list_end}
+                    customPosition={listingsContext?.listingsData?.custom_position}
+                    grid={listingsContext?.listingsGrid}
+                    listItems={searchContext?.searchList || []}
+                />
             </InfiniteScroll>
 
         )
