@@ -142,14 +142,13 @@ export async function getAllComparisonItemPosts() {
 }
 
 export async function getSingleItemPost(id, postType) {
-    const results = await wpResourceRequest({
+    return await wpResourceRequestHandler({
         endpoint: sprintf(wpApiConfig.endpoints.singleItemPost, {
             post_id: parseInt(id),
             post_type: postType,
         }),
         method: 'GET',
-    })
-    return results?.data;
+    });
 }
 
 export async function getSingleComparisonPost(id, type, preview) {
@@ -166,53 +165,61 @@ export async function getSingleComparisonPost(id, type, preview) {
     );
 }
 
-export async function getItemViewTemplate(category, postType, preview) {
-    const results = await wpResourceRequest({
+export async function getItemViewTemplate(category, postType) {
+    return await wpResourceRequestHandler({
         endpoint: sprintf(wpApiConfig.endpoints.pageTemplate, {
             category: category,
             post_type: postType,
             taxonomy: wpApiConfig.taxonomies.listingsCategory,
         }),
         method: 'GET',
-    })
-    return results?.data;
+    });
 }
 
 export async function getHomePage() {
-    const results = await wpResourceRequest({
+    return await wpResourceRequestHandler({
         endpoint: `${wpApiConfig.endpoints.page}`,
         method: 'GET',
-    })
-    return results?.data;
+    });
 }
 export async function getSiteSettings() {
-    const results = await wpResourceRequest({
+    return await wpResourceRequestHandler({
         endpoint: `${wpApiConfig.endpoints.settings}`,
         method: 'GET',
-    })
-    return results?.data;
+    });
 }
 export async function getSinglePage(slug) {
-    const results = await wpResourceRequest({
+    return await wpResourceRequestHandler({
         endpoint: `${wpApiConfig.endpoints.page}`,
         query: {
             page: slug
         },
         method: 'GET',
-    })
-    return results?.data;
+    });
 }
-
+async function wpResourceRequestHandler(request) {
+    try {
+        const results = await wpResourceRequest(request);
+        return results?.data;
+    } catch (e) {
+        console.error(`Error in wpResourceRequestHandler | url: ${e?.config?.url || request?.endpoint}`)
+        if (e.response?.data?.message) {
+            console.error(e.response?.data?.message);
+        } else {
+            console.error(e.message)
+        }
+        return false;
+    }
+}
 export async function getPostWithTemplate(slug) {
-    const results = await wpResourceRequest({
+    return await wpResourceRequestHandler({
         endpoint: sprintf(wpApiConfig.endpoints.postWithTemplate, {slug}),
         method: 'GET',
     })
-    return results?.data;
 }
 
 export async function getPageTemplate(postType, category) {
-    const results = await wpResourceRequest({
+    return await wpResourceRequestHandler({
         endpoint: sprintf(wpApiConfig.endpoints.pageTemplate, {
             category,
             post_type: postType,
@@ -220,7 +227,6 @@ export async function getPageTemplate(postType, category) {
         }),
         method: 'GET',
     })
-    return results?.data;
 }
 
 export function protectedFileUploadApiRequest(endpoint, requestData, callback = false, headers = {}) {
