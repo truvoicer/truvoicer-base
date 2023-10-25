@@ -20,7 +20,8 @@ const BlogSearch = (props) => {
     const formClickHandler = (e) => {
         e.preventDefault();
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
-        listingsManager.getListingsEngine().addListingsQueryDataString(fetcherApiConfig.queryKey, query, true)
+        listingsManager.getListingsEngine().addListingsQueryDataString(fetcherApiConfig.queryKey, query, true);
+        listingsManager.getSearchEngine().setSearchEntity('blogSearch');
     }
 
     const formChangeHandler = (e) => {
@@ -31,9 +32,10 @@ const BlogSearch = (props) => {
         if (
             isNotEmpty(query) &&
             searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
-            searchContext?.searchOperation === NEW_SEARCH_REQUEST
+            searchContext?.searchOperation === NEW_SEARCH_REQUEST &&
+            searchContext?.searchEntity === 'blogSearch'
         ) {
-            listingsManager.runSearch('BlogSearch');
+            listingsManager.runSearch('blogSearch');
         }
     }, [searchContext?.searchOperation, query]);
 

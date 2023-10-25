@@ -7,6 +7,7 @@ import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_IDLE} from "@/truvoicer-base/redux/co
 export const searchData = {
     searchStatus: SEARCH_REQUEST_IDLE,
     searchOperation: NEW_SEARCH_REQUEST,
+    searchEntity: null,
     initialRequestHasRun: false,
     extraData: {},
     searchList: [],

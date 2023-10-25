@@ -26,6 +26,7 @@ const ListingsInfiniteScroll = (props) => {
         if (searchContext.searchStatus !== SEARCH_REQUEST_COMPLETED) {
             return false;
         }
+        listingsManager.getSearchEngine().setSearchEntity('listingsInfiniteScroll');
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(APPEND_SEARCH_REQUEST);
         listingsManager.loadNextPageNumberMiddleware(searchContext.pageControls[PAGINATION_PAGE_NUMBER] + 1);
     }
@@ -33,7 +34,8 @@ const ListingsInfiniteScroll = (props) => {
     useEffect(() => {
         if (
             searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
-            searchContext?.searchOperation === APPEND_SEARCH_REQUEST
+            searchContext?.searchOperation === APPEND_SEARCH_REQUEST &&
+            searchContext?.searchEntity === 'listingsInfiniteScroll'
         ) {
             listingsManager.runSearch('ListingsInfiniteScroll');
         }

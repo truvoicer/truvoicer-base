@@ -8,8 +8,11 @@ import Link from "next/link";
 import {setPostNavIndexAction} from "../../redux/actions/page-actions";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import ListingsLeftSidebar from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsLeftSidebar";
+import ItemViewComments from "@/truvoicer-base/components/comments/ItemViewComments";
 
-const PostItemBlock = ({data, post, postList, postNav}) => {
+const PostItemBlock = (props) => {
+    const {post, postList, postNav, data} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
     console.log({data, post, postNav})
     const getPostColumnClasses = () => {
@@ -72,11 +75,7 @@ const PostItemBlock = ({data, post, postList, postNav}) => {
                         <div className={`${getPostColumnClasses()} posts-list`}>
                             <div className="single-post">
                                 <h1>{post?.post_title}</h1>
-                                <div className="feature-img">
-                                    <img className="img-fluid" src={post?.featured_image} alt=""/>
-                                </div>
                                 <div className="blog_details">
-                                    <h2>{post?.post_title}</h2>
                                     <BlogCategoryList
                                         categories={post?.categories}
                                         classes={"blog-info-link mt-3 mb-4"}
@@ -191,28 +190,18 @@ const PostItemBlock = ({data, post, postList, postNav}) => {
                                     </div>
                                 </div>
                             </div>
+                            <div className={"pt-5"}>
+                                <ItemViewComments
+                                    category={props.category}
+                                    provider={props.item.provider}
+                                    item_id={props.item.item_id}
+                                />
+                            </div>
                         </div>
                         {data?.show_sidebar &&
                             <div className={`${getSidebarClasses()}`}>
                                 <div className="blog_right_sidebar">
-                                    <aside className="single_sidebar_widget search_widget">
-                                        <form action="#">
-                                            <div className="form-group">
-                                                <div className="input-group mb-3">
-                                                    <input type="text" className="form-control" placeholder='Search Keyword'
-                                                           onFocus="this.placeholder = ''"
-                                                           onBlur="this.placeholder = 'Search Keyword'"/>
-                                                    <div className="input-group-append">
-                                                        <button className="btn" type="button"><i className="ti-search"/>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <button className="button rounded-0 primary-bg text-white w-100 btn_1 boxed-btn"
-                                                    type="submit">Search
-                                            </button>
-                                        </form>
-                                    </aside>
+                                    <ListingsLeftSidebar sidebarName={data?.select_sidebar} />
                                 </div>
                             </div>
                         }
@@ -234,6 +223,7 @@ const PostItemBlock = ({data, post, postList, postNav}) => {
             nextPostClickHandler: nextPostClickHandler,
             getNextPost: getNextPost,
             getPrevPost: getPrevPost,
+            ...props
         }
     })
 };

@@ -91,7 +91,6 @@ export class ListingsManager extends ListingsEngineBase {
     }
 
     getListingsInitialLoad() {
-        console.log('getListingsInitialLoad')
         const listingsDataState = this.listingsEngine?.listingsContext.listingsData;
         if (isEmpty(listingsDataState)) {
             // setSearchError("Listings data empty on initial search...")
@@ -257,6 +256,18 @@ export class ListingsManager extends ListingsEngineBase {
                 break;
         }
     }
+
+    getListingsPostsPerPage() {
+        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
+        const postsPerPage = this.listingsEngine?.listingsContext?.listingsQueryData?.posts_per_page;
+        if (isNotEmpty(postsPerPage)) {
+            return parseInt(postsPerPage);
+        }
+        if (isNotEmpty(listingsDataState?.posts_per_page)) {
+            return parseInt(listingsDataState.posts_per_page);
+        }
+        return fetcherApiConfig.defaultSearchLimit;
+    }
     runWpPostsSearch() {
         const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
@@ -272,16 +283,23 @@ export class ListingsManager extends ListingsEngineBase {
         if (!pageControlsState[PAGE_CONTROL_PAGINATION_REQUEST]) {
             this.searchEngine.setPageControlItemAction(PAGINATION_PAGE_NUMBER, 1);
         }
+        console.log(
+            'listingsQueryData',
+            this.listingsEngine?.listingsContext?.listingsQueryData
+        )
         wpResourceRequest({
             endpoint: wpApiConfig.endpoints.postListRequest,
             method: 'POST',
             data: {
-                posts_per_page: listingsDataState?.posts_per_page,
-                show_all_categories: listingsDataState?.show_all_categories,
-                categories: extractCategoryIds(listingsDataState?.categories),
-                pagination_type: 'offset'
+                ...this.listingsEngine?.listingsContext?.listingsQueryData,
+                ...{
+                    posts_per_page: this.getListingsPostsPerPage(),
+                    show_all_categories: listingsDataState?.show_all_categories,
+                    categories: extractCategoryIds(listingsDataState?.category_id),
+                    pagination_type: 'offset'
 
-                // page_number: isNotEmpty(pageNumber) ? parseInt(pageNumber) : 1
+                    // page_number: isNotEmpty(pageNumber) ? parseInt(pageNumber) : 1
+                }
             }
         })
             .then(response => {

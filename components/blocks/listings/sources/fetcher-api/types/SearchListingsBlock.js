@@ -56,7 +56,7 @@ const SearchListingsBlock = (props) => {
                     </div>
                 }
                 <div>
-                    {props.data?.show_listings_sidebar
+                    {props.data?.show_sidebar
                         ?
                         <>
                             {filtersPosition === 'left' &&

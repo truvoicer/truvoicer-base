@@ -57,6 +57,7 @@ const ListingsSortBar = (props) => {
         if (e.target.name === "limit") {
             setLimit(e.target.value)
         }
+        listingsManager.getSearchEngine().setSearchEntity('listingsSortBar');
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         listingsManager.getListingsEngine().addListingsQueryDataString(fetcherApiConfig.searchLimitKey, e.target.value, true)
     }
@@ -64,7 +65,8 @@ const ListingsSortBar = (props) => {
     useEffect(() => {
         if (
             isNotEmpty(limit) &&
-            listingsManager.canRunSearch(NEW_SEARCH_REQUEST)
+            listingsManager.canRunSearch(NEW_SEARCH_REQUEST) &&
+            searchContext?.searchEntity === 'listingsSortBar'
         ) {
             listingsManager.runSearch('ListingsSortBar');
             listingsManager.getListingsEngine().setListingsScrollTopAction(true);
@@ -81,9 +83,9 @@ const ListingsSortBar = (props) => {
                                 <select
                                     className="wide form-control rounded nice-select"
                                     name="limit"
-                                    defaultValue={limit}
+                                    placeholder={'Limit'}
+                                    value={listingsManager.getListingsPostsPerPage()}
                                     onChange={limitChangeHandler}>
-                                    <option value="">{'Limit'}</option>
                                     {limitOptions && limitOptions.map((item, index) => (
                                         <option key={index} value={item.value}>{item.label}</option>
                                     ))}

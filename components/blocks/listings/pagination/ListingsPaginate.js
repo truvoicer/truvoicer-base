@@ -22,6 +22,7 @@ const ListingsPaginate = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const paginationClickHandler = (pageNumber) => {
+        listingsManager.getSearchEngine().setSearchEntity('listingsPaginate');
         listingsManager.loadNextPageNumberMiddleware(pageNumber);
         listingsManager.getListingsEngine().setListingsScrollTopAction(true);
         listingsManager.searchEngine.setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
@@ -104,7 +105,8 @@ const ListingsPaginate = (props) => {
     useEffect(() => {
         if (
             searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
-            searchContext?.searchOperation === NEW_SEARCH_REQUEST
+            searchContext?.searchOperation === NEW_SEARCH_REQUEST &&
+            searchContext?.searchEntity === 'listingsPaginate'
         ) {
             listingsManager.runSearch('listingsPaginate');
         }

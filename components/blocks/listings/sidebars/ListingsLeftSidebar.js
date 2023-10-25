@@ -9,8 +9,10 @@ import Left from "@/truvoicer-base/components/blocks/listings/sidebars/Left";
 import {fetchSidebarRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 import {AppContext} from "@/truvoicer-base/config/contexts/AppContext";
 import {AppManager} from "@/truvoicer-base/library/app/AppManager";
+import {isNotEmpty} from "@/truvoicer-base/library/utils";
 
 const ListingsLeftSidebar = (props) => {
+    const {sidebarName} = props;
     const [data, setData] = useState([]);
     const appContext = useContext(AppContext);
     const appManager = new AppManager(appContext);
@@ -18,7 +20,9 @@ const ListingsLeftSidebar = (props) => {
     const fetchListingsContextGroups = appManager.findContextGroupsByContextId("listingsContext");
     async function sidebarRequest() {
         try {
-            const fetchSidebar = await fetchSidebarRequest(siteConfig.leftSidebarName);
+            const fetchSidebar = await fetchSidebarRequest(
+            (isNotEmpty(sidebarName)) ? sidebarName : siteConfig.leftSidebarName,
+            );
             const sidebar = fetchSidebar?.data?.sidebar;
             if (Array.isArray(sidebar)) {
 
@@ -33,7 +37,7 @@ const ListingsLeftSidebar = (props) => {
 
     useEffect(() => {
         sidebarRequest();
-    }, []);
+    }, [sidebarName]);
 
     function defaultView() {
         return (

@@ -1,6 +1,6 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
-import {NEW_SEARCH_REQUEST} from "@/truvoicer-base/redux/constants/search-constants";
+import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED} from "@/truvoicer-base/redux/constants/search-constants";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
@@ -16,11 +16,21 @@ const ListingsFilterTextItem = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const formChangeHandler = (e) => {
+        listingsManager.getSearchEngine().setSearchEntity('listingsFilterTextItem');
         setQuery(e.target.value)
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         listingsManager.getListingsEngine().addListingsQueryDataString(props.data.name, e.target.value)
     }
 
+    useEffect(() => {
+        if (
+            searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
+            searchContext?.searchOperation === NEW_SEARCH_REQUEST &&
+            searchContext?.searchEntity === 'listingsFilterTextItem'
+        ) {
+            listingsManager.runSearch('listingsFilterTextItem');
+        }
+    }, [searchContext?.searchOperation]);
     function defaultView() {
     return (
         <div className="single_field">

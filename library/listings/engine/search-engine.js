@@ -83,6 +83,9 @@ export class SearchEngine {
     setSearchProviderAction(provider) {
         this.updateContext({key: "provider", value: provider})
     }
+    setSearchEntity(value) {
+        this.updateContext({key: "searchEntity", value})
+    }
 
     setSearchCategoryAction(category) {
         this.updateContext({key: "category", value: category})

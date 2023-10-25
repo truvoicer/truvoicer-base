@@ -19,6 +19,7 @@ const ListingsFilterListItem = (props) => {
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const formChangeHandler = (e) => {
+        listingsManager.getSearchEngine().setSearchEntity('listingsFilterListItem');
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         if (e.target.checked) {
             listingsManager.getListingsEngine().addArrayItem(props.data.name, e.target.value, true)
@@ -31,9 +32,10 @@ const ListingsFilterListItem = (props) => {
     useEffect(() => {
         if (
             searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
-            searchContext?.searchOperation === NEW_SEARCH_REQUEST
+            searchContext?.searchOperation === NEW_SEARCH_REQUEST &&
+            searchContext?.searchEntity === 'listingsFilterListItem'
         ) {
-            listingsManager.runSearch('ListingsFilterListItem');
+            listingsManager.runSearch('listingsFilterListItem');
         }
     }, [searchContext?.searchOperation]);
 

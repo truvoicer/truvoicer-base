@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import Form from "react-bootstrap/Form";
 import {connect} from "react-redux";
 import {
-    NEW_SEARCH_REQUEST
+    NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED
 } from "@/truvoicer-base/redux/constants/search-constants";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
@@ -37,16 +37,24 @@ const ListingsFilterApiListItem = (props) => {
     }, [])
 
     const formChangeHandler = (e) => {
+        listingsManager.getSearchEngine().setSearchEntity('listingsFilterApiListItem');
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         if (e.target.checked) {
             listingsManager.getListingsEngine().addArrayItem(props.data.api_endpoint, e.target.value, true)
-            listingsManager.runSearch('ListingsFilterApiListItem');
         } else {
             listingsManager.getListingsEngine().removeArrayItem(props.data.api_endpoint, e.target.value, true)
-            listingsManager.runSearch('ListingsFilterApiListItem');
         }
     }
 
+    useEffect(() => {
+        if (
+            searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
+            searchContext?.searchOperation === NEW_SEARCH_REQUEST &&
+            searchContext?.searchEntity === 'listingsFilterApiListItem'
+        ) {
+            listingsManager.runSearch('listingsFilterApiListItem');
+        }
+    }, [searchContext?.searchOperation]);
     function defaultView() {
         return (
             <div className="single_field">

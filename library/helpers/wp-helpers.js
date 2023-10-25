@@ -35,6 +35,6 @@ export function extractCategoryIds(categories) {
         if (!isObject(category)) {
             return null;
         }
-        return category.ID;
+        return category?.term_id || category?.id || category?.ID || null;
     }).filter(categoryId => categoryId !== null);
 }

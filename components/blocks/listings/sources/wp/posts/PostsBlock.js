@@ -53,13 +53,13 @@ const PostsBlock = (props) => {
                                 </div>
                             }
 
-                                {props.data?.show_listings_sidebar
+                                {props.data?.show_sidebar
                                     ?
                                     <>
                                         {filtersPosition === 'left' &&
 
                                             <div className="col-12 col-sm-9 col-md-6 col-lg-3 d-none d-lg-block">
-                                                <ListingsLeftSidebar/>
+                                                <ListingsLeftSidebar sidebarName={props.data?.select_sidebar} />
                                             </div>
                                         }
 
@@ -71,7 +71,7 @@ const PostsBlock = (props) => {
 
                                         {filtersPosition === 'right' &&
                                             <div className="col-12 col-sm-9 col-md-6 col-lg-3 d-none d-lg-block">
-                                                <ListingsLeftSidebar/>
+                                                <ListingsLeftSidebar sidebarName={props.data?.select_sidebar} />
                                             </div>
                                         }
                                     </>
