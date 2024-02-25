@@ -1,6 +1,5 @@
 import {
     configureStore,
-    getDefaultMiddleware,
 } from "@reduxjs/toolkit";
 
 import thunk from "redux-thunk";
@@ -10,7 +9,6 @@ import {itemReducer} from "../reducers/item-reducer";
 import {getStoreReducers} from "../../library/helpers/redux";
 
 const middleware = [
-    ...getDefaultMiddleware(),
     thunk
 ];
 const defaultReducers = {

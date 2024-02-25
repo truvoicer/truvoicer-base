@@ -99,6 +99,9 @@ export const isObjectEmpty = (object) => {
     if (!isSet(object)) {
         return false;
     }
+    if (!isObject(object)) {
+        return false;
+    }
     return Object.keys(object).length === 0 && object.constructor === Object
 }
 

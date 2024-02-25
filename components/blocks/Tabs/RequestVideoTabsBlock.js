@@ -40,8 +40,8 @@ const RequestVideoTabsBlock = (props) => {
                 "operation",
                 [requestConfig.request_name],
                 {
-                    query: getGameRequestIds(searchContext?.searchList, provider.provider_name),
-                    provider: provider.provider_name,
+                    query: getGameRequestIds(searchContext?.searchList, provider.name),
+                    provider: provider.name,
                     limit: requestConfig.request_limit,
                     query_type: "array"
                 },

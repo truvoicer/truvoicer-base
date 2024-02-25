@@ -114,7 +114,9 @@ export class ListingsEngine {
     }
 
     getItemLinkProps(category, item, showInfoCallback, e, trackData = {}) {
+        console.log('getItemLinkProps', category, item, showInfoCallback, e, trackData)
         const listingsData = this.listingsContext?.listingsData;
+        console.log('listingsData', listingsData)
         if (isSet(listingsData?.item_view_display) && listingsData.item_view_display === "page") {
             return {
                 onClick: (e) => {
@@ -134,9 +136,23 @@ export class ListingsEngine {
     }
 
     getItemViewUrl(item, category) {
-        let data = {
-            item_id: item.item_id
+        if (!isNotEmpty(item)) {
+            return null;
         }
+        let itemId;
+        if (Array.isArray(item?.item_id)) {
+            const filterItemId = item?.item_id.filter((id) => id?.data).map((id) => id?.data);
+            if (filterItemId.length === 0) {
+                return null;
+            }
+            itemId = filterItemId[0];
+        } else {
+            itemId = item?.item_id;
+        }
+        let data = {
+            item_id: itemId
+        }
+
         if (item?.custom_item) {
             return sprintf(ItemRoutes.internalItemView, data);
         } else if (isNotEmpty(item?.provider)) {

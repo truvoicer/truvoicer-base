@@ -38,6 +38,19 @@ const ListingsSortBar = (props) => {
     const listingsManager = new ListingsManager(listingsContext, searchContext)
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
+    function getLimitOptionsSelect() {
+        return limitOptions.map((item, index) => {
+            if (index > 0) {
+                return item;
+            }
+            let pageSize = listingsManager?.listingsEngine?.listingsContext?.listingsQueryData?.[fetcherApiConfig.searchLimitKey];
+            if (isNotEmpty(pageSize)) {
+                item.value = parseInt(pageSize);
+                item.label = parseInt(pageSize);
+            }
+            return item;
+        });
+    }
     const layoutChangeHandler = (e) => {
         if (!isNotEmpty(e.target.value)) {
             return;
@@ -86,7 +99,7 @@ const ListingsSortBar = (props) => {
                                     placeholder={'Limit'}
                                     value={listingsManager.getListingsPostsPerPage()}
                                     onChange={limitChangeHandler}>
-                                    {limitOptions && limitOptions.map((item, index) => (
+                                    {getLimitOptionsSelect().map((item, index) => (
                                         <option key={index} value={item.value}>{item.label}</option>
                                     ))}
                                 </select>

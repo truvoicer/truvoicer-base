@@ -32,7 +32,7 @@ const RequestCarouselTabsBlock = (props) => {
                     "operation",
                     [requestConfig.request_name],
                     {
-                        provider: provider.provider_name,
+                        provider: provider.name,
                         limit: requestConfig.request_limit
                     },
                     getDataCallback

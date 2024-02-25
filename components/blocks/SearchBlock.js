@@ -58,18 +58,35 @@ const SearchBlock = (props) => {
         let getSearchData = {...searchData};
         getSearchData[fetcherApiConfig.queryKey] = value.replace("_", " ");
         setSearchData(getSearchData)
+        listingsManager.getSearchEngine().setSearchEntity('searchBlockCategory');
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         listingsManager.getListingsEngine().addQueryDataObjectMiddleware(getSearchData, true);
     }
 
 
     useEffect(() => {
-        if (
-            isNotEmpty(category) &&
-            listingsManager.canRunSearch(NEW_SEARCH_REQUEST)
-        ) {
-            listingsManager.runSearch('searchblock');
-            listingsManager.getListingsEngine().setListingsScrollTopAction(true);
+        switch (searchContext?.searchEntity) {
+            case 'searchBlockCategory':
+                if (
+                    isNotEmpty(category) &&
+                    listingsManager.canRunSearch(NEW_SEARCH_REQUEST) &&
+                    searchContext?.searchEntity === 'searchBlockCategory'
+                ) {
+                    console.log('searchBlockCategoryRun')
+                    listingsManager.runSearch('searchBlockCategory');
+                    listingsManager.getListingsEngine().setListingsScrollTopAction(true);
+                }
+                break;
+            case 'searchBlock':
+                if (
+                    listingsManager.canRunSearch(NEW_SEARCH_REQUEST) &&
+                    searchContext?.searchEntity === 'searchBlock'
+                ) {
+                    console.log('searchBlockRun')
+                    listingsManager.runSearch('searchBlock');
+                    listingsManager.getListingsEngine().setListingsScrollTopAction(true);
+                }
+                break;
         }
     }, [searchContext?.searchOperation, category]);
 
@@ -99,8 +116,10 @@ const SearchBlock = (props) => {
         e.preventDefault();
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
         listingsManager.getListingsEngine().addQueryDataObjectMiddleware(searchData, true);
+        listingsManager.getSearchEngine().setSearchEntity('searchBlock');
     }
 
+    console.log(searchContext?.searchOperation)
     function defaultView() {
         return (
             <>
@@ -174,7 +193,7 @@ const SearchBlock = (props) => {
             </>
         );
     }
-
+console.log('sb')
     return templateManager.getTemplateComponent({
         category: 'public',
         templateId: 'searchBlock',

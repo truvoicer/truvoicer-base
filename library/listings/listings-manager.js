@@ -325,6 +325,7 @@ export class ListingsManager extends ListingsEngineBase {
         }
         const providers = this.getSearchProviders();
         const filterProviders = this.searchEngine.filterSearchProviders(providers);
+        console.log({filterProviders, providers})
         filterProviders.map((provider, index) => {
             fetchData(
                 "operation",
@@ -337,27 +338,31 @@ export class ListingsManager extends ListingsEngineBase {
     }
 
     searchResponseHandler(status, data, completed = false) {
+        const responseData = data?.data;
+        const results = responseData?.results;
+        const pagination = responseData?.pagination;
+        console.log({responseData})
         if (status === 200 && data.status === "success") {
-            this.getUserItemsListAction(data.request_data, data.provider, data.category)
-            this.searchEngine.setSearchListDataAction(data.request_data);
-            this.searchEngine.setSearchExtraDataAction(data.extra_data, data.provider, data.request_data)
-            this.searchEngine.setSearchRequestServiceAction(data.request_service)
-            this.searchEngine.setSearchProviderAction(data.provider)
-            this.searchEngine.setSearchCategoryAction(data.category)
+            this.getUserItemsListAction(results, responseData.provider, responseData.category)
+            this.searchEngine.setSearchListDataAction(results);
+            this.searchEngine.setSearchExtraDataAction(responseData.extraData, data.provider, results)
+            this.searchEngine.setSearchRequestServiceAction(responseData.requestService)
+            this.searchEngine.setSearchProviderAction(responseData.provider)
+            this.searchEngine.setSearchCategoryAction(responseData.category)
             let pageControlData = {
                 [PAGE_CONTROL_REQ_PAGINATION_TYPE]: null
             };
-            if (isNotEmpty(data?.extra_data) && isObject(data.extra_data)) {
-                pageControlData = {...pageControlData, ...data.extra_data};
+            if (isNotEmpty(pagination) && isObject(pagination)) {
+                pageControlData = {...pageControlData, ...pagination};
             }
-            if (isNotEmpty(data?.[PAGE_CONTROL_REQ_PAGINATION_TYPE])) {
-                pageControlData[PAGE_CONTROL_REQ_PAGINATION_TYPE] = data[PAGE_CONTROL_REQ_PAGINATION_TYPE];
+            if (isNotEmpty(responseData?.[PAGE_CONTROL_REQ_PAGINATION_TYPE])) {
+                pageControlData[PAGE_CONTROL_REQ_PAGINATION_TYPE] = responseData[PAGE_CONTROL_REQ_PAGINATION_TYPE];
             }
             this.searchEngine.setPageControlsAction(pageControlData)
 
         } else {
             this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
-            this.searchEngine.setSearchRequestErrorAction(data.message)
+            this.searchEngine.setSearchRequestErrorAction(responseData.message)
         }
         if (completed) {
             // this.searchEngine.setHasMoreSearchPages()
@@ -394,7 +399,7 @@ export class ListingsManager extends ListingsEngineBase {
     }
 
     getUserItemsListAction(data, provider, category) {
-        if (data.length === 0) {
+        if (!Array.isArray(data) || data.length === 0) {
             return false;
         }
         const session = {...store.getState().session};
@@ -461,7 +466,7 @@ export class ListingsManager extends ListingsEngineBase {
         if (!Array.isArray(queryDataState?.providers) || queryDataState.providers.length === 0) {
             if (Array.isArray(listingsDataState?.providers) && listingsDataState.providers.length) {
                 providers = listingsDataState.providers.map(provider => {
-                    return provider.provider_name;
+                    return provider.name;
                 });
                 providers.map((provider) => {
                     this.listingsEngine.addArrayItem("providers", provider)

@@ -121,15 +121,6 @@ export async function getAllPagesWithUri() {
     return data?.pages
 }
 
-export async function getAllPosts() {
-    const data = await fetchAPI(allPostsQuery())
-    return data?.posts
-}
-
-export async function getAllCategories() {
-    const data = await fetchAPI(allCategoriesQuery())
-    return data?.categories
-}
 
 export async function getAllSingleItemPosts() {
     const data = await fetchAPI(allSingleItemPostsQuery())

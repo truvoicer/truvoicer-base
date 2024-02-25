@@ -61,7 +61,7 @@ const ListingsBlockContainer = ({data, session, children}) => {
                 searchContext: searchContext,
             }
         })
-    }, [listingsContext?.listingsData])
+    }, [listingsContext, searchContext])
 
     const myRef = useRef(null)
     if (listingsContext?.listingsScrollTop) {

@@ -11,7 +11,7 @@ import {
     SEARCH_REQUEST_COMPLETED,
     SEARCH_REQUEST_ERROR,
     SEARCH_REQUEST_IDLE,
-    SEARCH_REQUEST_STARTED
+    SEARCH_REQUEST_STARTED, PAGINATION_OFFSET
 } from "@/truvoicer-base/redux/constants/search-constants";
 import store from "@/truvoicer-base/redux/store";
 import {produce} from "immer";
@@ -22,6 +22,7 @@ import {setModalContentAction} from "@/truvoicer-base/redux/actions/page-actions
 import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
 import {buildWpApiUrl, protectedApiRequest} from "@/truvoicer-base/library/api/wp/middleware";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
+import {siteConfig} from "@/config/site-config";
 
 export class SearchEngine {
     constructor(context) {
@@ -46,13 +47,21 @@ export class SearchEngine {
     }
     setSearchExtraDataAction(extraData, provider, listData) {
         const extraDataState = this.searchContext.extraData;
-
+        if (!isNotEmpty(extraData)) {
+            return;
+        }
         const nextState = produce(extraDataState, (draftState) => {
+           let itemCount = null;
+            if (Array.isArray(listData)) {
+                itemCount = listData.length;
+            }
             if (!isSet(draftState[provider])) {
                 draftState[provider] = {};
-                extraData.item_count = listData.length;
+                extraData.item_count = itemCount;
             } else {
-                extraData.item_count = parseInt(extraDataState[provider].item_count) + parseInt(listData.length)
+                if (Array.isArray(extraDataState?.[provider].item_count)) {
+                    extraData.item_count = parseInt(extraDataState[provider].item_count) + parseInt(itemCount)
+                }
             }
             draftState[provider] = extraData;
         })
@@ -61,7 +70,7 @@ export class SearchEngine {
 
     setSearchListDataAction(listData) {
         const searchState = this.searchContext;
-        if (listData.length === 0) {
+        if (!Array.isArray(listData) || listData.length === 0) {
             return
         }
         const searchOperation = searchState.searchOperation;
@@ -128,15 +137,16 @@ export class SearchEngine {
 
     buildQueryData(allProviders, provider, queryData = {}) {
         let cloneQueryData = {...queryData};
-        cloneQueryData[fetcherApiConfig.searchLimitKey] = this.calculateLimit(allProviders.length);
+        cloneQueryData[fetcherApiConfig.searchLimitKey] = this.calculateLimit(allProviders.length, cloneQueryData?.[fetcherApiConfig.searchLimitKey]);
         cloneQueryData = this.addPaginationQueryParameters(cloneQueryData, provider);
         cloneQueryData["provider"] = provider;
         return cloneQueryData;
     }
 
-    calculateLimit(providerCount) {
-        const pageControlsState = this.searchContext.pageControls;
-        let pageSize = pageControlsState[PAGINATION_PAGE_SIZE];
+    calculateLimit(providerCount, pageSize = null) {
+        if (pageSize === null) {
+            pageSize = fetcherApiConfig.defaultSearchLimit;
+        }
         return Math.floor(pageSize / providerCount);
     }
 
@@ -306,13 +316,19 @@ export class SearchEngine {
         const pageControlsState = this.searchContext.pageControls;
         const extraData = this.searchContext.extraData[providerName];
         const currentPage = pageControlsState[PAGINATION_PAGE_NUMBER];
+        let pageSize = fetcherApiConfig.defaultSearchLimit
 
         if (!isSet(extraData)) {
             return queryData;
         }
 
-        queryData["page_number"] = currentPage;
-        queryData["page_offset"] = queryData["search_limit"] * currentPage;
+        if (isSet(queryData?.[PAGINATION_PAGE_SIZE])) {
+            pageSize = queryData[PAGINATION_PAGE_SIZE];
+        }
+
+        queryData[PAGINATION_PAGE_NUMBER] = currentPage;
+        queryData[PAGINATION_OFFSET] = pageSize * currentPage;
+        console.log({queryData})
         return queryData;
     }
 

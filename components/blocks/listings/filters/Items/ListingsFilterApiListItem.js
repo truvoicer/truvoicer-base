@@ -65,10 +65,10 @@ const ListingsFilterApiListItem = (props) => {
                             <li key={"api_list_control_" + index.toString()}>
                                 <Form.Check
                                     type={"checkbox"}
-                                    label={item.provider_label}
-                                    id={props.controlPrefix + item.provider_name}
+                                    label={item.label}
+                                    id={props.controlPrefix + item.name}
                                     name={props.data.api_endpoint + "[]"}
-                                    value={item.provider_name}
+                                    value={item.name}
                                     onChange={formChangeHandler}
                                 />
                             </li>
