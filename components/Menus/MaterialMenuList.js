@@ -2,7 +2,7 @@ import {connect} from "react-redux";
 
 import React, {useContext, useState} from 'react';
 import {getPageDataMiddleware, setModalContentMiddleware} from "../../redux/middleware/page-middleware";
-import {useRouter} from "next/router";
+import {useRouter} from "next/navigation";
 import {logout} from "../../redux/actions/session-actions";
 import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";

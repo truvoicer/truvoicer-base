@@ -15,43 +15,11 @@ import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middlewa
 
 const axios = require('axios');
 const sprintf = require("sprintf").sprintf;
-const API_URL = process.env.NEXT_PUBLIC_WP_GRAPHQL_URL
 
 
 export const buildWpApiUrl = (endpoint, param = "") => {
     return sprintf(wpApiConfig.apiBaseUrl + endpoint, param);
 }
-
-async function fetchAPI(query, {variables} = {}) {
-    const headers = {'Content-Type': 'application/json'}
-
-    if (process.env.WORDPRESS_AUTH_REFRESH_TOKEN) {
-        headers[
-            'Authorization'
-            ] = `Bearer ${process.env.WORDPRESS_AUTH_REFRESH_TOKEN}`
-    }
-    const request = {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-            query,
-            variables,
-        }),
-    };
-    const res = await fetch(API_URL, request);
-
-    if (res.status !== 200) {
-        throw new Error('Error, response status not 200')
-    }
-
-    const json = await res.json()
-    if (json.errors) {
-        const errorMessage = json.errors.map(error => error.message).join(", ");
-        throw new Error(errorMessage)
-    }
-    return json.data
-}
-
 
 export function getStaticPostsPaths(allPosts) {
     return allPosts.nodes.map((node) => {
@@ -64,40 +32,6 @@ export function getStaticPostsPaths(allPosts) {
     });
 }
 
-export function getStaticCategoriesPaths(allPosts) {
-    return allPosts.nodes.map((node) => {
-        return {
-            params: {
-                category: node?.slug
-            }
-        }
-    });
-}
-
-export function getStaticSingleItemPaths(allSingleItems) {
-    return allSingleItems.nodes.map((node) => {
-        return {
-            params: {
-                item_id: node.databaseId.toString()
-            }
-        }
-    });
-}
-
-export function getStaticComparisonItemsPaths(allSingleItems) {
-    return allSingleItems.nodes.map((node) => {
-        let category = null;
-        if (isNotEmpty(node?.listingsCategories?.nodes[0]?.slug)) {
-            category = node.listingsCategories.nodes[0].slug;
-        }
-        return {
-            params: {
-                item_slug: node.slug,
-                listings_category: category
-            }
-        }
-    });
-}
 export function getStaticPagePaths(allPages) {
     return allPages.nodes.map((node) => {
         let pagePaths = [];
@@ -117,19 +51,32 @@ export function getStaticPagePaths(allPages) {
 }
 
 export async function getAllPagesWithUri() {
-    const data = await fetchAPI(allPagesUriQuery())
-    return data?.pages
+    // query AllPagesUri {
+    //     pages(first: 1000) {
+    //         nodes {
+    //             slug
+    //             uri
+    //         }
+    //     }
+    // }
+    // return await wpResourceRequestHandler({
+    //     endpoint: sprintf(wpApiConfig.endpoints.singleItemPost, {
+    //         post_id: parseInt(id),
+    //         post_type: postType,
+    //     }),
+    //     method: 'GET',
+    // });
 }
 
 
 export async function getAllSingleItemPosts() {
-    const data = await fetchAPI(allSingleItemPostsQuery())
-    return data?.fetcherSingleItems
-}
-
-export async function getAllComparisonItemPosts() {
-    const data = await fetchAPI(allComparisonItemsPostsQuery())
-    return data?.fetcherSingleComparisons
+    // return await wpResourceRequestHandler({
+    //     endpoint: sprintf(wpApiConfig.endpoints.singleItemPost, {
+    //         post_id: parseInt(id),
+    //         post_type: postType,
+    //     }),
+    //     method: 'GET',
+    // });
 }
 
 export async function getSingleItemPost(id, postType) {
@@ -142,19 +89,6 @@ export async function getSingleItemPost(id, postType) {
     });
 }
 
-export async function getSingleComparisonPost(id, type, preview) {
-    return await fetchAPI(
-        comparisonItemTemplateQuery(),
-        {
-            variables: {
-                id: id,
-                idType: type,
-                onlyEnabled: !preview,
-                preview,
-            },
-        }
-    );
-}
 
 export async function getItemViewTemplate(category, postType) {
     return await wpResourceRequestHandler({

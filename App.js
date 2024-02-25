@@ -8,13 +8,13 @@ import React, {useContext, useEffect} from "react";
 import {validateToken} from "@/truvoicer-base/redux/actions/session-actions";
 import {connect} from "react-redux";
 import {isObjectEmpty, isSet} from "@/truvoicer-base/library/utils";
-import {useRouter} from "next/router";
+import {useRouter} from "next/navigation";
 import {TemplateContext, templateData} from "@/truvoicer-base/config/contexts/TemplateContext";
 import AppLoader from "@/truvoicer-base/AppLoader";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {templateConfig} from "@/config/template-config";
 
-const FetcherApp = ({modal, pageData, pageOptions, siteSettings}) => {
+const FetcherApp = ({pageData, pageOptions, preFetch = () => {}}) => {
     const router = useRouter();
     const templateContext = useContext(TemplateContext);
     const templateManager = new TemplateManager(templateContext);
@@ -22,6 +22,12 @@ const FetcherApp = ({modal, pageData, pageOptions, siteSettings}) => {
         AddAxiosInterceptors();
         LoadEnvironment();
         validateToken();
+    }, [])
+
+    useEffect(() => {
+        if (typeof preFetch === "function") {
+            preFetch()
+        }
     }, [])
 
     useEffect(() => {

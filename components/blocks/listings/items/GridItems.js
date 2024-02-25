@@ -5,7 +5,7 @@ import {listingsGridConfig} from "@/config/listings-grid-config";
 import {isNotEmpty, isSet} from "../../../../library/utils";
 import {SESSION_USER, SESSION_USER_ID} from "../../../../redux/constants/session-constants";
 import Col from "react-bootstrap/Col";
-import {useRouter} from "next/router";
+import {useRouter} from "next/navigation";
 import {getGridItemColumns} from "../../../../redux/actions/item-actions";
 import {extractItemListFromPost} from "../../../../library/helpers/items";
 import {siteConfig} from "@/config/site-config";

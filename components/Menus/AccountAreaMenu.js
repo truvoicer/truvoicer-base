@@ -4,7 +4,7 @@ import {
     getPageDataMiddleware,
     setModalContentMiddleware
 } from "../../redux/middleware/page-middleware";
-import {useRouter} from "next/router";
+import {useRouter} from "next/navigation";
 import {siteConfig} from "@/config/site-config";
 import {logout} from "../../redux/actions/session-actions";
 import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";

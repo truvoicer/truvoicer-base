@@ -1,13 +1,6 @@
 'use client';
 import React, {useContext, useEffect, useState} from 'react';
 import {connect} from "react-redux";
-import {loadBaseItemPage, loadBasePageData, setPostDataAction} from "@/truvoicer-base/redux/actions/page-actions";
-import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
-import {
-    setItemCategoryAction, setItemDataAction,
-    setItemIdAction,
-    setItemProviderAction, setSingleItemPostState
-} from "@/truvoicer-base/redux/actions/item-actions";
 import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
 import FetcherApp from "@/truvoicer-base/App";
 import {
@@ -21,35 +14,28 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const PostPageView = (props) => {
-    const {settings, template, post, navigation} = props;
+    const {page, preFetch = () => {}} = props;
     const [showLoader, setShowLoader] = useState(true);
     const templateManager = new TemplateManager(useContext(TemplateContext));
+
     useEffect(() => {
-        if (!isNotEmpty(template)) {
-            return;
+        if (typeof preFetch === "function") {
+            preFetch()
         }
-        if (!isNotEmpty(settings)) {
-            return;
-        }
-        loadBasePageData({
-            settings,
-            page: template,
-            postNavigation: navigation,
-            post,
-        })
-    }, [template, settings, post, navigation])
+    }, [])
+
 
     function itemPageInit() {
-        if (!isNotEmpty(template)) {
+        if (!isNotEmpty(page?.pageData)) {
             return;
         }
-        if (!isNotEmpty(settings)) {
+        if (!isNotEmpty(page?.siteSettings)) {
             return;
         }
-        if (!isNotEmpty(post)) {
+        if (!isNotEmpty(page?.postData)) {
             return;
         }
-        if (!isNotEmpty(navigation)) {
+        if (!isNotEmpty(page?.postNavData)) {
             return;
         }
         setShowLoader(false)
@@ -57,7 +43,7 @@ const PostPageView = (props) => {
 
     useEffect(() => {
         itemPageInit()
-    }, [template, settings, post, navigation])
+    }, [page])
 
     function defaultView() {
         return (
@@ -66,11 +52,12 @@ const PostPageView = (props) => {
                     ?
                     <LoaderComponent/>
                     :
-                    <FetcherApp />
+                    <FetcherApp/>
                 }
             </>
         )
     }
+
     return templateManager.getTemplateComponent({
         category: 'pages',
         templateId: 'postPageView',
@@ -85,7 +72,9 @@ const PostPageView = (props) => {
 }
 
 export default connect(
-    null,
+    (state) => ({
+        page: state.page,
+    }),
     {
         getItemMiddleware,
         setItemIdMiddleWare,

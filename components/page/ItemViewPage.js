@@ -21,51 +21,39 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ItemViewPage = (props) => {
-    const {settings, pageData, provider, item_id, category, getItemMiddleware, type, itemData} = props;
+    const {getItemMiddleware, type, item, preFetch = () => {}} = props;
     const [showLoader, setShowLoader] = useState(true);
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    useEffect(() => {
-        if (!isNotEmpty(pageData)) {
-            return;
-        }
-        if (!isNotEmpty(settings)) {
-            return;
-        }
-        loadBaseItemPage(pageData, settings)
-    }, [pageData, settings])
 
+    useEffect(() => {
+        if (typeof preFetch === "function") {
+            preFetch()
+        }
+    }, []);
 
     function itemPageInit() {
+        if (!isNotEmpty(item?.provider)) {
+            return;
+        }
+        if (!isNotEmpty(item?.category)) {
+            return;
+        }
+        if (!isNotEmpty(item?.item_id)) {
+            return;
+        }
         switch (type) {
             case 'internal':
-                if (!isNotEmpty(itemData)) {
+                if (!isNotEmpty(item?.data)) {
                     return;
                 }
-                setItemProviderAction(provider)
-                setItemCategoryAction(category)
-                setSingleItemPostState({
-                    dataKeys: itemData?.api_data_keys?.data_keys,
-                    databaseId:itemData?.ID
-                })
                 setShowLoader(false)
                 break;
             case 'external':
-                if (!isNotEmpty(provider)) {
-                    return;
-                }
-                if (!isNotEmpty(item_id)) {
-                    return;
-                }
-
                 let data = {
-                    [fetcherApiConfig.queryKey]: item_id,
-                    provider: provider
+                    [fetcherApiConfig.queryKey]: item.item_id,
+                    provider: item.provider
                 }
-
                 getItemMiddleware(data);
-                setItemProviderAction(provider)
-                setItemCategoryAction(category)
-                setItemIdAction(item_id);
                 setShowLoader(false)
                 break;
         }
@@ -73,7 +61,7 @@ const ItemViewPage = (props) => {
 
     useEffect(() => {
         itemPageInit()
-    }, [provider, item_id, itemData])
+    }, [item])
 
 
     function defaultView() {
@@ -103,7 +91,9 @@ const ItemViewPage = (props) => {
 }
 
 export default connect(
-    null,
+    (state) => ({
+        item: state.item,
+    }),
     {
         getItemMiddleware,
         setItemIdMiddleWare,

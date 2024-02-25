@@ -14,7 +14,7 @@ import Grid from "@mui/material/Grid";
 import {SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-constants";
 import {connect} from "react-redux";
 // import makeStyles from "@mui/material/styles/makeStyles";
-import {useRouter} from "next/router";
+import {useRouter} from "next/navigation";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
