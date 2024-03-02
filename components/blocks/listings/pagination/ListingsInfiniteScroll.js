@@ -23,6 +23,7 @@ const ListingsInfiniteScroll = (props) => {
     const listingsManager = new ListingsManager(listingsContext, searchContext)
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const loadMore = () => {
+        console.log("ListingsInfiniteScroll.js: loadMore()")
         if (searchContext.searchStatus !== SEARCH_REQUEST_COMPLETED) {
             return false;
         }
@@ -31,15 +32,16 @@ const ListingsInfiniteScroll = (props) => {
         listingsManager.loadNextPageNumberMiddleware(searchContext.pageControls[PAGINATION_PAGE_NUMBER] + 1);
     }
 
-    useEffect(() => {
-        if (
-            searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
-            searchContext?.searchOperation === APPEND_SEARCH_REQUEST &&
-            searchContext?.searchEntity === 'listingsInfiniteScroll'
-        ) {
-            listingsManager.runSearch('ListingsInfiniteScroll');
-        }
-    }, [searchContext?.searchOperation]);
+    // useEffect(() => {
+    //     if (
+    //         searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
+    //         searchContext?.searchOperation === APPEND_SEARCH_REQUEST &&
+    //         searchContext?.searchEntity === 'listingsInfiniteScroll'
+    //     ) {
+    //         listingsManager.runSearch('ListingsInfiniteScroll');
+    //     }
+    // }, [searchContext?.searchOperation]);
+    console.log("ListingsInfiniteScroll.js: searchContext", searchContext)
 
     function defaultView() {
         return (

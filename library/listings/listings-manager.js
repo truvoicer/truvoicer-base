@@ -226,6 +226,7 @@ export class ListingsManager extends ListingsEngineBase {
     }
 
     loadNextPageNumberMiddleware(pageNumber) {
+        console.log('loadNextPageNumberMiddleware', {pageNumber})
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_PAGINATION_REQUEST, true)
         this.searchEngine.setPageControlItemAction(PAGINATION_PAGE_NUMBER, parseInt(pageNumber))
     }

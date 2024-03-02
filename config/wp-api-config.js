@@ -8,6 +8,7 @@ export const wpApiConfig = {
         validateToken: protectedEndpoint + "/auth/token/check",
         settings: publicEndpoint + "/settings",
         page: publicEndpoint + "/pages/page",
+        pageList: publicEndpoint + "/pages/list",
         pageTemplate: publicEndpoint + "/pages/template/%(post_type)s/%(taxonomy)s/%(category)s",
         singleItemPost: publicEndpoint + "/posts/post/%(post_id)d/type/%(post_type)s",
         postWithTemplate: publicEndpoint + "/posts/post/%(slug)s",

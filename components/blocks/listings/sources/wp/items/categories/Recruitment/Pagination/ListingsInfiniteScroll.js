@@ -1,10 +1,10 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import {connect} from "react-redux";
 import {
     APPEND_SEARCH_REQUEST,
     PAGINATION_PAGE_NUMBER,
     PAGE_CONTROL_HAS_MORE,
-    SEARCH_REQUEST_COMPLETED,
+    SEARCH_REQUEST_COMPLETED, NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED,
 } from "@/truvoicer-base/redux/constants/search-constants";
 import InfiniteScroll from 'react-infinite-scroller';
 import LoaderComponent from "../../../../../../../../loaders/Loader";
@@ -24,10 +24,19 @@ const ListingsInfiniteScroll = (props) => {
         if (searchContext?.searchStatus !== SEARCH_REQUEST_COMPLETED) {
             return false;
         }
+        console.log("ListingsInfiniteScroll.js: loadMore()", searchContext?.pageControls)
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(APPEND_SEARCH_REQUEST);
         listingsManager.getSearchEngine().loadNextPageNumberMiddleware(searchContext?.pageControls[PAGINATION_PAGE_NUMBER] + 1);
     }
 
+    // useEffect(() => {
+    //     if (
+    //         searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
+    //         searchContext?.searchOperation === APPEND_SEARCH_REQUEST
+    //     ) {
+    //         listingsManager.runSearch('ListingsInfiniteScroll');
+    //     }
+    // }, [searchContext?.searchOperation]);
     function defaultView() {
         return (
             <InfiniteScroll

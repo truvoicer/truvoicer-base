@@ -5,7 +5,7 @@ export const fetcherApiConfig = {
         operation: "/front/operation/%s/",
     },
     queryKey: "query",
-    searchLimitKey: "posts_per_page",
+    searchLimitKey: "page_size",
     defaultSearchLimit: 20,
     pageNumberKey: "page_number",
     pageOffsetKey: "page_offset",

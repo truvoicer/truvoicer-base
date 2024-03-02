@@ -11,7 +11,7 @@ import {
     SEARCH_REQUEST_COMPLETED,
     SEARCH_REQUEST_ERROR,
     SEARCH_REQUEST_IDLE,
-    SEARCH_REQUEST_STARTED, PAGINATION_OFFSET
+    SEARCH_REQUEST_STARTED, PAGINATION_OFFSET, PAGE_CONTROL_REQ_PAGINATION_PAGE
 } from "@/truvoicer-base/redux/constants/search-constants";
 import store from "@/truvoicer-base/redux/store";
 import {produce} from "immer";
@@ -216,7 +216,7 @@ export class SearchEngine {
         switch (requestPageControls[PAGE_CONTROL_REQ_PAGINATION_TYPE]) {
             case PAGE_CONTROL_REQ_PAGINATION_OFFSET:
                 return this.hasMoreOffsetItems(pageControlsState, requestPageControls);
-            case PAGINATION_PAGE_NUMBER:
+            case PAGE_CONTROL_REQ_PAGINATION_PAGE:
                 return this.hasMorePages(pageControlsState, requestPageControls);
             default:
                 return false;
@@ -251,14 +251,14 @@ export class SearchEngine {
 
     }
     hasMorePages(pageControlsState, requestPageControls) {
-        let currentPage = pageControlsState[PAGINATION_PAGE_NUMBER];
+        let currentPage = requestPageControls[PAGINATION_PAGE_NUMBER];
         if (isNotEmpty(requestPageControls?.[PAGINATION_PAGE_NUMBER])) {
             currentPage = parseInt(requestPageControls[PAGINATION_PAGE_NUMBER]);
         }
         if (currentPage === 0) {
             return false;
         }
-        return parseInt(pageControlsState[PAGINATION_PAGE_NUMBER]) < parseInt(pageControlsState[PAGINATION_TOTAL_PAGES]);
+        return parseInt(requestPageControls[PAGINATION_PAGE_NUMBER]) <= parseInt(requestPageControls[PAGINATION_TOTAL_PAGES]);
 
     }
     getTotalItems(pageControlsState, requestPageControls) {

@@ -1,16 +1,8 @@
-import {allPagesUriQuery} from "../../graphql/queries/all-pages-uri";
-import {allPostsQuery} from "../../graphql/queries/all-posts-uri";
 import {wpApiConfig} from "../../../config/wp-api-config";
 import {getSessionObject} from "../../../redux/actions/session-actions";
 import {siteConfig} from "@/config/site-config";
 import store from "../../../redux/store";
 import {SESSION_USER, SESSION_USER_ID} from "../../../redux/constants/session-constants";
-import useSWR from "swr";
-import {allSingleItemPostsQuery} from "../../graphql/queries/all-single-item-posts";
-import {allCategoriesQuery} from "../../graphql/queries/all-categories-uri";
-import {comparisonItemTemplateQuery} from "../../graphql/queries/single-comparison-item-post-template";
-import {allComparisonItemsPostsQuery} from "../../graphql/queries/all-comparison-items-posts";
-import {isNotEmpty} from "../../utils";
 import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 
 const axios = require('axios');
@@ -21,52 +13,39 @@ export const buildWpApiUrl = (endpoint, param = "") => {
     return sprintf(wpApiConfig.apiBaseUrl + endpoint, param);
 }
 
-export function getStaticPostsPaths(allPosts) {
-    return allPosts.nodes.map((node) => {
-        return {
-            params: {
-                category: node?.post_options?.postTemplateCategory?.slug,
-                post: [node.slug]
-            }
-        }
-    });
-}
+// export function getStaticPostsPaths(allPosts) {
+//     return allPosts.nodes.map((node) => {
+//         return {
+//             params: {
+//                 category: node?.post_options?.postTemplateCategory?.slug,
+//                 post: [node.slug]
+//             }
+//         }
+//     });
+// }
 
-export function getStaticPagePaths(allPages) {
-    return allPages.nodes.map((node) => {
-        let pagePaths = [];
-        if (node.uri !== "/") {
-            node.uri.split("/").map(item => {
-                if (item !== '') {
-                    pagePaths.push(item);
-                }
-            });
-        }
-        return {
-            params: {
-                page: pagePaths.length > 0 ? pagePaths : [node.slug]
-            }
-        }
-    })
-}
-
-export async function getAllPagesWithUri() {
-    // query AllPagesUri {
-    //     pages(first: 1000) {
-    //         nodes {
-    //             slug
-    //             uri
-    //         }
-    //     }
-    // }
-    // return await wpResourceRequestHandler({
-    //     endpoint: sprintf(wpApiConfig.endpoints.singleItemPost, {
-    //         post_id: parseInt(id),
-    //         post_type: postType,
-    //     }),
-    //     method: 'GET',
-    // });
-}
+// export function getStaticPagePaths(allPages) {
+//     return allPages.pageList.map((node) => {
+//         let pagePaths = [];
+//         if (node.url !== "/") {
+//             node.url.split("/").map(item => {
+//                 if (item !== '') {
+//                     pagePaths.push(item);
+//                 }
+//             });
+//         }
+//         return {
+//             page: pagePaths.length > 0 ? pagePaths : [node?.post_name]
+//         }
+//     })
+// }
+//
+// export async function getAllPagesWithUri() {
+//     return await wpResourceRequestHandler({
+//         endpoint: wpApiConfig.endpoints.pageList,
+//         method: 'GET',
+//     });
+// }
 
 
 export async function getAllSingleItemPosts() {
