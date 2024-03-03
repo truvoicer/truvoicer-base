@@ -5,15 +5,17 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 
 const HeaderMenu = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
+
     function defaultView() {
-    return (
-        <div className="main-menu  d-none d-lg-block">
-            <nav>
-                <MenuList data={props.data} sessionLinks={true}/>
-            </nav>
-        </div>
-    )
+        return (
+            <div className="main-menu  d-none d-lg-block">
+                <nav>
+                    <MenuList data={props.data} sessionLinks={true}/>
+                </nav>
+            </div>
+        )
     }
+
     return templateManager.getTemplateComponent({
         category: 'menus',
         templateId: 'headerMenu',

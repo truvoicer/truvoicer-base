@@ -1,8 +1,8 @@
 import React, {useContext, useState} from 'react';
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import MaterialMenuList from "./MaterialMenuList";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import MenuList from "@/truvoicer-base/components/Menus/MenuList";
 
 const MobileDrawerMenu = (props) => {
     const [showMenu, setShowMenu] = useState(false)
@@ -39,7 +39,7 @@ const MobileDrawerMenu = (props) => {
                         // onClick={closeDrawer}
                         // onKeyDown={closeDrawer}
                     >
-                        <MaterialMenuList data={props.data} sessionLinks={true}/>
+                        <MenuList data={props.data} sessionLinks={true}/>
                     </div>
                 </SwipeableDrawer>
             </div>

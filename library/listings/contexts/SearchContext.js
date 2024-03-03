@@ -2,7 +2,11 @@ import React from 'react'
 import {isSet} from "@/truvoicer-base/library/utils";
 import {siteConfig} from "@/config/site-config";
 import {LISTINGS_GRID_COMPACT} from "@/truvoicer-base/redux/constants/listings-constants";
-import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_IDLE} from "@/truvoicer-base/redux/constants/search-constants";
+import {
+    NEW_SEARCH_REQUEST,
+    PAGINATION_PAGE_NUMBER, PAGINATION_PAGE_SIZE,
+    SEARCH_REQUEST_IDLE
+} from "@/truvoicer-base/redux/constants/search-constants";
 
 export const searchData = {
     searchStatus: SEARCH_REQUEST_IDLE,
@@ -13,6 +17,11 @@ export const searchData = {
     searchList: [],
     savedItemsList: [],
     itemRatingsList: [],
+    query: {
+        [PAGINATION_PAGE_NUMBER]: 1,
+        [PAGINATION_PAGE_SIZE]: null,
+        provider: null,
+    },
     pageControls: {
         initialized: false,
         paginationRequest: false,

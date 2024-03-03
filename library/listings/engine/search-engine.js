@@ -137,6 +137,7 @@ export class SearchEngine {
 
     buildQueryData(allProviders, provider, queryData = {}) {
         let cloneQueryData = {...queryData};
+
         cloneQueryData[fetcherApiConfig.searchLimitKey] = this.calculateLimit(allProviders.length, cloneQueryData?.[fetcherApiConfig.searchLimitKey]);
         cloneQueryData = this.addPaginationQueryParameters(cloneQueryData, provider);
         cloneQueryData["provider"] = provider;
@@ -145,7 +146,7 @@ export class SearchEngine {
 
     calculateLimit(providerCount, pageSize = null) {
         if (pageSize === null) {
-            pageSize = fetcherApiConfig.defaultSearchLimit;
+            pageSize = siteConfig.defaultSearchLimit;
         }
         return Math.floor(pageSize / providerCount);
     }
@@ -210,6 +211,13 @@ export class SearchEngine {
             [key]: value
         });
         this.updateContext({key: "pageControls", value: pageControlsObject})
+    }
+    setQueryItemAction(key, value) {
+        let searchQueryState = this.searchContext?.query;
+        const searchQueryObject = Object.assign({}, searchQueryState, {
+            [key]: value
+        });
+        this.updateContext({key: "query", value: searchQueryObject})
     }
 
     hasMore(pageControlsState, requestPageControls) {
@@ -283,7 +291,7 @@ export class SearchEngine {
         if (isSet(requestPageControls.page_number)) {
             requestTotalPages = requestPageControls.page_count;
         } else if (isSet(requestPageControls.page_offset)) {
-            requestTotalPages = Math.floor(requestPageControls.total_items / fetcherApiConfig.defaultSearchLimit);
+            requestTotalPages = Math.floor(requestPageControls.total_items / siteConfig.defaultSearchLimit);
         }
         if (isSet(requestTotalPages) && requestTotalPages !== "" && requestTotalPages !== null) {
             return totalPages + parseInt(requestTotalPages)
@@ -313,14 +321,9 @@ export class SearchEngine {
 
 
     addPaginationQueryParameters(queryData, providerName = null) {
-        const pageControlsState = this.searchContext.pageControls;
-        const extraData = this.searchContext.extraData[providerName];
-        const currentPage = pageControlsState[PAGINATION_PAGE_NUMBER];
-        let pageSize = fetcherApiConfig.defaultSearchLimit
-
-        if (!isSet(extraData)) {
-            return queryData;
-        }
+        const searchQueryState = this.searchContext.query;
+        const currentPage = searchQueryState[PAGINATION_PAGE_NUMBER];
+        let pageSize = siteConfig.defaultSearchLimit
 
         if (isSet(queryData?.[PAGINATION_PAGE_SIZE])) {
             pageSize = queryData[PAGINATION_PAGE_SIZE];
@@ -328,7 +331,6 @@ export class SearchEngine {
 
         queryData[PAGINATION_PAGE_NUMBER] = currentPage;
         queryData[PAGINATION_OFFSET] = pageSize * currentPage;
-        console.log({queryData})
         return queryData;
     }
 

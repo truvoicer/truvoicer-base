@@ -45,7 +45,7 @@ export function fetchLoaderDataAction(operation, requestData, callback) {
 
 export function fetchItemCallback (status, data) {
     if (status === 200) {
-        setItemDataAction(data.request_data[0])
+        setItemDataAction(data.data)
     } else {
         console.error(data)
         store.dispatch(setItemError("Item fetch error..."))

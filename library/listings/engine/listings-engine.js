@@ -113,32 +113,12 @@ export class ListingsEngine {
         this.updateContext({key: "listingsScrollTop", value: show})
     }
 
-    getItemLinkProps(category, item, showInfoCallback, e, trackData = {}) {
-        console.log('getItemLinkProps', category, item, showInfoCallback, e, trackData)
-        const listingsData = this.listingsContext?.listingsData;
-        console.log('listingsData', listingsData)
-        if (isSet(listingsData?.item_view_display) && listingsData.item_view_display === "page") {
-            return {
-                onClick: (e) => {
-                    // e.preventDefault()
-                    this.globalItemLinkClick(trackData)
-                }
-            };
-        }
-        return {
-            href: this.getItemViewUrl(item, category),
-            onClick: showInfoCallback.bind(e, item, category)
-        }
-    }
 
     globalItemLinkClick(trackData = {}) {
         tagManagerSendDataLayer(trackData)
     }
 
-    getItemViewUrl(item, category) {
-        if (!isNotEmpty(item)) {
-            return null;
-        }
+    extractItemId(item) {
         let itemId;
         if (Array.isArray(item?.item_id)) {
             const filterItemId = item?.item_id.filter((id) => id?.data).map((id) => id?.data);
@@ -149,6 +129,14 @@ export class ListingsEngine {
         } else {
             itemId = item?.item_id;
         }
+        return itemId;
+    }
+    getItemViewUrl(item, category) {
+        if (!isNotEmpty(item)) {
+            return null;
+        }
+        let itemId = this.extractItemId(item);
+
         let data = {
             item_id: itemId
         }
@@ -451,8 +439,8 @@ export class ListingsEngine {
         tagManagerSendDataLayer(trackData)
     }
 
-    getItemLinkProps(category, item, showInfoCallback, e, trackData = {}) {
-        const listingsData = store.getState().listings?.listingsData;
+    getItemLinkProps(category, item, showInfoCallback, trackData = {}) {
+        const listingsData = this.listingsContext?.listingsData;
         if (isSet(listingsData?.item_view_display) && listingsData.item_view_display === "page") {
             return {
                 onClick: (e) => {
@@ -463,7 +451,7 @@ export class ListingsEngine {
         }
         return {
             href: this.getItemViewUrl(item, category),
-            onClick: showInfoCallback.bind(e, item, category)
+            onClick: showInfoCallback.bind(item, category)
         }
     }
     extractItemListFromPost({post}) {

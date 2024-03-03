@@ -26,22 +26,6 @@ export class ListingsGrid {
                 data={gridItem}
                 searchCategory={category}
                 showInfoCallback={showInfoCallback}
-                savedItem={
-                    this.listingsManager.searchEngine.isSavedItemAction(
-                        isSet(item?.item_id) ? item.item_id : null,
-                        isSet(item?.provider) ? item.provider : null,
-                        category,
-                        userId
-                    )
-                }
-                ratingsData={
-                    this.listingsManager.searchEngine.getItemRatingDataAction(
-                        isSet(item?.item_id) ? item.item_id : null,
-                        isSet(item?.provider) ? item.provider : null,
-                        category,
-                        userId
-                    )
-                }
             />
         )
     }

@@ -24,19 +24,22 @@ const ListingsInfiniteScroll = (props) => {
         if (searchContext?.searchStatus !== SEARCH_REQUEST_COMPLETED) {
             return false;
         }
-        console.log("ListingsInfiniteScroll.js: loadMore()", searchContext?.pageControls)
+        listingsManager.getSearchEngine().setSearchEntity('listingsInfiniteScroll');
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(APPEND_SEARCH_REQUEST);
         listingsManager.getSearchEngine().loadNextPageNumberMiddleware(searchContext?.pageControls[PAGINATION_PAGE_NUMBER] + 1);
     }
 
-    // useEffect(() => {
-    //     if (
-    //         searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
-    //         searchContext?.searchOperation === APPEND_SEARCH_REQUEST
-    //     ) {
-    //         listingsManager.runSearch('ListingsInfiniteScroll');
-    //     }
-    // }, [searchContext?.searchOperation]);
+    useEffect(() => {
+        if (
+            searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
+            searchContext?.searchOperation === APPEND_SEARCH_REQUEST &&
+            searchContext?.searchEntity === 'listingsInfiniteScroll' &&
+            searchContext.query[PAGINATION_PAGE_NUMBER] > searchContext.pageControls[PAGINATION_PAGE_NUMBER]
+        ) {
+            listingsManager.runSearch('ListingsInfiniteScroll');
+        }
+    }, [searchContext?.searchOperation]);
+
     function defaultView() {
         return (
             <InfiniteScroll

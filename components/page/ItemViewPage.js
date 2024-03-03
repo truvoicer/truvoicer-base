@@ -38,9 +38,10 @@ const ItemViewPage = (props) => {
         if (!isNotEmpty(item?.category)) {
             return;
         }
-        if (!isNotEmpty(item?.item_id)) {
+        if (!isNotEmpty(item?.itemId)) {
             return;
         }
+
         switch (type) {
             case 'internal':
                 if (!isNotEmpty(item?.data)) {
@@ -49,11 +50,6 @@ const ItemViewPage = (props) => {
                 setShowLoader(false)
                 break;
             case 'external':
-                let data = {
-                    [fetcherApiConfig.queryKey]: item.item_id,
-                    provider: item.provider
-                }
-                getItemMiddleware(data);
                 setShowLoader(false)
                 break;
         }
@@ -62,7 +58,6 @@ const ItemViewPage = (props) => {
     useEffect(() => {
         itemPageInit()
     }, [item])
-
 
     function defaultView() {
     return (

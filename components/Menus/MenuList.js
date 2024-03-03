@@ -28,10 +28,12 @@ const MenuList = (props) => {
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
     }
 
-    const showAuthLoginModal = () => {
+    const showAuthLoginModal = (e) => {
+        e.preventDefault();
         props.setModalContentMiddleware(blockComponentsConfig.components.authentication_login.name, {}, true)
     }
-    const showAuthRegisterModal = () => {
+    const showAuthRegisterModal = (e) => {
+        e.preventDefault();
         props.setModalContentMiddleware(blockComponentsConfig.components.authentication_register.name, {}, true)
     }
 
@@ -81,6 +83,7 @@ const MenuList = (props) => {
     }
 
     const getItemCallback = (pageType) => {
+
         switch (pageType) {
             case "register":
                 return showAuthRegisterModal;

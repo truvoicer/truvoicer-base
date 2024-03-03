@@ -111,7 +111,7 @@ const ListingsPaginate = (props) => {
             listingsManager.runSearch('listingsPaginate');
         }
     }, [searchContext?.searchOperation]);
-    console.log({searchContext})
+
     function defaultView() {
         return (
             <>
