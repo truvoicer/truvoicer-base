@@ -28,20 +28,23 @@ const AuthFacebook = (props) => {
         fbContext.fb.login(function(response) {
             if (response.authResponse) {
                 console.log('Welcome!  Fetching your information.... ');
-                fbContext.fb.api('/me', {fields: 'name, email'}, function(response) {
-                    console.log({response})
+                fbContext.fb.api('/me', {fields: 'name, email'}, function(response, a, b) {
+                    console.log({response, a, b})
                 });
             } else {
                 console.log('User cancelled login or did not fully authorize.'); }
-        });
+        }, {scope: 'email'});
     }
 
     // console.log(props.siteSettings?.facebook_app_id)
     function defaultView() {
         return (
             <div>
-                <div className="fb-login-button" data-width="" data-size="" data-button-type="" data-layout=""
-                     data-auto-logout-link="false" data-use-continue-as="false"></div>
+                <SocialButton buttonClass={props.buttonClass}
+                             iconClass={props.iconClass}
+                             buttonLabel={props.buttonLabel}
+                             onClick={onCLick}
+                    />
             </div>
             // <FacebookLogin
             //     appId={props.siteSettings?.facebook_app_id}

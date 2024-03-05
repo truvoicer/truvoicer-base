@@ -51,7 +51,7 @@ function FBAuthProvider({children, siteSettings}) {
             xfbml            : true,
             version          : 'v19.0'
         });
-        console.log({FB})
+
         updateState({
             appId: siteSettings?.facebook_app_id,
             fb: FB
