@@ -2,7 +2,6 @@ import {connect} from "react-redux";
 import React, {useContext} from 'react';
 import {
     getPageDataMiddleware,
-    setModalContentMiddleware
 } from "../../redux/middleware/page-middleware";
 import {useRouter} from "next/navigation";
 import {siteConfig} from "@/config/site-config";
@@ -15,12 +14,14 @@ import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchCo
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
 
 const AccountAreaMenu = (props) => {
     const router = useRouter();
 
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
+    const modalContext = useContext(AppModalContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
@@ -37,10 +38,16 @@ const AccountAreaMenu = (props) => {
     }
 
     const showAuthLoginModal = () => {
-        props.setModalContentMiddleware(blockComponentsConfig.components.authentication_login.name, {}, true)
+        modalContext.showModal({
+            component: blockComponentsConfig.components.authentication_login.name,
+            show: true
+        });
     }
     const showAuthRegisterModal = () => {
-        props.setModalContentMiddleware(blockComponentsConfig.components.authentication_register.name, {}, true)
+        modalContext.showModal({
+            component: blockComponentsConfig.components.authentication_register.name,
+            show: true
+        });
     }
 
     const getListItem = (item) => {
@@ -186,6 +193,5 @@ export default connect(
     mapStateToProps,
     {
         getPageDataMiddleware,
-        setModalContentMiddleware
     }
 )(AccountAreaMenu);

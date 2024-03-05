@@ -1,40 +1,21 @@
 import store from "../store"
 import React from "react";
 import {
-    setModalComponent, setNextPostNavData,
+    setNextPostNavData,
     setPageData, setPageDataOptions,
     setPageError, setPostData, setPostListData, setPostNavFromList, setPostNavIndex, setPrevPostNavData,
-    setShowModal,
     setSiteSettings,
     setUserAccountMenuData,
 } from "../reducers/page-reducer";
 import {isNotEmpty, isSet} from "../../library/utils";
 import {buildWpApiUrl} from "../../library/api/wp/middleware";
-import {siteConfig} from "../../../config/site-config";
+import {siteConfig} from "@/config/site-config";
 import {blockComponentsConfig} from "../../config/block-components-config";
 import {wpApiConfig} from "../../config/wp-api-config";
 
-const sprintf = require("sprintf").sprintf;
+const sprintf = require('sprintf-js').sprintf;
 export function setPageErrorAction(error) {
     store.dispatch(setPageError(error))
-}
-
-export function setShowModalAction(show) {
-    store.dispatch(setShowModal(show))
-}
-
-export function setModalComponentAction(data) {
-    const componentState = {...store.getState().page.modal};
-    const object = Object.assign({}, componentState, data);
-    store.dispatch(setModalComponent(object))
-}
-
-export function setModalContentAction(component, data, show) {
-    setModalComponentAction({
-        show: show,
-        data: data,
-        component: component
-    });
 }
 
 export function getWidget(component, data) {

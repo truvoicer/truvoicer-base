@@ -3,12 +3,11 @@ import AuthLoginForm from "./AuthLoginForm";
 import AuthGoogle from "./AuthGoogle";
 import AuthFacebook from "./AuthFacebook";
 import {connect} from "react-redux";
-import {showPageModalMiddleware} from "../../../redux/middleware/page-middleware";
-import {siteConfig} from "../../../../config/site-config";
-import {setModalContentAction} from "../../../redux/actions/page-actions";
+import {siteConfig} from "@/config/site-config";
 import {blockComponentsConfig} from "../../../config/block-components-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
 
 const LoginDialog = (props) => {
     const [showLoginForm, setShowLoginForm] = useState(false);
@@ -17,24 +16,33 @@ const LoginDialog = (props) => {
         message: ""
     });
     const templateManager = new TemplateManager(useContext(TemplateContext));
+    const modalContext = useContext(AppModalContext);
     const showAuthRegisterModal = (e) => {
         e.preventDefault()
-        setModalContentAction(blockComponentsConfig.components.authentication_register.name, {}, true)
+        modalContext.showModal({
+            component: blockComponentsConfig.components.authentication_register.name,
+            show: true
+        });
     }
     const showForgotPasswordModal = (e) => {
         e.preventDefault()
-        setModalContentAction(blockComponentsConfig.components.authentication_password_reset.name, {}, true)
+        modalContext.showModal({
+            component: blockComponentsConfig.components.authentication_password_reset.name,
+            show: true
+        });
     }
     const requestCallback = (error, data) => {
+        console.log(error, data)
         if (error) {
-            console.error(data)
             setError({
                 show: true,
                 message: data.message
             });
         } else {
             setShowLoginForm(false);
-            props.showPageModalMiddleware(false);
+            modalContext.showModal({
+                show: false
+            });
         }
     }
 
@@ -108,7 +116,5 @@ const LoginDialog = (props) => {
 }
 export default connect(
     null,
-    {
-        showPageModalMiddleware
-    }
+    null
 )(LoginDialog);

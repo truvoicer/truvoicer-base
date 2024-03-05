@@ -2,7 +2,7 @@ import {isNotEmpty, isSet} from "../utils";
 import {itemDataTextFilter} from "./items";
 import store from "../../redux/store";
 
-const sprintf = require("sprintf").sprintf;
+const sprintf = require('sprintf-js').sprintf;
 
 export const getHeadScripts = (page_options, siteSettings) => {
     if (isSet(page_options?.headerScriptsOverride) && page_options.headerScriptsOverride) {

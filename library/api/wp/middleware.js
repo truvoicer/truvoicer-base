@@ -6,7 +6,7 @@ import {SESSION_USER, SESSION_USER_ID} from "../../../redux/constants/session-co
 import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 
 const axios = require('axios');
-const sprintf = require("sprintf").sprintf;
+const sprintf = require('sprintf-js').sprintf;
 
 
 export const buildWpApiUrl = (endpoint, param = "") => {

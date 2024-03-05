@@ -1,7 +1,7 @@
 import {isNotEmpty} from "../utils";
 import {PostRoutes} from "../../../config/post-routes";
 
-const sprintf = require("sprintf").sprintf
+const sprintf = require('sprintf-js').sprintf
 
 export function getPostItemUrl({post_name = null, category_name = null}) {
     if (!isNotEmpty(post_name) || !isNotEmpty(category_name)) {

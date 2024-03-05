@@ -5,16 +5,17 @@ import DropdownMenuList from "./DropdownMenuList";
 import UserAccountLoader from "../loaders/UserAccountLoader";
 import {connect} from "react-redux";
 import {isNotEmpty, isObjectEmpty} from "../../library/utils";
-import {setModalContentAction} from "../../redux/actions/page-actions";
 import {blockComponentsConfig} from "../../config/block-components-config";
 import {siteConfig} from "@/config/site-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
 
 const ProfileMenu = (props) => {
     const {data, siteSettings} = props;
     const [userData, setUserData] = useState({});
     const templateManager = new TemplateManager(useContext(TemplateContext));
+    const modalContext = useContext(AppModalContext);
 
     function defaultView() {
         return (
@@ -25,7 +26,10 @@ const ProfileMenu = (props) => {
                             <a
                                 className={"text-white"}
                                 onClick={() => {
-                                    setModalContentAction(blockComponentsConfig.components.authentication_login.name, {}, true)
+                                    modalContext.showModal({
+                                        component: blockComponentsConfig.components.authentication_login.name,
+                                        show: true
+                                    });
                                 }}
                             >
                                 {!siteSettings?.profile_menu_login_text ? siteConfig.defaultProfileMenuLoginText : siteSettings.profile_menu_login_text}
@@ -35,7 +39,10 @@ const ProfileMenu = (props) => {
                             <a
                                 className={"text-white"}
                                 onClick={() => {
-                                    setModalContentAction(blockComponentsConfig.components.authentication_register.name, {}, true)
+                                    modalContext.showModal({
+                                        component: blockComponentsConfig.components.authentication_register.name,
+                                        show: true
+                                    });
                                 }}
                             >
                                 {!siteSettings?.profile_menu_register_text ? siteConfig.defaultProfileMenuRegisterText : siteSettings.profile_menu_register_text}

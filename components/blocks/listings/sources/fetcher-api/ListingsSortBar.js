@@ -1,11 +1,7 @@
 import {connect} from "react-redux";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select from "@mui/material/Select";
 import React, {useContext, useEffect, useState} from "react";
 import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED} from "@/truvoicer-base/redux/constants/search-constants";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
-import MenuItem from "@mui/material/MenuItem";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";

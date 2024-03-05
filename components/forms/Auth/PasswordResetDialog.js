@@ -1,12 +1,11 @@
 import React, {useContext, useState} from "react";
 import {connect} from "react-redux";
-import {showPageModalMiddleware} from "../../../redux/middleware/page-middleware";
-import {siteConfig} from "../../../../config/site-config";
-import {setModalContentAction} from "../../../redux/actions/page-actions";
+import {siteConfig} from "@/config/site-config";
 import {blockComponentsConfig} from "../../../config/block-components-config";
 import PasswordResetForm from "./PasswordResetForm";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
 
 const PasswordResetDialog = (props) => {
     const [showForm, setShowForm] = useState(false);
@@ -16,13 +15,20 @@ const PasswordResetDialog = (props) => {
         message: ""
     });
     const templateManager = new TemplateManager(useContext(TemplateContext));
+    const modalContext = useContext(AppModalContext);
     const showAuthRegisterModal = (e) => {
         e.preventDefault()
-        setModalContentAction(blockComponentsConfig.components.authentication_register.name, {}, true)
+        modalContext.showModal({
+            component: blockComponentsConfig.components.authentication_register.name,
+            show: true
+        });
     }
     const showAuthLoginModal = (e) => {
         e.preventDefault();
-        setModalContentAction(blockComponentsConfig.components.authentication_login.name, {}, true)
+        modalContext.showModal({
+            component: blockComponentsConfig.components.authentication_login.name,
+            show: true
+        });
     }
     const requestCallback = (error, data) => {
         if (error) {
@@ -98,7 +104,5 @@ const PasswordResetDialog = (props) => {
 }
 export default connect(
     null,
-    {
-        showPageModalMiddleware
-    }
+    null
 )(PasswordResetDialog);

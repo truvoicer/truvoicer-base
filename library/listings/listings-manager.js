@@ -23,6 +23,7 @@ import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middlewa
 import {setPostListDataAction} from "@/truvoicer-base/redux/actions/page-actions";
 import {extractCategoryIds} from "@/truvoicer-base/library/helpers/wp-helpers";
 import {ListingsEngine} from "@/truvoicer-base/library/listings/engine/listings-engine";
+import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
 
 export class ListingsManager extends ListingsEngineBase {
 
@@ -502,5 +503,16 @@ export class ListingsManager extends ListingsEngineBase {
             this.searchEngine.searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
             this.searchEngine.searchContext?.searchOperation === operation
         )
+    }
+    showAuthModal(modalContext) {
+        const authenticated = store.getState().session[SESSION_AUTHENTICATED];
+        if (!authenticated) {
+            modalContext.showModal({
+                component: blockComponentsConfig.components.authentication_login.name,
+                show: true
+            });
+            return false;
+        }
+        return true;
     }
 }

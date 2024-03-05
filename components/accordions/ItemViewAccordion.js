@@ -1,9 +1,4 @@
 import React, {useContext, useState} from 'react';
-import Typography from '@mui/material/Typography';
-// import makeStyles from "@mui/material/styles/makeStyles";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
 import {getListItemData} from "../../library/helpers/items";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";

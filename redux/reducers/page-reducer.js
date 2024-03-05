@@ -16,11 +16,6 @@ const defaultState = {
     blocksData: {},
     siteSettings: {},
     userAccountMenu: [],
-    modal: {
-        show: false,
-        component: "",
-        data: {}
-    },
     error: {}
 };
 const defaultReducers = {
@@ -54,12 +49,6 @@ const defaultReducers = {
     setBlocksData: (state, action) => {
         state.blocksData = action.payload;
     },
-    setShowModal: (state, action) => {
-        state.modal.show = action.payload;
-    },
-    setModalComponent: (state, action) => {
-        state.modal = action.payload;
-    },
     setUserAccountMenuData: (state, action) => {
         state.userAccountMenu = action.payload;
     },
@@ -82,5 +71,4 @@ export const {
     setPostNavIndex, setPostNavFromList,
     setSiteSettings, setUserAccountMenuData,
     setPageError, setShowModal,
-    setModalComponent
 } = pageSlice.actions;

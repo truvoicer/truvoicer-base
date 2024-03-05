@@ -1,8 +1,4 @@
 import React, {useContext, useState} from 'react';
-import Box from "@mui/material/Box";
-import Tabs from "@mui/material/Tabs";
-import AppBar from "@mui/material/AppBar";
-import Tab from "@mui/material/Tab";
 import {isSet} from "../../library/utils";
 import {blockComponentsConfig} from "../../config/block-components-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";

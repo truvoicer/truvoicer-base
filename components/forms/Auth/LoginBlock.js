@@ -1,13 +1,13 @@
 import React, {useContext, useState} from "react";
 import {connect} from "react-redux";
 import AuthLoginForm from "./AuthLoginForm";
-import {siteConfig} from "../../../../config/site-config";
+import {siteConfig} from "@/config/site-config";
 import {blockComponentsConfig} from "../../../config/block-components-config";
-import {setModalContentAction} from "../../../redux/actions/page-actions";
 import AuthGoogle from "./AuthGoogle";
 import AuthFacebook from "./AuthFacebook";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
 
 const LoginBlock = (props) => {
     const [error, setError] = useState({
@@ -15,9 +15,14 @@ const LoginBlock = (props) => {
         message: ""
     });
     const templateManager = new TemplateManager(useContext(TemplateContext));
+    const modalContext = useContext(AppModalContext);
     const showAuthRegisterModal = (e) => {
         e.preventDefault()
-        setModalContentAction(blockComponentsConfig.components.authentication_register.name, {}, true)
+        console.log('dss')
+        modalContext.showModal({
+            component: blockComponentsConfig.components.authentication_register.name,
+            show: true
+        });
     }
     const requestCallback = (error, data) => {
         if (error) {
@@ -26,7 +31,11 @@ const LoginBlock = (props) => {
                 show: true,
                 message: data.message
             });
+            return;
         }
+        modalContext.showModal({
+            show: false
+        });
     }
     function defaultView() {
         return (

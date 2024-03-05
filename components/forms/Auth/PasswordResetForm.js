@@ -1,6 +1,5 @@
 import React, {useContext, useState} from 'react';
 import {connect} from "react-redux";
-import {getSessionTokenMiddleware} from "../../../redux/middleware/session-middleware";
 import {buildWpApiUrl, publicApiRequest} from "../../../library/api/wp/middleware";
 import DataForm from "../DataForm/DataForm";
 import {wpApiConfig} from "../../../config/wp-api-config";
@@ -57,5 +56,5 @@ function mapStateToProps(state) {
 
 export default connect(
     mapStateToProps,
-    {getSessionTokenMiddleware}
+    null
 )(PasswordResetForm);

@@ -3,13 +3,14 @@ import {connect} from "react-redux";
 import {itemDataTextFilter} from "../../library/helpers/items";
 import {isNotEmpty} from "../../library/utils";
 import {getExtraDataValue} from "../../library/helpers/pages";
-import {setModalContentAction} from "../../redux/actions/page-actions";
 import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
 
 const HeroBlock = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
+    const modalContext = useContext(AppModalContext);
     let heroType = "full";
     const primaryBgUrl = props?.data?.hero_background_image ? props.data.hero_background_image : "/img/banner/banner.png";
     const secondaryBgUrl = props?.data?.hero_background_image_2 ? props.data.hero_background_image_2 : "";
@@ -19,7 +20,10 @@ const HeroBlock = (props) => {
     }
     const buttonClickHandler = (e) => {
         e.preventDefault();
-        setModalContentAction(blockComponentsConfig.components.authentication_register.name, {}, true)
+        modalContext.showModal({
+            component: blockComponentsConfig.components.authentication_register.name,
+            show: true
+        });
     }
 
     const defaultButtonLabel = "Start Searching";

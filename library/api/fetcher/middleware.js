@@ -2,7 +2,7 @@ import {fetcherApiConfig} from "../../../config/fetcher-api-config";
 import {isEmpty, isSet} from "../../utils";
 
 const axios = require('axios');
-const vsprintf = require("sprintf").vsprintf;
+const vsprintf = require('sprintf-js').vsprintf;
 
 export const validateRequestParams = (requiredParams, queryData) => {
     if (isEmpty(queryData)) {

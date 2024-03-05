@@ -8,7 +8,7 @@ import {connect} from "react-redux";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
-const sprintf = require("sprintf").sprintf;
+const sprintf = require('sprintf-js').sprintf;
 const {useEffect} = require("react");
 
 const ItemViewComments = (props) => {

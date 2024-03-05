@@ -2,9 +2,6 @@ import React, {useContext} from "react";
 import Header from "@/truvoicer-base/components/layout/Header";
 import Footer from "@/truvoicer-base/components/layout/Footer";
 import {connect} from "react-redux";
-import {isObjectEmpty, isSet} from "@/truvoicer-base/library/utils";
-import {getWidget} from "@/truvoicer-base/redux/actions/page-actions";
-import PageModal from "@/truvoicer-base/components/modals/PageModal";
 import {filterHtml} from "@/truvoicer-base/library/html-parser";
 import ReactHtmlParser from "react-html-parser";
 import AccountArea from "@/truvoicer-base/components/layout/AccountArea";
@@ -22,16 +19,6 @@ const SidebarTemplate = (props) => {
         decodeEntities: true,
         transform: (node, index) => {
             return filterHtml(node, index)
-        }
-    }
-
-    const getModal = () => {
-        if (isSet(modal.component) && !isObjectEmpty(modal.component) && modal.show) {
-            return (
-                <PageModal show={modal.show}>
-                    {getWidget(modal.component, modal.data)}
-                </PageModal>
-            )
         }
     }
 
@@ -72,7 +59,7 @@ const SidebarTemplate = (props) => {
                         <Footer/>
                     </div>
                 }
-                {getModal()}
+
             </>
         );
     }
@@ -84,7 +71,6 @@ const SidebarTemplate = (props) => {
         props: {
             defaultView: defaultView,
             htmlParserOptions,
-            getModal,
             ...props
         }
     });

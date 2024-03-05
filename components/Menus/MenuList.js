@@ -1,6 +1,6 @@
 import {connect} from "react-redux";
 import React, {useContext} from 'react';
-import {getPageDataMiddleware, setModalContentMiddleware} from "../../redux/middleware/page-middleware";
+import {getPageDataMiddleware} from "../../redux/middleware/page-middleware";
 import Link from "next/link";
 import {siteConfig} from "@/config/site-config";
 import {logout} from "../../redux/actions/session-actions";
@@ -11,11 +11,13 @@ import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchCo
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
 
 const MenuList = (props) => {
 
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
+    const modalContext = useContext(AppModalContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const logoutHandler = (e) => {
@@ -30,11 +32,17 @@ const MenuList = (props) => {
 
     const showAuthLoginModal = (e) => {
         e.preventDefault();
-        props.setModalContentMiddleware(blockComponentsConfig.components.authentication_login.name, {}, true)
+        modalContext.showModal({
+            component: blockComponentsConfig.components.authentication_login.name,
+            show: true
+        });
     }
     const showAuthRegisterModal = (e) => {
         e.preventDefault();
-        props.setModalContentMiddleware(blockComponentsConfig.components.authentication_register.name, {}, true)
+        modalContext.showModal({
+            component: blockComponentsConfig.components.authentication_register.name,
+            show: true
+        });
     }
 
     const getListItem = (item) => {
@@ -158,7 +166,6 @@ function mapStateToProps(state) {
 export default connect(
     mapStateToProps,
     {
-        getPageDataMiddleware,
-        setModalContentMiddleware
+        getPageDataMiddleware
     }
 )(MenuList);

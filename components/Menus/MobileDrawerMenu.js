@@ -1,5 +1,4 @@
 import React, {useContext, useState} from 'react';
-import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import MenuList from "@/truvoicer-base/components/Menus/MenuList";
@@ -27,21 +26,21 @@ const MobileDrawerMenu = (props) => {
                     <i className="fas fa-bars"/>
                 </a>
                 }
-                <SwipeableDrawer
-                    anchor={"right"}
-                    open={showMenu}
-                    onClose={closeDrawer}
-                    onOpen={openDrawer}
-                >
-                    <div
-                        className={""}
-                        role="presentation"
-                        // onClick={closeDrawer}
-                        // onKeyDown={closeDrawer}
-                    >
-                        <MenuList data={props.data} sessionLinks={true}/>
-                    </div>
-                </SwipeableDrawer>
+                {/*<SwipeableDrawer*/}
+                {/*    anchor={"right"}*/}
+                {/*    open={showMenu}*/}
+                {/*    onClose={closeDrawer}*/}
+                {/*    onOpen={openDrawer}*/}
+                {/*>*/}
+                {/*    <div*/}
+                {/*        className={""}*/}
+                {/*        role="presentation"*/}
+                {/*        // onClick={closeDrawer}*/}
+                {/*        // onKeyDown={closeDrawer}*/}
+                {/*    >*/}
+                {/*        <MenuList data={props.data} sessionLinks={true}/>*/}
+                {/*    </div>*/}
+                {/*</SwipeableDrawer>*/}
             </div>
     )
     }

@@ -1,12 +1,12 @@
 import React, {useContext, useState} from 'react';
 import {connect} from "react-redux";
-import {getSessionTokenMiddleware} from "../../../redux/middleware/session-middleware";
 import {buildWpApiUrl} from "../../../library/api/wp/middleware";
 import DataForm from "../DataForm/DataForm";
 import {LoginFormData} from "../../../config/forms/login-form";
 import {wpApiConfig} from "../../../config/wp-api-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {getSessionTokenMiddleware} from "@/truvoicer-base/redux/middleware/session-middleware";
 
 
 const AuthLoginForm = (props) => {
@@ -14,7 +14,9 @@ const AuthLoginForm = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const submitHandler = (values) => {
-        props.getSessionTokenMiddleware(buildWpApiUrl(wpApiConfig.endpoints.token), values, props.requestCallback)
+        let requestData = {...values};
+        requestData.auth_provider = "wordpress";
+        getSessionTokenMiddleware(wpApiConfig.endpoints.auth.login, requestData, props.requestCallback)
     }
 
     function defaultView() {
@@ -58,5 +60,5 @@ function mapStateToProps(state) {
 
 export default connect(
     mapStateToProps,
-    {getSessionTokenMiddleware}
+    null
 )(AuthLoginForm);

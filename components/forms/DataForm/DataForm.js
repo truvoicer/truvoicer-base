@@ -6,7 +6,7 @@ import FormFieldItem from "./Fields/FormFieldItem";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
-const sprintf = require("sprintf");
+const sprintf = require('sprintf-js');
 const DataForm = (props) => {
 
     const templateManager = new TemplateManager(useContext(TemplateContext));

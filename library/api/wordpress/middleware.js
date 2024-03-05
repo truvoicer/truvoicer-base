@@ -6,7 +6,7 @@ import {getSignedJwt} from "@/truvoicer-base/library/api/auth/jwt-helpers";
 import {getSessionObject} from "@/truvoicer-base/redux/actions/session-actions";
 
 const axios = require('axios');
-const sprintf = require("sprintf").sprintf;
+const sprintf = require('sprintf-js').sprintf;
 
 function getHeaders(config) {
   return config.headers;

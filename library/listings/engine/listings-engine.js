@@ -2,7 +2,7 @@ import store from "@/truvoicer-base/redux/store";
 import {isSet, isEmpty, isNotEmpty, isObject, isObjectEmpty} from "@/truvoicer-base/library/utils";
 import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {tagManagerSendDataLayer} from "@/truvoicer-base/library/api/global-scripts";
-import {sprintf} from "sprintf";
+import {sprintf} from "sprintf-js";
 import {ItemRoutes} from "@/config/item-routes";
 import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/items";
 

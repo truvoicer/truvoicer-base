@@ -52,7 +52,6 @@ export class TemplateManager {
         if (!pageData?.post_type) {
             return <FullWidthTemplate />;
         }
-        console.log(pageData?.post_type)
         switch (pageData?.post_type) {
             case 'page':
                 return this.getTemplateLayoutComponent(pageData?.page_options?.trf_gut_pmf_page_options_page_template);
@@ -62,7 +61,6 @@ export class TemplateManager {
         }
     }
     getTemplateLayoutComponent(templateLayout) {
-        console.log({templateLayout})
         switch (templateLayout) {
             case 'left-sidebar':
             case 'right-sidebar':

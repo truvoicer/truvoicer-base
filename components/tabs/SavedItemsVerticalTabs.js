@@ -1,13 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react';
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
 import {isNotEmpty, isSet} from "../../library/utils";
 import {defaultListingsGrid, listingsGridConfig} from "../../../config/listings-grid-config";
 import {fetchData} from "../../library/api/fetcher/middleware";
 import {SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-constants";
 import {connect} from "react-redux";
-// import makeStyles from "@mui/material/styles/makeStyles";
 import {useRouter} from "next/navigation";
 import {getGridItemColumns, getItemViewUrl} from "../../redux/actions/item-actions";
 import {filterItemIdDataType} from "../../library/helpers/items";

@@ -8,20 +8,12 @@ import {
     PAGE_CONTROL_PAGINATION_REQUEST, PAGE_CONTROL_REQ_PAGINATION_TYPE,
     PAGINATION_TOTAL_ITEMS,
     PAGINATION_TOTAL_PAGES,
-    SEARCH_REQUEST_COMPLETED,
-    SEARCH_REQUEST_ERROR,
-    SEARCH_REQUEST_IDLE,
-    SEARCH_REQUEST_STARTED, PAGINATION_OFFSET, PAGE_CONTROL_REQ_PAGINATION_PAGE
+    PAGINATION_OFFSET, PAGE_CONTROL_REQ_PAGINATION_PAGE
 } from "@/truvoicer-base/redux/constants/search-constants";
 import store from "@/truvoicer-base/redux/store";
 import {produce} from "immer";
 import {isNotEmpty, isSet} from "@/truvoicer-base/library/utils";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
-import {SESSION_AUTHENTICATED} from "@/truvoicer-base/redux/constants/session-constants";
-import {setModalContentAction} from "@/truvoicer-base/redux/actions/page-actions";
-import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
-import {buildWpApiUrl, protectedApiRequest} from "@/truvoicer-base/library/api/wp/middleware";
-import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
 import {siteConfig} from "@/config/site-config";
 
 export class SearchEngine {
@@ -439,50 +431,6 @@ export class SearchEngine {
         return false;
     }
 
-    showAuthModal() {
-        const authenticated = store.getState().session[SESSION_AUTHENTICATED];
-        if (!authenticated) {
-            setModalContentAction(
-                blockComponentsConfig.components.authentication_login.name,
-                {},
-                true
-            );
-            return false;
-        }
-        return true;
-    }
-
-
-    saveItemAction(provider, category, itemId, user_id) {
-        if (!this.showAuthModal()) {
-            return;
-        }
-        const data = {
-            provider_name: provider,
-            category: category,
-            item_id: itemId,
-            user_id: user_id
-        }
-        protectedApiRequest(
-            buildWpApiUrl(wpApiConfig.endpoints.saveItem),
-            data,
-            this.saveItemRequestCallback
-        )
-        this.updateSavedItemAction(data)
-    }
-
-    updateSavedItemAction(data) {
-        const searchState = {...store.getState().search};
-        const nextState = produce(searchState.savedItemsList, (draftState) => {
-            if (this.isSavedItemAction(data.item_id, data.provider_name, data.category, data.user_id)) {
-                draftState.splice(this.getSavedItemIndexAction(data.item_id, data.provider_name, data.category, data.user_id), 1);
-            } else {
-                draftState.push(data)
-            }
-        })
-        this.updateContext({key: "savedItemsList", value: nextState})
-    }
-
     getSavedItemIndexAction(item_id, provider, category, user_id) {
         let index;
         const savedItemsList = [...store.getState().search.savedItemsList];
@@ -501,68 +449,11 @@ export class SearchEngine {
         return index;
     }
 
-    saveItemRatingAction(provider, category, itemId, user_id, rating) {
-        if (!this.showAuthModal()) {
-            return false;
-        }
-        const data = {
-            provider_name: provider,
-            category: category,
-            item_id: itemId,
-            user_id: user_id,
-            rating: rating,
-        }
-        protectedApiRequest(
-            buildWpApiUrl(wpApiConfig.endpoints.saveItemRating),
-            data,
-            this.updateItemRatingAction
-        )
-        this.updateItemRatingAction(data)
-    }
-
-    updateItemRatingAction(status, data) {
-        if (!isSet(data) || !isSet(data.data) ) {
-            return;
-        }
-        if (Array.isArray(data.data) && data.data.length > 0) {
-            const itemData = data.data[0];
-            const searchState = {...store.getState().search};
-            const nextState = produce(searchState.itemRatingsList, (draftState) => {
-                if (this.getItemRatingDataAction(itemData.item_id, itemData.provider_name, itemData.category, itemData.user_id)) {
-                    const getIndex = this.getItemRatingIndexAction(itemData.item_id, itemData.provider_name, itemData.category, itemData.user_id);
-                    draftState.splice(getIndex, 1);
-                }
-                draftState.push(itemData)
-            })
-            this.updateContext({key: "itemRatingsList", value: nextState})
-        }
-    }
-
     filterItemIdDataType(itemId) {
         if (!isNaN(itemId)) {
             itemId = parseInt(itemId);
         }
         return itemId;
-    }
-    getItemRatingIndexAction(item_id, provider, category, user_id) {
-        let index;
-        const itemRatingsList = [...store.getState().search.itemRatingsList];
-        itemRatingsList.map((item, itemIndex) => {
-            const savedItemId = this.filterItemIdDataType(item.item_id)
-            const itemId = this.filterItemIdDataType(item_id)
-            if(
-                parseInt(item.user_id) === parseInt(user_id) &&
-                savedItemId === itemId &&
-                item.provider_name === provider &&
-                item.category === category
-            ) {
-                index = itemIndex;
-            }
-        });
-        return index;
-    }
-
-    saveItemRequestCallback(error, data) {
     }
 
 }

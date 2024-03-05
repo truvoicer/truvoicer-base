@@ -11,13 +11,11 @@ import {protectedEndpoint, publicEndpoint, wpApiConfig} from "../../../config/wp
 import {connect} from "react-redux";
 import {ChangePasswordFormFields} from "../../../config/forms/change-password-form-fields";
 import {SESSION_AUTH_TYPE, SESSION_USER} from "../../../redux/constants/session-constants";
-import Snackbar from "@mui/material/Snackbar";
-import SnackbarContent from "@mui/material/SnackbarContent";
 import WPErrorDisplay from "@/truvoicer-base/components/errors/WPErrorDisplay";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
-const sprintf = require("sprintf").sprintf;
+const sprintf = require('sprintf-js').sprintf;
 
 const FormBlock = (props) => {
 
@@ -476,19 +474,19 @@ const FormBlock = (props) => {
                         }
                     </div>
                 </div>
-                <Snackbar open={response.showAlert}
-                          autoHideDuration={6000}
-                          onClose={() => {
-                              setResponse(response => {
-                                  return {...response, ...{showAlert: false}}
-                              })
-                          }}
-                >
-                    <SnackbarContent
-                        message={response.message}
-                        // role={response.success ? "success" : "error"}
-                    />
-                </Snackbar>
+                {/*<Snackbar open={response.showAlert}*/}
+                {/*          autoHideDuration={6000}*/}
+                {/*          onClose={() => {*/}
+                {/*              setResponse(response => {*/}
+                {/*                  return {...response, ...{showAlert: false}}*/}
+                {/*              })*/}
+                {/*          }}*/}
+                {/*>*/}
+                {/*    <SnackbarContent*/}
+                {/*        message={response.message}*/}
+                {/*        // role={response.success ? "success" : "error"}*/}
+                {/*    />*/}
+                {/*</Snackbar>*/}
             </div>
         );
     }

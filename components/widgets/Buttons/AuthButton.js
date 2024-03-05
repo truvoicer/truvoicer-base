@@ -1,20 +1,24 @@
 import React, {useContext} from 'react';
 import {connect} from "react-redux";
 import {
-    getPageDataMiddleware,
-    setModalContentMiddleware
+    getPageDataMiddleware
 } from "../../../redux/middleware/page-middleware";
 import {blockComponentsConfig} from "../../../config/block-components-config";
-import {siteConfig} from "../../../../config/site-config";
+import {siteConfig} from "@/config/site-config";
 import {logout} from "../../../redux/actions/session-actions";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
 
 const AuthButton = (props) => {
     const options = props.data.auth_options;
     const templateManager = new TemplateManager(useContext(TemplateContext));
+    const modalContext = useContext(AppModalContext);
     const showAuthLoginModal = () => {
-        props.setModalContentMiddleware(blockComponentsConfig.components.authentication_login.name, {}, true)
+        modalContext.showModal({
+            component: blockComponentsConfig.components.authentication_login.name,
+            show: true
+        });
     }
     const logoutHandler = (e) => {
         e.preventDefault();
@@ -77,7 +81,6 @@ function mapStateToProps(state) {
 export default connect(
     mapStateToProps,
     {
-        getPageDataMiddleware,
-        setModalContentMiddleware
+        getPageDataMiddleware
     }
 )(AuthButton);

@@ -1,26 +1,30 @@
 import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
-import {siteConfig} from "../../../config/site-config";
+import {siteConfig} from "@/config/site-config";
 import {blockComponentsConfig} from "../../config/block-components-config";
-import {setModalContentAction} from "../../redux/actions/page-actions";
 import {SESSION_PASSWORD_RESET_KEY, SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-constants";
 import {buildWpApiUrl, publicApiRequest} from "../../library/api/wp/middleware";
 import {wpApiConfig} from "../../config/wp-api-config";
-import ListingsInfiniteScroll from "@/truvoicer-base/components/blocks/listings/pagination/ListingsInfiniteScroll";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
 
 const PasswordResetBlock = (props) => {
     const [response, setResponse] = useState({
         success: false,
         message: "Please wait, we're Confirming your credentials..."
     });
+    const modalContext = useContext(AppModalContext);
 
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const showAuthRegisterModal = (e) => {
         e.preventDefault()
-        setModalContentAction(blockComponentsConfig.components.authentication_register.name, {}, true)
+        modalContext.showModal({
+            component: blockComponentsConfig.components.authentication_register.name,
+            show: true
+        });
+
     }
     const validateCallback = (error, data) => {
         if (error) {

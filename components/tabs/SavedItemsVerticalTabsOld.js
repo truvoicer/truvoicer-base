@@ -1,7 +1,4 @@
 import React, {useContext, useEffect, useState} from 'react';
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
 import {convertImageObjectsToArray, isSet} from "../../library/utils";
 import {defaultListingsGrid, listingsGridConfig} from "@/config/listings-grid-config";
 import {
@@ -10,10 +7,8 @@ import {
     LISTINGS_GRID_LIST
 } from "../../redux/constants/listings-constants";
 import {fetchData} from "../../library/api/fetcher/middleware";
-import Grid from "@mui/material/Grid";
 import {SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-constants";
 import {connect} from "react-redux";
-// import makeStyles from "@mui/material/styles/makeStyles";
 import {useRouter} from "next/navigation";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";

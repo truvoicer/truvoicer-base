@@ -14,7 +14,7 @@ import {ItemRoutes} from "../../../config/item-routes";
 import {buildDataKeyObject} from "../../library/helpers/items";
 import {siteConfig} from "../../../config/site-config";
 
-const sprintf = require("sprintf").sprintf;
+const sprintf = require('sprintf-js').sprintf;
 
 export function setItemErrorAction(error) {
     store.dispatch(setItemError(error))

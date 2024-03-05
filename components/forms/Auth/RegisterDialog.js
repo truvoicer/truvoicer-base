@@ -3,12 +3,11 @@ import AuthGoogle from "./AuthGoogle";
 import AuthFacebook from "./AuthFacebook";
 import AuthRegisterForm from "./AuthRegisterForm";
 import {connect} from "react-redux";
-import {showPageModalMiddleware} from "../../../redux/middleware/page-middleware";
-import {siteConfig} from "../../../../config/site-config";
+import {siteConfig} from "@/config/site-config";
 import {blockComponentsConfig} from "../../../config/block-components-config";
-import {setModalContentAction} from "../../../redux/actions/page-actions";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
 
 const RegisterDialog = (props) => {
     const [showRegisterForm, setShowRegisterForm] = useState(true);
@@ -18,6 +17,7 @@ const RegisterDialog = (props) => {
         message: ""
     });
     const templateManager = new TemplateManager(useContext(TemplateContext));
+    const modalContext = useContext(AppModalContext);
     const requestCallback = (error, data) => {
         console.log({error, data})
         if (error) {
@@ -27,17 +27,18 @@ const RegisterDialog = (props) => {
                 message: data?.message
             })
         } else {
-            setResponse({
-                error: false,
-                success: true,
-                message: data?.message || "Registration successful"
-            })
+            modalContext.showModal({
+                show: false
+            });
             setShowRegisterForm(false)
         }
     }
     const showAuthLoginModal = (e) => {
         e.preventDefault();
-        setModalContentAction(blockComponentsConfig.components.authentication_login.name, {}, true)
+        modalContext.showModal({
+            component: blockComponentsConfig.components.authentication_login.name,
+            show: true
+        });
     }
     function defaultView() {
         return (
@@ -110,7 +111,5 @@ const RegisterDialog = (props) => {
 }
 export default connect(
     null,
-    {
-        showPageModalMiddleware
-    }
+    null
 )(RegisterDialog);
