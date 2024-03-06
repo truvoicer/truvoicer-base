@@ -26,13 +26,15 @@ const AuthFacebook = (props) => {
 
     function onCLick() {
         fbContext.fb.login(function(response) {
-            if (response.authResponse) {
-                console.log('Welcome!  Fetching your information.... ');
-                fbContext.fb.api('/me', {fields: 'name, email'}, function(response, a, b) {
-                    console.log({response, a, b})
-                });
-            } else {
-                console.log('User cancelled login or did not fully authorize.'); }
+            if (!response.authResponse) {
+                console.log('User cancelled login or did not fully authorize.');
+                return;
+            }
+            responseFacebook(response.authResponse);
+            // fbContext.fb.api('/me', {fields: 'name, email'}, function(response) {
+            //     console.log({response})
+            // });
+
         }, {scope: 'email'});
     }
 
