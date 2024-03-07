@@ -89,29 +89,25 @@ const FetcherApp = ({
     return (
         <AppLoader templateConfig={templateConfig()}>
             <AppModalContext.Provider value={modalState}>
-                <GoogleAuthProvider>
-                    <FBAuthProvider>
-                        {templateManager.getPostTemplateLayoutComponent(pageData)}
-                        <Modal show={modalState.show} onHide={handleModalCancel}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>{modalState?.title || ''}</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                                {modalState?.component || ''}
-                            </Modal.Body>
-                            {modalState?.showFooter &&
-                                <Modal.Footer>
-                                    <Button variant="secondary" onClick={handleModalCancel}>
-                                        Close
-                                    </Button>
-                                    <Button variant="primary" onClick={handleModalCancel}>
-                                        Save Changes
-                                    </Button>
-                                </Modal.Footer>
-                            }
-                        </Modal>
-                    </FBAuthProvider>
-                </GoogleAuthProvider>
+                {templateManager.getPostTemplateLayoutComponent(pageData)}
+                <Modal show={modalState.show} onHide={handleModalCancel}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>{modalState?.title || ''}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {modalState?.component || ''}
+                    </Modal.Body>
+                    {modalState?.showFooter &&
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={handleModalCancel}>
+                                Close
+                            </Button>
+                            <Button variant="primary" onClick={handleModalCancel}>
+                                Save Changes
+                            </Button>
+                        </Modal.Footer>
+                    }
+                </Modal>
             </AppModalContext.Provider>
         </AppLoader>
     )

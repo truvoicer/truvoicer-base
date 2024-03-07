@@ -18,7 +18,7 @@ const AuthFacebook = (props) => {
             auth_provider: "facebook",
             token: response.accessToken
         }
-        getSessionTokenMiddleware(buildWpApiUrl(wpApiConfig.endpoints.token), data, props.requestCallback)
+        getSessionTokenMiddleware(wpApiConfig.endpoints.auth.login, data, props.requestCallback)
     }
     const onFailure = (response) => {
         console.error(response);
