@@ -9,7 +9,7 @@ const AuthGoogle = (props) => {
     const gAuthContext = useContext(GoogleAuthContext);
 
     const onClickHandler = (response) => {
-        console.log({response});
+        //console.log({response});
     }
     useEffect(() => {
         gAuthContext.google.accounts.id.renderButton(document.getElementById("g-signin2"), {

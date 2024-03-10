@@ -19,7 +19,7 @@ const RegisterDialog = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const modalContext = useContext(AppModalContext);
     const requestCallback = (error, data) => {
-        console.log({error, data})
+        //console.log({error, data})
         if (error) {
             setResponse({
                 error: true,

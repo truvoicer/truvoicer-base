@@ -17,7 +17,7 @@ import {faBehance, faDribbble, faFacebookF, faTwitter} from "@fortawesome/free-b
 const PostItemBlock = (props) => {
     const {post, postList, postNav, data} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    console.log({data, post, postNav})
+    //console.log({data, post, postNav})
     const getPostColumnClasses = () => {
         return (data?.show_sidebar) ? "col-12 col-md-8 col-lg-8" : "col-12";
     }

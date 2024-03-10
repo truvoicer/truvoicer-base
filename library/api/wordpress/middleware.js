@@ -28,7 +28,7 @@ function getAuthHeader(protectedReq = false) {
   } else {
     token = getPublicSessionToken();
   }
-  console.log('token', token);
+  //console.log('token', token);
   if (!token) {
     return false;
   }

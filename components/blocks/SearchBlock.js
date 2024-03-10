@@ -72,7 +72,7 @@ const SearchBlock = (props) => {
                     listingsManager.canRunSearch(NEW_SEARCH_REQUEST) &&
                     searchContext?.searchEntity === 'searchBlockCategory'
                 ) {
-                    console.log('searchBlockCategoryRun')
+                    //console.log('searchBlockCategoryRun')
                     listingsManager.runSearch('searchBlockCategory');
                     listingsManager.getListingsEngine().setListingsScrollTopAction(true);
                 }
@@ -82,7 +82,7 @@ const SearchBlock = (props) => {
                     listingsManager.canRunSearch(NEW_SEARCH_REQUEST) &&
                     searchContext?.searchEntity === 'searchBlock'
                 ) {
-                    console.log('searchBlockRun')
+                    //console.log('searchBlockRun')
                     listingsManager.runSearch('searchBlock');
                     listingsManager.getListingsEngine().setListingsScrollTopAction(true);
                 }
@@ -119,7 +119,7 @@ const SearchBlock = (props) => {
         listingsManager.getSearchEngine().setSearchEntity('searchBlock');
     }
 
-    console.log(searchContext?.searchOperation)
+    //console.log(searchContext?.searchOperation)
     function defaultView() {
         return (
             <>
@@ -193,7 +193,7 @@ const SearchBlock = (props) => {
             </>
         );
     }
-console.log('sb')
+//console.log('sb')
     return templateManager.getTemplateComponent({
         category: 'public',
         templateId: 'searchBlock',

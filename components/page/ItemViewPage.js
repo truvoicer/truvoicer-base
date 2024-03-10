@@ -21,7 +21,10 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ItemViewPage = (props) => {
-    const {getItemMiddleware, type, item, preFetch = () => {}} = props;
+    const {
+        getItemMiddleware, type, item, preFetch = () => {
+        }
+    } = props;
     const [showLoader, setShowLoader] = useState(true);
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
@@ -58,19 +61,21 @@ const ItemViewPage = (props) => {
     useEffect(() => {
         itemPageInit()
     }, [item])
+    console.log('item', item)
 
     function defaultView() {
-    return (
-        <>
-            {showLoader
-                ?
-                <LoaderComponent/>
-                :
-                <FetcherApp />
-            }
-        </>
-    )
+        return (
+            <>
+                {showLoader
+                    ?
+                    <LoaderComponent/>
+                    :
+                    <FetcherApp/>
+                }
+            </>
+        )
     }
+
     return templateManager.getTemplateComponent({
         category: 'pages',
         templateId: 'itemViewPage',

@@ -6,7 +6,7 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 const OptinBlock = (props) => {
     const {data} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    console.log({props})
+    //console.log({props})
     const getOptin = (data) => {
         switch (data?.optin_type) {
             case "form":

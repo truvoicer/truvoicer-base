@@ -13,7 +13,7 @@ import CarouselInterface from "@/truvoicer-base/components/blocks/carousel/Carou
 const FormOptin = (props) => {
     const {data} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    console.log(data.carousel)
+    //console.log(data.carousel)
     function defaultView() {
         return (
             <div className="section_gap registration_area">

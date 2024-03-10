@@ -81,7 +81,7 @@ const CustomTabsBlock = (props) => {
         });
         return tabIndex;
     }
-console.log({props})
+//console.log({props})
     function defaultView() {
         return (
             <>

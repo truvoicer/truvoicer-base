@@ -53,13 +53,19 @@ function GoogleAuthProvider({children, siteSettings}) {
         if (!isNotEmpty(siteSettings?.google_login_client_id)) {
             return;
         }
-        google.accounts.id.initialize({
+        if (typeof window === "undefined") {
+            return;
+        }
+        if (typeof window.google === "undefined") {
+            return;
+        }
+        window.google.accounts.id.initialize({
             client_id: siteSettings?.google_login_client_id,
             callback: handleCredentialResponse
         });
         updateState({
             clientId: siteSettings?.google_login_client_id,
-            google: google
+            google: window.google
         })
 
     }, [siteSettings.google_login_client_id,]);

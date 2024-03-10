@@ -46,7 +46,7 @@ const SavedItemsVerticalTabsOld = (props) => {
                 provider: item.provider_name,
                 category: item.category
             }
-            console.log(data)
+            //console.log(data)
             fetchData("operation", ["single"], data)
                 .then((response) => {
                     if (response.status === 200) {
@@ -61,7 +61,7 @@ const SavedItemsVerticalTabsOld = (props) => {
     }
 
     const handleTabChange = (e, value) => {
-        console.log(value)
+        //console.log(value)
         setTabValue(value)
         getItemsRequest(value, true);
     }
@@ -111,7 +111,7 @@ const SavedItemsVerticalTabsOld = (props) => {
     }
 
     const saveItemRequestCallback = (error, data) => {
-        console.log(error, data)
+        //console.log(error, data)
     }
 
     const showInfo = (item, category, e) => {

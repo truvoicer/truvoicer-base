@@ -24,7 +24,7 @@ function SessionLayout({session, children}) {
         ...sessionContextData,
         logout: logout
     })
-    console.log(1, {session})
+
     return (
         <SessionContext.Provider value={sessionContextState}>
             {children}

@@ -39,7 +39,7 @@ const PostsBlock = (props) => {
         );
     }
 
-    console.log({props, listingsContext, searchContext})
+    //console.log({props, listingsContext, searchContext})
 
     function defaultLayout() {
         return (

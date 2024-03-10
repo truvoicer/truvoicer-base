@@ -66,7 +66,7 @@ const GridItems = (props) => {
     const insertListStartItems = (searchList) => {
         const itemsData = ListingsEngine.getCustomItemsData(
             ["list_start"],
-            listingsManager.listingsContext?.listingsData
+            listingsManager.listingsEngine.listingsContext?.listingsData
         );
         if (itemsData.length === 0) {
             return searchList;
@@ -83,7 +83,7 @@ const GridItems = (props) => {
     const insertListEndItems = (searchList) => {
         const itemsData = ListingsEngine.getCustomItemsData(
             ["list_end"],
-            listingsManager.listingsContext?.listingsData
+            listingsManager.listingsEngine.listingsContext?.listingsData
         );
         if (itemsData.length === 0) {
             return searchList;
@@ -108,12 +108,12 @@ const GridItems = (props) => {
 
         const listStartItemsCount = ListingsEngine.getCustomItemsData(
             ["list_start"],
-            listingsManager.listingsContext?.listingsData
+            listingsManager.listingsEngine.listingsContext?.listingsData
         ).length;
 
         let itemsData = ListingsEngine.getCustomItemsData(
             ["custom_position"],
-            listingsManager.listingsContext?.listingsData
+            listingsManager.listingsEngine.listingsContext?.listingsData
         );
         const newSearchList = [];
         const newItemsData = [];

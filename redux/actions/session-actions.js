@@ -26,7 +26,7 @@ const axios = require("axios")
 
 export function setSessionUserAction(data, authenticated) {
     let sessionUserState = {...store.getState().session.user};
-    console.log('setSessionUserAction', {data})
+    //console.log('setSessionUserAction', {data})
     const nextState = produce(sessionUserState, (draftState) => {
         draftState[SESSION_AUTH_PROVIDER] = data?.auth_provider;
         draftState[SESSION_AUTH_PROVIDER_USER_ID] = data?.auth_provider_user_id;

@@ -36,7 +36,13 @@ function FBAuthProvider({children, siteSettings}) {
         if (!isNotEmpty(siteSettings?.facebook_app_id)) {
             return;
         }
-        FB.init({
+        if (typeof window === "undefined") {
+            return;
+        }
+        if (typeof window.FB === "undefined") {
+            return;
+        }
+        window.FB.init({
             appId            : siteSettings?.facebook_app_id,
             xfbml            : true,
             version          : 'v19.0'
@@ -44,7 +50,7 @@ function FBAuthProvider({children, siteSettings}) {
 
         updateState({
             appId: siteSettings?.facebook_app_id,
-            fb: FB
+            fb: window.FB
         })
 
     }, [siteSettings.google_login_client_id]);

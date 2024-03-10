@@ -238,25 +238,7 @@ export const convertDataKeysDataArray = (dataKeyList) => {
     return dataKeyList;
 }
 
-export const buildCustomItem = (item) => {
-    if (!item) {
-        return null;
-    }
-    const dataKeyList = item.data.api_data_keys_list;
-    return buildDataKeyObject(dataKeyList, item.post_type.ID);
-}
 
-export const buildCustomItemsArray = (itemsData) => {
-    return itemsData.map(item => {
-        if (
-            item.item_type !== "post" ||
-            !Array.isArray(item.item_post?.data?.api_data_keys_list)
-        ) {
-            return null;
-        }
-        return buildCustomItem(item.item_post)
-    });
-}
 
 export const globalItemLinkClick = (trackData = {}) => {
     tagManagerSendDataLayer(trackData)
@@ -292,11 +274,14 @@ export function extractItemListFromPost({post}) {
                 if (!item?.single_item_id?.post_name) {
                     return;
                 }
-                if (!isObject(item?.single_item_id?.api_data_keys?.data_keys)) {
+                if (!item?.single_item_id?.single_item?.data_keys) {
+                    return;
+                }
+                if (!isObject(item?.single_item_id?.single_item?.data_keys)) {
                     return;
                 }
                 listData.push(buildDataKeyObject(
-                        item?.single_item_id?.api_data_keys.data_keys,
+                        item?.single_item_id?.single_item.data_keys,
                         item?.single_item_id?.ID,
                         item?.single_item_id?.post_name
                 ));

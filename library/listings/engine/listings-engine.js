@@ -376,64 +376,6 @@ export class ListingsEngine {
         return dataKeyList;
     }
 
-    buildCustomItem(item) {
-        if (!item) {
-            return null;
-        }
-        const dataKeyList = item.data.api_data_keys_list;
-        return this.buildDataKeyObject(dataKeyList, item.post_type.ID);
-    }
-
-    buildCustomItemsArray(itemsData) {
-        return itemsData.map(item => {
-            if (
-                item.item_type !== "post" ||
-                !Array.isArray(item.item_post?.data?.api_data_keys_list)
-            ) {
-                return null;
-            }
-            return this.buildCustomItem(item.item_post)
-        });
-    }
-
-    getGridItem(item, category, listingsGrid, userId, showInfoCallback, index = false) {
-        let gridItem = {...item};
-        if (isSet(gridItem.image_list)) {
-            gridItem.image_list = convertImageObjectsToArray(gridItem.image_list);
-        }
-        const gridConfig = listingsGridConfig.gridItems;
-        if (!isSet(gridConfig[category])) {
-            return null;
-        }
-        if (!isSet(gridConfig[category][listingsGrid])) {
-            return null;
-        }
-        const GridItems = gridConfig[category][listingsGrid];
-        return (
-            <GridItems
-                index={index}
-                data={gridItem}
-                searchCategory={category}
-                showInfoCallback={showInfoCallback}
-                savedItem={
-                    this.isSavedItemAction(
-                        isSet(item?.item_id) ? item.item_id : null,
-                        isSet(item?.provider) ? item.provider : null,
-                        category,
-                        userId
-                    )
-                }
-                ratingsData={
-                    this.getItemRatingDataAction(
-                        isSet(item?.item_id) ? item.item_id : null,
-                        isSet(item?.provider) ? item.provider : null,
-                        category,
-                        userId
-                    )
-                }
-            />
-        )
-    }
 
     globalItemLinkClick(trackData = {}) {
         tagManagerSendDataLayer(trackData)
@@ -469,11 +411,11 @@ export class ListingsEngine {
                     if (!item?.single_item_id?.post_name) {
                         return;
                     }
-                    if (!isObject(item?.single_item_id?.api_data_keys?.data_keys)) {
+                    if (!isObject(item?.single_item_id?.single_item?.data_keys)) {
                         return;
                     }
                     listData.push(this.buildDataKeyObject(
-                        item?.single_item_id?.api_data_keys.data_keys,
+                        item?.single_item_id?.single_item.data_keys,
                         item?.single_item_id?.ID,
                         item?.single_item_id?.post_name
                     ));
@@ -521,6 +463,7 @@ export class ListingsEngine {
             }
 
             let listPosData = extractItemListFromPost({post: itemsData});
+            console.log('listPositions', listPosData, itemsData)
             if (!listPosData) {
                 console.error('Invalid item list post data...')
                 listPosData = [];

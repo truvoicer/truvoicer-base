@@ -21,7 +21,7 @@ const ItemViewBlock = (props) => {
         const ItemView = gridConfig[props.item.category].single;
         return <ItemView item={item} data={props.data} category={props.item.category}/>
     }
-    console.log({props})
+    //console.log({props})
     function defaultView() {
         return (
             <>

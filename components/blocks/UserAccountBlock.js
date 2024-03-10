@@ -44,7 +44,7 @@ const UserAccountBlock = (props) => {
         getUserAccountMenuAction()
         // console.log(props.session[SESSION_AUTHENTICATED])
     }, [])  //TODO Login form appears on page load if user is authenticated
-    console.log({props, tabData})
+    //console.log({props, tabData})
     function defaultView() {
         return (
             <div className={"user-account-area"}>

@@ -32,7 +32,7 @@ const LoginDialog = (props) => {
         });
     }
     const requestCallback = (error, data) => {
-        console.log(error, data)
+        //console.log(error, data)
         if (error) {
             setError({
                 show: true,

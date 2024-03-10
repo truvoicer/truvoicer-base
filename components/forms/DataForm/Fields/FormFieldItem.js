@@ -71,7 +71,7 @@ function FormFieldItem({
                 }
             }
         }
-        console.log({name, e, addedOption})
+        //console.log({name, e, addedOption})
         setFormFieldValue(name, e, arrayFieldIndex)
     }
 

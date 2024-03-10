@@ -18,7 +18,7 @@ const LoginBlock = (props) => {
     const modalContext = useContext(AppModalContext);
     const showAuthRegisterModal = (e) => {
         e.preventDefault()
-        console.log('dss')
+        //console.log('dss')
         modalContext.showModal({
             component: blockComponentsConfig.components.authentication_register.name,
             show: true

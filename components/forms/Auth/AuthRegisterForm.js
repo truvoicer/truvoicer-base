@@ -12,8 +12,8 @@ const AuthRegisterForm = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     function requestCallback(error, data) {
-        console.log('req')
-        console.log(!error && data.status === 'success' && data?.token)
+        //console.log('req')
+        //console.log(!error && data.status === 'success' && data?.token)
         if (!error && data.status === 'success' && data?.token) {
             setSessionLocalStorage(data.token, data.expiresAt)
             setIsAuthenticatingAction(false)

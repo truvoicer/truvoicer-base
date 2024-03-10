@@ -13,7 +13,7 @@ const AuthFacebook = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const fbContext = useContext(FbAuthContext);
     const responseFacebook = (response) => {
-        console.log('fb res', {response});
+        //console.log('fb res', {response});
         const data = {
             auth_provider: "facebook",
             token: response.accessToken,
@@ -25,7 +25,7 @@ const AuthFacebook = (props) => {
     function onCLick() {
         fbContext.fb.login(function(response) {
             if (!response.authResponse) {
-                console.log('User cancelled login or did not fully authorize.');
+                //console.log('User cancelled login or did not fully authorize.');
                 return;
             }
             responseFacebook(response.authResponse);
