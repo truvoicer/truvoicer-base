@@ -7,6 +7,8 @@ import Link from "next/link";
 import {siteConfig} from "../../../config/site-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faAngleRight, faArrowCircleRight, faTasks} from "@fortawesome/free-solid-svg-icons";
 
 function FormsProgressWidget(props) {
     const {data} = props;
@@ -83,12 +85,12 @@ function FormsProgressWidget(props) {
                             </div>
                         </div>
                         <div className="icon">
-                            <i className="fas fa-tasks"/>
+                            <FontAwesomeIcon icon={faTasks} />
                         </div>
 
                         <Link href={siteConfig.defaultUserAccountHref + "/profile"}
                               className="small-box-footer">
-                            Edit Profile <i className="fas fa-arrow-circle-right"/>
+                            Edit Profile <FontAwesomeIcon icon={faArrowCircleRight} />
                         </Link>
                     </div>
                 </div>

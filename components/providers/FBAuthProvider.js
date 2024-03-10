@@ -18,30 +18,20 @@ function FBAuthProvider({children, siteSettings}) {
             return cloneState;
         })
     }
+    function logout(id) {
+        FB.getLoginStatus(function(response) {
+            console.log('FB getLoginStatus', {response})
+            FB.logout(function(response) {
+               console.log('FB logout', {response})
+            });
+        });
+    }
     const [fbAuthState, setFBAuthState] = useState({
         ...fbAuthContextData,
         update: updateState,
+        logout: logout
     });
-    function handleCredentialResponse(response) {
-        console.log({response});
-        const data = {
-            auth_provider: "facebook",
-            token: response.credential
-        }
-        getSessionTokenMiddleware(wpApiConfig.endpoints.auth.login,
-            data,
-            (error, data) => {
-                if (error) {
-                    console.log({error})
-                    updateState({
-                        errors: [data?.message]
-                    })
-                    return;
-                }
-                modalContext.showModal({show: false})
-            }
-        )
-    }
+
     useEffect(() => {
         if (!isNotEmpty(siteSettings?.facebook_app_id)) {
             return;

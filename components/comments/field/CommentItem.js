@@ -3,6 +3,8 @@ import CommentTextForm from "./CommentTextForm";
 import {formatDate} from "../../../library/utils";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {faCalendar, faHeart, faThumbsUp} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const CommentItem = (props) => {
     const [showReply, setShowReply] = useState(false);
@@ -28,11 +30,11 @@ const CommentItem = (props) => {
                 <div className={"media-controls d-flex align-items-center justify-content-between"}>
                 <ul className="list-unstyled list-inline media-detail d-flex pull-left">
                     <li>
-                        <i className="fa fa-calendar"/>
+                        <FontAwesomeIcon icon={faCalendar} />
                         {formatDate(props.parentComment.comment_date)}
                     </li>
                     <li>
-                        <i className="fa fa-thumbs-up"/>
+                        <FontAwesomeIcon icon={faThumbsUp} />
                         13
                     </li>
                 </ul>

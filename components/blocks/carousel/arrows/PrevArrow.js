@@ -1,6 +1,8 @@
 import React, {useContext} from "react";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {faAngleLeft, faHeart} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const PrevArrow = (props) => {
     const { className, style, onClick } = props;
@@ -8,7 +10,7 @@ const PrevArrow = (props) => {
     function defaultView() {
         return (
             <div className={"owl-prev"} onClick={onClick} style={{...style, display: "block"}}>
-                <i className="fa fa-angle-left"/>
+                <FontAwesomeIcon icon={faAngleLeft} />
             </div>
         );
     }

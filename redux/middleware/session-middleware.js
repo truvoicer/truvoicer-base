@@ -20,7 +20,7 @@ export function getSessionTokenMiddleware(url, requestData, callback = () => {},
             console.log('getSessionTokenMiddleware', {response})
             switch (response.status) {
                 case 200:
-                    setSessionLocalStorage(response.data.data.token)
+                    setSessionLocalStorage(response.data.data.token, response.data.expiresAt)
                     setSessionUserAction(response.data.data, true)
                     setIsAuthenticatingAction(false)
                     callback(false, response.data);

@@ -21,6 +21,7 @@ import {getWidget} from "@/truvoicer-base/redux/actions/page-actions";
 import {GoogleAuthContext, googleAuthContextData} from "@/truvoicer-base/config/contexts/GoogleAuthContext";
 import GoogleAuthProvider from "@/truvoicer-base/components/providers/GoogleAuthProvider";
 import FBAuthProvider from "@/truvoicer-base/components/providers/FBAuthProvider";
+import SessionLayout from "@/truvoicer-base/components/layout/SessionLayout";
 
 const FetcherApp = ({
     pageData, siteSettings, pageOptions, preFetch = () => {
@@ -89,25 +90,31 @@ const FetcherApp = ({
     return (
         <AppLoader templateConfig={templateConfig()}>
             <AppModalContext.Provider value={modalState}>
-                {templateManager.getPostTemplateLayoutComponent(pageData)}
-                <Modal show={modalState.show} onHide={handleModalCancel}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>{modalState?.title || ''}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {modalState?.component || ''}
-                    </Modal.Body>
-                    {modalState?.showFooter &&
-                        <Modal.Footer>
-                            <Button variant="secondary" onClick={handleModalCancel}>
-                                Close
-                            </Button>
-                            <Button variant="primary" onClick={handleModalCancel}>
-                                Save Changes
-                            </Button>
-                        </Modal.Footer>
-                    }
-                </Modal>
+                <GoogleAuthProvider>
+                    <FBAuthProvider>
+                        <SessionLayout>
+                            {templateManager.getPostTemplateLayoutComponent(pageData)}
+                            <Modal show={modalState.show} onHide={handleModalCancel}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>{modalState?.title || ''}</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    {modalState?.component || ''}
+                                </Modal.Body>
+                                {modalState?.showFooter &&
+                                    <Modal.Footer>
+                                        <Button variant="secondary" onClick={handleModalCancel}>
+                                            Close
+                                        </Button>
+                                        <Button variant="primary" onClick={handleModalCancel}>
+                                            Save Changes
+                                        </Button>
+                                    </Modal.Footer>
+                                }
+                            </Modal>
+                        </SessionLayout>
+                    </FBAuthProvider>
+                </GoogleAuthProvider>
             </AppModalContext.Provider>
         </AppLoader>
     )

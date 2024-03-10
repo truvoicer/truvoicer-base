@@ -7,6 +7,8 @@ import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchCo
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSearch} from "@fortawesome/free-solid-svg-icons";
 
 const TopbarSearch = (props) => {
     const [query, setQuery] = useState("");
@@ -42,7 +44,7 @@ const TopbarSearch = (props) => {
                         onChange={formChangeHandler}
                     />
                     <button type="submit" className="btn">
-                        <i className="fa fa-search"/>
+                        <FontAwesomeIcon icon={faSearch} />
                     </button>
                 </form>
             </div>

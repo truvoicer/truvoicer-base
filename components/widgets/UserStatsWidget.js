@@ -1,6 +1,8 @@
 import React, {useContext} from 'react';
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faArrowCircleRight, faSearch, faShoppingCart, faUserPlus} from "@fortawesome/free-solid-svg-icons";
 
 function UserStatsWidget(props) {
     const {data} = props;
@@ -21,10 +23,10 @@ function UserStatsWidget(props) {
                         </span>
                         </div>
                         <div className="icon">
-                            <i className="fas fa-shopping-cart"/>
+                            <FontAwesomeIcon icon={faShoppingCart} />
                         </div>
                         <a href="#" className="small-box-footer">
-                            More info <i className="fas fa-arrow-circle-right"/>
+                            More info <FontAwesomeIcon icon={faArrowCircleRight} />
                         </a>
                     </div>
                 </div>
@@ -38,7 +40,7 @@ function UserStatsWidget(props) {
                             <i className="ion ion-stats-bars"/>
                         </div>
                         <a href="#" className="small-box-footer">
-                            More info <i className="fas fa-arrow-circle-right"/>
+                            More info <FontAwesomeIcon icon={faArrowCircleRight} />
                         </a>
                     </div>
                 </div>
@@ -49,10 +51,10 @@ function UserStatsWidget(props) {
                             <p>User Registrations</p>
                         </div>
                         <div className="icon">
-                            <i className="fas fa-user-plus"/>
+                            <FontAwesomeIcon icon={faUserPlus} />
                         </div>
                         <a href="#" className="small-box-footer">
-                            More info <i className="fas fa-arrow-circle-right"/>
+                            More info <FontAwesomeIcon icon={faArrowCircleRight} />
                         </a>
                     </div>
                 </div>

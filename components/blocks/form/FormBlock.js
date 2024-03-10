@@ -10,7 +10,7 @@ import {
 import {protectedEndpoint, publicEndpoint, wpApiConfig} from "../../../config/wp-api-config";
 import {connect} from "react-redux";
 import {ChangePasswordFormFields} from "../../../config/forms/change-password-form-fields";
-import {SESSION_AUTH_TYPE, SESSION_USER} from "../../../redux/constants/session-constants";
+import {SESSION_AUTH_PROVIDER, SESSION_USER} from "../../../redux/constants/session-constants";
 import WPErrorDisplay from "@/truvoicer-base/components/errors/WPErrorDisplay";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
@@ -286,7 +286,7 @@ const FormBlock = (props) => {
                 break;
             case "account_details":
                 configData.endpoint = buildProtectedEndpointUrl;
-                configData.data = {auth_type: props.session[SESSION_USER][SESSION_AUTH_TYPE]};
+                configData.data = {auth_provider: props.session[SESSION_USER][SESSION_AUTH_PROVIDER]};
                 break;
             case "custom":
                 const customEndpoint = getCustomEndpoint();

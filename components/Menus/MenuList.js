@@ -12,16 +12,19 @@ import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manage
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
+import {SessionContext} from "@/truvoicer-base/config/contexts/SessionContext";
 
 const MenuList = (props) => {
 
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const modalContext = useContext(AppModalContext);
+    const sessionContext = useContext(SessionContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const logoutHandler = (e) => {
         e.preventDefault();
+        sessionContext.logout(props?.session?.user);
         logout();
     }
 

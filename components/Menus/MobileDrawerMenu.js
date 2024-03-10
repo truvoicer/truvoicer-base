@@ -2,6 +2,8 @@ import React, {useContext, useState} from 'react';
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import MenuList from "@/truvoicer-base/components/Menus/MenuList";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faAngleRight, faBars} from "@fortawesome/free-solid-svg-icons";
 
 const MobileDrawerMenu = (props) => {
     const [showMenu, setShowMenu] = useState(false)
@@ -23,7 +25,7 @@ const MobileDrawerMenu = (props) => {
                 {showOpener &&
                 <a onClick={openDrawer}
                    className="site-menu-toggle js-menu-toggle text-white">
-                    <i className="fas fa-bars"/>
+                    <FontAwesomeIcon icon={faBars} />
                 </a>
                 }
                 {/*<SwipeableDrawer*/}

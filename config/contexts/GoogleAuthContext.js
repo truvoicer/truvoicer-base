@@ -5,6 +5,7 @@ export const googleAuthContextData = {
     google: {},
     isSignedIn: false,
     errors: [],
-    update: () => {}
+    update: () => {},
+    logout: () => {},
 };
 export const GoogleAuthContext = React.createContext(googleAuthContextData);

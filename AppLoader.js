@@ -1,9 +1,15 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {AppContext, appContextData} from "@/truvoicer-base/config/contexts/AppContext";
 import {updateStateNestedObjectData, updateStateObject} from "@/truvoicer-base/library/helpers/state-helpers";
 import {TemplateContext, templateData} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {GoogleAuthContext} from "@/truvoicer-base/config/contexts/GoogleAuthContext";
+import {FbAuthContext} from "@/truvoicer-base/config/contexts/FacebookAuthContext";
+import {connect} from "react-redux";
+import {sessionContextData} from "@/truvoicer-base/config/contexts/SessionContext";
+import SessionLayout from "@/truvoicer-base/components/layout/SessionLayout";
 
 const AppLoader = ({templateConfig = {}, children}) => {
+
     const [appContextState, setAppContextState] = useState({
         ...appContextData,
         ...{
@@ -45,12 +51,11 @@ const AppLoader = ({templateConfig = {}, children}) => {
         },
     })
     return (
-        <AppContext.Provider value={appContextState}>
-            <TemplateContext.Provider value={templateContextState}>
-                {children}
-            </TemplateContext.Provider>
-        </AppContext.Provider>
+            <AppContext.Provider value={appContextState}>
+                <TemplateContext.Provider value={templateContextState}>
+                    {children}
+                </TemplateContext.Provider>
+            </AppContext.Provider>
     );
 };
-
 export default AppLoader;

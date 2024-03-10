@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import {isSet} from "../../library/utils";
+import {faHeart, faPlusCircle, faTrashAlt} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const FormList = (props) => {
     const listClass = "form-list";
@@ -80,10 +82,11 @@ const FormList = (props) => {
                                 />
                             </Col>
                             <Col sm={12} md={12} lg={2}>
-                                <a className={"form-list-row--new"} onClick={addFormListRow}><i
-                                    className="fas fa-plus-circle"/></a>
+                                <a className={"form-list-row--new"} onClick={addFormListRow}>
+                                    <FontAwesomeIcon icon={faPlusCircle} />
+                                </a>
                                 <a className={"form-list-row--remove"}
-                                   onClick={removeFormListRow.bind(this, index)}><i className="fas fa-trash-alt"/></a>
+                                   onClick={removeFormListRow.bind(this, index)}><FontAwesomeIcon icon={faTrashAlt} /></a>
                             </Col>
                         </Row>
                     </div>

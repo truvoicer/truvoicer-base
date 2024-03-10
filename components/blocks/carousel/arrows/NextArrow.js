@@ -1,6 +1,8 @@
 import React, {useContext} from "react";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {faAngleRight, faHeart} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const NextArrow = (props) => {
     const { className, style, onClick } = props;
@@ -8,7 +10,7 @@ const NextArrow = (props) => {
     function defaultView() {
         return (
             <div className={"owl-next"} onClick={onClick} style={{...style, display: "block"}}>
-                <i className="fa fa-angle-right"/>
+                <FontAwesomeIcon icon={faAngleRight} />
             </div>
         );
     }

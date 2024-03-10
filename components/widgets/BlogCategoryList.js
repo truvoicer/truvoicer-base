@@ -3,6 +3,8 @@ import {getPostCategoryUrl} from "../../library/helpers/posts";
 import Link from "next/link";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {faUser} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const BlogCategoryList = (props) => {
     const {categories = [], classes = ""} = props;
@@ -15,7 +17,7 @@ const BlogCategoryList = (props) => {
                         {categories.map((category, index) => (
                             <React.Fragment key={index}>
                                 <Link href={getPostCategoryUrl({category_name: category?.slug})}>
-                                    {/*<i className="fa fa-user"/>*/}
+                                    {/*<FontAwesomeIcon icon={faUser} />*/}
                                     {category?.name}
                                 </Link>
                             </React.Fragment>

@@ -5,6 +5,8 @@ import {fetchLoaderDataAction} from "../../redux/actions/item-actions";
 import {convertLinkToHttps} from "../../library/helpers/items";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faAngleLeft, faAngleRight} from "@fortawesome/free-solid-svg-icons";
 
 const ImageListCarouselLoader = (props) => {
     const carouselClassName = "basic-carousel " + (props.className ? props.className : "");
@@ -61,14 +63,14 @@ const ImageListCarouselLoader = (props) => {
                 renderArrowPrev={(onClickHandler, hasPrev, label) =>
                     hasPrev && (
                         <div className={leftArrowClassName} onClick={onClickHandler}>
-                            <i className="fa fa-angle-left"/>
+                            <FontAwesomeIcon icon={faAngleLeft} />
                         </div>
                     )
                 }
                 renderArrowNext={(onClickHandler, hasNext, label) =>
                     hasNext && (
                         <div className={rightArrowClassName} onClick={onClickHandler}>
-                            <i className="fa fa-angle-right"/>
+                            <FontAwesomeIcon icon={faAngleRight} />
                         </div>
                     )
                 }

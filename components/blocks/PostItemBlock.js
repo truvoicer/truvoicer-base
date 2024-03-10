@@ -10,6 +10,9 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import ListingsLeftSidebar from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsLeftSidebar";
 import ItemViewComments from "@/truvoicer-base/components/comments/ItemViewComments";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faHeart} from "@fortawesome/free-solid-svg-icons";
+import {faBehance, faDribbble, faFacebookF, faTwitter} from "@fortawesome/free-brands-svg-icons";
 
 const PostItemBlock = (props) => {
     const {post, postList, postNav, data} = props;
@@ -87,17 +90,17 @@ const PostItemBlock = (props) => {
                                 <div className="d-sm-flex justify-content-between text-center">
                                     <p className="like-info">
                                     <span className="align-middle">
-                                        <i className="fa fa-heart"/>
+                                        <FontAwesomeIcon icon={faHeart} />
                                     </span>
                                         Lily and 4 people like this
                                     </p>
                                     <div className="col-sm-4 text-center my-2 my-sm-0">
                                     </div>
                                     <ul className="social-icons">
-                                        <li><a href="#"><i className="fa fa-facebook-f"/></a></li>
-                                        <li><a href="#"><i className="fa fa-twitter"/></a></li>
-                                        <li><a href="#"><i className="fa fa-dribbble"/></a></li>
-                                        <li><a href="#"><i className="fa fa-behance"/></a></li>
+                                        <li><a href="#"><FontAwesomeIcon icon={faFacebookF} /></a></li>
+                                        <li><a href="#"><FontAwesomeIcon icon={faTwitter} /></a></li>
+                                        <li><a href="#"><FontAwesomeIcon icon={faDribbble} /></a></li>
+                                        <li><a href="#"><FontAwesomeIcon icon={faBehance} /></a></li>
                                     </ul>
                                 </div>
                                 <div className="navigation-area">

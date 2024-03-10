@@ -5,6 +5,7 @@ export const fbAuthContextData = {
     fb: {},
     isSignedIn: false,
     errors: [],
-    update: () => {}
+    update: () => {},
+    logout: () => {},
 };
 export const FbAuthContext = React.createContext(fbAuthContextData);

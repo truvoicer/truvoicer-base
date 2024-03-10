@@ -1,7 +1,7 @@
 // AUTH STATE
 import {createSlice} from "@reduxjs/toolkit";
 import {
-    SESSION_AUTH_TYPE,
+    SESSION_AUTH_PROVIDER, SESSION_AUTH_PROVIDER_USER_ID,
     SESSION_AUTHENTICATED, SESSION_ERROR, SESSION_IS_AUTHENTICATING, SESSION_PASSWORD_RESET_KEY, SESSION_USER,
     SESSION_USER_DISPLAY_NAME,
     SESSION_USER_EMAIL,
@@ -13,7 +13,8 @@ import {getReducers, getState} from "../../library/helpers/redux";
 
 const defaultState = {
     [SESSION_USER]: {
-        [SESSION_AUTH_TYPE]: "",
+        [SESSION_AUTH_PROVIDER]: "",
+        [SESSION_AUTH_PROVIDER_USER_ID]: "",
         [SESSION_USER_ID]: null,
         [SESSION_USER_EMAIL]: "",
         [SESSION_USER_NICE_NAME]: "",

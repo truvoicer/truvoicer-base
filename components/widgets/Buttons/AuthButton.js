@@ -9,6 +9,8 @@ import {logout} from "../../../redux/actions/session-actions";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
+import {faArrowCircleRight, faSignOutAlt, faUserCircle} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const AuthButton = (props) => {
     const options = props.data.auth_options;
@@ -40,7 +42,7 @@ const AuthButton = (props) => {
                         <div className="phone_num d-none d-xl-block">
                             <a href={siteConfig.defaultUserAccountHref}>
                                 <span className={"d-none d-md-block"}>{options.account_label}</span>
-                                <span className={"d-block d-md-none"}><i className="fas fa-user-circle"/></span>
+                                <span className={"d-block d-md-none"}><FontAwesomeIcon icon={faUserCircle} /></span>
                             </a>
                         </div>
                         <div className="phone_num d-none d-xl-block">
@@ -49,7 +51,7 @@ const AuthButton = (props) => {
                                 onClick={logoutHandler}
                             >
                                 <span className={"d-none d-md-block"}>{"Logout"}</span>
-                                <span className={"d-block d-md-none"}><i className="fas fa-sign-out-alt"/></span>
+                                <span className={"d-block d-md-none"}><FontAwesomeIcon icon={faSignOutAlt} /></span>
                             </a>
                         </div>
                     </>

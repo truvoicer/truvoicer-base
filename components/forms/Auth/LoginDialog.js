@@ -60,13 +60,15 @@ const LoginDialog = (props) => {
                         <div className={"auth-wrapper--login-form"}>
                             <AuthLoginForm requestCallback={requestCallback}>
                                 <p className={"mb-0 text-center"}>
-                                    <a className={"text-danger"} href={siteConfig.defaultForgotPasswordHref} onClick={showForgotPasswordModal}>
+                                    <a className={"text-danger"} href={siteConfig.defaultForgotPasswordHref}
+                                       onClick={showForgotPasswordModal}>
                                         Forgot Password?
                                     </a>
                                 </p>
                                 <p className={"mb-0 text-center"}>
                                     No account yet?
-                                    <a className={"text-primary ml-1"} href={siteConfig.defaultRegisterHref} onClick={showAuthRegisterModal}>
+                                    <a className={"text-primary ml-1"} href={siteConfig.defaultRegisterHref}
+                                       onClick={showAuthRegisterModal}>
                                         Register
                                     </a>
                                 </p>
@@ -75,21 +77,24 @@ const LoginDialog = (props) => {
                         <div className={"horizontal-divider"}>
                             <span>OR</span>
                         </div>
-                        <div className={"auth-wrapper--google auth-wrapper--button"}>
-                            <AuthGoogle
-                                requestCallback={requestCallback}
-                                buttonClass={"google-light-red"}
-                                iconClass={"fa-google"}
-                                buttonLabel={"Sign in with Google"}
-                            />
-                        </div>
-                        <div className={"auth-wrapper--facebook auth-wrapper--button"}>
-                            <AuthFacebook
-                                requestCallback={requestCallback}
-                                buttonClass={"facebook-light-blue"}
-                                iconClass={"fa-facebook-f"}
-                                buttonLabel={"Sign in with Facebook"}
-                            />
+
+                        <div className={"auth-wrapper--button-group"}>
+                            <div className={"auth-wrapper--google auth-wrapper--button"}>
+                                <AuthGoogle
+                                    requestCallback={requestCallback}
+                                    buttonClass={"google-light-red"}
+                                    iconClass={"google"}
+                                    buttonLabel={"Sign in with Google"}
+                                />
+                            </div>
+                            <div className={"auth-wrapper--facebook auth-wrapper--button"}>
+                                <AuthFacebook
+                                    requestCallback={requestCallback}
+                                    buttonClass={"facebook-light-blue"}
+                                    iconClass={"facebook"}
+                                    buttonLabel={"Sign in with Facebook"}
+                                />
+                            </div>
                         </div>
                     </>
                 }

@@ -8,7 +8,7 @@ import {
 } from "../reducers/session-reducer";
 import {produce} from "immer";
 import {
-    SESSION_AUTH_TYPE,
+    SESSION_AUTH_PROVIDER, SESSION_AUTH_PROVIDER_USER_ID,
     SESSION_USER_DISPLAY_NAME,
     SESSION_USER_EMAIL,
     SESSION_USER_FIRSTNAME,
@@ -26,16 +26,18 @@ const axios = require("axios")
 
 export function setSessionUserAction(data, authenticated) {
     let sessionUserState = {...store.getState().session.user};
+    console.log('setSessionUserAction', {data})
     const nextState = produce(sessionUserState, (draftState) => {
-        draftState[SESSION_AUTH_TYPE] = data.auth_type;
-        draftState[SESSION_USER_TOKEN] = data.token;
-        draftState[SESSION_USER_ID] = data.id;
-        draftState[SESSION_USER_EMAIL] = data.user_email;
-        draftState[SESSION_USER_DISPLAY_NAME] = data.display_name;
-        draftState[SESSION_USER_NICE_NAME] = data.user_nicename;
-        draftState[SESSION_USER_FIRSTNAME] = data.first_name;
-        draftState[SESSION_USER_LASTNAME] = data.last_name;
-        draftState[SESSION_USER_NICK_NAME] = data.nickname;
+        draftState[SESSION_AUTH_PROVIDER] = data?.auth_provider;
+        draftState[SESSION_AUTH_PROVIDER_USER_ID] = data?.auth_provider_user_id;
+        draftState[SESSION_USER_TOKEN] = data?.token;
+        draftState[SESSION_USER_ID] = data?.id;
+        draftState[SESSION_USER_EMAIL] = data?.user_email;
+        draftState[SESSION_USER_DISPLAY_NAME] = data?.display_name;
+        draftState[SESSION_USER_NICE_NAME] = data?.user_nicename;
+        draftState[SESSION_USER_FIRSTNAME] = data?.first_name;
+        draftState[SESSION_USER_LASTNAME] = data?.last_name;
+        draftState[SESSION_USER_NICK_NAME] = data?.nickname;
     })
     store.dispatch(setUser(nextState))
     store.dispatch(setAuthenticated(authenticated))
@@ -100,7 +102,8 @@ export function validateToken() {
 
 export function logout() {
     const data = {};
-    data[SESSION_AUTH_TYPE] = "";
+    data[SESSION_AUTH_PROVIDER] = "";
+    data[SESSION_AUTH_PROVIDER_USER_ID] = "";
     data[SESSION_USER_ID] = null;
     data[SESSION_USER_EMAIL] = "";
     data[SESSION_USER_NICE_NAME] = "";

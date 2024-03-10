@@ -1,23 +1,25 @@
 import React, {useContext} from 'react';
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faAngleRight} from "@fortawesome/free-solid-svg-icons";
 
 const ProsConsList = (props) => {
     const {list, type} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const getProps = () => {
-        let iconClass;
         switch (type) {
             case "pros":
-                iconClass = "fa-check text-success";
-                break;
+                return {
+                    icon: `fa-check`,
+                    className: "text-success"
+                }
             case "cons":
-                iconClass = "fa-times text-danger";
-                break;
-        }
-        return {
-            className: `fas ${iconClass}`
+                return {
+                    icon: `fa-times`,
+                    className: "text-danger"
+                };
         }
     }
 
@@ -31,6 +33,8 @@ const ProsConsList = (props) => {
                                 <li className="pros-cons__ul__li" key={index}>
                             <span className="fa-li pros-cons__ul__li--icon">
                                 <i {...getProps()} />
+
+                                <FontAwesomeIcon icon={faAngleRight} />
                             </span>
                                     {item}
                                 </li>

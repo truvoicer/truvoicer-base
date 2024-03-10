@@ -19,12 +19,17 @@ function GoogleAuthProvider({children, siteSettings}) {
             return cloneState;
         })
     }
+    function logout(id) {
+        google.accounts.id.revoke(id, done => {
+            console.log('revoke done:', done);
+        });
+    }
     const [googleAuthState, setGoogleAuthState] = useState({
         ...googleAuthContextData,
         update: updateState,
+        logout: logout
     });
     function handleCredentialResponse(response) {
-        console.log({response});
         const data = {
             auth_provider: "google",
             token: response.credential
