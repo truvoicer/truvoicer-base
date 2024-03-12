@@ -37,6 +37,7 @@ const RecruitmentListingsBlock = (props) => {
             </>
         );
     }
+
     function defaultView() {
         return (
 

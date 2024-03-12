@@ -31,14 +31,6 @@ export class ListingsEngine {
         this.updateContext({key: "error", value: error})
     }
 
-    getListingsProviders({api_listings_category, select_providers, providers_list}, endpoint = "providers", callback) {
-        if (isSet(select_providers) && select_providers && Array.isArray(providers_list)) {
-            fetchData("list", [api_listings_category, endpoint], {provider: providers_list}, callback);
-        } else {
-            fetchData("list", [api_listings_category, endpoint], {}, callback);
-        }
-    }
-
     addArrayItem(key, value, search = false) {
         let listingsQueryData = this.listingsContext?.listingsQueryData
         const object = Object.assign({}, listingsQueryData, {

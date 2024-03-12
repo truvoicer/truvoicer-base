@@ -25,7 +25,6 @@ const ListingsBlockContainer = ({data, session, children}) => {
             listingsManager.setListingsBlocksDataAction(cloneData)
         }
     }, [session])
-
     useEffect(() => {
         if (session[SESSION_IS_AUTHENTICATING]) {
             return;
@@ -40,6 +39,7 @@ const ListingsBlockContainer = ({data, session, children}) => {
         if (!searchContext?.pageControls[PAGINATION_PAGE_SIZE]) {
             return;
         }
+        console.log({listingsContext})
         listingsManager.getListingsInitialLoad();
     }, [
         session,

@@ -28,7 +28,7 @@ const ListingsFilterApiListItem = (props) => {
     useEffect(() => {
         let isCancelled = false;
         if (listingsContext?.category !== "") {
-            listingsManager.listingsEngine.getListingsProviders(listingsContext?.listingsData, props.data.api_endpoint, getListItemsCallback)
+            listingsManager.getListingsProviders(listingsContext?.listingsData, props.data.api_endpoint, getListItemsCallback)
 
             return () => {
                 isCancelled = true;
