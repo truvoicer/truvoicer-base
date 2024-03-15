@@ -75,6 +75,8 @@ export class ListingsManager extends ListingsEngineBase {
 
     initialisePageControls() {
         const searchLimit = this.getSearchLimit();
+        console.log('initialisePageControls', {searchLimit})
+
         this.listingsEngine.addListingsQueryDataString(fetcherApiConfig.searchLimitKey, searchLimit);
         this.searchEngine.setPageControlItemAction(PAGINATION_PAGE_SIZE, searchLimit)
         this.searchEngine.setQueryItemAction(PAGINATION_PAGE_SIZE, searchLimit)
@@ -86,6 +88,7 @@ export class ListingsManager extends ListingsEngineBase {
             console.warn("Listings data empty on initial search...")
             return false;
         }
+        this.initialisePageControls();
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 this.wpDataSource.getInitialLoad(listingsDataState)
@@ -118,6 +121,21 @@ export class ListingsManager extends ListingsEngineBase {
             default:
                 console.warn('Invalid listings source...')
                 break;
+        }
+    }
+
+    validateSearchParams() {
+        console.log('validateSearchParams')
+        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
+
+        switch (listingsDataState?.source) {
+            case LISTINGS_BLOCK_SOURCE_WORDPRESS:
+                return this.wpDataSource.validateWpPostsRequestParams();
+            case LISTINGS_BLOCK_SOURCE_API:
+                return this.fetcherDataSource.validateSearchParams();
+            default:
+                console.warn('Invalid listings source...')
+                return false;
         }
     }
 

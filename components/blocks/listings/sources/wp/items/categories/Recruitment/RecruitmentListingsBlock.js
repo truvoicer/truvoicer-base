@@ -24,12 +24,18 @@ const RecruitmentListingsBlock = (props) => {
     const headerButtonUrl = getExtraDataValue("header_button_url", listingsContext?.listingsData?.extra_data);
 
     const getListingsBlock = () => {
-
+        console.log(searchContext?.searchList.length, searchContext?.searchStatus)
         return (
             <>
                 {searchContext?.searchList.length > 0 && searchContext?.searchStatus === SEARCH_REQUEST_COMPLETED ?
                     <>
-                        <GridItems/>
+                        {/*<GridItems*/}
+                        {/*    listStart={listingsContext?.listingsData?.list_start}*/}
+                        {/*    listEnd={listingsContext?.listingsData?.list_end}*/}
+                        {/*    customPosition={listingsContext?.listingsData?.custom_position}*/}
+                        {/*    grid={listingsContext?.listingsGrid}*/}
+                        {/*    listItems={searchContext?.searchList || []}*/}
+                        {/*/>*/}
                     </>
                     :
                     <LoaderComponent key={"loader"}/>

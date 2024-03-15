@@ -205,6 +205,7 @@ const GridItems = (props) => {
             </>
         )
     }
+    console.log(searchContext)
     return templateManager.getTemplateComponent({
         category: 'listings',
         templateId: 'gridItems',

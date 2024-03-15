@@ -52,13 +52,8 @@ export class ListingsEngine {
         this.updateContext({key: "listingsQueryData", value: object})
     }
 
-    addListingsQueryDataString(key, value, search = false) {
-        let listingsQueryData = this.listingsContext?.listingsQueryData
-
-        const object = Object.assign({}, listingsQueryData, {
-            [key]: value
-        });
-        this.updateContext({key: "listingsQueryData", value: object})
+    addListingsQueryDataString(key, value) {
+        this.updateContextNestedObjectData({key, object: "listingsQueryData", value})
     }
 
     addQueryDataObjectMiddleware(queryData, search = false) {

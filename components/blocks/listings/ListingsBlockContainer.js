@@ -5,7 +5,7 @@ import {SESSION_AUTHENTICATED, SESSION_IS_AUTHENTICATING} from "../../../redux/c
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
-import {PAGINATION_PAGE_SIZE} from "@/truvoicer-base/redux/constants/search-constants";
+import {INIT_SEARCH_REQUEST, PAGINATION_PAGE_SIZE} from "@/truvoicer-base/redux/constants/search-constants";
 import {AppContext} from "@/truvoicer-base/config/contexts/AppContext";
 import {AppManager} from "@/truvoicer-base/library/app/AppManager";
 
@@ -16,6 +16,9 @@ const ListingsBlockContainer = ({data, session, children}) => {
     const appManager = new AppManager(appContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
 
+    function validateData(data) {
+
+    }
     useEffect(() => {
         if (!session[SESSION_IS_AUTHENTICATING]) {
             let cloneData = {...data}
@@ -35,17 +38,30 @@ const ListingsBlockContainer = ({data, session, children}) => {
         if (!Array.isArray(listingsContext?.listingsData?.providers)) {
             return;
         }
-        listingsManager.initialisePageControls();
-        if (!searchContext?.pageControls[PAGINATION_PAGE_SIZE]) {
+        if (searchContext?.searchOperation === INIT_SEARCH_REQUEST && searchContext.initialRequestHasRun) {
             return;
         }
-        console.log({listingsContext})
         listingsManager.getListingsInitialLoad();
+        console.log('listingsContext?.listingsData', listingsContext?.listingsData)
     }, [
         session,
         listingsContext?.listingsData,
+        listingsContext?.listingsQueryData,
         searchContext?.pageControls[PAGINATION_PAGE_SIZE]
     ])
+    useEffect(() => {
+        if (searchContext?.searchOperation !== INIT_SEARCH_REQUEST && searchContext.initialRequestHasRun) {
+            return;
+        }
+        if (!listingsManager.validateSearchParams()) {
+            return;
+        }
+        // listingsManager.runSearch();
+        return () => {
+            listingsManager.getSearchEngine().updateContext({key: 'initialRequestHasRun', value: true})
+        }
+    }, [searchContext?.searchOperation])
+    console.log(searchContext)
     useEffect(() => {
         if (!isObject(listingsContext?.listingsData) || isObjectEmpty(listingsContext?.listingsData)) {
             return;
