@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import FetcherApiListingsBlock from "./sources/fetcher-api/FetcherApiListingsBlock";
-import PostsListingsBlock from "@/truvoicer-base/components/blocks/listings/sources/wp/items/PostsListingsBlock";
 import {
     LISTINGS_BLOCK_SOURCE_API,
     LISTINGS_BLOCK_SOURCE_WORDPRESS, LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST, LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
@@ -15,7 +14,7 @@ const ListingsBlockInterface = ({data}) => {
     function getWpListings() {
         switch (data?.wordpress_data_source) {
             case LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST:
-                return <PostsListingsBlock data={data}/>
+                return <FetcherApiListingsBlock data={data}/>
             case LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS:
                 return <PostsBlock data={data}/>
             default:

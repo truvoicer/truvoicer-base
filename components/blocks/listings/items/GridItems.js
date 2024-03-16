@@ -179,6 +179,7 @@ const GridItems = (props) => {
         }
         return searchList;
     }
+
     function defaultView() {
         return (
             <>
@@ -205,7 +206,7 @@ const GridItems = (props) => {
             </>
         )
     }
-    console.log(searchContext)
+
     return templateManager.getTemplateComponent({
         category: 'listings',
         templateId: 'gridItems',

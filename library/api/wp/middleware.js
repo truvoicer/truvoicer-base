@@ -61,7 +61,7 @@ export async function getAllSingleItemPosts() {
 export async function getSingleItemPost(id, postType) {
     return await wpResourceRequestHandler({
         endpoint: sprintf(wpApiConfig.endpoints.singleItemPost, {
-            post_id: parseInt(id),
+            post_id: id,
             post_type: postType,
         }),
         method: 'GET',

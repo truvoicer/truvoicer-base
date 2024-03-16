@@ -118,6 +118,21 @@ export class ListingsEngine {
         }
         return itemId;
     }
+
+    buildInternalItemViewUrl(item) {
+        if (!isNotEmpty(item)) {
+            return null;
+        }
+        let data = {}
+        if (isNotEmpty(item?.post_name)) {
+            data.item_id = item.post_name;
+        } else if (isNotEmpty(item?.item_id)) {
+            data.item_id = item.item_id;
+        } else {
+            return null;
+        }
+        return sprintf(ItemRoutes.internalItemView, data);
+    }
     getItemViewUrl(item, category) {
         if (!isNotEmpty(item)) {
             return null;
@@ -133,7 +148,11 @@ export class ListingsEngine {
         } else if (isNotEmpty(item?.provider)) {
             data.category = category
             data.provider = item.provider
-            return sprintf(ItemRoutes.externalItemView, data);
+            if (item.provider === "internal") {
+                return this.buildInternalItemViewUrl(item);
+            } else {
+                return sprintf(ItemRoutes.externalItemView, data);
+            }
         } else {
             return null;
         }

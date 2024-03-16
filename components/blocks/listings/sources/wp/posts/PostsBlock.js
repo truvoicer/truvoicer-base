@@ -1,7 +1,6 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
-import PostsBlockContainer from "@/truvoicer-base/components/blocks/listings/sources/wp/posts/PostsBlockContainer";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {getExtraDataValue} from "@/truvoicer-base/library/helpers/pages";
@@ -12,13 +11,22 @@ import ListingsInfiniteScroll from "@/truvoicer-base/components/blocks/listings/
 import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
 import ListingsLeftSidebar from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsLeftSidebar";
+import ListingsBlockContainer from "@/truvoicer-base/components/blocks/listings/ListingsBlockContainer";
+import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 const PostsBlock = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
+    const listingsManager = new ListingsManager(listingsContext, searchContext);
     const filtersPosition = props.data?.filters_position || "right";
 
+    useEffect(() => {
+        if (!listingsContext.loaded) {
+            return;
+        }
+        listingsManager.runSearch();
+    }, [listingsContext.loaded]);
     const getListingsBlock = () => {
         return (
             <>
@@ -43,7 +51,7 @@ const PostsBlock = (props) => {
 
     function defaultLayout() {
         return (
-            <PostsBlockContainer data={props.data}>
+            <ListingsBlockContainer data={props.data}>
                 <section className="blog_area section-padding">
                     <div className="container">
                         <div className={"row"}>
@@ -83,7 +91,7 @@ const PostsBlock = (props) => {
                         </div>
                     </div>
                 </section>
-            </PostsBlockContainer>
+            </ListingsBlockContainer>
         )
     }
 

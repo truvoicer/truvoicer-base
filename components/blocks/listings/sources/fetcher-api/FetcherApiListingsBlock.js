@@ -17,7 +17,6 @@ const FetcherApiListingsBlock = (props) => {
                 return <SearchListingsBlock data={props.data}/>
         }
     }
-
     function defaultView() {
         return (
             <ListingsBlockContainer data={props.data}>

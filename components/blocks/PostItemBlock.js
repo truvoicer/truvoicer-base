@@ -69,7 +69,7 @@ const PostItemBlock = (props) => {
 
     const prevPostCategory = getCategory(prevPost?.categories);
     const nextPostCategory = getCategory(nextPost?.categories);
-
+    console.log(props)
     function defaultView() {
         return (
             <section className="blog_area single-post-area section-padding">
@@ -195,9 +195,9 @@ const PostItemBlock = (props) => {
                             </div>
                             <div className={"pt-5"}>
                                 <ItemViewComments
-                                    category={props.category}
-                                    provider={props.item.provider}
-                                    item_id={props.item.item_id}
+                                    // category={props.category}
+                                    // provider={props.item.provider}
+                                    item_id={post?.ID}
                                 />
                             </div>
                         </div>

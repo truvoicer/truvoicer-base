@@ -1,7 +1,8 @@
 import {DataSourceBase} from "@/truvoicer-base/library/listings/engine/source/data-source-base";
-import {isNotEmpty, isObject, isSet} from "@/truvoicer-base/library/utils";
+import {isNotEmpty, isObject, isObjectEmpty, isSet} from "@/truvoicer-base/library/utils";
 import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {
+    INIT_SEARCH_REQUEST,
     NEW_SEARCH_REQUEST,
     PAGE_CONTROL_HAS_MORE,
     PAGE_CONTROL_PAGINATION_REQUEST,
@@ -33,16 +34,19 @@ export class FetcherDataSource extends DataSourceBase {
     }
     dataInit(data) {
         this.listingsEngine.updateContext({key: "listingsData", value: data})
-        if (isNotEmpty(data.api_listings_category)) {
-            this.listingsEngine.updateContext({key: "category", value: data.api_listings_category})
-            this.getListingsProviders(
-                data,
-                "providers",
-                (status, data) => {
-                    this.getProvidersCallback(status, data)
-                }
-            )
+        if (!isNotEmpty(data.api_listings_category)) {
+            return false;
         }
+        this.listingsEngine.updateContext({key: "category", value: data.api_listings_category})
+        this.getListingsProviders(
+            data,
+            "providers",
+            (status, data) => {
+                this.getProvidersCallback(status, data)
+                this.getSearchEngine().setSearchRequestOperationMiddleware(INIT_SEARCH_REQUEST);
+            }
+        )
+
     }
     getInitialLoad(listingsDataState) {
 
@@ -106,6 +110,24 @@ export class FetcherDataSource extends DataSourceBase {
         }
     }
 
+    validateInitData() {
+        if (!isObject(this.listingsEngine.listingsContext?.listingsData)) {
+            return false;
+        }
+        if (isObjectEmpty(this.listingsEngine.listingsContext?.listingsData)) {
+            return false;
+        }
+        if (!Array.isArray(this.listingsEngine.listingsContext?.listingsData?.providers)) {
+            return false;
+        }
+        if ( this.searchEngine.searchContext.initialRequestHasRun) {
+            return false;
+        }
+        if (this.searchEngine.searchContext?.searchOperation !== INIT_SEARCH_REQUEST) {
+            return false;
+        }
+        return true;
+    }
     validateSearchParams() {
         const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
 

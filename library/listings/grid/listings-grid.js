@@ -14,9 +14,11 @@ export class ListingsGrid {
         }
         const gridConfig = listingsGridConfig.gridItems;
         if (!isSet(gridConfig[category])) {
+            console.warn("No grid config for category", category);
             return null;
         }
         if (!isSet(gridConfig[category][listingsGrid])) {
+            console.warn("No grid config for category", category, "and grid", listingsGrid);
             return null;
         }
         const GridItems = gridConfig[category][listingsGrid];

@@ -16,52 +16,41 @@ const ListingsBlockContainer = ({data, session, children}) => {
     const appManager = new AppManager(appContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
 
-    function validateData(data) {
-
-    }
     useEffect(() => {
-        if (!session[SESSION_IS_AUTHENTICATING]) {
-            let cloneData = {...data}
-            if (Array.isArray(cloneData?.listings_category_id)) {
-                cloneData.listings_category = cloneData.listings_category_id[0]?.slug
-            }
-            listingsManager.setListingsBlocksDataAction(cloneData)
+        if (session[SESSION_IS_AUTHENTICATING]) {
+            return;
         }
+        let cloneData = {...data}
+        if (!isObjectEmpty(listingsContext?.listingsData)) {
+            return;
+        }
+        if (Array.isArray(cloneData?.listings_category_id)) {
+            cloneData.listings_category = cloneData.listings_category_id[0]?.slug
+        }
+        listingsManager.setListingsBlocksDataAction(cloneData);
     }, [session])
     useEffect(() => {
         if (session[SESSION_IS_AUTHENTICATING]) {
             return;
         }
-        if (!isObject(listingsContext?.listingsData) || isObjectEmpty(listingsContext?.listingsData)) {
-            return;
-        }
-        if (!Array.isArray(listingsContext?.listingsData?.providers)) {
-            return;
-        }
-        if (searchContext?.searchOperation === INIT_SEARCH_REQUEST && searchContext.initialRequestHasRun) {
-            return;
-        }
-        listingsManager.getListingsInitialLoad();
-        console.log('listingsContext?.listingsData', listingsContext?.listingsData)
-    }, [
-        session,
-        listingsContext?.listingsData,
-        listingsContext?.listingsQueryData,
-        searchContext?.pageControls[PAGINATION_PAGE_SIZE]
-    ])
-    useEffect(() => {
-        if (searchContext?.searchOperation !== INIT_SEARCH_REQUEST && searchContext.initialRequestHasRun) {
+
+        if (!listingsManager.validateInitData()) {
+            console.warn('init data validation failed');
             return;
         }
         if (!listingsManager.validateSearchParams()) {
+            console.warn('search param validation failed');
             return;
         }
-        // listingsManager.runSearch();
-        return () => {
-            listingsManager.getSearchEngine().updateContext({key: 'initialRequestHasRun', value: true})
-        }
-    }, [searchContext?.searchOperation])
-    console.log(searchContext)
+        listingsManager.listingsEngine.updateContext({key: 'loaded', value: true})
+    }, [
+        session,
+        searchContext?.initialRequestHasRun,
+        searchContext?.searchOperation,
+        listingsContext.listingsData,
+        listingsContext?.listingsQueryData,
+    ]);
+
     useEffect(() => {
         if (!isObject(listingsContext?.listingsData) || isObjectEmpty(listingsContext?.listingsData)) {
             return;

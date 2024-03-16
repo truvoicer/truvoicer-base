@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import {connect} from "react-redux";
 import LoaderComponent from "../../../../../loaders/Loader";
 import Paginate from "@/truvoicer-base/components/blocks/listings/pagination/ListingsPaginate";
@@ -14,11 +14,13 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 import {isFunction} from "underscore";
 import {buildComponent} from "@/truvoicer-base/library/helpers/component-helpers";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 const SearchListingsBlock = (props) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext))
+    const listingsManager = new ListingsManager(listingsContext, searchContext);
     // props.data.show_filters
     const defaultHeadingButtonLabel = "Browse More Jobs";
     const defaultHeadingButtonUrl = "Browse More Jobs";
@@ -26,7 +28,15 @@ const SearchListingsBlock = (props) => {
     const headerButtonUrl = getExtraDataValue("header_button_url", listingsContext?.listingsData?.extra_data);
     const filtersPosition = props.data?.filters_position || "right";
 
+    useEffect(() => {
+        if (!listingsContext.loaded) {
+            return;
+        }
+        listingsManager.runSearch();
+    }, [listingsContext.loaded]);
+
     const getListingsBlock = () => {
+
         return (
             <>
                 {searchContext?.searchList?.length > 0 && searchContext?.searchStatus === SEARCH_REQUEST_COMPLETED ?
