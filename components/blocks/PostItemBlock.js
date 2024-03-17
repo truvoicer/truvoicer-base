@@ -196,7 +196,7 @@ const PostItemBlock = (props) => {
                             <div className={"pt-5"}>
                                 <ItemViewComments
                                     // category={props.category}
-                                    // provider={props.item.provider}
+                                    provider={props?.post?.provider}
                                     item_id={post?.ID}
                                 />
                             </div>
