@@ -16,6 +16,7 @@ import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manage
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {ListingsEngine} from "@/truvoicer-base/library/listings/engine/listings-engine";
+import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
 
 const GridItems = (props) => {
     const {listStart, listEnd, customPosition, grid, listItems, category} = props;
@@ -189,6 +190,7 @@ const GridItems = (props) => {
                             <Col {...getGridItemColumns(grid)}>
                                 {listingsGrid.getGridItem(
                                     item,
+                                    listingsContext?.listingsData?.[DISPLAY_AS],
                                     searchContext.category,
                                     grid,
                                     props.user[SESSION_USER_ID],

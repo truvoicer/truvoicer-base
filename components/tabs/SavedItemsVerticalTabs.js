@@ -15,6 +15,7 @@ import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchCo
 import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
 
 
 // const useStyles = makeStyles((theme) => ({
@@ -169,6 +170,7 @@ const SavedItemsVerticalTabs = (props) => {
                     <Col key={index} {...getGridItemColumns(listingsGrid)}>
                         {listingsGridManager.getGridItem(
                             item,
+                            listingsContext?.listingsData?.[DISPLAY_AS],
                             item.category,
                             listingsGrid,
                             props.user[SESSION_USER_ID],

@@ -41,6 +41,7 @@ export class WpDataSource extends DataSourceBase {
         let cloneData = {...data};
         cloneData.providers = [];
         this.listingsEngine.updateContext({key: "listingsData", value: cloneData})
+        console.log('dataInit', {cloneData})
         this.setPostsBlocksDataAction(cloneData);
         this.listingsEngine.updateContext({key: "providers", value: []})
         this.getInitialLoad(cloneData);

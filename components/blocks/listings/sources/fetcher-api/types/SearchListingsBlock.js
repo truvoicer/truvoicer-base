@@ -36,7 +36,6 @@ const SearchListingsBlock = (props) => {
     }, [listingsContext.loaded]);
 
     const getListingsBlock = () => {
-
         return (
             <>
                 {searchContext?.searchList?.length > 0 && searchContext?.searchStatus === SEARCH_REQUEST_COMPLETED ?

@@ -7,21 +7,21 @@ export class ListingsGrid {
     constructor(listingsContext, searchContext) {
         this.listingsManager = new ListingsManager(listingsContext, searchContext);
     }
-    getGridItem(item, category, listingsGrid, userId, showInfoCallback, index = false) {
+    getGridItem(item, displayAs, category, listingsGrid, userId, showInfoCallback, index = false) {
         let gridItem = {...item};
         if (isSet(gridItem.image_list)) {
             gridItem.image_list = convertImageObjectsToArray(gridItem.image_list);
         }
         const gridConfig = listingsGridConfig.gridItems;
-        if (!isSet(gridConfig[category])) {
-            console.warn("No grid config for category", category);
+        if (!isSet(gridConfig[displayAs])) {
+            console.warn("No grid config for displayAs", displayAs);
             return null;
         }
-        if (!isSet(gridConfig[category][listingsGrid])) {
-            console.warn("No grid config for category", category, "and grid", listingsGrid);
+        if (!isSet(gridConfig[displayAs][listingsGrid])) {
+            console.warn("No grid config for displayAs", displayAs, "and grid", listingsGrid);
             return null;
         }
-        const GridItems = gridConfig[category][listingsGrid];
+        const GridItems = gridConfig[displayAs][listingsGrid];
         return (
             <GridItems
                 index={index}

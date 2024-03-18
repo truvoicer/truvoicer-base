@@ -3,7 +3,6 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
-import {getExtraDataValue} from "@/truvoicer-base/library/helpers/pages";
 import {SEARCH_REQUEST_COMPLETED} from "@/truvoicer-base/redux/constants/search-constants";
 import ListingsSortBar from "@/truvoicer-base/components/blocks/listings/sources/fetcher-api/ListingsSortBar";
 import Paginate from "@/truvoicer-base/components/blocks/listings/pagination/ListingsPaginate";
@@ -11,7 +10,6 @@ import ListingsInfiniteScroll from "@/truvoicer-base/components/blocks/listings/
 import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
 import ListingsLeftSidebar from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsLeftSidebar";
-import ListingsBlockContainer from "@/truvoicer-base/components/blocks/listings/ListingsBlockContainer";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 const PostsBlock = (props) => {
@@ -51,7 +49,6 @@ const PostsBlock = (props) => {
 
     function defaultLayout() {
         return (
-            <ListingsBlockContainer data={props.data}>
                 <section className="blog_area section-padding">
                     <div className="container">
                         <div className={"row"}>
@@ -91,7 +88,6 @@ const PostsBlock = (props) => {
                         </div>
                     </div>
                 </section>
-            </ListingsBlockContainer>
         )
     }
 
