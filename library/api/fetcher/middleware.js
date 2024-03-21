@@ -22,7 +22,7 @@ export const validateRequestParams = (requiredParams, queryData) => {
     return true;
 }
 
-export const fetchData = (endpoint, operation, queryData = {}, callback = false, completed = false) => {
+export const fetchData = async (endpoint, operation, queryData = {}, callback = false, completed = false) => {
     if (!validateEndpoint(endpoint)) {
         console.error("Endpoint not found")
     }
@@ -34,14 +34,14 @@ export const fetchData = (endpoint, operation, queryData = {}, callback = false,
     }
 }
 
-const fetchFromApi = (endpoint, operation, queryData) => {
+const fetchFromApi = async (endpoint, operation, queryData) => {
     let config = {
         url: getApiUrl(endpoint, operation, queryData),
         method: "get",
         headers: {'Authorization': 'Bearer ' + process.env.NEXT_PUBLIC_FETCHER_API_TOKEN}
     }
     //console.log(endpoint, operation, queryData)
-    return axios.request(config);
+    return await axios.request(config);
 }
 
 export const responseHandler = (request, callback, completed = false) => {

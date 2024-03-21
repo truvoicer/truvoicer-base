@@ -117,7 +117,7 @@ const SavedItemsVerticalTabsOld = (props) => {
     const showInfo = (item, category, e) => {
         e.preventDefault()
 
-        // const url = getItemViewUrl(item, category)
+        // const url = getExternalItemViewUrl(item, category)
         // router.push(url, url, { shallow: true });
         setModalData({
             show: true,

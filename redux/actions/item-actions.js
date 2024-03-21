@@ -126,12 +126,3 @@ export function getItemViewUrl(item, category) {
     }
 }
 
-export function getComparisonItemViewUrl(item, category) {
-    let data = {
-        item_slug: item.item_slug,
-        listings_category: category
-    }
-
-    return sprintf(ItemRoutes.comparisonItemView, data);
-}
-

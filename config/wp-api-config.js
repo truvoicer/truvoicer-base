@@ -9,6 +9,7 @@ export const wpApiConfig = {
         settings: publicEndpoint + "/settings",
         page: publicEndpoint + "/pages/page",
         pageList: publicEndpoint + "/pages/list",
+        postTemplate: publicEndpoint + "/posts/template",
         pageTemplate: publicEndpoint + "/pages/template/%(post_type)s/%(taxonomy)s/%(category)s",
         singleItemPost: publicEndpoint + "/posts/post/%(post_id)s/type/%(post_type)s",
         postWithTemplate: publicEndpoint + "/posts/post/%(slug)s",

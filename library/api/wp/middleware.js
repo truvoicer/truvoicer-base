@@ -4,6 +4,7 @@ import {siteConfig} from "@/config/site-config";
 import store from "../../../redux/store";
 import {SESSION_USER, SESSION_USER_ID} from "../../../redux/constants/session-constants";
 import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
+import {q} from "caniuse-lite/data/browserVersions";
 
 const axios = require('axios');
 const sprintf = require('sprintf-js').sprintf;
@@ -122,6 +123,17 @@ export async function getPostWithTemplate(slug) {
     })
 }
 
+export async function getPostTemplate({category = null}) {
+    let query = { };
+    if (category) {
+        query.category = category;
+    }
+    return await wpResourceRequestHandler({
+        endpoint: sprintf(wpApiConfig.endpoints.postTemplate),
+        query,
+        method: 'GET',
+    })
+}
 export async function getPageTemplate(postType, category) {
     return await wpResourceRequestHandler({
         endpoint: sprintf(wpApiConfig.endpoints.pageTemplate, {

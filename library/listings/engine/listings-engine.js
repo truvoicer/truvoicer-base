@@ -5,6 +5,9 @@ import {tagManagerSendDataLayer} from "@/truvoicer-base/library/api/global-scrip
 import {sprintf} from "sprintf-js";
 import {ItemRoutes} from "@/config/item-routes";
 import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/items";
+import {getPostItemUrl} from "@/truvoicer-base/library/helpers/posts";
+import {DISPLAY_AS_LIST, DISPLAY_AS_POST_LIST} from "@/truvoicer-base/redux/constants/general_constants";
+import {PostRoutes} from "@/config/post-routes";
 
 export class ListingsEngine {
     constructor(context) {
@@ -119,7 +122,7 @@ export class ListingsEngine {
         return itemId;
     }
 
-    buildInternalItemViewUrl(item) {
+    buildInternalItemViewUrl({item}) {
         if (!isNotEmpty(item)) {
             return null;
         }
@@ -133,8 +136,10 @@ export class ListingsEngine {
         }
         return sprintf(ItemRoutes.internalItemView, data);
     }
-    getItemViewUrl(item, category) {
+
+    getExternalItemViewUrl({item, category, displayAs}) {
         if (!isNotEmpty(item)) {
+            console.warn("Can't build item href | No item data");
             return null;
         }
         let itemId = this.extractItemId(item);
@@ -143,19 +148,26 @@ export class ListingsEngine {
             item_id: itemId
         }
 
-        if (item?.custom_item) {
-            return sprintf(ItemRoutes.internalItemView, data);
-        } else if (isNotEmpty(item?.provider)) {
-            data.category = category
-            data.provider = item.provider
-            if (item.provider === "internal") {
-                return this.buildInternalItemViewUrl(item);
-            } else {
-                return sprintf(ItemRoutes.externalItemView, data);
-            }
-        } else {
+        if (!isNotEmpty(item?.provider)) {
+            console.warn("Can't build item href | No provider data");
             return null;
         }
+
+        data.provider = item.provider
+
+        let endpoint = null;
+        switch (displayAs) {
+            case DISPLAY_AS_POST_LIST:
+                endpoint = PostRoutes.externalPost;
+                break;
+            case DISPLAY_AS_LIST:
+                endpoint = ItemRoutes.externalItemView;
+                break;
+            default:
+                console.warn("Can't build item href | No displayAs data");
+                return null;
+        }
+        return sprintf(endpoint, data);
     }
 
 
@@ -386,21 +398,40 @@ export class ListingsEngine {
     globalItemLinkClick(trackData = {}) {
         tagManagerSendDataLayer(trackData)
     }
-
-    getItemLinkProps(category, item, showInfoCallback, trackData = {}) {
+    getInternalItemUrl({item, category, displayAs}) {
+        switch (displayAs) {
+            case DISPLAY_AS_POST_LIST:
+                return getPostItemUrl({
+                    post_name: item?.post_name,
+                    category_name: category
+                });
+            case DISPLAY_AS_LIST:
+                return this.buildInternalItemViewUrl({category, item})
+            default:
+                return null;
+        }
+    }
+    getItemLinkProps({category, item, displayAs, trackData = {}}) {
         const listingsData = this.listingsContext?.listingsData;
+
+        let props = {
+            href: '#'
+        };
+        switch (item?.provider) {
+            case "internal":
+                props.href = this.getInternalItemUrl({category, item, displayAs})
+                break;
+            default:
+                props.href = this.getExternalItemViewUrl({item, category, displayAs});
+                break;
+        }
         if (isSet(listingsData?.item_view_display) && listingsData.item_view_display === "page") {
-            return {
-                onClick: (e) => {
-                    // e.preventDefault()
-                    this.globalItemLinkClick(trackData)
-                }
-            };
+            props.onClick = (e) => {
+                // e.preventDefault()
+                this.globalItemLinkClick(trackData)
+            }
         }
-        return {
-            href: this.getItemViewUrl(item, category),
-            onClick: showInfoCallback.bind(item, category)
-        }
+        return props;
     }
     extractItemListFromPost({post}) {
         if (!Array.isArray(post?.item_list?.item_list)) {
