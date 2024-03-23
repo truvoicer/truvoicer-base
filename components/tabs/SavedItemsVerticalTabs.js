@@ -38,6 +38,7 @@ const SavedItemsVerticalTabs = (props) => {
     const searchContext = useContext(SearchContext);
     const router = useRouter();
     const listingsGrid = isSet(defaultListingsGrid)? defaultListingsGrid : listingsContext.listingsGrid;
+    listingsGrid.setKeyMap(listingsContext?.listingsData?.keymap);
     const [modalData, setModalData] = useState({
         show: false,
         item: {},

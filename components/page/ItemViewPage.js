@@ -61,7 +61,7 @@ const ItemViewPage = (props) => {
     useEffect(() => {
         itemPageInit()
     }, [item])
-    console.log('item', item)
+
 
     function defaultView() {
         return (

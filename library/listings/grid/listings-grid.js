@@ -2,24 +2,18 @@ import {convertImageObjectsToArray, isObjectEmpty, isSet} from "@/truvoicer-base
 import {listingsGridConfig} from "@/config/listings-grid-config";
 import React from "react";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {mapDataToKeymap} from "@/truvoicer-base/library/helpers/wp-helpers";
 
 export class ListingsGrid {
+    keyMap = null;
     constructor(listingsContext, searchContext) {
         this.listingsManager = new ListingsManager(listingsContext, searchContext);
     }
 
-    buildGridItemData({item, config}) {
-        if (isObjectEmpty(config?.keyMap)) {
-            console.warn("No keymap");
-            return item;
-        }
-        const data = {};
-        Object.keys(config.keyMap).forEach((key) => {
-            const mapKey = config.keyMap[key];
-            data[key] = item?.[mapKey];
-        });
-        return {...item, ...data};
+    setKeyMap(keyMap) {
+        this.keyMap = keyMap;
     }
+
     getGridItem(item, displayAs, category, listingsGrid, userId, showInfoCallback, index = false) {
         let gridItem = {...item};
         if (isSet(gridItem.image_list)) {
@@ -35,7 +29,7 @@ export class ListingsGrid {
             return null;
         }
         const GridItems = gridConfig[displayAs][listingsGrid];
-        const buildData = this.buildGridItemData({item: gridItem, config: gridConfig[displayAs]});
+        const buildData = mapDataToKeymap({item, gridItem, keymap: this.keyMap});
         return (
             <GridItems
                 index={index}

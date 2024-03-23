@@ -46,8 +46,7 @@ const ListingsBlockInterface = ({data}) => {
             case DISPLAY_AS_LIST:
                 return <SearchListingsBlock data={data}/>
             case DISPLAY_AS_COMPARISONS:
-                console.warn("Comparisons not yet implemented");
-                return null;
+                return <SearchListingsBlock data={data}/>
             default:
                 console.warn("No display type set");
                 return null;

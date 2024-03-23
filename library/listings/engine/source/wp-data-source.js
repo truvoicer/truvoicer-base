@@ -2,6 +2,7 @@ import {DataSourceBase} from "@/truvoicer-base/library/listings/engine/source/da
 import {isNotEmpty, isObject, isObjectEmpty, isSet} from "@/truvoicer-base/library/utils";
 import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {
+    DISPLAY_AS,
     LISTINGS_BLOCK_SOURCE_API,
     LISTINGS_BLOCK_SOURCE_WORDPRESS,
     LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST,
@@ -86,6 +87,7 @@ export class WpDataSource extends DataSourceBase {
         this.listingsEngine.updateContext({key: LISTINGS_REQ_OP, value: LISTINGS_REQ_OP_ITEM_LIST});
         this.listingsEngine.addListingsQueryDataString(ITEM_LIST_ID, itemListId);
         this.listingsEngine.addListingsQueryDataString(PAGE_CONTROL_REQ_PAGINATION_TYPE, PAGE_CONTROL_REQ_PAGINATION_PAGE);
+        this.listingsEngine.addListingsQueryDataString(DISPLAY_AS, listingsDataState?.display_as);
     }
     validateInitData() {
         if (!isObject(this.listingsEngine.listingsContext?.listingsData)) {

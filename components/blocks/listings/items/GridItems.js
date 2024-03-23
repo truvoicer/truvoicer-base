@@ -31,8 +31,10 @@ const GridItems = (props) => {
     const [listPosition, setListPosition] = useState(null);
     // const [searchList, setSearchList] = useState([]);
     const listingsGrid = new ListingsGrid(listingsContext, searchContext);
+    listingsGrid.setKeyMap(listingsContext?.listingsData?.keymap);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
+
     const showInfo = (item, category, e) => {
         e.preventDefault()
         setModalData({

@@ -25,6 +25,7 @@ const PostsBlock = (props) => {
         }
         listingsManager.runSearch();
     }, [listingsContext.loaded]);
+    console.log({listingsContext, searchContext})
     const getListingsBlock = () => {
         return (
             <>

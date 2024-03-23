@@ -1,4 +1,4 @@
-import {isObject} from "@/truvoicer-base/library/utils";
+import {isObject, isObjectEmpty} from "@/truvoicer-base/library/utils";
 import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/items";
 
 export function buildFilterList(data) {
@@ -37,4 +37,16 @@ export function extractCategoryIds(categories) {
         }
         return category?.term_id || category?.id || category?.ID || null;
     }).filter(categoryId => categoryId !== null);
+}
+
+export function mapDataToKeymap({keymap, item}) {
+    if (isObjectEmpty(keymap)) {
+        return item;
+    }
+    const data = {};
+    Object.keys(keymap).forEach((key) => {
+        const mapKey = keymap?.[key];
+        data[key] = item?.[mapKey];
+    });
+    return {...item, ...data};
 }

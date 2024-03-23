@@ -48,47 +48,6 @@ export class FetcherDataSource extends DataSourceBase {
         )
 
     }
-    getInitialLoad(listingsDataState) {
-
-        if (!isSet(listingsDataState.initial_load)) {
-            // setSearchError("Initial load data is not set...")
-            return false;
-        }
-        switch (listingsDataState.initial_load) {
-            case "search":
-                this.searchEngine.updateContext({key: "searchOperation", value: NEW_SEARCH_REQUEST})
-                const queryData = this.searchEngine.getInitialSearchQueryData(listingsDataState);
-                this.searchEngine.setSearchRequestServiceAction(fetcherApiConfig.searchOperation)
-                this.listingsEngine.addQueryDataObjectAction(queryData, true);
-                this.runSearch();
-                break;
-            case "request":
-                this.initialRequest();
-                break;
-        }
-    }
-
-    initialRequest() {
-        this.searchEngine.setSearchRequestOperationAction(NEW_SEARCH_REQUEST);
-        const listingsDataState = this.listingsEngine.listingsContext?.listingsData;
-        if (!isSet(listingsDataState.initial_request) || !isSet(listingsDataState.initial_request.request_options)) {
-            // setSearchError("Initial request options not set......")
-            return false;
-        }
-        let requestOptions = listingsDataState.initial_request.request_options;
-        if (!isSet(requestOptions.request_name) || requestOptions.request_name === null || requestOptions.request_name === "") {
-            // setSearchError("Initial request name not set...")
-            return false;
-        }
-        let queryData = {};
-
-        queryData[fetcherApiConfig.searchLimitKey] = requestOptions.request_limit;
-        queryData[fetcherApiConfig.pageNumberKey] = 1;
-        queryData[fetcherApiConfig.pageOffsetKey] = 0;
-        this.searchEngine.setSearchRequestServiceAction(requestOptions.request_name)
-        this.addQueryDataObjectAction(queryData, false);
-        this.runSearch()
-    }
 
     runSearch(source = null) {
         console.log('runSearch', {source})

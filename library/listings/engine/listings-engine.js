@@ -500,9 +500,7 @@ export class ListingsEngine {
             }
 
             let listPosData = extractItemListFromPost({post: itemsData});
-            console.log('listPositions', listPosData, itemsData)
             if (!listPosData) {
-                console.error('Invalid item list post data...')
                 listPosData = [];
             }
             listData = [...listData, ...listPosData];

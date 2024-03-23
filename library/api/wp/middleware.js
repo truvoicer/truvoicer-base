@@ -123,10 +123,13 @@ export async function getPostWithTemplate(slug) {
     })
 }
 
-export async function getPostTemplate({category = null}) {
+export async function getPostTemplate({category = null, api_listings_service = null}) {
     let query = { };
     if (category) {
         query.category = category;
+    }
+    if (api_listings_service) {
+        query.api_listings_service = api_listings_service;
     }
     return await wpResourceRequestHandler({
         endpoint: sprintf(wpApiConfig.endpoints.postTemplate),
