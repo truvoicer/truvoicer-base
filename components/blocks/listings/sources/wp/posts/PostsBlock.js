@@ -23,9 +23,9 @@ const PostsBlock = (props) => {
         if (!listingsContext.loaded) {
             return;
         }
-        listingsManager.runSearch();
+        listingsManager.runSearch('postsBlock');
     }, [listingsContext.loaded]);
-    console.log({listingsContext, searchContext})
+
     const getListingsBlock = () => {
         return (
             <>

@@ -35,11 +35,9 @@ const ListingsBlockContainer = ({data, session, children}) => {
         }
 
         if (!listingsManager.validateInitData()) {
-            console.warn('init data validation failed');
             return;
         }
         if (!listingsManager.validateSearchParams()) {
-            console.warn('search param validation failed');
             return;
         }
         listingsManager.listingsEngine.updateContext({key: 'loaded', value: true})

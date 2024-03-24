@@ -13,15 +13,21 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
 import {SessionContext} from "@/truvoicer-base/config/contexts/SessionContext";
+import {AppContext} from "@/truvoicer-base/config/contexts/AppContext";
+import {AppManager} from "@/truvoicer-base/library/app/AppManager";
 
 const MenuList = (props) => {
+    const appContext = useContext(AppContext);
+    const appManager = new AppManager(appContext);
+    const listingsContext = appManager.findAppContextById('listings_block_0', "listingsContext");
+    const searchContext = appManager.findAppContextById('listings_block_0', "searchContext");
 
-    const listingsContext = useContext(ListingsContext);
-    const searchContext = useContext(SearchContext);
+
     const modalContext = useContext(AppModalContext);
     const sessionContext = useContext(SessionContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
+    // console.log({listingsContext})
     const logoutHandler = (e) => {
         e.preventDefault();
         sessionContext.logout(props?.session?.user);
@@ -29,8 +35,10 @@ const MenuList = (props) => {
     }
 
     const pageClickHandler = (item, e) => {
-        listingsManager.getSearchEngine().setSearchRequestStatusMiddleware(SEARCH_REQUEST_STARTED);
-        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+        // e.preventDefault();
+        // listingsManager.listingsEngine.updateContext({key: "listingsQueryData", value: {'loaded': true}})
+        // listingsManager.getSearchEngine().setSearchRequestStatusMiddleware(SEARCH_REQUEST_STARTED);
+        // listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
     }
 
     const showAuthLoginModal = (e) => {

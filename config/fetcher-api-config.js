@@ -10,5 +10,11 @@ export const fetcherApiConfig = {
     pageNumberKey: "page_number",
     pageOffsetKey: "page_offset",
     defaultOperation: "list",
-    searchOperation: "list"
+    searchOperation: "list",
+    responseKeys: {
+        category: 'requestCategory',
+        provider: 'provider',
+        service: 'service',
+        serviceRequest: 'serviceRequest',
+    }
 }

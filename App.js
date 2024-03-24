@@ -24,8 +24,7 @@ import FBAuthProvider from "@/truvoicer-base/components/providers/FBAuthProvider
 import SessionLayout from "@/truvoicer-base/components/layout/SessionLayout";
 
 const FetcherApp = ({
-    pageData, siteSettings, pageOptions, preFetch = () => {
-    }
+    pageData, siteSettings, pageOptions
 }) => {
     const router = useRouter();
     const templateContext = useContext(TemplateContext);
@@ -65,12 +64,6 @@ const FetcherApp = ({
         AddAxiosInterceptors();
         LoadEnvironment();
         validateToken();
-    }, [])
-
-    useEffect(() => {
-        if (typeof preFetch === "function") {
-            preFetch()
-        }
     }, [])
 
     useEffect(() => {

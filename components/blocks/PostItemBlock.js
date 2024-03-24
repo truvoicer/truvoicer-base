@@ -69,7 +69,7 @@ const PostItemBlock = (props) => {
 
     const prevPostCategory = getCategory(prevPost?.categories);
     const nextPostCategory = getCategory(nextPost?.categories);
-    console.log(props)
+
     function defaultView() {
         return (
             <section className="blog_area single-post-area section-padding">

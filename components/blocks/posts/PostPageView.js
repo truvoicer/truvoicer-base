@@ -14,16 +14,9 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const PostPageView = (props) => {
-    const {page, preFetch = () => {}} = props;
+    const {page} = props;
     const [showLoader, setShowLoader] = useState(true);
     const templateManager = new TemplateManager(useContext(TemplateContext));
-
-    useEffect(() => {
-        if (typeof preFetch === "function") {
-            preFetch()
-        }
-    }, [])
-
 
     function itemPageInit() {
         if (!isNotEmpty(page?.pageData)) {

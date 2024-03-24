@@ -20,6 +20,9 @@ export class ListingsEngine {
 
 
     updateContext({key, value}) {
+        // if (typeof this.listingsContext?.updateContext !== "function") {
+        //     return;
+        // }
         this.listingsContext.updateData({key, value})
     }
     updateContextNestedObjectData({object, key, value}) {
@@ -425,11 +428,14 @@ export class ListingsEngine {
                 props.href = this.getExternalItemViewUrl({item, category, displayAs});
                 break;
         }
-        if (isSet(listingsData?.item_view_display) && listingsData.item_view_display === "page") {
-            props.onClick = (e) => {
+
+        props.onClick = (e) => {
+            console.log("Item Link Clicked", trackData)
+            this.globalItemLinkClick(trackData);
+            if (isSet(listingsData?.item_view_display) && listingsData.item_view_display === "page") {
                 // e.preventDefault()
-                this.globalItemLinkClick(trackData)
             }
+            this.updateContext({key: "listingsQueryData", value: {}})
         }
         return props;
     }

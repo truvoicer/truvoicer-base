@@ -22,17 +22,10 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 
 const ItemViewPage = (props) => {
     const {
-        getItemMiddleware, type, item, preFetch = () => {
-        }
+        getItemMiddleware, type, item
     } = props;
     const [showLoader, setShowLoader] = useState(true);
     const templateManager = new TemplateManager(useContext(TemplateContext));
-
-    useEffect(() => {
-        if (typeof preFetch === "function") {
-            preFetch()
-        }
-    }, []);
 
     function itemPageInit() {
         if (!isNotEmpty(item?.provider)) {

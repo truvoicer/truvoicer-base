@@ -141,12 +141,29 @@ export class FetcherDataSource extends DataSourceBase {
         const pagination = responseData?.pagination;
 
         if (status === 200 && data.status === "success") {
-            this.getUserItemsListAction(results, responseData.provider, responseData.category)
+            const categoryResponseKey = fetcherApiConfig.responseKeys.category;
+            const providerResponseKey = fetcherApiConfig.responseKeys.provider;
+            const serviceRequestResponseKey = fetcherApiConfig.responseKeys.serviceRequest;
+            if (
+                isNotEmpty(responseData?.[categoryResponseKey]) &&
+                isNotEmpty(responseData?.[providerResponseKey])
+            ) {
+                this.getUserItemsListAction(results, responseData[providerResponseKey], responseData[categoryResponseKey])
+            }
+            if (isNotEmpty(responseData?.[categoryResponseKey])) {
+                this.searchEngine.setSearchCategoryAction(responseData.category)
+            }
+            if (isNotEmpty(responseData?.[providerResponseKey])) {
+                this.searchEngine.setSearchProviderAction(responseData.provider)
+            }
+            if (isNotEmpty(data?.[providerResponseKey])) {
+                this.searchEngine.setSearchExtraDataAction(responseData.extraData, data[providerResponseKey], results)
+            }
+            if (isNotEmpty(responseData?.[serviceRequestResponseKey]?.name)) {
+                this.searchEngine.setSearchRequestServiceAction(responseData[serviceRequestResponseKey].name)
+            }
             this.searchEngine.setSearchListDataAction(results);
-            this.searchEngine.setSearchExtraDataAction(responseData.extraData, data.provider, results)
-            this.searchEngine.setSearchRequestServiceAction(responseData.requestService)
-            this.searchEngine.setSearchProviderAction(responseData.provider)
-            this.searchEngine.setSearchCategoryAction(responseData.category)
+
             let pageControlData = {
                 [PAGE_CONTROL_REQ_PAGINATION_TYPE]: null
             };

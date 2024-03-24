@@ -35,6 +35,8 @@ export const fetchData = async (endpoint, operation, queryData = {}, callback = 
 }
 
 const fetchFromApi = async (endpoint, operation, queryData) => {
+    const url = getApiUrl(endpoint, operation, queryData);
+    console.log({url})
     let config = {
         url: getApiUrl(endpoint, operation, queryData),
         method: "get",

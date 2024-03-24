@@ -32,10 +32,11 @@ const SearchListingsBlock = (props) => {
         if (!listingsContext.loaded) {
             return;
         }
-        listingsManager.runSearch();
+        listingsManager.runSearch('SearchListingsBlock');
     }, [listingsContext.loaded]);
 
     const getListingsBlock = () => {
+        // console.log(searchContext?.searchStatus, searchContext?.searchList?.length)
         return (
             <>
                 {searchContext?.searchList?.length > 0 && searchContext?.searchStatus === SEARCH_REQUEST_COMPLETED ?
