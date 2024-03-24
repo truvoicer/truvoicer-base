@@ -104,8 +104,7 @@ export async function getSinglePage(slug) {
 }
 async function wpResourceRequestHandler(request) {
     try {
-        const results = await wpResourceRequest(request);
-        return results?.data;
+        return await wpResourceRequest(request);
     } catch (e) {
         console.error(`Error in wpResourceRequestHandler | url: ${e?.config?.url || request?.endpoint}`)
         if (e.response?.data?.message) {

@@ -37,26 +37,6 @@ function getAuthHeader(protectedReq = false) {
   };
 }
 
-export function checkSessionTokenRequest({
-  onSuccess = undefined,
-  onError = null,
-}) {
-  const request = requestResponseHandler(
-    runRequest({
-      endpoint: `${wpApiConfig.endpoints.token}/validate`,
-      method: REQUEST_GET,
-      config: wpApiConfig,
-      protectedReq: true,
-    }),
-    onSuccess,
-    onError,
-  );
-  if (!request) {
-    return false;
-  }
-}
-
-
 export async function fetchSidebarRequest (sidebar) {
   if (!isNotEmpty(sidebar)) {
     console.warn('Sidebar not set');
@@ -93,21 +73,6 @@ export async function wpResourceRequest({
   });
 }
 
-function requestResponseHandler(request, onSuccess, onError) {
-  if (request) {
-    request
-      .then(response => {
-        if (onSuccess && typeof onSuccess === 'function') {
-          onSuccess(response.data, response);
-        }
-      })
-      .catch((error) => {
-        if (onError && typeof onSuccess === 'function') {
-          onError(error?.response || error);
-        }
-      });
-  }
-}
 export function getProtectedSessionToken() {
   const sessionObject = getSessionObject();
   if (!sessionObject) {
@@ -162,14 +127,27 @@ export async function runRequest({
   }
   let request = {
     method,
-    url: requestUrl,
     headers: buildHeadersData,
-    data: {},
   };
-  if (isObject(data)) {
-    request.data = data;
+  switch (method) {
+    case REQUEST_GET:
+      request = {
+        ...request,
+        method: 'GET',
+      };
+      break;
+    default:
+      request = {
+        ...request,
+        method: 'POST',
+        body: JSON.stringify(data),
+      };
+      break;
   }
-  return await axios.request(request);
+  return await fetch(
+      requestUrl,
+      request,
+  );
 }
 function buildRequestUrl(url, queryObject = {}) {
   let queryString = '';

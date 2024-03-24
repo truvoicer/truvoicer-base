@@ -10,7 +10,6 @@ import {
 import {isNotEmpty, isSet} from "../../library/utils";
 import {buildWpApiUrl} from "../../library/api/wp/middleware";
 import {siteConfig} from "@/config/site-config";
-import {blockComponentsConfig} from "../../config/block-components-config";
 import {wpApiConfig} from "../../config/wp-api-config";
 
 const sprintf = require('sprintf-js').sprintf;
@@ -18,12 +17,6 @@ export function setPageErrorAction(error) {
     store.dispatch(setPageError(error))
 }
 
-export function getWidget(component, data) {
-    if (isSet(blockComponentsConfig.components[component]) && isSet(blockComponentsConfig.components[component].component)) {
-        const ModalContent = blockComponentsConfig.components[component].component;
-        return <ModalContent data={data} />;
-    }
-}
 
 export function setSiteSettingsAction(data) {
     store.dispatch(setSiteSettings(data))

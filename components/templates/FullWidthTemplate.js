@@ -20,6 +20,7 @@ const FullWidthTemplate = (props) => {
         }
     }
 
+    console.log('FullWidthTemplate', pageData)
     function defaultView() {
         return (
             <>

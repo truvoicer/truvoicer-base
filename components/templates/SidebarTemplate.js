@@ -21,7 +21,7 @@ const SidebarTemplate = (props) => {
             return filterHtml(node, index)
         }
     }
-
+    console.log('sidebarTemplate', pageData)
     function defaultView() {
         return (
             <>

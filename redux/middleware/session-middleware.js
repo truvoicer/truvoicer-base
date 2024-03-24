@@ -8,8 +8,6 @@ import {buildWpApiUrl} from "../../library/api/wp/middleware";
 import {wpApiConfig} from "../../config/wp-api-config";
 import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 
-const axios = require('axios');
-
 export function getSessionTokenMiddleware(url, requestData, callback = () => {}, headers = {}) {
     return wpResourceRequest({
         endpoint: url,
@@ -54,26 +52,4 @@ export function createUserMiddleware(requestData, callback) {
             console.error(error)
             callback(true, error?.response?.data);
         });
-}
-
-export function updateUserMiddleware(requestData, callback) {
-    return axios.post(buildWpApiUrl(wpApiConfig.endpoints.updateUser), requestData)
-        .then(response => {
-            callback(false, response.data);
-        })
-        .catch(error => {
-            console.error(error)
-            callback(true, error);
-        });
-
-}
-
-export function updateUserSessionData(data) {
-    setSessionUserAction(data, true)
-
-}
-
-
-export function getSavedItemsListByUserMiddleware(requestData, callback) {
-    getSavedItemsListByUserAction(requestData, callback)
 }

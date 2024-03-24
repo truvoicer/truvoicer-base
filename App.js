@@ -1,5 +1,5 @@
+'use client';
 import {
-    AddAxiosInterceptors,
     initializeTagManager,
     LoadEnvironment,
     tagManagerSendDataLayer
@@ -17,19 +17,25 @@ import {templateConfig} from "@/config/template-config";
 import Modal from "react-bootstrap/Modal";
 import {Button} from "react-bootstrap";
 import {AppModalContext, appModalContextData} from "@/truvoicer-base/config/contexts/AppModalContext";
-import {getWidget} from "@/truvoicer-base/redux/actions/page-actions";
 import {GoogleAuthContext, googleAuthContextData} from "@/truvoicer-base/config/contexts/GoogleAuthContext";
 import GoogleAuthProvider from "@/truvoicer-base/components/providers/GoogleAuthProvider";
 import FBAuthProvider from "@/truvoicer-base/components/providers/FBAuthProvider";
 import SessionLayout from "@/truvoicer-base/components/layout/SessionLayout";
+import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
+import {loadBasePageData} from "@/truvoicer-base/redux/actions/page-actions";
 
 const FetcherApp = ({
-    pageData, siteSettings, pageOptions
+    pageData, siteSettings, pageOptions = {}
 }) => {
     const router = useRouter();
     const templateContext = useContext(TemplateContext);
     const templateManager = new TemplateManager(templateContext);
-
+    function getWidget(component, data) {
+        if (isSet(blockComponentsConfig.components[component]) && isSet(blockComponentsConfig.components[component].component)) {
+            const ModalContent = blockComponentsConfig.components[component].component;
+            return <ModalContent data={data} />;
+        }
+    }
     function updateModalState(data) {
         setModalState(modalState => {
             let cloneState = {...modalState};
@@ -61,25 +67,21 @@ const FetcherApp = ({
     });
 
     useEffect(() => {
-        AddAxiosInterceptors();
         LoadEnvironment();
         validateToken();
     }, [])
 
     useEffect(() => {
-        if (!isObjectEmpty(pageData)) {
-            // tagManagerSendDataLayer({
-            //     dataLayerName: "pageView",
-            //     dataLayer: {
-            //         page: router.asPath
-            //     }
-            // })
-
+        let basePageData = {
+            page: pageData,
+            settings: siteSettings
         }
-    }, [router.asPath])
+        if (!isObjectEmpty(pageOptions)) {
+            basePageData.options = pageOptions;
+        }
+        loadBasePageData(basePageData);
+    }, [])
 
-
-    console.log({pageOptions, pageData})
     return (
         <AppLoader templateConfig={templateConfig()}>
             <AppModalContext.Provider value={modalState}>
@@ -113,16 +115,8 @@ const FetcherApp = ({
     )
 }
 
-function mapStateToProps(state) {
-    return {
-        siteSettings: state.page.siteSettings,
-        pageData: state.page.pageData,
-        pageOptions: state.page.pageDataOptions,
-        modal: state.page.modal
-    };
-}
 
 export default connect(
-    mapStateToProps,
+    null,
     null
 )(FetcherApp);
