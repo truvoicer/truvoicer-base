@@ -11,20 +11,15 @@ const CategoryListWidget = (props) => {
     const [categoryData, setCategoryData] = useState([]);
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    function categoryListRequest() {
-        publicApiRequest(
+    async function categoryListRequest() {
+        const response = await publicApiRequest(
+            'GET',
             buildWpApiUrl(wpApiConfig.endpoints.categoryListRequest),
             {},
-            false
-        )
-            .then(response => {
-                if (response?.data.status === "success") {
-                    setCategoryData(response.data.data);
-                }
-            })
-            .catch(error => {
-                console.error(error)
-            })
+        );
+        if (response.status === "success") {
+            setCategoryData(response.data);
+        }
     }
 
     useEffect(() => {

@@ -12,8 +12,14 @@ const PasswordResetForm = (props) => {
     const [submitButtonText, setSubmitButtonText] = useState("Request Password Reset",);
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    const submitHandler = (values) => {
-        publicApiRequest(buildWpApiUrl(wpApiConfig.endpoints.passwordReset), values, props.requestCallback)
+    const submitHandler = async (values) => {
+        const response = await publicApiRequest(
+            'GET',
+            buildWpApiUrl(wpApiConfig.endpoints.passwordReset),
+            values,
+        )
+
+        props.requestCallback(false, response.data);
     }
 
     function defaultView() {

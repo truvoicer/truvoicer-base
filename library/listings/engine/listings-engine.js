@@ -231,7 +231,7 @@ export class ListingsEngine {
     }
 
     getItemText(text) {
-        return <div>{HtmlParser(text)}</div>
+        return <div>{parse(text)}</div>
     }
 
     getItemPrice(price) {

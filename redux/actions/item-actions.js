@@ -35,12 +35,14 @@ export function setItemDataAction(itemData) {
     store.dispatch(setItemData(object))
 }
 
-export function getItemAction(requestData) {
-    fetchData("operation", ["single"], requestData, fetchItemCallback)
+export async function getItemAction(requestData) {
+    const response = await fetchData("operation", ["single"], requestData)
+    fetchItemCallback(response.status, response.data)
 }
 
-export function fetchLoaderDataAction(operation, requestData, callback) {
-    fetchData("operation", [operation], requestData, callback)
+export async function fetchLoaderDataAction(operation, requestData, callback) {
+    const response = await fetchData("operation", [operation], requestData);
+    callback(response.status, response.data)
 }
 
 export function fetchItemCallback (status, data) {

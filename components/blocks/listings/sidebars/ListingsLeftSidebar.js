@@ -23,7 +23,7 @@ const ListingsLeftSidebar = (props) => {
             const fetchSidebar = await fetchSidebarRequest(
             (isNotEmpty(sidebarName)) ? sidebarName : siteConfig.leftSidebarName,
             );
-            const sidebar = fetchSidebar?.data?.sidebar;
+            const sidebar = fetchSidebar?.sidebar;
             if (Array.isArray(sidebar)) {
 
                 setData(buildSidebar({

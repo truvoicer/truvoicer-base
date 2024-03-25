@@ -24,7 +24,8 @@ export class FetcherDataSource extends DataSourceBase {
         super(listingsEngine, searchEngine);
     }
     getProvidersCallback(status, data) {
-        if (status === 200) {
+        console.log('getProvidersCallback', {status, data})
+        if (status === 'success') {
             this.listingsEngine.updateListingsData({key: "providers", value: data.data})
             this.listingsEngine.updateContext({key: "providers", value: data.data})
             // this.getListingsInitialLoad();
@@ -32,21 +33,24 @@ export class FetcherDataSource extends DataSourceBase {
             this.getListingsEngine().addError(data?.message)
         }
     }
-    dataInit(data) {
+    async dataInit(data) {
         this.listingsEngine.updateContext({key: "listingsData", value: data})
         if (!isNotEmpty(data.api_listings_category)) {
             return false;
         }
         this.listingsEngine.updateContext({key: "category", value: data.api_listings_category})
-        this.getListingsProviders(
+        const response = await this.getListingsProviders(
             data,
-            "providers",
-            (status, data) => {
-                this.getProvidersCallback(status, data)
-                this.getSearchEngine().setSearchRequestOperationMiddleware(INIT_SEARCH_REQUEST);
-            }
-        )
-
+            "providers"
+        );
+        if (Array.isArray(response?.data)) {
+            this.listingsEngine.updateListingsData({key: "providers", value: response.data})
+            this.listingsEngine.updateContext({key: "providers", value: response.data})
+            // this.getListingsInitialLoad();
+        } else {
+            this.getListingsEngine().addError(response?.message)
+        }
+        this.getSearchEngine().setSearchRequestOperationMiddleware(INIT_SEARCH_REQUEST);
     }
 
     runSearch(source = null) {
@@ -120,65 +124,63 @@ export class FetcherDataSource extends DataSourceBase {
         const providers = this.getSearchProviders();
         const filterProviders = this.searchEngine.filterSearchProviders(providers);
 
-        filterProviders.map((provider, index) => {
-            fetchData(
+        filterProviders.map(async (provider, index) => {
+            const response = await fetchData(
                 "operation",
                 [this.searchEngine.getEndpointOperation()],
                 this.searchEngine.buildQueryData(
                     filterProviders,
                     provider,
                     this.listingsEngine?.listingsContext?.listingsQueryData
-                ),
-                this.searchResponseHandler.bind(this),
-                (filterProviders.length === index + 1)
-            )
+                )
+            );
+            if (response?.status === "success") {
+                this.searchResponseHandler(response.data, index === filterProviders.length - 1);
+            } else {
+                this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
+                this.searchEngine.setSearchRequestErrorAction(response?.message)
+            }
         })
     }
 
-    searchResponseHandler(status, data, completed = false) {
-        const responseData = data?.data;
-        const results = responseData?.results;
-        const pagination = responseData?.pagination;
+    searchResponseHandler(data, completed = false) {
+        const results = data?.results;
+        const pagination = data?.pagination;
 
-        if (status === 200 && data.status === "success") {
-            const categoryResponseKey = fetcherApiConfig.responseKeys.category;
-            const providerResponseKey = fetcherApiConfig.responseKeys.provider;
-            const serviceRequestResponseKey = fetcherApiConfig.responseKeys.serviceRequest;
-            if (
-                isNotEmpty(responseData?.[categoryResponseKey]) &&
-                isNotEmpty(responseData?.[providerResponseKey])
-            ) {
-                this.getUserItemsListAction(results, responseData[providerResponseKey], responseData[categoryResponseKey])
-            }
-            if (isNotEmpty(responseData?.[categoryResponseKey])) {
-                this.searchEngine.setSearchCategoryAction(responseData.category)
-            }
-            if (isNotEmpty(responseData?.[providerResponseKey])) {
-                this.searchEngine.setSearchProviderAction(responseData.provider)
-            }
-            if (isNotEmpty(data?.[providerResponseKey])) {
-                this.searchEngine.setSearchExtraDataAction(responseData.extraData, data[providerResponseKey], results)
-            }
-            if (isNotEmpty(responseData?.[serviceRequestResponseKey]?.name)) {
-                this.searchEngine.setSearchRequestServiceAction(responseData[serviceRequestResponseKey].name)
-            }
-            this.searchEngine.setSearchListDataAction(results);
-
-            let pageControlData = {
-                [PAGE_CONTROL_REQ_PAGINATION_TYPE]: null
-            };
-            if (isNotEmpty(pagination) && isObject(pagination)) {
-                pageControlData = {...pageControlData, ...pagination};
-            }
-            if (isNotEmpty(responseData?.[PAGE_CONTROL_REQ_PAGINATION_TYPE])) {
-                pageControlData[PAGE_CONTROL_REQ_PAGINATION_TYPE] = responseData[PAGE_CONTROL_REQ_PAGINATION_TYPE];
-            }
-            this.searchEngine.setPageControlsAction(pageControlData)
-
-        } else {
-            this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
-            this.searchEngine.setSearchRequestErrorAction(responseData.message)
+        const categoryResponseKey = fetcherApiConfig.responseKeys.category;
+        const providerResponseKey = fetcherApiConfig.responseKeys.provider;
+        const serviceRequestResponseKey = fetcherApiConfig.responseKeys.serviceRequest;
+        if (
+            isNotEmpty(data?.[categoryResponseKey]) &&
+            isNotEmpty(data?.[providerResponseKey])
+        ) {
+            this.getUserItemsListAction(results, data[providerResponseKey], data[categoryResponseKey])
         }
+        if (isNotEmpty(data?.[categoryResponseKey])) {
+            this.searchEngine.setSearchCategoryAction(data[categoryResponseKey])
+        }
+        if (isNotEmpty(data?.[providerResponseKey])) {
+            this.searchEngine.setSearchProviderAction(data.provider)
+        }
+        if (isNotEmpty(data?.[providerResponseKey])) {
+            this.searchEngine.setSearchExtraDataAction(data.extraData, data[providerResponseKey], results)
+        }
+        if (isNotEmpty(data?.[serviceRequestResponseKey]?.name)) {
+            this.searchEngine.setSearchRequestServiceAction(data[serviceRequestResponseKey].name)
+        }
+        this.searchEngine.setSearchListDataAction(results);
+
+        let pageControlData = {
+            [PAGE_CONTROL_REQ_PAGINATION_TYPE]: null
+        };
+        if (isNotEmpty(pagination) && isObject(pagination)) {
+            pageControlData = {...pageControlData, ...pagination};
+        }
+        if (isNotEmpty(data?.[PAGE_CONTROL_REQ_PAGINATION_TYPE])) {
+            pageControlData[PAGE_CONTROL_REQ_PAGINATION_TYPE] = data[PAGE_CONTROL_REQ_PAGINATION_TYPE];
+        }
+        this.searchEngine.setPageControlsAction(pageControlData)
+
         if (completed) {
             // this.searchEngine.setHasMoreSearchPages()
             this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_COMPLETED);
@@ -205,11 +207,15 @@ export class FetcherDataSource extends DataSourceBase {
         }
         return providers
     }
-    getListingsProviders({api_listings_category, select_providers, providers_list}, endpoint = "providers", callback) {
+    async getListingsProviders({
+        api_listings_category,
+        select_providers,
+        providers_list
+    }, endpoint = "providers") {
+        let query = {};
         if (isSet(select_providers) && select_providers && Array.isArray(providers_list)) {
-            fetchData("list", [api_listings_category, endpoint], {provider: providers_list}, callback);
-        } else {
-            fetchData("list", [api_listings_category, endpoint], {}, callback);
+            query = {provider: providers_list};
         }
+        return await fetchData("list", [api_listings_category, endpoint], query);
     }
 }

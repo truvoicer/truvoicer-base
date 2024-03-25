@@ -20,7 +20,7 @@ export class DataSourceBase {
     }
 
 
-    getUserItemsListAction(data, provider, category) {
+    async getUserItemsListAction(data, provider, category) {
         if (!Array.isArray(data) || data.length === 0) {
             return false;
         }
@@ -54,10 +54,10 @@ export class DataSourceBase {
             }
         }
 
-        const itemsList = data.map((item) =>  {
+        const itemsList = data.map((item) => {
             return this.listingsEngine.extractItemId(item);
         })
-        const wpListIds = ListingsEngine.getCustomItemsData(listPositions).map((item) =>  {
+        const wpListIds = ListingsEngine.getCustomItemsData(listPositions).map((item) => {
             return this.listingsEngine.extractItemId(item);
         })
 
@@ -68,18 +68,18 @@ export class DataSourceBase {
             user_id: userId
         }
 
-        protectedApiRequest(
+        const response = await protectedApiRequest(
             buildWpApiUrl(wpApiConfig.endpoints.savedItemsList),
             requestData,
-            this.getUserItemsListCallback.bind(this)
         )
+        console.log(response)
+        this.searchEngine.setSavedItemsListAction(response?.savedItems || []);
+        this.searchEngine.setItemRatingsListAction(response?.itemRatings || []);
     }
 
     getUserItemsListCallback(error, data) {
         if (error) {
             return false;
         }
-        this.searchEngine.setSavedItemsListAction(data?.savedItems || []);
-        this.searchEngine.setItemRatingsListAction(data?.itemRatings || []);
     }
 }

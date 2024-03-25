@@ -44,22 +44,17 @@ function UserTextReplacerWidget({text}) {
         });
     }
 
-    const runReplacerRequest = (placeholdersArray) =>  {
-        protectedApiRequest(
+    const runReplacerRequest = async (placeholdersArray) => {
+        const response = await protectedApiRequest(
             buildWpApiUrl(wpApiConfig.endpoints.formsUserMetaDataRequest),
             buildRequestObject(placeholdersArray),
             false
         )
-            .then(response => {
-                if (response.data.status === "success") {
-                    setTextValue(textValue => {
-                        return replaceItemDataPlaceholders(response.data.data, text);
-                    })
-                }
+        if (response.status === "success") {
+            setTextValue(textValue => {
+                return replaceItemDataPlaceholders(response.data, text);
             })
-            .catch(error => {
-                console.error(error)
-            })
+        }
     }
 
     useEffect(() => {

@@ -58,23 +58,18 @@ const SavedItemsVerticalTabs = (props) => {
     }
 
     const getItemsRequest = (provider_name, new_request = true) => {
-        props.data[provider_name]?.items?.map((item) => {
+        props.data[provider_name]?.items?.map(async (item) => {
             let data = {
                 query: item.item_id,
                 provider: item.provider_name,
                 category: item.category
             }
 
-            fetchData("operation", ["single"], data)
-                .then((response) => {
-                    if (response.status === 200) {
-                        getItemsResponseHandler(response.data, new_request);
-                        new_request = false;
-                    }
-                })
-                .catch((error) => {
-                    console.error(error)
-                })
+            const response = await fetchData("operation", ["single"], data);
+            if (response.status === 200) {
+                getItemsResponseHandler(response.data, new_request);
+                new_request = false;
+            }
         })
     }
 

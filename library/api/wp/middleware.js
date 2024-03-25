@@ -4,9 +4,6 @@ import {siteConfig} from "@/config/site-config";
 import store from "../../../redux/store";
 import {SESSION_USER, SESSION_USER_ID} from "../../../redux/constants/session-constants";
 import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
-import {q} from "caniuse-lite/data/browserVersions";
-
-const axios = require('axios');
 const sprintf = require('sprintf-js').sprintf;
 
 
@@ -104,7 +101,8 @@ export async function getSinglePage(slug) {
 }
 async function wpResourceRequestHandler(request) {
     try {
-        return await wpResourceRequest(request);
+        const response = await wpResourceRequest(request);
+        return await response.json();
     } catch (e) {
         console.error(`Error in wpResourceRequestHandler | url: ${e?.config?.url || request?.endpoint}`)
         if (e.response?.data?.message) {
@@ -147,35 +145,32 @@ export async function getPageTemplate(postType, category) {
     })
 }
 
-export function protectedFileUploadApiRequest(endpoint, requestData, callback = false, headers = {}) {
+export async function protectedFileUploadApiRequest(endpoint, requestData, callback = false, headers = {}) {
     const userId = store.getState().session[SESSION_USER][SESSION_USER_ID];
     requestData.append("action", "wp_handle_upload");
     requestData.append("user_id", userId);
     requestData.append("internal_category", siteConfig.internalCategory);
     requestData.append("internal_provider_name", siteConfig.internalProviderName);
     const defaultHeaders = {
-        'Authorization': 'Bearer ' + getSessionObject().token
+        'Authorization': 'Bearer ' + getSessionObject().token,
+        'Content-type': 'multipart/form-data'
     };
     let config = {
-        url: endpoint,
-        method: "post",
-        data: requestData,
+        method: "POST",
+        body: JSON.stringify(requestData),
         headers: {...defaultHeaders, ...headers}
     }
-    const getRequest = axios.request(config)
-    if (!callback) {
-        return getRequest;
+
+    try {
+        const response = await fetch(endpoint, config);
+        return await response.json();
+    } catch (e) {
+        console.error(e)
+        return false;
     }
-    getRequest.then(response => {
-        callback(false, response.data);
-    })
-    .catch(error => {
-        console.error(error)
-        callback(true, error);
-    });
 }
 
-export function protectedApiRequest(endpoint, requestData, callback = false, headers = {}) {
+export async function protectedApiRequest(endpoint, requestData, headers = {}) {
     const userId = store.getState().session[SESSION_USER][SESSION_USER_ID];
     const extraData = {
         internal_category: siteConfig.internalCategory,
@@ -183,46 +178,41 @@ export function protectedApiRequest(endpoint, requestData, callback = false, hea
         user_id: userId
     };
     const defaultHeaders = {
+        "Content-Type": "application/json",
         'Authorization': 'Bearer ' + getSessionObject().token
     };
     let config = {
-        url: endpoint,
-        method: "post",
-        data: {...requestData, ...extraData},
+        method: "POST",
+        body: JSON.stringify({...requestData, ...extraData}),
         headers: {...defaultHeaders, ...headers}
     }
-    const getRequest = axios.request(config)
-    if (!callback) {
-        return getRequest;
+    try {
+        const response = await fetch(endpoint, config);
+        return await response.json();
+    } catch (e) {
+        console.error(e)
+        return false;
     }
-    getRequest.then(response => {
-        callback(false, response.data);
-    })
-    .catch(error => {
-        console.error(error)
-        callback(true, error);
-    });
 }
 
-export function publicApiRequest(endpoint, requestData = {}, callback = false, method = "get") {
+export async function publicApiRequest(method, endpoint, requestData = {}) {
+    const defaultHeaders = {
+        "Content-Type": "application/json",
+    };
     let config = {
-        url: endpoint,
         method: method,
     }
-    if (method === "get") {
+    if (method === "GET") {
         config.params = requestData
-    } else if(method === "post") {
-        config.data = requestData;
+    } else if (method === "POST") {
+        config.body = JSON.stringify(requestData);
+        config.headers = defaultHeaders;
     }
-    const getRequest = axios.request(config)
-    if (!callback) {
-        return getRequest;
+    try {
+        const response = await fetch(endpoint, config);
+        return await response.json();
+    } catch (e) {
+        console.error(e)
+        return false;
     }
-    getRequest.then(response => {
-        callback(false, response.data);
-    })
-        .catch(error => {
-            console.error(error)
-            callback(true, error);
-        });
 }

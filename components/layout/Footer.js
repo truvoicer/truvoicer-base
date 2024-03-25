@@ -17,7 +17,7 @@ const Footer = (props) => {
     async function sidebarRequest() {
         try {
             const fetchSidebar = await fetchSidebarRequest(siteConfig.footerName);
-            const sidebar = fetchSidebar?.data?.sidebar;
+            const sidebar = fetchSidebar?.sidebar;
             if (Array.isArray(sidebar)) {
                 setData(sidebar);
             }

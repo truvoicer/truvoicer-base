@@ -1,4 +1,4 @@
-import HtmlParser from "react-html-parser";
+import parse from 'html-react-parser';
 import React from "react";
 import {convertImageObjectsToArray, formatDate, isNotEmpty, isObject, isObjectEmpty, isSet, uCaseFirst} from "../utils";
 import ImageLoader from "../../components/loaders/ImageLoader";
@@ -65,7 +65,7 @@ const getItemDate = (dateString) => {
 }
 
 const getItemText = (text) => {
-    return <div>{HtmlParser(text)}</div>
+    return <div>{parse(text)}</div>
 }
 
 const getItemPrice = (price) => {

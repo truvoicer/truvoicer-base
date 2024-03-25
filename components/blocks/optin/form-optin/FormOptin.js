@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import FormBlock from "../../form/FormBlock";
-import HtmlParser from "react-html-parser";
+import parse from 'html-react-parser';
 import SpeechBubbleTestimonialsCarousel
     from "@/truvoicer-base/components/blocks/carousel/types/Testimonials/SpeechBubbleTestimonialsCarousel";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
@@ -23,7 +23,7 @@ const FormOptin = (props) => {
                             <div className="row clock_sec clockdiv" id="clockdiv">
                                 <div className="col-lg-12">
                                     <h1 className="mb-3">{data?.heading}</h1>
-                                    <>{HtmlParser(data?.text)}</>
+                                    <>{parse(data?.text)}</>
                                     {data?.show_carousel &&
                                         <CarouselInterface data={data?.carousel_block}/>
                                     }

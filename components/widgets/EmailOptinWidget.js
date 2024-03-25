@@ -1,7 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {buildWpApiUrl, publicApiRequest} from "../../library/api/wp/middleware";
 import {Formik} from "formik";
-import {responseHandler} from "../../library/api/fetcher/middleware";
 import {wpApiConfig} from "../../config/wp-api-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
@@ -45,18 +44,18 @@ const EmailOptinWidget = (props) => {
                         }
                         return errors;
                     }}
-                    onSubmit={(values, {resetForm, setSubmitting}) => {
-                        publicApiRequest(
+                    onSubmit={async (values, {resetForm, setSubmitting}) => {
+                        const response = await publicApiRequest(
+                            'POST',
                             buildWpApiUrl(wpApiConfig.endpoints.formsRedirectPublic),
                             {
                                 ...values,
                                 ...{
                                     endpoint_providers: data?.endpoint_providers,
                                 }
-                            },
-                            formResponseHandler,
-                            "post"
+                            }
                         );
+                        formResponseHandler(response.status, response.data);
                     }}
                     enableReinitialize={true}
                 >

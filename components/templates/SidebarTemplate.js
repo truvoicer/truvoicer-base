@@ -3,7 +3,7 @@ import Header from "@/truvoicer-base/components/layout/Header";
 import Footer from "@/truvoicer-base/components/layout/Footer";
 import {connect} from "react-redux";
 import {filterHtml} from "@/truvoicer-base/library/html-parser";
-import ReactHtmlParser from "react-html-parser";
+import parse from 'html-react-parser';
 import AccountArea from "@/truvoicer-base/components/layout/AccountArea";
 import HtmlHead from "@/truvoicer-base/components/layout/HtmlHead";
 import Loader from "@/truvoicer-base/components/loaders/Loader";
@@ -16,8 +16,7 @@ const SidebarTemplate = (props) => {
     const {modal, pageData, pageOptions} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const htmlParserOptions = {
-        decodeEntities: true,
-        transform: (node, index) => {
+        replace: (node, index) => {
             return filterHtml(node, index)
         }
     }
@@ -43,7 +42,7 @@ const SidebarTemplate = (props) => {
                                             </div>
                                         }
                                         <div className="col-12 col-lg-10">
-                                            {ReactHtmlParser(pageData.post_content, htmlParserOptions)}
+                                            {parse(pageData.post_content, htmlParserOptions)}
                                         </div>
                                         {templateManager.isTemplateLayout(pageData, 'right-sidebar') &&
                                             <div className="col-12 col-sm-9 col-md-6 col-lg-3 d-none d-lg-block">

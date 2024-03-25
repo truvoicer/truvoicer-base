@@ -57,20 +57,15 @@ function UserSavedItemsBlock(props) {
         }
         return false;
     }
-    function getUserSavedItems(isCancelled = false) {
-        protectedApiRequest(
+    async function getUserSavedItems(isCancelled = false) {
+        const response = await protectedApiRequest(
             buildWpApiUrl(wpApiConfig.endpoints.savedItemsListByUser),
             {"user_id": props.session[SESSION_USER][SESSION_USER_ID]}
         )
-            .then((response) => {
-                if (!isCancelled) {
-                    listingsManager.searchEngine.setSearchRequestOperationAction(NEW_SEARCH_REQUEST);
-                    listingsManager.searchEngine.setSavedItemsListAction(response.data.data)
-                }
-            })
-            .catch(error => {
-                console.error(error);
-            })
+        if (!isCancelled) {
+            listingsManager.searchEngine.setSearchRequestOperationAction(NEW_SEARCH_REQUEST);
+            listingsManager.searchEngine.setSavedItemsListAction(response.data)
+        }
     }
 
     useEffect(() => {

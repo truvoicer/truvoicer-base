@@ -1,6 +1,6 @@
 import React, {useContext} from "react";
 import {connect} from "react-redux";
-import HtmlParser from "react-html-parser";
+import parse from 'html-react-parser';
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
@@ -9,7 +9,7 @@ const EditorContent = (props) => {
     function defaultView() {
     return (
         <>
-            {HtmlParser(props.data)}
+            {parse(props.data)}
         </>
     )
     }

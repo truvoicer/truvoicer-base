@@ -22,4 +22,5 @@ export const filterHtml = (node, index) => {
             return <Component key={index} data={parseData}/>;
         }
     }
+    return null;
 }

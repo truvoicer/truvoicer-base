@@ -16,26 +16,21 @@ const UserAccountLoader = (props) => {
             fields: fields
         }
     };
-    function userMetaDataFetchRequest(reqData) {
-        protectedApiRequest(
+    async function userMetaDataFetchRequest(reqData) {
+        const response = await protectedApiRequest(
             buildWpApiUrl(wpApiConfig.endpoints.formsUserMetaDataRequest),
             reqData,
             false
         )
-            .then(response => {
-                if (response?.data?.status !== "success") {
-                    console.error('Error fetching user meta data')
-                    return;
-                }
-                if (!isObject(response?.data?.metaData)) {
-                    console.error('Invalid user meta data')
-                    return;
-                }
-                dataCallback(response.data.metaData)
-            })
-            .catch(error => {
-                console.error(error)
-            })
+        if (response?.status !== "success") {
+            console.error('Error fetching user meta data')
+            return;
+        }
+        if (!isObject(response?.data?.metaData)) {
+            console.error('Invalid user meta data')
+            return;
+        }
+        dataCallback(response.data.metaData)
     }
     useEffect(() => {
         if (session[SESSION_AUTHENTICATED] && fields.length && typeof dataCallback === 'function') {

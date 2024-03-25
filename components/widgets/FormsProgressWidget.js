@@ -15,22 +15,17 @@ function FormsProgressWidget(props) {
     const [progressData, setProgressData] = useState({});
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    function formProgressRequest() {
-        protectedApiRequest(
+    async function formProgressRequest() {
+        const response = await protectedApiRequest(
             buildWpApiUrl(wpApiConfig.endpoints.formsProgressRequest),
             {
                 form_field_groups: data?.form_field_groups
             },
             false
         )
-            .then(response => {
-                if (response.data.status === "success" && Array.isArray(response.data.groups)) {
-                    setProgressData(response.data)
-                }
-            })
-            .catch(error => {
-                console.error(error)
-            })
+        if (response.status === "success" && Array.isArray(response.groups)) {
+            setProgressData(response.data)
+        }
     }
 
     useEffect(() => {

@@ -3,7 +3,7 @@ import Header from "@/truvoicer-base/components/layout/Header";
 import Footer from "@/truvoicer-base/components/layout/Footer";
 import {connect} from "react-redux";
 import {filterHtml} from "@/truvoicer-base/library/html-parser";
-import ReactHtmlParser from "react-html-parser";
+import parse from 'html-react-parser';
 import AccountArea from "@/truvoicer-base/components/layout/AccountArea";
 import HtmlHead from "@/truvoicer-base/components/layout/HtmlHead";
 import Loader from "@/truvoicer-base/components/loaders/Loader";
@@ -15,12 +15,11 @@ const FullWidthTemplate = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const htmlParserOptions = {
         decodeEntities: true,
-        transform: (node, index) => {
+        replace: (node, index) => {
             return filterHtml(node, index)
         }
     }
 
-    console.log('FullWidthTemplate', pageData)
     function defaultView() {
         return (
             <>
@@ -31,11 +30,11 @@ const FullWidthTemplate = (props) => {
                     <div id={"public_area"}>
                         <Header/>
                         <>
-                            {pageData
+                            {typeof pageData?.post_content === "string" && pageData
                                 ?
                                 <>
                                     <HtmlHead/>
-                                    {ReactHtmlParser(pageData.post_content, htmlParserOptions)}
+                                    {parse(pageData.post_content, htmlParserOptions)}
                                 </>
                                 :
                                 <Loader></Loader>

@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import HtmlParser from "react-html-parser";
+import parse from 'html-react-parser';
 import {isNotEmpty} from "../../library/utils";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
@@ -16,7 +16,7 @@ const CustomHtmlWidget = (props) => {
                             {props.data.title}
                         </h3>
                     }
-                    {isNotEmpty(props?.data?.content) ? HtmlParser(props.data.content) : ""}
+                    {isNotEmpty(props?.data?.content) ? parse(props.data.content) : ""}
                 </div>
             </div>
         );

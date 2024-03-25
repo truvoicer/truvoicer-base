@@ -1,36 +1,19 @@
 import {fetcherApiConfig} from "../../../config/fetcher-api-config";
-import {isEmpty, isSet} from "../../utils";
+import {isEmpty} from "../../utils";
 
-const axios = require('axios');
 const vsprintf = require('sprintf-js').vsprintf;
 
-export const validateRequestParams = (requiredParams, queryData) => {
-    if (isEmpty(queryData)) {
-        return false;
-    }
-    let failParams = [];
-    for (let i = 0; i < queryData.length; i++) {
-        for (let r = 0; r < requiredParams.length; r++) {
-            if (!Object.keys(queryData).contains(requiredParams[r])) {
-                failParams.push(requiredParams[r])
-            }
-        }
-    }
-    if (failParams.length > 0) {
-        return failParams;
-    }
-    return true;
-}
-
-export const fetchData = async (endpoint, operation, queryData = {}, callback = false, completed = false) => {
+export const fetchData = async (endpoint, operation, queryData = {}) => {
     if (!validateEndpoint(endpoint)) {
         console.error("Endpoint not found")
     }
 
-    if (callback) {
-        responseHandler(fetchFromApi(endpoint, operation, queryData), callback, completed);
-    } else {
-        return fetchFromApi(endpoint, operation, queryData);
+    try {
+        const response = await fetchFromApi(endpoint, operation, queryData);
+        return await response.json();
+    } catch (e) {
+        console.error(e)
+        return false;
     }
 }
 
@@ -38,25 +21,14 @@ const fetchFromApi = async (endpoint, operation, queryData) => {
     const url = getApiUrl(endpoint, operation, queryData);
     console.log({url})
     let config = {
-        url: getApiUrl(endpoint, operation, queryData),
         method: "get",
-        headers: {'Authorization': 'Bearer ' + process.env.NEXT_PUBLIC_FETCHER_API_TOKEN}
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer ' + process.env.NEXT_PUBLIC_FETCHER_API_TOKEN
+        }
     }
     //console.log(endpoint, operation, queryData)
-    return await axios.request(config);
-}
-
-export const responseHandler = (request, callback, completed = false) => {
-    request.then((response) => {
-        callback(response.status, response.data, completed);
-    })
-        .catch((error) => {
-            if (callback && isSet(error.response)) {
-                callback(error.response.status, error.response.data);
-            } else {
-                console.error(error)
-            }
-        })
+    return await fetch(url, config)
 }
 
 const getApiUrl = (endpoint, operation, queryData = {}) => {

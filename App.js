@@ -4,9 +4,12 @@ import {
     LoadEnvironment,
     tagManagerSendDataLayer
 } from "@/truvoicer-base/library/api/global-scripts";
-import Script from 'next/script'
 import React, {useContext, useEffect, useState} from "react";
-import {validateToken} from "@/truvoicer-base/redux/actions/session-actions";
+import {
+    setPasswordResetKeyAction,
+    setSessionUserIdAction,
+    validateToken
+} from "@/truvoicer-base/redux/actions/session-actions";
 import {connect} from "react-redux";
 import {isNotEmpty, isObjectEmpty, isSet} from "@/truvoicer-base/library/utils";
 import {useRouter} from "next/navigation";
@@ -25,7 +28,7 @@ import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-co
 import {loadBasePageData} from "@/truvoicer-base/redux/actions/page-actions";
 
 const FetcherApp = ({
-    pageData, siteSettings, pageOptions = {}
+    page, settings, pageOptions = {}, isResetKey = false
 }) => {
     const router = useRouter();
     const templateContext = useContext(TemplateContext);
@@ -73,13 +76,18 @@ const FetcherApp = ({
 
     useEffect(() => {
         let basePageData = {
-            page: pageData,
-            settings: siteSettings
+            page: page,
+            settings: settings
         }
         if (!isObjectEmpty(pageOptions)) {
             basePageData.options = pageOptions;
         }
         loadBasePageData(basePageData);
+
+        if (isResetKey) {
+            setPasswordResetKeyAction(params.reset_key)
+            setSessionUserIdAction(params.user_id)
+        }
     }, [])
 
     return (
@@ -88,7 +96,7 @@ const FetcherApp = ({
                 <GoogleAuthProvider>
                     <FBAuthProvider>
                         <SessionLayout>
-                            {templateManager.getPostTemplateLayoutComponent(pageData)}
+                            {templateManager.getPostTemplateLayoutComponent(page)}
                             <Modal show={modalState.show} onHide={handleModalCancel}>
                                 <Modal.Header closeButton>
                                     <Modal.Title>{modalState?.title || ''}</Modal.Title>

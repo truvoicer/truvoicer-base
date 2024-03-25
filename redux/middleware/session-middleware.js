@@ -1,5 +1,5 @@
 import {
-    getSavedItemsListByUserAction, setIsAuthenticatingAction,
+    setIsAuthenticatingAction,
     setSessionErrorAction,
     setSessionLocalStorage,
     setSessionUserAction

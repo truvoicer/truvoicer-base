@@ -9,12 +9,14 @@ import {
     setItemIdMiddleWare, setItemProviderMiddleware
 } from "@/truvoicer-base/redux/middleware/item-middleware";
 import {getPageDataMiddleware} from "@/truvoicer-base/redux/middleware/page-middleware";
-import {isNotEmpty} from "@/truvoicer-base/library/utils";
+import {isNotEmpty, isObjectEmpty} from "@/truvoicer-base/library/utils";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {loadBasePageData} from "@/truvoicer-base/redux/actions/page-actions";
+import {setPasswordResetKeyAction, setSessionUserIdAction} from "@/truvoicer-base/redux/actions/session-actions";
 
 const PostPageView = (props) => {
-    const {page} = props;
+    const {page, post, settings, postNavigation = {}} = props;
     const [showLoader, setShowLoader] = useState(true);
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
@@ -37,6 +39,17 @@ const PostPageView = (props) => {
     useEffect(() => {
         itemPageInit()
     }, [page])
+
+    useEffect(() => {
+        let basePageData = {
+            page,
+            post,
+            postNavigation,
+            settings
+        }
+        loadBasePageData(basePageData);
+
+    }, [])
 
     function defaultView() {
         return (

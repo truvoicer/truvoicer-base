@@ -22,12 +22,52 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 
 const ItemViewPage = (props) => {
     const {
-        getItemMiddleware, type, item
+        type,
+        item,
+        category,
+        provider,
+        item_id,
+        settings,
+        page
     } = props;
     const [showLoader, setShowLoader] = useState(true);
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     function itemPageInit() {
+        loadBaseItemPage(page, settings)
+        switch (type) {
+            case 'internal':
+                if (!isNotEmpty(item)) {
+                    return;
+                }
+                setItemProviderAction(provider)
+                setItemCategoryAction(category)
+                setSingleItemPostState({
+                    dataKeys: item?.single_item?.data_keys,
+                    databaseId: item?.ID
+                })
+                break;
+            case 'external':
+                if (!isNotEmpty(provider)) {
+                    return;
+                }
+                if (!isNotEmpty(item_id)) {
+                    return;
+                }
+
+                let data = {
+                    [fetcherApiConfig.queryKey]: item_id,
+                    provider: provider
+                }
+
+                getItemMiddleware(data);
+                setItemProviderAction(provider)
+                setItemCategoryAction(category)
+                setItemIdAction(item_id);
+                break;
+        }
+    }
+    function itemPageValidate() {
         if (!isNotEmpty(item?.provider)) {
             return;
         }
@@ -52,8 +92,11 @@ const ItemViewPage = (props) => {
     }
 
     useEffect(() => {
-        itemPageInit()
+        itemPageValidate()
     }, [item])
+    useEffect(() => {
+        itemPageInit()
+    }, [])
 
 
     function defaultView() {
@@ -63,7 +106,7 @@ const ItemViewPage = (props) => {
                     ?
                     <LoaderComponent/>
                     :
-                    <FetcherApp/>
+                    <FetcherApp />
                 }
             </>
         )

@@ -12,22 +12,17 @@ const RecentPostsWidget = (props) => {
     const [postData, setPostData] = useState([]);
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    function recentPostsListRequest() {
-        publicApiRequest(
+    async function recentPostsListRequest() {
+        const response = await publicApiRequest(
+            'GET',
             buildWpApiUrl(wpApiConfig.endpoints.recentPostsListRequest),
             {
                 number: data?.number || 5,
-            },
-            false
-        )
-            .then(response => {
-                if (response?.data?.status === "success") {
-                    setPostData(response.data.data);
-                }
-            })
-            .catch(error => {
-                console.error(error)
-            })
+            }
+        );
+        if (response?.status === "success") {
+            setPostData(response.data);
+        }
     }
 
     useEffect(() => {

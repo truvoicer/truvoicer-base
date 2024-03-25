@@ -18,7 +18,7 @@ const BlogSidebar = (props) => {
     async function sidebarRequest() {
         try {
             const fetchSidebar = await fetchSidebarRequest(siteConfig.blogSidebarName);
-            const sidebar = fetchSidebar?.data?.sidebar;
+            const sidebar = fetchSidebar?.sidebar;
             if (Array.isArray(sidebar)) {
 
                 setData(buildSidebar({

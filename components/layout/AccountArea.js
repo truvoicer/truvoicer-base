@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import Header from "../../../views/Layout/Header";
 import HtmlHead from "./HtmlHead";
-import ReactHtmlParser from "react-html-parser";
+import parse from 'html-react-parser';
 import LoaderComponent from "../loaders/Loader";
 import Footer from "../../../views/Layout/Footer";
 import {connect} from "react-redux";
@@ -41,7 +41,7 @@ const AccountArea = (props) => {
                             <AccountAreaSidebar />
                         </div>
                         <div className="account-content">
-                            {ReactHtmlParser(pageData.content, htmlParserOptions)}
+                            {parse(pageData.content, htmlParserOptions)}
                         </div>
                     </div>
                 </div>

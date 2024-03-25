@@ -40,12 +40,22 @@ const PasswordResetBlock = (props) => {
         }
     }
 
+    async function passwordResetValidateRequest() {
+        const request = await publicApiRequest(
+            'POST',
+            buildWpApiUrl(wpApiConfig.endpoints.passwordResetValidate),
+            {
+                reset_key: props.session[SESSION_PASSWORD_RESET_KEY],
+                user_id: props.session[SESSION_USER][SESSION_USER_ID]
+            }
+        );
+        validateCallback(request.error, request.data)
+    }
+
     useEffect(() => {
-        publicApiRequest(buildWpApiUrl(wpApiConfig.endpoints.passwordResetValidate), {
-            reset_key: props.session[SESSION_PASSWORD_RESET_KEY],
-            user_id: props.session[SESSION_USER][SESSION_USER_ID]
-        }, validateCallback)
+        passwordResetValidateRequest();
     }, [props.session[SESSION_PASSWORD_RESET_KEY], props.session[SESSION_USER][SESSION_USER_ID]])
+
     function defaultView() {
         return (
             <div className="site-section">

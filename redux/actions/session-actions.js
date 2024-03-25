@@ -22,8 +22,6 @@ import {isSet} from "../../library/utils";
 import {wpApiConfig} from "../../config/wp-api-config";
 import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 
-const axios = require("axios")
-
 export function setSessionUserAction(data, authenticated) {
     let sessionUserState = {...store.getState().session.user};
     //console.log('setSessionUserAction', {data})
@@ -75,29 +73,28 @@ export function getSessionAction() {
     return {...store.getState().session};
 }
 
-export function validateToken() {
+export async function validateToken() {
     if (!getSessionObject()) {
         setIsAuthenticatingAction(false)
         return false;
     }
-    wpResourceRequest({
-        endpoint: wpApiConfig.endpoints.validateToken,
-        method: 'GET',
-        protectedReq: true
-    })
-        .then((response) => {
-            if (response?.data?.status === 'success') {
-
-                setSessionUserAction(response.data.data, true)
-            } else {
-                // removeLocalSession()
-            }
-            setIsAuthenticatingAction(false)
+    try {
+        const response = await wpResourceRequest({
+            endpoint: wpApiConfig.endpoints.validateToken,
+            method: 'GET',
+            protectedReq: true
         })
-        .catch((error) => {
-            setSessionErrorAction(error)
-            setIsAuthenticatingAction(false)
-        })
+        const responseData = await response.json();
+        if (responseData?.status === 'success') {
+            setSessionUserAction(responseData.data, true)
+        } else {
+            // removeLocalSession()
+        }
+        setIsAuthenticatingAction(false)
+    } catch (error) {
+        setSessionErrorAction(error)
+        setIsAuthenticatingAction(false)
+    }
 }
 
 export function logout() {
@@ -147,21 +144,6 @@ export const getSessionObject = () => {
     } catch (error) {
         console.error(error);
         return false;
-    }
-}
-
-export function getSavedItemsListByUserAction(requestData, callback = false) {
-    const sendRequest = axios.post(buildWpApiUrl(wpApiConfig.endpoints.savedItemsListByUser), requestData);
-    if (!callback) {
-        return sendRequest
-    } else {
-        sendRequest.then(response => {
-            callback(false, response.data);
-        })
-            .catch(error => {
-                console.error(error)
-                callback(true, error)
-            });
     }
 }
 

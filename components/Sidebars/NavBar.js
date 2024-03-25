@@ -2,7 +2,7 @@ import HeaderMenu from "@/truvoicer-base/components/Menus/HeaderMenu";
 import {connect} from "react-redux";
 import Search from "../widgets/Search";
 import React, {useContext, useEffect} from "react";
-import ReactHtmlParser from "react-html-parser";
+import parse from 'html-react-parser';
 import {siteConfig} from "@/config/site-config";
 import MobileDrawerMenu from "@/truvoicer-base/components/Menus/MobileDrawerMenu";
 import ButtonWidget from "../widgets/ButtonWidget";
@@ -21,7 +21,7 @@ const NavBar = (props) => {
     async function sidebarRequest() {
         try {
             const fetchSidebar = await fetchSidebarRequest("nav-bar");
-            const sidebar = fetchSidebar?.data?.sidebar;
+            const sidebar = fetchSidebar?.sidebar;
             if (Array.isArray(sidebar)) {
                 setData(sidebar);
             }
@@ -58,7 +58,7 @@ const NavBar = (props) => {
                                             }
                                             {item.custom_html && item.custom_html.content &&
                                                 <div>
-                                                    {ReactHtmlParser(item.custom_html.content)}
+                                                    {parse(item.custom_html.content)}
                                                 </div>
                                             }
                                             {item.nav_menu && item.nav_menu.menu_slug === siteConfig.navMenu &&

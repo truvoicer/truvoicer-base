@@ -35,8 +35,8 @@ const RequestVideoTabsBlock = (props) => {
     }
 
     function fetchProviderVideoRequest() {
-        listingsContext?.listingsData?.providers.map(provider => {
-            fetchData(
+        listingsContext?.listingsData?.providers.map(async provider => {
+            const response = await fetchData(
                 "operation",
                 [requestConfig.request_name],
                 {
@@ -45,8 +45,8 @@ const RequestVideoTabsBlock = (props) => {
                     limit: requestConfig.request_limit,
                     query_type: "array"
                 },
-                getDataCallback
             )
+            getDataCallback(response.status, response.data);
         })
     }
 

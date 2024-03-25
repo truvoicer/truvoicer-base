@@ -60,48 +60,42 @@ const FormBlock = (props) => {
         return configArray;
     }
 
-    const getSelectEndpointData = (name, key, endpoint) => {
+    const getSelectEndpointData = async (name, key, endpoint) => {
         if (!endpoint) {
             console.warn("No endpoint set for select data source")
             return;
         }
-        publicApiRequest(buildWpApiUrl(sprintf(wpApiConfig.endpoints.generalData, endpoint)), {})
-            .then(response => {
-                if (response.data.status === "success") {
-                    setFormDataConfig(formDataConfig => {
-                        let configData = {...formDataConfig};
-                        configData.fields = updateFieldConfig(configData.fields, name, key, response.data.data)
-                        return configData;
-                    })
-                }
+        const request = await publicApiRequest(
+            'GET',
+            buildWpApiUrl(sprintf(wpApiConfig.endpoints.generalData, endpoint)),
+            {}
+        );
+        if (request.data.status === "success") {
+            setFormDataConfig(formDataConfig => {
+                let configData = {...formDataConfig};
+                configData.fields = updateFieldConfig(configData.fields, name, key, response.data.data)
+                return configData;
             })
-            .catch(error => {
-                console.error(error)
-            })
+        }
     }
 
-    const getUserDataRequest = (savedData, endpoint) => {
+    const getUserDataRequest = async (savedData, endpoint) => {
         let apiEndpoint = wpApiConfig.endpoints.formsUserMetaDataRequest;
         if (endpoint === "account_details") {
             apiEndpoint = wpApiConfig.endpoints.userAccountDataRequest;
         }
-        protectedApiRequest(
+        const response = await protectedApiRequest(
             buildWpApiUrl(apiEndpoint),
             savedData,
             false
         )
-            .then(response => {
-                if (response?.data?.status !== "success") {
-                    return;
-                }
-                if (!response?.data?.metaData || !isObject(response.data.metaData)) {
-                    return;
-                }
-                setUserData(response.data.metaData)
-            })
-            .catch(error => {
-                console.error(error)
-            })
+        if (response?.data?.status !== "success") {
+            return;
+        }
+        if (!response?.data?.metaData || !isObject(response.data.metaData)) {
+            return;
+        }
+        setUserData(response.data.metaData)
     }
 
     const getSavedData = () => {
@@ -324,7 +318,7 @@ const FormBlock = (props) => {
         }
     }
 
-    const getFileUploadRequest = (data, endpointData) => {
+    const getFileUploadRequest = async (data, endpointData) => {
         let formValues = data;
         const headers = {
             'Content-Type': 'multipart/form-data'
@@ -333,15 +327,13 @@ const FormBlock = (props) => {
         formValues = new FormData();
         Object.keys(data).forEach(key => formValues.append(key, data[key]));
         Object.keys(endpointData.data).forEach(key => formValues.append(key, endpointData.data[key]));
-
-        responseHandler(
-            protectedFileUploadApiRequest(
-                buildWpApiUrl(endpointData.endpoint),
-                formValues,
-                false,
-                headers,
-            )
-        )
+        const response = await protectedFileUploadApiRequest(
+            buildWpApiUrl(endpointData.endpoint),
+            formValues,
+            false,
+            headers,
+        );
+        responseHandler(response);
     }
 
     const formSubmitCallback = (data) => {
@@ -380,56 +372,52 @@ const FormBlock = (props) => {
         )
     }
 
-    const processRequest = (endpointData, requestData) => {
+    const processRequest = async (endpointData, requestData) => {
+        let request = null;
         switch (formData?.endpoint_type) {
             case "public":
-                responseHandler(
-                    publicApiRequest(
-                        buildWpApiUrl(endpointData.endpoint),
-                        requestData,
-                        false,
-                        "post"
-                    )
+                request = await publicApiRequest(
+                    "POST",
+                    buildWpApiUrl(endpointData.endpoint),
+                    requestData
                 );
                 break;
             case "protected":
-                responseHandler(
-                    protectedApiRequest(
-                        buildWpApiUrl(endpointData.endpoint),
-                        requestData,
-                        false
-                    )
-                );
+                request = await publicApiRequest(
+                    "GET",
+                    buildWpApiUrl(endpointData.endpoint),
+                    requestData
+                )
                 break;
             default:
                 console.warn("Invalid endpoint type")
                 return;
         }
+        if (!request) {
+            console.error("Invalid request")
+            return;
+        }
+        responseHandler(request)
     }
 
-    const responseHandler = (request) => {
-        request.then(response => {
-            setResponse({
-                showAlert: true,
-                error: false,
-                errors: response?.data?.errors || [],
-                success: true,
-                message: response?.data?.message
-            })
-            if (isNotEmpty(response?.data?.data?.redirect_url)) {
-                window.location.href = response.data.data.redirect_url
-            }
+    const responseHandler = (response) => {
+        setResponse({
+            showAlert: true,
+            error: false,
+            errors: response?.errors || [],
+            success: true,
+            message: response?.message
         })
-            .catch(error => {
-                setResponse({
-                    showAlert: true,
-                    error: true,
-                    errors: error?.response?.data?.errors || [],
-                    success: false,
-                    message: error?.response?.data?.message
-                })
-                console.error(error)
-            })
+        if (isNotEmpty(response?.data?.redirect_url)) {
+            window.location.href = response.data.redirect_url
+        }
+        // setResponse({
+        //     showAlert: true,
+        //     error: true,
+        //     errors: error?.response?.data?.errors || [],
+        //     success: false,
+        //     message: error?.response?.data?.message
+        // })
     }
 
     const getDataFormProps = () => {

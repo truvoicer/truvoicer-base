@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import Search from "../widgets/Search";
 import {siteConfig} from "@/config/site-config";
-import ReactHtmlParser from "react-html-parser";
+import parse from 'html-react-parser';
 import ButtonWidget from "../widgets/ButtonWidget";
 import AccountAreaMenu from "@/truvoicer-base/components/Menus/AccountAreaMenu";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
@@ -16,7 +16,7 @@ const AccountAreaSidebar = (props) => {
     async function sidebarRequest() {
         try {
             const fetchSidebar = await fetchSidebarRequest(siteConfig.accountAreaSidebarName);
-            const sidebar = fetchSidebar?.data?.sidebar;
+            const sidebar = fetchSidebar?.sidebar;
             if (Array.isArray(sidebar)) {
                 setData(sidebar);
             }
@@ -43,7 +43,7 @@ const AccountAreaSidebar = (props) => {
                                     }
                                     {item.custom_html && item.custom_html.content &&
                                         <div>
-                                            {ReactHtmlParser(item.custom_html.content)}
+                                            {parse(item.custom_html.content)}
                                         </div>
                                     }
                                     {item.nav_menu && item.nav_menu.menu_slug === siteConfig.myAccountMenu &&

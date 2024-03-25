@@ -5,7 +5,6 @@ import {REQUEST_GET} from '../../constants/request-constants';
 import {getSignedJwt} from "@/truvoicer-base/library/api/auth/jwt-helpers";
 import {getSessionObject} from "@/truvoicer-base/redux/actions/session-actions";
 
-const axios = require('axios');
 const sprintf = require('sprintf-js').sprintf;
 
 function getHeaders(config) {
@@ -42,13 +41,14 @@ export async function fetchSidebarRequest (sidebar) {
     console.warn('Sidebar not set');
     return false;
   }
-  return wpResourceRequest({
+  const request = await wpResourceRequest({
     endpoint: sprintf(wpApiConfig.endpoints.sidebar, sidebar),
     method: 'GET',
     query: {
         sidebar,
     }
   });
+    return await request.json();
 }
 
 export async function wpResourceRequest({

@@ -15,7 +15,7 @@ const ItemViewComments = (props) => {
     const [comments, setComments] = useState([]);
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    const commentSubmitCallback = (content, parentCommentId) => {
+    const commentSubmitCallback = async (content, parentCommentId) => {
         let data = {
             provider: props.provider,
             category: props.category,
@@ -26,44 +26,37 @@ const ItemViewComments = (props) => {
         if (isNotEmpty(parentCommentId)) {
             data.comment_parent = parentCommentId;
         }
-        protectedApiRequest(buildWpApiUrl(wpApiConfig.endpoints.createComment), data)
-        .then(response => {
-            if (response.data.status === "success") {
-                setComments(comments => {
-                    let list = [...comments];
-                    list.unshift(response.data.data)
-                    return list;
-                })
-            }
-        })
-        .catch(error => {
-            if (!isSet(error.response) || !isSet(error.response.data)) {
-                console.error(error)
-            }
-            if (isSet(error.response.data.code)) {
-                alert(error.response.data.message)
-            }
-        })
+        const response = await protectedApiRequest(buildWpApiUrl(wpApiConfig.endpoints.createComment), data)
+        if (response.status === "success") {
+            setComments(comments => {
+                let list = [...comments];
+                list.unshift(response.data)
+                return list;
+            })
+        }
+
+        // if (!isSet(error.response) || !isSet(error.response.data)) {
+        //     console.error(error)
+        // }
+        // if (isSet(error.response.data.code)) {
+        //     alert(error.response.data.message)
+        // }
     }
 
-    function commentsByItemIdRequest() {
+    async function commentsByItemIdRequest() {
 
         const data = {
             category: props.category,
             provider: props.provider,
             item_id: props.item_id
         };
-        publicApiRequest(buildWpApiUrl(wpApiConfig.endpoints.commentsByItemId, data))
-            .then(response => {
-                if (!isCancelled) {
-                    if (response.data.status === "success") {
-                        setComments(response.data.data);
-                    }
-                }
-            })
-            .catch(error => {
-                console.error(error)
-            })
+        const response = await publicApiRequest(
+            'GET',
+            buildWpApiUrl(wpApiConfig.endpoints.commentsByItemId, data)
+        );
+        if (response.data.status === "success") {
+            setComments(response.data);
+        }
     }
 
     useEffect(() => {

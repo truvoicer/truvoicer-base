@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import {connect} from "react-redux";
-import HtmlParser from "react-html-parser";
+import parse from 'html-react-parser';
 import BlogCategoryList from "../widgets/BlogCategoryList";
 import {isNotEmpty, isObjectEmpty, isSet} from "../../library/utils";
 import {getNextPostFromList, getPostItemUrl, getPrevPostFromList} from "../../library/helpers/posts";
@@ -83,7 +83,7 @@ const PostItemBlock = (props) => {
                                         categories={post?.categories}
                                         classes={"blog-info-link mt-3 mb-4"}
                                     />
-                                    <>{HtmlParser(post?.post_content ? post.post_content : "")}</>
+                                    <>{parse(post?.post_content ? post.post_content : "")}</>
                                 </div>
                             </div>
                             <div className="navigation-top">

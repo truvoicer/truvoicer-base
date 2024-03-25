@@ -1,3 +1,4 @@
+
 import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {siteConfig} from "@/config/site-config";
@@ -14,7 +15,7 @@ const RightSidebar = (props) => {
     async function sidebarRequest() {
         try {
             const fetchSidebar = await fetchSidebarRequest(siteConfig.rightSidebarName);
-            const sidebar = fetchSidebar?.data?.sidebar;
+            const sidebar = fetchSidebar?.sidebar;
             if (Array.isArray(sidebar)) {
 
                 setData(buildSidebar({
