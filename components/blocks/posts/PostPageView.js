@@ -2,7 +2,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {connect} from "react-redux";
 import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
-import FetcherApp from "@/truvoicer-base/App";
 import {
     getItemMiddleware,
     setItemCategoryMiddleWare,
@@ -14,25 +13,27 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {loadBasePageData} from "@/truvoicer-base/redux/actions/page-actions";
 import {setPasswordResetKeyAction, setSessionUserIdAction} from "@/truvoicer-base/redux/actions/session-actions";
+import AppLoader from "@/truvoicer-base/AppLoader";
+import {templateConfig} from "@/config/template-config";
 
 const PostPageView = (props) => {
-    const {page, post, settings, postNavigation = {}} = props;
+    const {page, pageData, post, settings, postNavigation = {}} = props;
     const [showLoader, setShowLoader] = useState(true);
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     function itemPageInit() {
-        if (!isNotEmpty(page?.pageData)) {
+        if (!isNotEmpty(pageData)) {
             return;
         }
-        if (!isNotEmpty(page?.siteSettings)) {
+        if (!isNotEmpty(settings)) {
             return;
         }
-        if (!isNotEmpty(page?.postData)) {
-            return;
-        }
-        if (!isNotEmpty(page?.postNavData)) {
-            return;
-        }
+        // if (!isNotEmpty(page?.postData)) {
+        //     return;
+        // }
+        // if (!isNotEmpty(page?.postNavData)) {
+        //     return;
+        // }
         setShowLoader(false)
     }
 
@@ -42,11 +43,12 @@ const PostPageView = (props) => {
 
     useEffect(() => {
         let basePageData = {
-            page,
+            page: pageData,
             post,
             postNavigation,
             settings
         }
+        console.log('basePageData', basePageData)
         loadBasePageData(basePageData);
 
     }, [])
@@ -58,7 +60,8 @@ const PostPageView = (props) => {
                     ?
                     <LoaderComponent/>
                     :
-                    <FetcherApp/>
+
+                    <AppLoader templateConfig={templateConfig()} page={page} />
                 }
             </>
         )

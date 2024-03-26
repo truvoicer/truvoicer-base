@@ -8,7 +8,6 @@ import {
     LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST,
     LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
 } from "@/truvoicer-base/redux/constants/general_constants";
-import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/items";
 import {
     APPEND_SEARCH_REQUEST,
     INIT_SEARCH_REQUEST,
@@ -25,7 +24,7 @@ import {
 import {siteConfig} from "@/config/site-config";
 import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
-import {extractCategoryIds} from "@/truvoicer-base/library/helpers/wp-helpers";
+import {extractCategoryIds, extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpers";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import {
     ITEM_LIST_ID,

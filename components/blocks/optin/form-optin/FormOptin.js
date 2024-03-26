@@ -6,9 +6,9 @@ import SpeechBubbleTestimonialsCarousel
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {isFunction} from "underscore";
-import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/items";
 import {isObject} from "@/truvoicer-base/library/utils";
 import CarouselInterface from "@/truvoicer-base/components/blocks/carousel/CarouselInterface";
+import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpers";
 
 const FormOptin = (props) => {
     const {data} = props;

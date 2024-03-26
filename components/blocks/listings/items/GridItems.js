@@ -7,7 +7,6 @@ import {SESSION_USER, SESSION_USER_ID} from "../../../../redux/constants/session
 import Col from "react-bootstrap/Col";
 import {useRouter} from "next/navigation";
 import {getGridItemColumns} from "../../../../redux/actions/item-actions";
-import {extractItemListFromPost} from "../../../../library/helpers/items";
 import {siteConfig} from "@/config/site-config";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
@@ -17,6 +16,7 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {ListingsEngine} from "@/truvoicer-base/library/listings/engine/listings-engine";
 import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
+import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpers";
 
 const GridItems = (props) => {
     const {listStart, listEnd, customPosition, grid, listItems, category} = props;

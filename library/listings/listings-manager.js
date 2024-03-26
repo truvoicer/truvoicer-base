@@ -10,7 +10,6 @@ import {
     SEARCH_REQUEST_COMPLETED, SEARCH_REQUEST_ERROR, SEARCH_REQUEST_STARTED
 } from "@/truvoicer-base/redux/constants/search-constants";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
-import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/items";
 import store from "@/truvoicer-base/redux/store";
 import {siteConfig} from "@/config/site-config";
 import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
@@ -20,7 +19,7 @@ import {SESSION_AUTHENTICATED, SESSION_USER, SESSION_USER_ID} from "@/truvoicer-
 import React from "react";
 import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 import {setPostListDataAction} from "@/truvoicer-base/redux/actions/page-actions";
-import {extractCategoryIds} from "@/truvoicer-base/library/helpers/wp-helpers";
+import {extractCategoryIds, extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpers";
 import {ListingsEngine} from "@/truvoicer-base/library/listings/engine/listings-engine";
 import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
 import {WpDataSource} from "@/truvoicer-base/library/listings/engine/source/wp-data-source";

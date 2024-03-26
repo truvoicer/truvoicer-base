@@ -1,12 +1,12 @@
 import parse from 'html-react-parser';
 import React from "react";
-import {convertImageObjectsToArray, formatDate, isNotEmpty, isObject, isObjectEmpty, isSet, uCaseFirst} from "../utils";
+import {formatDate, isNotEmpty, isObjectEmpty, isSet, uCaseFirst} from "../utils";
 import ImageLoader from "../../components/loaders/ImageLoader";
 import ListLoader from "../../components/loaders/ListLoader";
 import store from "../../redux/store";
-import {siteConfig} from "../../../config/site-config";
 import {getItemViewUrl} from "../../redux/actions/item-actions";
 import {tagManagerSendDataLayer} from "../api/global-scripts";
+import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpers";
 
 export function replaceItemDataPlaceholders(pageTitle, item) {
     const test = new RegExp("\\\[+(.*?)\\]", "g");
@@ -206,36 +206,12 @@ export const getDataKeyValue = (dataItem) => {
     }
 }
 
-export const buildDataKeyObject = (dataKeyList, itemId, itemSlug = null) => {
-    let cloneDataKeyList = {...dataKeyList};
-    let dataKeyObject = convertDataKeysDataArray(cloneDataKeyList);
-    return renderDataKeyObject(dataKeyObject, itemId, itemSlug);
-}
-
-export const renderDataKeyObject = (dataKeyObject = {}, itemId, itemSlug = null) => {
-    dataKeyObject.item_id = itemId;
-    if (isNotEmpty(itemSlug)) {
-        dataKeyObject.item_slug = itemSlug;
-    }
-    dataKeyObject.provider = siteConfig.internalProviderName;
-    dataKeyObject.category = siteConfig.internalCategory;
-    dataKeyObject.custom_item = true;
-    return dataKeyObject;
-}
-
 export const convertDataKeysDataArrayObject = (dataKeyList) => {
     let dataKeyObject = {};
     dataKeyList.map((item) => {
         dataKeyObject[item.data_item_key] = getDataKeyValue(item)
     })
     return dataKeyObject;
-}
-export const convertDataKeysDataArray = (dataKeyList) => {
-    let dataKeyObject = {};
-    // dataKeyList.map((item) => {
-    //     dataKeyObject[item.data_item_key] = getDataKeyValue(item)
-    // })
-    return dataKeyList;
 }
 
 
@@ -258,40 +234,6 @@ export const getItemLinkProps = (category, item, showInfoCallback, e, trackData 
         href: getItemViewUrl(item, category),
         onClick: showInfoCallback.bind(e, item, category)
     }
-}
-export function extractItemListFromPost({post}) {
-    if (!Array.isArray(post?.item_list?.item_list)) {
-        return false;
-    }
-    let listData = [];
-    const itemListData = post?.item_list?.item_list;
-    itemListData.forEach(item => {
-        switch (item.type) {
-            case "single_item":
-                if (!item?.single_item_id?.ID) {
-                    return;
-                }
-                if (!item?.single_item_id?.post_name) {
-                    return;
-                }
-                if (!item?.single_item_id?.single_item?.data_keys) {
-                    return;
-                }
-                if (!isObject(item?.single_item_id?.single_item?.data_keys)) {
-                    return;
-                }
-                listData.push(buildDataKeyObject(
-                        item?.single_item_id?.single_item.data_keys,
-                        item?.single_item_id?.ID,
-                        item?.single_item_id?.post_name
-                ));
-                break;
-            case "custom":
-                listData.push(item);
-                break;
-        }
-    });
-    return listData;
 }
 export function extractItemListFromPostArray({posts = []}) {
     if (!Array.isArray(posts)) {

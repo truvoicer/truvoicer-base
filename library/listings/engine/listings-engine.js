@@ -4,10 +4,10 @@ import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {tagManagerSendDataLayer} from "@/truvoicer-base/library/api/global-scripts";
 import {sprintf} from "sprintf-js";
 import {ItemRoutes} from "@/config/item-routes";
-import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/items";
 import {getPostItemUrl} from "@/truvoicer-base/library/helpers/posts";
 import {DISPLAY_AS_LIST, DISPLAY_AS_POST_LIST} from "@/truvoicer-base/redux/constants/general_constants";
 import {PostRoutes} from "@/config/post-routes";
+import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpers";
 
 export class ListingsEngine {
     constructor(context) {

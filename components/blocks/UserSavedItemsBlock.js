@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useState} from 'react';
 import {connect} from "react-redux";
 import {isNotEmpty, isObjectEmpty, isSet, uCaseFirst} from "../../library/utils";
 import {siteConfig} from "@/config/site-config";
-import {buildDataKeyObject} from "../../library/helpers/items";
 import {SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-constants";
 import {buildWpApiUrl, protectedApiRequest} from "../../library/api/wp/middleware";
 import {wpApiConfig} from "../../config/wp-api-config";
@@ -13,6 +12,7 @@ import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/Listin
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {buildDataKeyObject} from "@/truvoicer-base/library/helpers/wp-helpers";
 
 function UserSavedItemsBlock(props) {
     const [tabData, setTabData] = useState({});

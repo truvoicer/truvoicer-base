@@ -2,7 +2,7 @@ import store from "../store"
 import React from "react";
 import {setItemCategory, setItemData, setItemError, setItemId, setItemProvider,} from "../reducers/item-reducer";
 import {fetchData} from "../../library/api/fetcher/middleware";
-import {listingsGridConfig} from "../../../config/listings-grid-config";
+import {listingsGridConfig} from "@/config/listings-grid-config";
 import {isNotEmpty, isSet} from "../../library/utils";
 import {
     LISTINGS_GRID_COMPACT,
@@ -10,9 +10,7 @@ import {
     LISTINGS_GRID_DETAILED,
     LISTINGS_GRID_LIST
 } from "../constants/listings-constants";
-import {ItemRoutes} from "../../../config/item-routes";
-import {buildDataKeyObject} from "../../library/helpers/items";
-import {siteConfig} from "../../../config/site-config";
+import {ItemRoutes} from "@/config/item-routes";
 
 const sprintf = require('sprintf-js').sprintf;
 
@@ -36,22 +34,12 @@ export function setItemDataAction(itemData) {
 }
 
 export async function getItemAction(requestData) {
-    const response = await fetchData("operation", ["single"], requestData)
-    fetchItemCallback(response.status, response.data)
+    return await fetchData("operation", ["single"], requestData)
 }
 
 export async function fetchLoaderDataAction(operation, requestData, callback) {
     const response = await fetchData("operation", [operation], requestData);
     callback(response.status, response.data)
-}
-
-export function fetchItemCallback (status, data) {
-    if (status === 200) {
-        setItemDataAction(data.data)
-    } else {
-        console.error(data)
-        store.dispatch(setItemError("Item fetch error..."))
-    }
 }
 
 export function setSingleItemPostState({databaseId, dataKeys = null}) {

@@ -2,28 +2,27 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {connect} from "react-redux";
 import {loadBaseItemPage} from "@/truvoicer-base/redux/actions/page-actions";
-import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import {
-    setItemCategoryAction,
+    setItemCategoryAction, setItemDataAction,
     setItemIdAction,
     setItemProviderAction, setSingleItemPostState
 } from "@/truvoicer-base/redux/actions/item-actions";
 import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
-import FetcherApp from "@/truvoicer-base/App";
 import {
-    getItemMiddleware,
     setItemCategoryMiddleWare,
     setItemIdMiddleWare, setItemProviderMiddleware
 } from "@/truvoicer-base/redux/middleware/item-middleware";
-import {getPageDataMiddleware} from "@/truvoicer-base/redux/middleware/page-middleware";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import AppLoader from "@/truvoicer-base/AppLoader";
+import {templateConfig} from "@/config/template-config";
 
 const ItemViewPage = (props) => {
     const {
         type,
         item,
+        itemData,
         category,
         provider,
         item_id,
@@ -35,6 +34,7 @@ const ItemViewPage = (props) => {
 
     function itemPageInit() {
         loadBaseItemPage(page, settings)
+        setItemDataAction(itemData)
         switch (type) {
             case 'internal':
                 if (!isNotEmpty(item)) {
@@ -55,12 +55,6 @@ const ItemViewPage = (props) => {
                     return;
                 }
 
-                let data = {
-                    [fetcherApiConfig.queryKey]: item_id,
-                    provider: provider
-                }
-
-                getItemMiddleware(data);
                 setItemProviderAction(provider)
                 setItemCategoryAction(category)
                 setItemIdAction(item_id);
@@ -80,7 +74,7 @@ const ItemViewPage = (props) => {
 
         switch (type) {
             case 'internal':
-                if (!isNotEmpty(item?.data)) {
+                if (!isNotEmpty(item)) {
                     return;
                 }
                 setShowLoader(false)
@@ -106,7 +100,7 @@ const ItemViewPage = (props) => {
                     ?
                     <LoaderComponent/>
                     :
-                    <FetcherApp />
+                    <AppLoader templateConfig={templateConfig()} page={page} />
                 }
             </>
         )
@@ -127,15 +121,16 @@ const ItemViewPage = (props) => {
 }
 
 export default connect(
-    (state) => ({
-        item: state.item,
-    }),
+    (state) => {
+        return {
+            item: state.item,
+        }
+
+    },
     {
-        getItemMiddleware,
         setItemIdMiddleWare,
         setItemCategoryMiddleWare,
         setItemProviderMiddleware,
-        getPageDataMiddleware
     }
 )(ItemViewPage);
 

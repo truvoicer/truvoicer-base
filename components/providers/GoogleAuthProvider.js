@@ -7,7 +7,7 @@ import {buildWpApiUrl} from "@/truvoicer-base/library/api/wp/middleware";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
 import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
 
-function GoogleAuthProvider({children, siteSettings}) {
+function GoogleAuthProvider({children, siteSettings, page}) {
 
     const modalContext = useContext(AppModalContext);
     function updateState(data) {
@@ -69,6 +69,7 @@ function GoogleAuthProvider({children, siteSettings}) {
         })
 
     }, [siteSettings.google_login_client_id,]);
+
     return (
         <GoogleAuthContext.Provider value={googleAuthState}>
             {children}
@@ -78,6 +79,7 @@ function GoogleAuthProvider({children, siteSettings}) {
 
 function mapStateToProps(state) {
     return {
+        page: state.page,
         siteSettings: state.page.siteSettings,
     };
 }
