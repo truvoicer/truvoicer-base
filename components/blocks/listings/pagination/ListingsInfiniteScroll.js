@@ -43,42 +43,31 @@ const ListingsInfiniteScroll = (props) => {
     }, [searchContext?.searchOperation]);
 
 
-    function defaultView() {
         return (
             <InfiniteScroll
                 pageStart={0}
                 initialLoad={false}
                 loadMore={loadMore}
                 hasMore={searchContext.pageControls[PAGE_CONTROL_HAS_MORE]}
-                loader={<LoaderComponent key={"loader"}/>}
+                loader={templateManager.render(<LoaderComponent key={"loader"}/>)}
             >
-                <GridItems
+                {templateManager.render(<GridItems
                     listStart={listingsContext?.listingsData?.list_start}
                     listEnd={listingsContext?.listingsData?.list_end}
                     customPosition={listingsContext?.listingsData?.custom_position}
                     grid={listingsContext?.listingsGrid}
                     listItems={searchContext?.searchList || []}
-                />
+                />)}
             </InfiniteScroll>
 
         )
-    }
-    return templateManager.getTemplateComponent({
-        category: 'listings',
-        templateId: 'listingsInfiniteScroll',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            loadMore: loadMore,
-            ...props
-        }
-    });
 }
 
 function mapStateToProps(state) {
     return {};
 }
-
+ListingsInfiniteScroll.category = 'listings';
+ListingsInfiniteScroll.templateId = 'listingsInfiniteScroll';
 export default connect(
     mapStateToProps,
     null

@@ -2,6 +2,7 @@ import React, {useContext, useState} from 'react';
 import {getListItemData} from "../../library/helpers/items";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {Accordion} from "react-bootstrap";
 // const useStyles = makeStyles((theme) => ({
 //     root: {
 //         width: '100%',
@@ -20,53 +21,42 @@ const ItemViewAccordion = (props) => {
         setExpanded(newExpanded ? panel : false);
     };
 
-    function defaultView() {
-        return (
-            <div className={"item-view--accordion "}>
-                {props.data.tabs.map((tabItem, index) => (
-                    <Accordion
-                        key={index}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                        expanded={expanded === index}
-                        onChange={handleChange(index)}
-                    >
-                        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                            <Typography className={''}>{tabItem.label}</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <ul className={"tab-layout--list"}>
-                                {tabItem.tabData.map((tabDataItem, tabDataIndex) => (
-                                    <li key={tabDataIndex.toString()}>
-                                        <div className={"tab-layout--list--row"}>
-                                            <div className={"tab-layout--list--row--label"}>
-                                                {tabDataItem.label}
-                                            </div>
-                                            <div className={"tab-layout--list--row--value"}>
-                                                {getListItemData(tabDataItem, props.item)}
-                                            </div>
+    return (
+        <div className={"item-view--accordion "}>
+            {props.data.tabs.map((tabItem, index) => (
+                <Accordion
+                    key={index}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                    expanded={expanded === index}
+                    onChange={handleChange(index)}
+                >
+                    <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                        <Typography className={''}>{tabItem.label}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <ul className={"tab-layout--list"}>
+                            {tabItem.tabData.map((tabDataItem, tabDataIndex) => (
+                                <li key={tabDataIndex.toString()}>
+                                    <div className={"tab-layout--list--row"}>
+                                        <div className={"tab-layout--list--row--label"}>
+                                            {tabDataItem.label}
                                         </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        </AccordionDetails>
-                    </Accordion>
+                                        <div className={"tab-layout--list--row--value"}>
+                                            {getListItemData(tabDataItem, props.item)}
+                                        </div>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </AccordionDetails>
+                </Accordion>
 
-                ))}
-            </div>
-        );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'accordions',
-        templateId: 'itemViewAccordion',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            handleChange: handleChange,
-            expanded: expanded,
-            setExpanded: setExpanded,
-            ...props
-        }
-    })
+            ))}
+        </div>
+    );
+
 }
+ItemViewAccordion.category = "accordion";
+ItemViewAccordion.templateId = "itemViewAccordion";
 export default ItemViewAccordion;

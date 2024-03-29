@@ -35,7 +35,7 @@ const ListingsFilterDateItem = (props) => {
             listingsManager.runSearch('listingsFilterDateItem');
         }
     }, [searchContext?.searchOperation]);
-    function defaultView() {
+
         return (
             <div className="single_field">
                 <label>{props.data.label}</label>
@@ -47,20 +47,10 @@ const ListingsFilterDateItem = (props) => {
                 />
             </div>
         )
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'listings',
-        templateId: 'listingsFilterDateItem',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            startDate: startDate,
-            handleStartDateChange: handleStartDateChange,
-            setStartDate: setStartDate
-        }
-    })
 }
+
+ListingsFilterDateItem.category = 'listings';
+ListingsFilterDateItem.templateId = 'listingsFilterDateItem';
 
 export default connect(
     null,

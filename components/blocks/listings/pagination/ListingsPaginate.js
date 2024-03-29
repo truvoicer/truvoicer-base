@@ -112,36 +112,22 @@ const ListingsPaginate = (props) => {
         }
     }, [searchContext?.searchOperation]);
 
-    function defaultView() {
+
         return (
             <>
-                <GridItems
+                {templateManager.render(<GridItems
                     listStart={listingsContext?.listingsData?.list_start}
                     listEnd={listingsContext?.listingsData?.list_end}
                     customPosition={listingsContext?.listingsData?.custom_position}
                     grid={listingsContext?.listingsGrid}
                     listItems={searchContext?.searchList || []}
-                />
+                />)}
                 <GetPagination/>
             </>
         )
-    }
-    return templateManager.getTemplateComponent({
-        category: 'listings',
-        templateId: 'listingsPaginate',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            paginationLimit: paginationLimit,
-            paginationRange: paginationRange,
-            paginationClickHandler: paginationClickHandler,
-            getPaginationRange: getPaginationRange,
-            GetPagination: GetPagination,
-            ...props
-        }
-    });
 }
-
+ListingsPaginate.category = 'listings';
+ListingsPaginate.templateId = 'listingsPaginate';
 function mapStateToProps(state) {
     return {};
 }

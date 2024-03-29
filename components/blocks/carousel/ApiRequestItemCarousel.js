@@ -16,8 +16,8 @@ const ApiRequestItemCarousel = (props) => {
         slidesToShow: 3,
         slidesToScroll: 1,
         centerMode: true,
-        nextArrow: <NextArrow />,
-        prevArrow: <PrevArrow />,
+        nextArrow: templateManager.render(<NextArrow />),
+        prevArrow: templateManager.render(<PrevArrow />),
         responsive: [
             {
                 breakpoint: 600,
@@ -36,39 +36,31 @@ const ApiRequestItemCarousel = (props) => {
             }
         ]
     };
-    function defaultView()
-    {
-        return (
-            <Slider {...settings}>
-                {props.data.map((item, index) => (
-                    <div className="single-games-slide" key={index}>
-                        <ImageLoader
-                            item={item}
-                            imageData={item.item_default_image}
-                            className={"slide-image"}
-                            background={false}
-                        />
-                        <div className="slide-text">
-                            <a href="#" className="game-title">{item.item_name}</a>
-                            <div className="meta-data">
-                                <a href="#">{item.item_rating}</a>
-                                <a href="#">{"Link"}</a>
-                            </div>
+
+    return (
+        <Slider {...settings}>
+            {props.data.map((item, index) => (
+                <div className="single-games-slide" key={index}>
+                    <ImageLoader
+                        item={item}
+                        imageData={item.item_default_image}
+                        className={"slide-image"}
+                        background={false}
+                    />
+                    <div className="slide-text">
+                        <a href="#" className="game-title">{item.item_name}</a>
+                        <div className="meta-data">
+                            <a href="#">{item.item_rating}</a>
+                            <a href="#">{"Link"}</a>
                         </div>
                     </div>
-                ))}
-            </Slider>
-        );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'carousel',
-        templateId: 'requestItemCarousel',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            settings: settings,
-            ...props
-        }
-    });
+                </div>
+            ))}
+        </Slider>
+    );
 }
+
+ApiRequestItemCarousel.category = 'carousel';
+ApiRequestItemCarousel.templateId = 'requestItemCarousel';
+
 export default ApiRequestItemCarousel;

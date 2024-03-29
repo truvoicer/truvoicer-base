@@ -37,7 +37,7 @@ const FullWidthTemplate = (props) => {
                                     {parse(pageData.post_content, htmlParserOptions)}
                                 </>
                                 :
-                                <Loader></Loader>
+                                templateManager.render(<Loader></Loader>)
                             }
                         </>
                         <Footer/>

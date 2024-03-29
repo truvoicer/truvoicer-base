@@ -85,39 +85,23 @@ function UserSavedItemsBlock(props) {
         }
     }, [props.session[SESSION_USER][SESSION_USER_ID]])
 
-    function defaultView() {
-        return (
-            <div className="job_listing_area pt-5">
-                <div className={"listings-block job_lists mt-0"}>
-                    <div className="container">
-                        <div className="row justify-content-center">
-                            <div className="col-md-12 mb-5" data-aos="fade">
-                                <h2>My Saved Items</h2>
-                                {!isObjectEmpty(tabData) &&
-                                    <SavedItemsVerticalTabs data={tabData}/>
-                                }
-                            </div>
+
+    return (
+        <div className="job_listing_area pt-5">
+            <div className={"listings-block job_lists mt-0"}>
+                <div className="container">
+                    <div className="row justify-content-center">
+                        <div className="col-md-12 mb-5" data-aos="fade">
+                            <h2>My Saved Items</h2>
+                            {!isObjectEmpty(tabData) &&
+                                <SavedItemsVerticalTabs data={tabData}/>
+                            }
                         </div>
                     </div>
                 </div>
             </div>
-        );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'account',
-        templateId: 'userSavedItemsBlock',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            buildSavedItemsList: buildSavedItemsList,
-            tabData: tabData,
-            setTabData: setTabData,
-            getInternalItemsData: getInternalItemsData,
-            getUserSavedItems: getUserSavedItems,
-            ...props
-        }
-    })
+        </div>
+    );
 }
 function mapStateToProps(state) {
     // console.log(state.page)
@@ -125,6 +109,9 @@ function mapStateToProps(state) {
         session: state.session,
     };
 }
+
+UserSavedItemsBlock.category = 'account';
+UserSavedItemsBlock.templateId = 'userSavedItemsBlock';
 
 export default connect(
     mapStateToProps,

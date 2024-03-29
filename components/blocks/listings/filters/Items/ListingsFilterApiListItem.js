@@ -55,7 +55,7 @@ const ListingsFilterApiListItem = (props) => {
             listingsManager.runSearch('listingsFilterApiListItem');
         }
     }, [searchContext?.searchOperation]);
-    function defaultView() {
+
         return (
             <div className="single_field">
                 <label className="widget-title">{props.data.label}</label>
@@ -77,25 +77,14 @@ const ListingsFilterApiListItem = (props) => {
                 </ul>
             </div>
         )
-    }
-    return templateManager.getTemplateComponent({
-        category: 'listings',
-        templateId: 'listingsFilterApiListItem',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            getListItemsCallback: getListItemsCallback,
-            listItems: listItems,
-            setListItems: setListItems,
-            formChangeHandler: formChangeHandler,
-            ...props
-        }
-    })
 }
 
 function mapStateToProps(state) {
     return {};
 }
+
+ListingsFilterApiListItem.category = 'listings';
+ListingsFilterApiListItem.templateId = 'listingsFilterApiListItem';
 
 export default connect(
     mapStateToProps,

@@ -92,7 +92,7 @@ const RequestVideoTabsBlock = (props) => {
         });
     }
 
-    function defaultView() {
+
         return (
             <>
                 <Tab.Container id="left-tabs-example" defaultActiveKey={0}>
@@ -145,24 +145,6 @@ const RequestVideoTabsBlock = (props) => {
                 </Tab.Container>
             </>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'requestVideoTabsBlock',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            getDataCallback: getDataCallback,
-            getVideo: getVideo,
-            getGameRequestIds: getGameRequestIds,
-            getGameVideoData: getGameVideoData,
-            mergeVideoData: mergeVideoData,
-            fetchProviderVideoRequest: fetchProviderVideoRequest,
-            data: data,
-            setData: setData,
-            ...props
-        }
-    });
 }
 
 function mapStateToProps(state) {
@@ -171,6 +153,8 @@ function mapStateToProps(state) {
     };
 }
 
+RequestVideoTabsBlock.category = 'public';
+RequestVideoTabsBlock.templateId = 'requestVideoTabsBlock';
 export default connect(
     mapStateToProps
 )(RequestVideoTabsBlock);

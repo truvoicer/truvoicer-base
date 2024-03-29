@@ -70,24 +70,10 @@ const ItemViewComments = (props) => {
 
     }, [props.category, props.provider, props.item_id])
 
-    function defaultView() {
+
     return (
         <CommentsList items={comments} commentSubmitCallback={commentSubmitCallback}/>
     );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'comments',
-        templateId: 'itemViewComments',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            commentSubmitCallback: commentSubmitCallback,
-            commentsByItemIdRequest: commentsByItemIdRequest,
-            comments: comments,
-            setComments: setComments,
-            ...props
-        }
-    })
 }
 
 function mapStateToProps(state) {
@@ -95,7 +81,8 @@ function mapStateToProps(state) {
         user: state.session[SESSION_USER]
     };
 }
-
+ItemViewComments.category = 'comments';
+ItemViewComments.templateId = 'itemViewComments';
 export default connect(
     mapStateToProps,
     null

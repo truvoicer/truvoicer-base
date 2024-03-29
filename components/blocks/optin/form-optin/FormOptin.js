@@ -1,20 +1,15 @@
 import React, {useContext} from 'react';
 import FormBlock from "../../form/FormBlock";
 import parse from 'html-react-parser';
-import SpeechBubbleTestimonialsCarousel
-    from "@/truvoicer-base/components/blocks/carousel/types/Testimonials/SpeechBubbleTestimonialsCarousel";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
-import {isFunction} from "underscore";
-import {isObject} from "@/truvoicer-base/library/utils";
 import CarouselInterface from "@/truvoicer-base/components/blocks/carousel/CarouselInterface";
-import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpers";
 
 const FormOptin = (props) => {
     const {data} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
     //console.log(data.carousel)
-    function defaultView() {
+
         return (
             <div className="section_gap registration_area">
                 <div className="container">
@@ -25,7 +20,7 @@ const FormOptin = (props) => {
                                     <h1 className="mb-3">{data?.heading}</h1>
                                     <>{parse(data?.text)}</>
                                     {data?.show_carousel &&
-                                        <CarouselInterface data={data?.carousel_block}/>
+                                        templateManager.render(<CarouselInterface data={data?.carousel_block}/>)
                                     }
                                 </div>
                                 {/*<div className="col clockinner1 clockinner">*/}
@@ -49,7 +44,7 @@ const FormOptin = (props) => {
                         <div className="col-lg-4 offset-lg-1">
                             <div className="register_form">
                                 {data?.form_block &&
-                                    <FormBlock data={data.form_block}/>
+                                    templateManager.render(<FormBlock data={data.form_block}/>)
                                 }
                             </div>
                         </div>
@@ -57,16 +52,9 @@ const FormOptin = (props) => {
                 </div>
             </div>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'formOptin',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    })
 }
+
+FormOptin.category = 'public';
+FormOptin.templateId = 'formOptin';
 
 export default FormOptin;

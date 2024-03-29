@@ -183,7 +183,7 @@ const GridItems = (props) => {
         return searchList;
     }
 
-    function defaultView() {
+
         return (
             <>
                 <Row>
@@ -209,28 +209,6 @@ const GridItems = (props) => {
                 }
             </>
         )
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'listings',
-        templateId: 'gridItems',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            modalData: modalData,
-            setModalData: setModalData,
-            listPosition: listPosition,
-            setListPosition: setListPosition,
-            getSearchList: getSearchList,
-            showInfo: showInfo,
-            GetModal: GetModal,
-            closeModal: closeModal,
-            insertListStartItems: insertListStartItems,
-            insertListEndItems: insertListEndItems,
-            insertCustomPositionItems: insertCustomPositionItems,
-            ...props
-        }
-    });
 }
 
 function mapStateToProps(state) {
@@ -238,7 +216,8 @@ function mapStateToProps(state) {
         user: state.session[SESSION_USER],
     };
 }
-
+GridItems.category = 'listings';
+GridItems.templateId = 'gridItems';
 export default connect(
     mapStateToProps,
     null

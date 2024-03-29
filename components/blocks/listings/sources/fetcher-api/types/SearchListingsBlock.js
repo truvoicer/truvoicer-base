@@ -41,23 +41,22 @@ const SearchListingsBlock = (props) => {
             <>
                 {searchContext?.searchList?.length > 0 && searchContext?.searchStatus === SEARCH_REQUEST_COMPLETED ?
                     <>
-                        <ListingsSortBar/>
+                        {templateManager.render(<ListingsSortBar/>)}
                         {listingsContext?.listingsData?.load_more_type === "pagination" &&
-                            <Paginate />
+                            templateManager.render(<Paginate />)
                         }
                         {listingsContext?.listingsData?.load_more_type === "infinite_scroll" &&
-                            <ListingsInfiniteScroll />
+                            templateManager.render(<ListingsInfiniteScroll />)
                         }
                     </>
                     :
-                    <LoaderComponent key={"loader"}/>
+                    templateManager.render(<LoaderComponent key={"loader"}/>)
                 }
             </>
         );
     }
 
 
-    function defaultLayout() {
         return (
             <div className={"listings-container"}>
                 {isNotEmpty(listingsContext?.listingsData?.heading) &&
@@ -71,7 +70,7 @@ const SearchListingsBlock = (props) => {
                         <>
                             {filtersPosition === 'left' &&
                                 <div>
-                                    <ListingsLeftSidebar/>
+                                    {templateManager.render(<ListingsLeftSidebar/>)}
                                 </div>
                             }
                             <div>
@@ -82,7 +81,7 @@ const SearchListingsBlock = (props) => {
 
                             {filtersPosition === 'right' &&
                                 <div>
-                                    <ListingsLeftSidebar/>
+                                    {templateManager.render(<ListingsLeftSidebar/>)}
                                 </div>
                             }
                         </>
@@ -94,27 +93,13 @@ const SearchListingsBlock = (props) => {
                 </div>
             </div>
         )
-    }
-
-
-    function getLayout() {
-        let buildProps = {...props};
-        buildProps.getListingsBlock = getListingsBlock;
-        return templateManager.getTemplateComponent({
-            category: 'listings',
-            templateId: 'layoutComponent',
-            defaultComponent: defaultLayout(),
-            props: buildProps
-        });
-    }
-
-    return getLayout();
 }
 
 function mapStateToProps(state) {
     return {};
 }
-
+SearchListingsBlock.category = 'listings';
+SearchListingsBlock.templateId = 'searchListingsBlock';
 export default connect(
     mapStateToProps,
     null

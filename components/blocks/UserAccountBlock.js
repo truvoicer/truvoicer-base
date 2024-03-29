@@ -45,42 +45,28 @@ const UserAccountBlock = (props) => {
         // console.log(props.session[SESSION_AUTHENTICATED])
     }, [])  //TODO Login form appears on page load if user is authenticated
     //console.log({props, tabData})
-    function defaultView() {
-        return (
-            <div className={"user-account-area"}>
-                {tabData.length > 0 &&
-                    <>
-                        {getTabOrientation() === "vertical" &&
-                            <VerticalTabLayout
-                                data={tabData}
-                                tabIndex={getPageIndex()}
-                                tabsBgImage={props.siteSettings?.sidebar_background_image}
-                            />
-                        }
-                        {getTabOrientation() === "horizontal" &&
-                            <HorizontalTabLayout
-                                data={tabData}
-                                tabIndex={getPageIndex()}
-                            />
-                        }
-                    </>
-                }
-            </div>
-        );
-    }
 
-    return templateManager.getTemplateComponent({
-        category: 'account',
-        templateId: 'userAccountBlock',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            tabData: tabData,
-            getPageIndex: getPageIndex,
-            getTabOrientation: getTabOrientation,
-            buildTabLayoutData: buildTabLayoutData,
-        }
-    })
+    return (
+        <div className={"user-account-area"}>
+            {tabData.length > 0 &&
+                <>
+                    {getTabOrientation() === "vertical" &&
+                        <VerticalTabLayout
+                            data={tabData}
+                            tabIndex={getPageIndex()}
+                            tabsBgImage={props.siteSettings?.sidebar_background_image}
+                        />
+                    }
+                    {getTabOrientation() === "horizontal" &&
+                        <HorizontalTabLayout
+                            data={tabData}
+                            tabIndex={getPageIndex()}
+                        />
+                    }
+                </>
+            }
+        </div>
+    );
 }
 
 function mapStateToProps(state) {
@@ -91,6 +77,9 @@ function mapStateToProps(state) {
         userAccountMenu: state.page.userAccountMenu
     };
 }
+
+UserAccountBlock.category = 'account';
+UserAccountBlock.templateId = 'userAccountBlock';
 
 export default connect(
     mapStateToProps,

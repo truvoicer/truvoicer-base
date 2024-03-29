@@ -1,8 +1,6 @@
 import Slider from "react-slick";
 import React, {useContext} from "react";
 import Image from "next/image";
-import NextArrow from "../../arrows/NextArrow";
-import PrevArrow from "../../arrows/PrevArrow";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
@@ -48,7 +46,6 @@ const SpeechBubbleTestimonialsCarousel = (props) => {
         },
     };
 
-    function defaultView() {
         return (
             <div className="testimonial_area speech-bubble">
                 <Slider {...defaultSettings}>
@@ -68,15 +65,7 @@ const SpeechBubbleTestimonialsCarousel = (props) => {
                 </Slider>
             </div>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'carousel',
-        templateId: 'speechBubbleTestimonialsCarousel',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    })
 }
+SpeechBubbleTestimonialsCarousel.category = 'carousel';
+SpeechBubbleTestimonialsCarousel.templateId = 'speechBubbleTestimonialsCarousel';
 export default SpeechBubbleTestimonialsCarousel;

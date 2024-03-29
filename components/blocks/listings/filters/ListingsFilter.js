@@ -19,7 +19,7 @@ const ListingsFilter = (props) => {
 
     const getDataList = (item) => {
         if (item.type === "list" && item.source === "wordpress") {
-            return (
+            return templateManager.render(
                 <ListingsFilterListItem
                     controlPrefix={controlPrefix}
                     data={item}
@@ -27,7 +27,7 @@ const ListingsFilter = (props) => {
             );
         } else if (item.type === "list" && item.source === "api") {
             if (isSet(listingsContext?.listingsData.listings_category)) {
-                return (
+                return templateManager.render(
                     <ListingsFilterApiListItem
                         controlPrefix={controlPrefix}
                         data={item}
@@ -46,7 +46,7 @@ const ListingsFilter = (props) => {
     ) {
         return null;
     }
-    function defaultView() {
+
     return (
         <>
             {listingsFilterData?.filter_heading &&
@@ -55,16 +55,16 @@ const ListingsFilter = (props) => {
             {listingsFilterData.map((item, index) => (
                 <React.Fragment key={index}>
                     {item.type === "text" &&
-                    <ListingsFilterTextItem
+                        templateManager.render(<ListingsFilterTextItem
                         controlPrefix={controlPrefix}
                         data={item}
-                    />
+                    />)
                     }
                     {item.type === "date" &&
-                    <ListingsFilterDateItem
+                        templateManager.render(<ListingsFilterDateItem
                         controlPrefix={controlPrefix}
                         data={item}
-                    />
+                    />)
                     }
                     {item.type === "list" &&
                     getDataList(item)
@@ -73,23 +73,14 @@ const ListingsFilter = (props) => {
             ))}
         </>
     )
-    }
-    return templateManager.getTemplateComponent({
-        category: 'listings',
-        templateId: 'listingsFilter',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            getDataList: getDataList,
-            ...props
-        }
-    })
 }
 
 function mapStateToProps(state) {
     return {};
 }
 
+ListingsFilter.category = 'listings';
+ListingsFilter.templateId = 'listingsFilter';
 export default connect(
     mapStateToProps
 )(ListingsFilter);

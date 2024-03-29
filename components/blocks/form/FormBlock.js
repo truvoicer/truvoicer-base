@@ -431,7 +431,6 @@ const FormBlock = (props) => {
             addListItemButtonText: (isNotEmpty(formData?.add_item_button_label) ? formData.add_item_button_label : addListItemButtonText)
         };
     }
-    function defaultView() {
         return (
             <div className={formData.layout_style === "full-width" ? "container-fluid" : "container"}>
                 <div className={"row justify-content-" + (isNotEmpty(formData.align) ? formData.align : "start")}>
@@ -477,27 +476,10 @@ const FormBlock = (props) => {
                 {/*</Snackbar>*/}
             </div>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'formBlock',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            formSubmitCallback: formSubmitCallback,
-            formDataConfig: formDataConfig,
-            response: response,
-            setResponse: setResponse,
-            setFormDataConfig: setFormDataConfig,
-            formData: formData,
-            userData: userData,
-            setUserData: setUserData,
-            ...props
-        }
-    })
 }
 
+FormBlock.category = 'public';
+FormBlock.templateId = 'formBlock';
 
 function mapStateToProps(state) {
     return {

@@ -48,14 +48,14 @@ const FeedsListingsBlock = (props) => {
                         <>
                             {/*<ListingsSortBar/>*/}
                             {listingsContext?.listingsData.load_more_type === "pagination" &&
-                            <Paginate/>
+                                templateManager.render(<Paginate/>)
                             }
                             {listingsContext?.listingsData.load_more_type === "infinite_scroll" &&
-                            <ListingsInfiniteScroll/>
+                                templateManager.render(<ListingsInfiniteScroll/>)
                             }
                         </>
                         :
-                        <LoaderComponent key={"loader"}/>
+                        templateManager.render(<LoaderComponent key={"loader"}/>)
                     }
                 </>
                 }
@@ -65,7 +65,7 @@ const FeedsListingsBlock = (props) => {
             </>
         );
     }
-    function defaultLayout() {
+
         return (
             <BlogContext.Provider value={blogContextData}>
                 <section className="blog_area section-padding">
@@ -113,26 +113,9 @@ const FeedsListingsBlock = (props) => {
                 </section>
             </BlogContext.Provider>
         )
-    }
-    return templateManager.getTemplateComponent({
-        category: 'listings',
-        templateId: 'feedsListingsBlock',
-        defaultComponent: defaultLayout(),
-        props: {
-            defaultLayout: defaultLayout,
-            getListingsBlock: getListingsBlock,
-            showListing: showListing,
-            setShowListing: setShowListing,
-            showItemView: showItemView,
-            setShowItemView: setShowItemView,
-            itemViewData: itemViewData,
-            setItemViewData: setItemViewData,
-            itemLinkClickHandler: itemLinkClickHandler,
-            ...props
-        }
-    });
 }
-
+FeedsSidebar.category = 'listings';
+FeedsSidebar.templateId = 'feedsListingsBlock';
 function mapStateToProps(state) {
     return {};
 }

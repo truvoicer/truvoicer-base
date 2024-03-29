@@ -35,24 +35,15 @@ const ItemViewBlock = (props) => {
                         {getItemView(props.item.data)}
                     </>
                     :
-                    <LoaderComponent/>
+                    templateManager.render(<LoaderComponent/>)
                 }
             </>
         );
     }
-
-    return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'itemViewBlock',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            getItemView: getItemView,
-            ...props
-        }
-    })
 }
 
+ItemViewBlock.category = 'public';
+ItemViewBlock.templateId = 'itemViewBlock';
 function mapStateToProps(state) {
     return {
         siteSettings: state.page.siteSettings,

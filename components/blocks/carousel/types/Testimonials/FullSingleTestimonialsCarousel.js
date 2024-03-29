@@ -24,11 +24,10 @@ const FullSingleTestimonialsCarousel = (props) => {
         slidesToScroll: 1,
         centerMode: false,
         variableWidth: false,
-        nextArrow: <NextArrow/>,
-        prevArrow: <PrevArrow/>,
+        nextArrow: templateManager.render(<NextArrow/>),
+        prevArrow: templateManager.render(<PrevArrow/>),
     };
 
-    function defaultView() {
         return (
             <div className="testimonial_area  ">
                 <div className="container">
@@ -68,16 +67,7 @@ const FullSingleTestimonialsCarousel = (props) => {
                 </div>
             </div>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'carousel',
-        templateId: 'fullSingleTestimonialsCarousel',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            defaultSettings: defaultSettings,
-            ...props
-        }
-    });
 }
+FullSingleTestimonialsCarousel.category = 'carousel';
+FullSingleTestimonialsCarousel.templateId = 'fullSingleTestimonialsCarousel';
 export default FullSingleTestimonialsCarousel;

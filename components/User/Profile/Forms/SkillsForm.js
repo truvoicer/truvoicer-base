@@ -12,7 +12,7 @@ function SkillsForm(props) {
     function defaultView() {
     return (
         <>
-            <FormBlock data={props.data.form_block} />
+            {templateManager.render(<FormBlock data={props.data.form_block}/>)}
         </>
     );
     }

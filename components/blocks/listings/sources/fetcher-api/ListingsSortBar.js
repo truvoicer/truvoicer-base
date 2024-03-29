@@ -82,7 +82,7 @@ const ListingsSortBar = (props) => {
         }
     }, [searchContext?.searchOperation, limit]);
 
-    function defaultView() {
+
         return (
             <div className="listings--sortbar white-bg mb-3">
                 <div className="container">
@@ -122,28 +122,9 @@ const ListingsSortBar = (props) => {
                 </div>
             </div>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'listings',
-        templateId: 'listingsSortBar',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            limit: limit,
-            setLimit: setLimit,
-            layout: layout,
-            setLayout: setLayout,
-            limitOptions: limitOptions,
-            setLimitOptions: setLimitOptions,
-            layoutOptions: layoutOptions,
-            setLayoutOptions: setLayoutOptions,
-            layoutChangeHandler: layoutChangeHandler,
-            limitChangeHandler: limitChangeHandler,
-            ...props
-        }
-    });
 }
-
+ListingsSortBar.category = 'listings';
+ListingsSortBar.templateId = 'listingsSortBar';
 export default connect(
     null,
    null

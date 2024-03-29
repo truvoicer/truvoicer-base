@@ -98,7 +98,7 @@ const ItemViewPage = (props) => {
             <>
                 {showLoader
                     ?
-                    <LoaderComponent/>
+                    templateManager.render(<LoaderComponent/>)
                     :
                     <AppLoader templateConfig={templateConfig()} page={page} />
                 }

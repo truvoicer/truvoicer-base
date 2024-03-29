@@ -52,7 +52,7 @@ const SidebarTemplate = (props) => {
                                     </div>
                                 </>
                                 :
-                                <Loader></Loader>
+                                templateManager.render(<Loader></Loader>)
                             }
                         </>
                         <Footer/>

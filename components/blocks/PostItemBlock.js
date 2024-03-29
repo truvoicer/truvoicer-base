@@ -70,166 +70,151 @@ const PostItemBlock = (props) => {
     const prevPostCategory = getCategory(prevPost?.categories);
     const nextPostCategory = getCategory(nextPost?.categories);
 
-    function defaultView() {
-        return (
-            <section className="blog_area single-post-area section-padding">
-                <div className="container">
-                    <div className="row">
-                        <div className={`${getPostColumnClasses()} posts-list`}>
-                            <div className="single-post">
-                                <h1>{post?.post_title}</h1>
-                                <div className="blog_details">
-                                    <BlogCategoryList
-                                        categories={post?.categories}
-                                        classes={"blog-info-link mt-3 mb-4"}
-                                    />
-                                    <>{parse(post?.post_content ? post.post_content : "")}</>
-                                </div>
-                            </div>
-                            <div className="navigation-top">
-                                <div className="d-sm-flex justify-content-between text-center">
-                                    <p className="like-info">
-                                    <span className="align-middle">
-                                        <FontAwesomeIcon icon={faHeart} />
-                                    </span>
-                                        Lily and 4 people like this
-                                    </p>
-                                    <div className="col-sm-4 text-center my-2 my-sm-0">
-                                    </div>
-                                    <ul className="social-icons">
-                                        <li><a href="#"><FontAwesomeIcon icon={faFacebookF} /></a></li>
-                                        <li><a href="#"><FontAwesomeIcon icon={faTwitter} /></a></li>
-                                        <li><a href="#"><FontAwesomeIcon icon={faDribbble} /></a></li>
-                                        <li><a href="#"><FontAwesomeIcon icon={faBehance} /></a></li>
-                                    </ul>
-                                </div>
-                                <div className="navigation-area">
-                                    <div className="row">
-                                        <div
-                                            className="col-lg-6 col-md-6 col-12 nav-left flex-row d-flex justify-content-start align-items-center">
-                                            {!isObjectEmpty(prevPost) &&
-                                                <>
-                                                    <div className="thumb">
-                                                        <Link
-                                                            href={getPostItemUrl({
-                                                                post_name:  prevPost?.post_name,
-                                                                category_name: prevPostCategory?.slug
-                                                            })}
-                                                            onClick={prevPostClickHandler}>
-                                                            <img className="img-fluid"
-                                                                 src={prevPost?.featured_image}
-                                                                 alt=""/>
-                                                        </Link>
-                                                    </div>
-                                                    <div className="arrow">
-                                                        <Link
-                                                            href={getPostItemUrl({
-                                                                post_name:  prevPost?.post_name,
-                                                                category_name: prevPostCategory?.slug
-                                                            })}
-                                                            onClick={prevPostClickHandler}>
-                                                            <span className="lnr text-white ti-arrow-left"/>
-
-                                                        </Link>
-                                                    </div>
-                                                    <div className="detials">
-                                                        <p>Prev Post</p>
-                                                        <Link
-                                                            href={getPostItemUrl({
-                                                                post_name:  prevPost?.post_name,
-                                                                category_name: prevPostCategory?.slug
-                                                            })}
-                                                            onClick={prevPostClickHandler}>
-                                                            <h4>{prevPost?.post_title}</h4>
-
-                                                        </Link>
-                                                    </div>
-                                                </>
-                                            }
-                                        </div>
-                                        <div
-                                            className="col-lg-6 col-md-6 col-12 nav-right flex-row d-flex justify-content-end align-items-center">
-                                            {!isObjectEmpty(nextPost) &&
-                                                <>
-                                                    <div className="detials">
-                                                        <p>Next Post</p>
-                                                        <Link
-                                                            href={getPostItemUrl({
-                                                                post_name:  nextPost?.post_name,
-                                                                category_name: nextPostCategory?.slug
-                                                            })}
-                                                            onClick={nextPostClickHandler}>
-                                                            <h4>{nextPost?.post_title}</h4>
-
-                                                        </Link>
-                                                    </div>
-                                                    <div className="arrow">
-                                                        <Link
-                                                            href={getPostItemUrl({
-                                                                post_name:  nextPost?.post_name,
-                                                                category_name: nextPostCategory?.slug
-                                                            })}
-                                                            onClick={nextPostClickHandler}>
-                                                            <span className="lnr text-white ti-arrow-right"/>
-
-                                                        </Link>
-                                                    </div>
-                                                    <div className="thumb">
-                                                        <Link
-                                                            href={getPostItemUrl({
-                                                                post_name:  nextPost?.post_name,
-                                                                category_name: nextPostCategory?.slug
-                                                            })}
-                                                            onClick={nextPostClickHandler}>
-                                                            <img className="img-fluid"
-                                                                 src={nextPost?.featured_image}
-                                                                 alt=""/>
-
-                                                        </Link>
-                                                    </div>
-                                                </>
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={"pt-5"}>
-                                <ItemViewComments
-                                    // category={props.category}
-                                    provider={props?.post?.provider}
-                                    item_id={post?.ID}
+    return (
+        <section className="blog_area single-post-area section-padding">
+            <div className="container">
+                <div className="row">
+                    <div className={`${getPostColumnClasses()} posts-list`}>
+                        <div className="single-post">
+                            <h1>{post?.post_title}</h1>
+                            <div className="blog_details">
+                                <BlogCategoryList
+                                    categories={post?.categories}
+                                    classes={"blog-info-link mt-3 mb-4"}
                                 />
+                                <>{parse(post?.post_content ? post.post_content : "")}</>
                             </div>
                         </div>
-                        {data?.show_sidebar &&
-                            <div className={`${getSidebarClasses()}`}>
-                                <div className="blog_right_sidebar">
-                                    <ListingsLeftSidebar sidebarName={data?.select_sidebar} />
+                        <div className="navigation-top">
+                            <div className="d-sm-flex justify-content-between text-center">
+                                <p className="like-info">
+                                <span className="align-middle">
+                                    <FontAwesomeIcon icon={faHeart} />
+                                </span>
+                                    Lily and 4 people like this
+                                </p>
+                                <div className="col-sm-4 text-center my-2 my-sm-0">
+                                </div>
+                                <ul className="social-icons">
+                                    <li><a href="#"><FontAwesomeIcon icon={faFacebookF} /></a></li>
+                                    <li><a href="#"><FontAwesomeIcon icon={faTwitter} /></a></li>
+                                    <li><a href="#"><FontAwesomeIcon icon={faDribbble} /></a></li>
+                                    <li><a href="#"><FontAwesomeIcon icon={faBehance} /></a></li>
+                                </ul>
+                            </div>
+                            <div className="navigation-area">
+                                <div className="row">
+                                    <div
+                                        className="col-lg-6 col-md-6 col-12 nav-left flex-row d-flex justify-content-start align-items-center">
+                                        {!isObjectEmpty(prevPost) &&
+                                            <>
+                                                <div className="thumb">
+                                                    <Link
+                                                        href={getPostItemUrl({
+                                                            post_name:  prevPost?.post_name,
+                                                            category_name: prevPostCategory?.slug
+                                                        })}
+                                                        onClick={prevPostClickHandler}>
+                                                        <img className="img-fluid"
+                                                             src={prevPost?.featured_image}
+                                                             alt=""/>
+                                                    </Link>
+                                                </div>
+                                                <div className="arrow">
+                                                    <Link
+                                                        href={getPostItemUrl({
+                                                            post_name:  prevPost?.post_name,
+                                                            category_name: prevPostCategory?.slug
+                                                        })}
+                                                        onClick={prevPostClickHandler}>
+                                                        <span className="lnr text-white ti-arrow-left"/>
+
+                                                    </Link>
+                                                </div>
+                                                <div className="detials">
+                                                    <p>Prev Post</p>
+                                                    <Link
+                                                        href={getPostItemUrl({
+                                                            post_name:  prevPost?.post_name,
+                                                            category_name: prevPostCategory?.slug
+                                                        })}
+                                                        onClick={prevPostClickHandler}>
+                                                        <h4>{prevPost?.post_title}</h4>
+
+                                                    </Link>
+                                                </div>
+                                            </>
+                                        }
+                                    </div>
+                                    <div
+                                        className="col-lg-6 col-md-6 col-12 nav-right flex-row d-flex justify-content-end align-items-center">
+                                        {!isObjectEmpty(nextPost) &&
+                                            <>
+                                                <div className="detials">
+                                                    <p>Next Post</p>
+                                                    <Link
+                                                        href={getPostItemUrl({
+                                                            post_name:  nextPost?.post_name,
+                                                            category_name: nextPostCategory?.slug
+                                                        })}
+                                                        onClick={nextPostClickHandler}>
+                                                        <h4>{nextPost?.post_title}</h4>
+
+                                                    </Link>
+                                                </div>
+                                                <div className="arrow">
+                                                    <Link
+                                                        href={getPostItemUrl({
+                                                            post_name:  nextPost?.post_name,
+                                                            category_name: nextPostCategory?.slug
+                                                        })}
+                                                        onClick={nextPostClickHandler}>
+                                                        <span className="lnr text-white ti-arrow-right"/>
+
+                                                    </Link>
+                                                </div>
+                                                <div className="thumb">
+                                                    <Link
+                                                        href={getPostItemUrl({
+                                                            post_name:  nextPost?.post_name,
+                                                            category_name: nextPostCategory?.slug
+                                                        })}
+                                                        onClick={nextPostClickHandler}>
+                                                        <img className="img-fluid"
+                                                             src={nextPost?.featured_image}
+                                                             alt=""/>
+
+                                                    </Link>
+                                                </div>
+                                            </>
+                                        }
+                                    </div>
                                 </div>
                             </div>
-                        }
+                        </div>
+                        <div className={"pt-5"}>
+                            {templateManager.render(<ItemViewComments
+                                // category={props.category}
+                                provider={props?.post?.provider}
+                                item_id={post?.ID}
+                            />)}
+                        </div>
                     </div>
+                    {data?.show_sidebar &&
+                        <div className={`${getSidebarClasses()}`}>
+                            <div className="blog_right_sidebar">
+                                {templateManager.render(<ListingsLeftSidebar sidebarName={data?.select_sidebar}/>)}
+                            </div>
+                        </div>
+                    }
                 </div>
-            </section>
-        );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'postItemBlock',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            getPostColumnClasses: getPostColumnClasses,
-            getSidebarClasses: getSidebarClasses,
-            prevPostClickHandler: prevPostClickHandler,
-            nextPostClickHandler: nextPostClickHandler,
-            getNextPost: getNextPost,
-            getPrevPost: getPrevPost,
-            ...props
-        }
-    })
+            </div>
+        </section>
+    );
 };
+
+PostItemBlock.category = 'public';
+PostItemBlock.templateId = 'postItemBlock';
 
 function mapStateToProps(state) {
     return {

@@ -1,6 +1,5 @@
 import {isComponentFunction} from "@/truvoicer-base/library/utils";
 import {buildComponent} from "@/truvoicer-base/library/helpers/component-helpers";
-import Paginate from "@/truvoicer-base/components/blocks/listings/pagination/ListingsPaginate";
 import React from "react";
 import FullWidthTemplate from "@/truvoicer-base/components/templates/FullWidthTemplate";
 import SidebarTemplate from "@/truvoicer-base/components/templates/SidebarTemplate";
@@ -32,6 +31,52 @@ export class TemplateManager {
         }
         return null;
     }
+    hasTemplateComponent(category = null, templateId = null) {
+        return !!isComponentFunction(this.templateContext?.[category]?.[templateId]);
+    }
+
+    renderConnectFunctionComponent({defaultComponent, category, templateId, props = {}}) {
+        const TemplateComponent = buildComponent(
+            this.getTemplateComponentFromContext(
+                category,
+                templateId
+            ),
+            props
+        )
+
+        if (!TemplateComponent) {
+            const Component = buildComponent(defaultComponent, props);
+            return <Component {...props} />;
+        }
+        return <TemplateComponent {...props} />;
+    }
+    render(component, props = {}) {
+        if (component?.type?.name === 'ConnectFunction' &&
+            component?.WrappedComponent?.category &&
+            component?.WrappedComponent?.templateId
+        ) {
+            return this.renderConnectFunctionComponent({
+                defaultComponent: component,
+                category: component.WrappedComponent.category,
+                templateId: component.WrappedComponent.templateId,
+                props
+            });
+        }
+        if (
+            typeof component?.$$typeof === 'symbol' &&
+            component.$$typeof.toString() === 'Symbol(react.element)' &&
+            component.type.category &&
+            component.type.templateId
+        ) {
+            return this.getTemplateComponent({
+                category: component.type.category,
+                templateId: component.type.templateId,
+                defaultComponent: component,
+                props
+            });
+        }
+        return null;
+    }
     getTemplateComponent({category = null, templateId = null, defaultComponent = null, props = {}}) {
         const TemplateComponent = buildComponent(
             this.getTemplateComponentFromContext(
@@ -45,7 +90,6 @@ export class TemplateManager {
             return defaultComponent;
         }
         return <TemplateComponent {...props} />;
-
     }
 
     getPostTemplateLayoutComponent(pageData) {

@@ -13,41 +13,31 @@ const TabsBlock = (props) => {
     const getTabBlock = () => {
         switch (props.data.tabs_block_type) {
             case "request_video_tabs":
-                return <RequestVideoTabsBlock data={props.data} />
+                return templateManager.render(<RequestVideoTabsBlock data={props.data} />);
                 // return null
             case "request_carousel_tabs":
-                return <RequestCarouselTabsBlock data={props.data} />
+                return templateManager.render(<RequestCarouselTabsBlock data={props.data} />);
             case "custom_tabs":
-                return <CustomTabsBlock data={props.data} />
+                return templateManager.render(<CustomTabsBlock data={props.data} />);
         }
     }
 
-    function defaultView() {
+
         return (
             <>
                 {props.data?.access_control === 'protected'
                     ? (
 
-                        <UserAccountLoader>
+                        templateManager.render(
+                            <UserAccountLoader>
                             {getTabBlock()}
                         </UserAccountLoader>
+                        )
                     )
                     : getTabBlock()
                 }
             </>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'tabs',
-        templateId: 'tabsBlock',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            getTabBlock: getTabBlock,
-            ...props
-        }
-    });
 }
 
 function mapStateToProps(state) {
@@ -56,6 +46,8 @@ function mapStateToProps(state) {
     };
 }
 
+TabsBlock.category = 'tabs';
+TabsBlock.templateId = 'tabsBlock';
 export default connect(
     mapStateToProps
 )(TabsBlock);

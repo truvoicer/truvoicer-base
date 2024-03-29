@@ -18,33 +18,27 @@ const CarouselInterface = (props) => {
     const getCarousel = () => {
         switch (carouselData?.carousel_content) {
             case "custom_items":
-                return <CustomItemsCarousel data={carouselData} />
+                return templateManager.render(
+                    <CustomItemsCarousel data={carouselData} />
+                );
             case "full_width_testimonials":
-                return <FullSingleTestimonialsCarousel data={carouselData} />
+                return templateManager.render(<FullSingleTestimonialsCarousel data={carouselData} />)
             case "speech_bubble_testimonials":
-                return <SpeechBubbleTestimonialsCarousel data={carouselData} />
+                return templateManager.render(<SpeechBubbleTestimonialsCarousel data={carouselData} />)
             case "cards":
-                return <CardsCarousel data={carouselData} />
+                return templateManager.render(<CardsCarousel data={carouselData} />);
             case "request":
-                return <ApiRequestItemCarousel data={carouselData} />
+                return templateManager.render(
+                    <ApiRequestItemCarousel data={carouselData} />
+                );
             default:
                 return null
         }
     }
-    function defaultView() {
-        return getCarousel();
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'carousel',
-        templateId: 'carouselInterface',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            getCarousel: getCarousel,
-            ...props
-        }
-    })
+    return getCarousel();
 };
+
+CarouselInterface.category = "carousel";
+CarouselInterface.templateId = "carouselInterface";
 
 export default CarouselInterface;

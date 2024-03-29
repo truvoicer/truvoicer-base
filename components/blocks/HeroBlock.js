@@ -28,76 +28,66 @@ const HeroBlock = (props) => {
 
     const defaultButtonLabel = "Start Searching";
     const buttonLabel = getExtraDataValue("button_label", props.data?.hero_extra_data);
-    function defaultView() {
-        return (
-            <>
-                {heroType === "breadcrumb_hero" &&
-                    <div
-                        className="bradcam_area"
-                        style={{backgroundImage: `url(${breadcrumbBgUrl})`}}
-                    >
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-xl-12">
-                                    <div className="bradcam_text">
-                                        <h3>{itemDataTextFilter(props?.data?.hero_title)}</h3>
-                                    </div>
+
+    return (
+        <>
+            {heroType === "breadcrumb_hero" &&
+                <div
+                    className="bradcam_area"
+                    style={{backgroundImage: `url(${breadcrumbBgUrl})`}}
+                >
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-xl-12">
+                                <div className="bradcam_text">
+                                    <h3>{itemDataTextFilter(props?.data?.hero_title)}</h3>
                                 </div>
                             </div>
                         </div>
                     </div>
-                }
-                {heroType === "full_hero" &&
-                    <div className="slider_area">
-                        <div
-                            className="single_slider  d-flex align-items-center slider_bg_1"
-                            style={{backgroundImage: `url(${primaryBgUrl})`}}
-                        >
-                            <div className="container">
-                                <div className="row align-items-center">
-                                    <div className="col-lg-7 col-md-6">
-                                        <div className="slider_text">
-                                            <h5 className="wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".2s">
+                </div>
+            }
+            {heroType === "full_hero" &&
+                <div className="slider_area">
+                    <div
+                        className="single_slider  d-flex align-items-center slider_bg_1"
+                        style={{backgroundImage: `url(${primaryBgUrl})`}}
+                    >
+                        <div className="container">
+                            <div className="row align-items-center">
+                                <div className="col-lg-7 col-md-6">
+                                    <div className="slider_text">
+                                        <h5 className="wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".2s">
 
-                                            </h5>
-                                            <h3 className="wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".3s">
-                                                {itemDataTextFilter(props?.data?.hero_title)}
-                                            </h3>
-                                            <p className="wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".4s">
-                                                {props.data && props.data.hero_text ? props.data.hero_text : ""}
-                                            </p>
-                                            <div className="sldier_btn wow fadeInLeft" data-wow-duration="1s"
-                                                 data-wow-delay=".5s">
-                                                <a onClick={buttonClickHandler} className="boxed-btn3">
-                                                    {isNotEmpty(buttonLabel)? buttonLabel : defaultButtonLabel}
-                                                </a>
-                                            </div>
+                                        </h5>
+                                        <h3 className="wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".3s">
+                                            {itemDataTextFilter(props?.data?.hero_title)}
+                                        </h3>
+                                        <p className="wow fadeInLeft" data-wow-duration="1s" data-wow-delay=".4s">
+                                            {props.data && props.data.hero_text ? props.data.hero_text : ""}
+                                        </p>
+                                        <div className="sldier_btn wow fadeInLeft" data-wow-duration="1s"
+                                             data-wow-delay=".5s">
+                                            <a onClick={buttonClickHandler} className="boxed-btn3">
+                                                {isNotEmpty(buttonLabel)? buttonLabel : defaultButtonLabel}
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="ilstration_img wow fadeInRight d-none d-lg-block text-right" data-wow-duration="1s"
-                             data-wow-delay=".2s">
-                            <img src={secondaryBgUrl} alt=""/>
-                        </div>
                     </div>
-                }
-            </>
-        );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'heroBlock',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            buttonClickHandler: buttonClickHandler
-        }
-    })
+                    <div className="ilstration_img wow fadeInRight d-none d-lg-block text-right" data-wow-duration="1s"
+                         data-wow-delay=".2s">
+                        <img src={secondaryBgUrl} alt=""/>
+                    </div>
+                </div>
+            }
+        </>
+    );
 }
-
+HeroBlock.category = 'public';
+HeroBlock.templateId = 'heroBlock';
 function mapStateToProps(state) {
     return {
         item: state.item,

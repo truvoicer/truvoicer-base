@@ -103,6 +103,7 @@ const AppLoader = ({templateConfig = {}, page}) => {
     useEffect(() => {
         LoadEnvironment();
         validateToken();
+        console.log("AppLoader useEffect")
     }, [])
     return (
             <AppContext.Provider value={appContextState}>

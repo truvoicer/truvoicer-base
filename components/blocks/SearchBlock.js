@@ -120,92 +120,81 @@ const SearchBlock = (props) => {
     }
 
     //console.log(searchContext?.searchOperation)
-    function defaultView() {
-        return (
-            <>
-                {showSearch &&
-                    <div className="catagory_area">
-                        <form onSubmit={formSubmitHandler}>
-                            <div className="container">
-                                <div className="row cat_search">
-                                    <div className="col-lg-3 col-md-4">
-                                        <div className="single_input">
-                                            <input type="text"
-                                                   className="form-control rounded"
-                                                   placeholder={searchPlaceholder}
-                                                   name={"query"}
-                                                   value={query}
-                                                   onChange={formChangeHandler}/>
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-3 col-md-4">
-                                        <div className="single_input">
-                                            <input type="text"
-                                                   className="form-control rounded"
-                                                   placeholder={locationPlaceholder}
-                                                   name={"location"}
-                                                   value={location}
-                                                   onChange={formChangeHandler}/>
-                                        </div>
-
-                                    </div>
-                                    <div className="col-lg-3 col-md-4">
-                                        <div className="single_input">
-                                            <select
-                                                className="wide form-control rounded nice-select"
-                                                name="category"
-                                                defaultValue={category}
-                                                onChange={formChangeHandler}>
-                                                <option
-                                                    value="all">{categoriesPlaceholder}</option>
-                                                {categories && categories.map((item, index) => (
-                                                    <option key={index} value={item.name}>{item.label}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-3 col-md-12">
-                                        <div className="job_btn">
-                                            <button type={"submit"}
-                                                    className="boxed-btn3">{searchButtonLabel}</button>
-                                        </div>
+    return (
+        <>
+            {showSearch &&
+                <div className="catagory_area">
+                    <form onSubmit={formSubmitHandler}>
+                        <div className="container">
+                            <div className="row cat_search">
+                                <div className="col-lg-3 col-md-4">
+                                    <div className="single_input">
+                                        <input type="text"
+                                               className="form-control rounded"
+                                               placeholder={searchPlaceholder}
+                                               name={"query"}
+                                               value={query}
+                                               onChange={formChangeHandler}/>
                                     </div>
                                 </div>
+                                <div className="col-lg-3 col-md-4">
+                                    <div className="single_input">
+                                        <input type="text"
+                                               className="form-control rounded"
+                                               placeholder={locationPlaceholder}
+                                               name={"location"}
+                                               value={location}
+                                               onChange={formChangeHandler}/>
+                                    </div>
 
-                                <div className="row">
-                                    <div className="col-lg-12">
-                                        <div className="popular_search d-flex align-items-center">
-                                            <span>{featuredCategoriesLabel}</span>
-                                            <ul>
-                                                {featured_categories && featured_categories.map((item, index) => (
-                                                    <li key={index} value={item.name}>
-                                                        <a onClick={categoriesClickHandler.bind(this, item.name)}>{item.label}</a>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
+                                </div>
+                                <div className="col-lg-3 col-md-4">
+                                    <div className="single_input">
+                                        <select
+                                            className="wide form-control rounded nice-select"
+                                            name="category"
+                                            defaultValue={category}
+                                            onChange={formChangeHandler}>
+                                            <option
+                                                value="all">{categoriesPlaceholder}</option>
+                                            {categories && categories.map((item, index) => (
+                                                <option key={index} value={item.name}>{item.label}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="col-lg-3 col-md-12">
+                                    <div className="job_btn">
+                                        <button type={"submit"}
+                                                className="boxed-btn3">{searchButtonLabel}</button>
                                     </div>
                                 </div>
                             </div>
-                        </form>
-                    </div>
-                }
-            </>
-        );
-    }
-//console.log('sb')
-    return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'searchBlock',
-        defaultComponent: defaultView(),
-        props: {
-            formSubmitHandler: formSubmitHandler,
-            formChangeHandler: formChangeHandler,
-            categoriesClickHandler: categoriesClickHandler,
-            defaultView: defaultView
-        }
-    })
+
+                            <div className="row">
+                                <div className="col-lg-12">
+                                    <div className="popular_search d-flex align-items-center">
+                                        <span>{featuredCategoriesLabel}</span>
+                                        <ul>
+                                            {featured_categories && featured_categories.map((item, index) => (
+                                                <li key={index} value={item.name}>
+                                                    <a onClick={categoriesClickHandler.bind(this, item.name)}>{item.label}</a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            }
+        </>
+    );
 }
+
+SearchBlock.category = 'public';
+SearchBlock.templateId = 'searchBlock';
 export default connect(
     null,
     null

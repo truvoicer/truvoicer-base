@@ -39,12 +39,12 @@ const ListingsLeftSidebar = (props) => {
         sidebarRequest();
     }, [sidebarName]);
 
-    function defaultView() {
+
         return (
             <div className="job_filter white-bg">
                 <div className="form_inner white-bg">
                     <Left />
-                    <ListingsFilter  listingsContextGroup={{fetchListingsContextGroups}}/>
+                    {templateManager.render(<ListingsFilter listingsContextGroup={{fetchListingsContextGroups}}/>)}
                     {data.map((item, index) => (
                         <React.Fragment key={index.toString()}>
                             {item}
@@ -53,20 +53,9 @@ const ListingsLeftSidebar = (props) => {
                 </div>
             </div>
         )
-    }
-    return templateManager.getTemplateComponent({
-        category: 'listings',
-        templateId: 'listingsLeftSidebar',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            data: data,
-            setData: setData,
-            ...props
-        }
-    });
 }
-
+ListingsLeftSidebar.category = 'listings';
+ListingsLeftSidebar.templateId = 'listingsLeftSidebar';
 function mapStateToProps(state) {
     return {};
 }

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {
     DISPLAY_AS, DISPLAY_AS_COMPARISONS, DISPLAY_AS_LIST, DISPLAY_AS_POST_LIST,
     LISTINGS_BLOCK_SOURCE_API,
@@ -12,15 +12,18 @@ import {isNotEmpty} from "@/truvoicer-base/library/utils";
 import SearchListingsBlock
     from "@/truvoicer-base/components/blocks/listings/sources/fetcher-api/types/SearchListingsBlock";
 import ListingsBlockContainer from "@/truvoicer-base/components/blocks/listings/ListingsBlockContainer";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ListingsBlockInterface = ({data}) => {
 
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     function loadByWpDataSource() {
         switch (data?.wordpress_data_source) {
             case LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST:
-                return <SearchListingsBlock data={data}/>
+                return templateManager.render(<SearchListingsBlock data={data}/>);
             case LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS:
-                return <PostsBlock data={data}/>
+                return templateManager.render(<PostsBlock data={data}/>);
             default:
                 return null;
         }
@@ -31,7 +34,7 @@ const ListingsBlockInterface = ({data}) => {
                 return loadByWpDataSource();
             case LISTINGS_BLOCK_SOURCE_API:
             default:
-                return <SearchListingsBlock data={data}/>
+                return templateManager.render(<SearchListingsBlock data={data}/>);
         }
     }
 
@@ -42,11 +45,11 @@ const ListingsBlockInterface = ({data}) => {
 
         switch (data[DISPLAY_AS]) {
             case DISPLAY_AS_POST_LIST:
-                return <PostsBlock data={data}/>
+                return templateManager.render(<PostsBlock data={data}/>);
             case DISPLAY_AS_LIST:
-                return <SearchListingsBlock data={data}/>
+                return templateManager.render(<SearchListingsBlock data={data}/>);
             case DISPLAY_AS_COMPARISONS:
-                return <SearchListingsBlock data={data}/>
+                return templateManager.render(<SearchListingsBlock data={data}/>);
             default:
                 console.warn("No display type set");
                 return null;

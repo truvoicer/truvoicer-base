@@ -39,7 +39,7 @@ const ListingsFilterListItem = (props) => {
         }
     }, [searchContext?.searchOperation]);
 
-    function defaultView() {
+
     return (
         <div className="single_field">
             <label className="widget-title">{props.data.label}</label>
@@ -63,23 +63,14 @@ const ListingsFilterListItem = (props) => {
             </ul>
         </div>
     )
-    }
-    return templateManager.getTemplateComponent({
-        category: 'listings',
-        templateId: 'listingsFilterListItem',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            formChangeHandler: formChangeHandler,
-            ...props
-        }
-    })
 }
 
 function mapStateToProps(state) {
     return {};
 }
 
+ListingsFilterListItem.category = 'listings';
+ListingsFilterListItem.templateId = 'listingsFilterListItem';
 export default connect(
     mapStateToProps,
     null

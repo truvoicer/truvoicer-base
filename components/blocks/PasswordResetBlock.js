@@ -56,46 +56,33 @@ const PasswordResetBlock = (props) => {
         passwordResetValidateRequest();
     }, [props.session[SESSION_PASSWORD_RESET_KEY], props.session[SESSION_USER][SESSION_USER_ID]])
 
-    function defaultView() {
-        return (
-            <div className="site-section">
-                <div className="container">
-                    <div className="row justify-content-center">
-                        <div className="col-md-7 mb-5" data-aos="fade">
-                            <div className="row form-group bg-light">
-                                <div className="col-12">
-                                    <p className={"text-center p-3 m-0 "}>
-                                        {response.message}
-                                    </p>
-                                </div>
+    return (
+        <div className="site-section">
+            <div className="container">
+                <div className="row justify-content-center">
+                    <div className="col-md-7 mb-5" data-aos="fade">
+                        <div className="row form-group bg-light">
+                            <div className="col-12">
+                                <p className={"text-center p-3 m-0 "}>
+                                    {response.message}
+                                </p>
                             </div>
+                        </div>
 
-                            <div className="row form-group">
-                                <div className="col-12">
-                                    <p>No account yet? <a href={siteConfig.defaultRegisterHref}
-                                                          onClick={showAuthRegisterModal}>Register</a></p>
-                                </div>
+                        <div className="row form-group">
+                            <div className="col-12">
+                                <p>No account yet? <a href={siteConfig.defaultRegisterHref}
+                                                      onClick={showAuthRegisterModal}>Register</a></p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'account',
-        templateId: 'passwordResetBlock',
-        defaultComponent: defaultView(),
-        props: {
-            showAuthRegisterModal: showAuthRegisterModal,
-            validateCallback: validateCallback,
-            defaultView: defaultView,
-            response: response,
-            setResponse: setResponse
-        }
-    })
+        </div>
+    );
 }
+PasswordResetBlock.category = 'account';
+PasswordResetBlock.templateId = 'passwordResetBlock';
 
 function mapStateToProps(state) {
     return {

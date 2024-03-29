@@ -52,7 +52,7 @@ const AccountArea = (props) => {
     const loadAccountArea = (loadKey) => {
         switch (loadKey) {
             case "show_loader":
-                return <LoaderComponent />;
+                return templateManager.render(<LoaderComponent />);
             case "show_account_area":
                 return getAccountArea();
             case "show_login":

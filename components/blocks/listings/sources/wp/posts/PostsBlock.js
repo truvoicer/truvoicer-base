@@ -31,16 +31,16 @@ const PostsBlock = (props) => {
             <>
                 {searchContext?.searchList?.length > 0 && searchContext?.searchStatus === SEARCH_REQUEST_COMPLETED ?
                     <>
-                        <ListingsSortBar/>
+                        {templateManager.render(<ListingsSortBar/>)}
                         {listingsContext?.listingsData?.load_more_type === "pagination" &&
-                            <Paginate/>
+                            templateManager.render(<Paginate/>)
                         }
                         {listingsContext?.listingsData?.load_more_type === "infinite_scroll" &&
-                            <ListingsInfiniteScroll/>
+                            templateManager.render(<ListingsInfiniteScroll/>)
                         }
                     </>
                     :
-                    <LoaderComponent key={"loader"}/>
+                    templateManager.render(<LoaderComponent key={"loader"}/>)
                 }
             </>
         );
@@ -48,7 +48,7 @@ const PostsBlock = (props) => {
 
     //console.log({props, listingsContext, searchContext})
 
-    function defaultLayout() {
+
         return (
                 <section className="blog_area section-padding">
                     <div className="container">
@@ -65,7 +65,8 @@ const PostsBlock = (props) => {
                                         {filtersPosition === 'left' &&
 
                                             <div className="col-12 col-sm-9 col-md-6 col-lg-3 d-none d-lg-block">
-                                                <ListingsLeftSidebar sidebarName={props.data?.select_sidebar} />
+                                                {templateManager.render(<ListingsLeftSidebar
+                                                    sidebarName={props.data?.select_sidebar}/>)}
                                             </div>
                                         }
 
@@ -77,7 +78,7 @@ const PostsBlock = (props) => {
 
                                         {filtersPosition === 'right' &&
                                             <div className="col-12 col-sm-9 col-md-6 col-lg-3 d-none d-lg-block">
-                                                <ListingsLeftSidebar sidebarName={props.data?.select_sidebar} />
+                                                {templateManager.render(<ListingsLeftSidebar sidebarName={props.data?.select_sidebar}/>)}
                                             </div>
                                         }
                                     </>
@@ -90,21 +91,9 @@ const PostsBlock = (props) => {
                     </div>
                 </section>
         )
-    }
-
-
-    function getLayout() {
-        let buildProps = {...props};
-        buildProps.getListingsBlock = getListingsBlock;
-        return templateManager.getTemplateComponent({
-            category: 'listings',
-            templateId: 'postsBlock',
-            defaultComponent: defaultLayout(),
-            props: buildProps
-        });
-    }
-
-    return getLayout();
 };
+
+PostsBlock.category = 'listings';
+PostsBlock.templateId = 'postsBlock';
 
 export default PostsBlock;

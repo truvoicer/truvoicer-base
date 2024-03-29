@@ -4,7 +4,6 @@ import {
     setPasswordResetKeyAction,
     setSessionUserIdAction,
 } from "@/truvoicer-base/redux/actions/session-actions";
-import {connect} from "react-redux";
 import {isObjectEmpty} from "@/truvoicer-base/library/utils";
 import AppLoader from "@/truvoicer-base/AppLoader";
 import {templateConfig} from "@/config/template-config";
@@ -23,11 +22,11 @@ const FetcherApp = ({
             basePageData.options = pageOptions;
         }
         loadBasePageData(basePageData);
-
-        if (isResetKey) {
-            setPasswordResetKeyAction(params.reset_key)
-            setSessionUserIdAction(params.user_id)
-        }
+        console.log('FetcherApp', page, settings, pageOptions, isResetKey)
+        // if (isResetKey) {
+        //     setPasswordResetKeyAction(params.reset_key)
+        //     setSessionUserIdAction(params.user_id)
+        // }
     }, [])
 
     return (
@@ -36,7 +35,4 @@ const FetcherApp = ({
 }
 
 
-export default connect(
-    null,
-    null
-)(FetcherApp);
+export default FetcherApp;

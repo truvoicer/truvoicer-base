@@ -2,8 +2,8 @@ import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import Nav from "react-bootstrap/Nav";
 import Tab from "react-bootstrap/Tab";
-import {fetchData} from "../../../../truvoicer-base/library/api/fetcher/middleware";
-import {uCaseFirst} from "../../../../truvoicer-base/library/utils";
+import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
+import {uCaseFirst} from "@/truvoicer-base/library/utils";
 import ApiRequestItemCarousel from "../carousel/ApiRequestItemCarousel";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
@@ -44,7 +44,7 @@ const RequestCarouselTabsBlock = (props) => {
         providersFetchRequest();
     }, [props.data.request_tabs, listingsContext?.listingsData?.providers])
 
-    function defaultView() {
+
         return (
             <>
                 <Tab.Container id="left-tabs-example" defaultActiveKey={0}>
@@ -84,7 +84,9 @@ const RequestCarouselTabsBlock = (props) => {
                         <Tab.Content className={"wow fadeInUp"}>
                             {data.map((tab, index) => (
                                 <Tab.Pane eventKey={index} key={index}>
-                                    <ApiRequestItemCarousel data={tab.request_data}/>
+                                    {templateManager.render(
+                                        <ApiRequestItemCarousel data={tab.request_data}/>
+                                    )}
                                 </Tab.Pane>
                             ))}
                         </Tab.Content>
@@ -92,20 +94,6 @@ const RequestCarouselTabsBlock = (props) => {
                 </Tab.Container>
             </>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'requestCarouselTabsBlock',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            getDataCallback: getDataCallback,
-            providersFetchRequest: providersFetchRequest,
-            data: data,
-            setData: setData,
-            ...props
-        }
-    });
 }
 
 function mapStateToProps(state) {
@@ -114,6 +102,8 @@ function mapStateToProps(state) {
     };
 }
 
+RequestCarouselTabsBlock.category = 'public';
+RequestCarouselTabsBlock.templateId = 'requestCarouselTabsBlock';
 export default connect(
     mapStateToProps
 )(RequestCarouselTabsBlock);

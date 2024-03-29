@@ -1,6 +1,5 @@
 import {isSet} from "../../library/utils";
 import BlogSearch from "../../components/widgets/BlogSearch";
-import ListingsFilter from "../../components/blocks/listings/filters/ListingsFilter";
 import SidebarMenu from "@/truvoicer-base/components/Menus/SidebarMenu";
 import React from "react";
 import CategoryListWidget from "../../components/widgets/CategoryListWidget";

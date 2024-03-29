@@ -7,21 +7,13 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 const PrevArrow = (props) => {
     const { className, style, onClick } = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    function defaultView() {
-        return (
-            <div className={"owl-prev"} onClick={onClick} style={{...style, display: "block"}}>
-                <FontAwesomeIcon icon={faAngleLeft} />
-            </div>
-        );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'carousel',
-        templateId: 'prevArrow',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    });
+
+    return (
+        <div className={"owl-prev"} onClick={onClick} style={{...style, display: "block"}}>
+            <FontAwesomeIcon icon={faAngleLeft} />
+        </div>
+    );
 }
+PrevArrow.category = 'carousel';
+PrevArrow.templateId = 'prevArrow';
 export default PrevArrow;

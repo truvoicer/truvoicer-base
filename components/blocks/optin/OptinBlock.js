@@ -10,29 +10,18 @@ const OptinBlock = (props) => {
     const getOptin = (data) => {
         switch (data?.optin_type) {
             case "form":
-                return <FormOptin data={data} />
+                return templateManager.render(<FormOptin data={data} />);
             default:
                 return null;
         }
     }
-    function defaultView() {
+
         return (
             <>
                 {getOptin(data)}
             </>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'optinBlock',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            getOptin: getOptin,
-            ...props
-        }
-    })
 }
-
+OptinBlock.category = 'public';
+OptinBlock.templateId = 'optinBlock';
 export default OptinBlock;

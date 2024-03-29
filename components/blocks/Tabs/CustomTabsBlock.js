@@ -55,7 +55,7 @@ const CustomTabsBlock = (props) => {
     const getTabContent = (tab) => {
         switch (tab.custom_tabs_type) {
             case "custom_carousel":
-                return <CarouselInterface data={tab?.carousel_block}/>
+                return templateManager.render(<CarouselInterface data={tab?.carousel_block}/>);
             case "form":
                 return getForm(tab)
             case "custom_content":
@@ -82,7 +82,7 @@ const CustomTabsBlock = (props) => {
         return tabIndex;
     }
 //console.log({props})
-    function defaultView() {
+
         return (
             <>
                 <Tab.Container
@@ -164,19 +164,6 @@ const CustomTabsBlock = (props) => {
                 </Tab.Container>
             </>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'customTabsBlock',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            getForm: getForm,
-            getTabContent: getTabContent,
-            getDefaultActiveTab: getDefaultActiveTab,
-            ...props
-        }
-    });
 }
 
 function mapStateToProps(state) {
@@ -184,7 +171,8 @@ function mapStateToProps(state) {
         tabsData: state.page.blocksData?.tru_fetcher_tabs
     };
 }
-
+CustomTabsBlock.category = 'public';
+CustomTabsBlock.templateId = 'customTabsBlock';
 export default connect(
     mapStateToProps
 )(CustomTabsBlock);

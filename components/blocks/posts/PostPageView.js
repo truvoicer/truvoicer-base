@@ -53,33 +53,21 @@ const PostPageView = (props) => {
 
     }, [])
 
-    function defaultView() {
+
         return (
             <>
                 {showLoader
                     ?
-                    <LoaderComponent/>
+                    templateManager.render(<LoaderComponent/>)
                     :
 
                     <AppLoader templateConfig={templateConfig()} page={page} />
                 }
             </>
         )
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'pages',
-        templateId: 'postPageView',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            showLoader: showLoader,
-            setShowLoader: setShowLoader,
-            ...props
-        }
-    })
 }
-
+PostPageView.category = 'pages';
+PostPageView.templateId = 'postPageView';
 export default connect(
     (state) => ({
         page: state.page,

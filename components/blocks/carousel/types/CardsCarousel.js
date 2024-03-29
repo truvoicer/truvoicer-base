@@ -24,8 +24,8 @@ const CardsCarousel = (props) => {
         slidesToScroll: 1,
         centerMode: false,
         variableWidth: true,
-        nextArrow: <NextArrow/>,
-        prevArrow: <PrevArrow/>,
+        nextArrow: templateManager.render(<NextArrow/>),
+        prevArrow: templateManager.render(<PrevArrow/>),
         responsive: [
             {
                 breakpoint: 600,
@@ -45,7 +45,6 @@ const CardsCarousel = (props) => {
         ]
     };
 
-    function defaultView() {
         return (
             <div className="top_companies_area">
                 <div className="container">
@@ -79,17 +78,7 @@ const CardsCarousel = (props) => {
                 </div>
             </div>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'carousel',
-        templateId: 'cardsCarousel',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            defaultSettings: defaultSettings,
-            ...props
-        }
-    });
 }
+CardsCarousel.category = 'carousel';
+CardsCarousel.templateId = 'cardsCarousel';
 export default CardsCarousel;
