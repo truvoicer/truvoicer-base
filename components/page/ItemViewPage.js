@@ -93,7 +93,7 @@ const ItemViewPage = (props) => {
     }, [])
 
 
-    function defaultView() {
+
         return (
             <>
                 {showLoader
@@ -104,22 +104,9 @@ const ItemViewPage = (props) => {
                 }
             </>
         )
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'pages',
-        templateId: 'itemViewPage',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            itemPageInit: itemPageInit,
-            showLoader: showLoader,
-            setShowLoader: setShowLoader,
-            ...props
-        }
-    })
 }
-
+ItemViewPage.category = 'pages';
+ItemViewPage.templateId = 'itemViewPage';
 export default connect(
     (state) => {
         return {

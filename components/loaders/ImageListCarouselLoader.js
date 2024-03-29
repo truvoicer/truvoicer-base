@@ -47,7 +47,7 @@ const ImageListCarouselLoader = (props) => {
         }
     }, [props.imageData])
 
-    function defaultView() {
+
     return (
         <>
             {Array.isArray(imageList) && imageList.length > 0 &&
@@ -84,19 +84,7 @@ const ImageListCarouselLoader = (props) => {
             }
         </>
     )
-    }
-    return templateManager.getTemplateComponent({
-        category: 'loaders',
-        templateId: 'imageListCarouselLoader',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            loaderDataRequest: loaderDataRequest,
-            imageList: imageList,
-            setImageList: setImageList,
-            fetchLoaderDataCallback: fetchLoaderDataCallback,
-            ...props
-        }
-    })
 }
+ImageListCarouselLoader.category = 'loaders';
+ImageListCarouselLoader.templateId = 'imageListCarouselLoader';
 export default ImageListCarouselLoader;

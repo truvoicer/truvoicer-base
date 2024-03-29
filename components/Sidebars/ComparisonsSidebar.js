@@ -18,6 +18,7 @@ const ComparisonsSidebar = (props) => {
 
                 setData(buildSidebar({
                     sidebarData: sidebar,
+                    templateManager
                 }))
             }
         } catch (e) {
@@ -43,30 +44,18 @@ const ComparisonsSidebar = (props) => {
         )
     }
 
-    function defaultView() {
+
         return (
             <>{getContent()}</>
         )
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'sidebars',
-        templateId: 'comparisonsSidebar',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            data,
-            setData,
-            ...props
-        }
-    })
 
 }
 
 function mapStateToProps(state) {
     return {};
 }
-
+ComparisonsSidebar.category = 'sidebars';
+ComparisonsSidebar.templateId = 'comparisonsSidebar';
 export default connect(
     mapStateToProps,
     null

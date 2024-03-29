@@ -57,7 +57,7 @@ const ImageLoader = (props) => {
             })
         }
     }, [props.imageData])
-    function defaultView() {
+
         return (
             <>
                 {props.background ?
@@ -70,19 +70,7 @@ const ImageLoader = (props) => {
 
             </>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'imageLoader',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            fetchLoaderDataCallback: fetchLoaderDataCallback,
-            fetchImageData: fetchImageData,
-            image: image,
-            setImage: setImage,
-            ...props
-        }
-    });
 }
+ImageLoader.category = 'public';
+ImageLoader.templateId = 'imageLoader';
 export default ImageLoader;

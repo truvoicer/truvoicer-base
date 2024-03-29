@@ -19,7 +19,7 @@ const StarRatings = (props) => {
         return ratingStars;
     }
 
-    function defaultView() {
+
         return (
             <>
                 {getRatingStars().map((item, index) => (
@@ -29,19 +29,7 @@ const StarRatings = (props) => {
                 ))}
             </>
         )
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'widgets',
-        templateId: 'starRatings',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            defaultRatingsClassName,
-            maxRating,
-            getRatingStars,
-            ...props
-        }
-    })
 }
+StarRatings.category = 'widgets';
+StarRatings.templateId = 'starRatings';
 export default StarRatings;

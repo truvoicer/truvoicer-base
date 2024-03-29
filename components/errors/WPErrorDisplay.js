@@ -5,7 +5,7 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 const WPErrorDisplay = (props) => {
     const {errorData = []} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    function defaultView() {
+
         return (
             <div className="bg-white">
                 {errorData.map((response, index) => {
@@ -35,17 +35,7 @@ const WPErrorDisplay = (props) => {
                 })}
             </div>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'wpErrorDisplay',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    });
 };
-
+WPErrorDisplay.category = 'public';
+WPErrorDisplay.templateId = 'wpErrorDisplay';
 export default WPErrorDisplay;

@@ -62,7 +62,7 @@ const RequestVideoTabsBlock = (props) => {
     }, [props.data.request_tabs, searchContext?.searchList, listingsContext?.listingsData?.providers])
 
     const getVideo = (tab) => {
-        return <YoutubePlayer video_id={tab.video_id} video_name={tab.video_name} />
+        return templateManager.render(<YoutubePlayer video_id={tab.video_id} video_name={tab.video_name} />)
     }
 
     const getGameRequestIds = (gameList, provider) => {

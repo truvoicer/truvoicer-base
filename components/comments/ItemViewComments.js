@@ -72,7 +72,7 @@ const ItemViewComments = (props) => {
 
 
     return (
-        <CommentsList items={comments} commentSubmitCallback={commentSubmitCallback}/>
+        templateManager.render( <CommentsList items={comments} commentSubmitCallback={commentSubmitCallback}/>)
     );
 }
 

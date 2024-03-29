@@ -7,7 +7,7 @@ const CustomButton = (props) => {
     const options = props.data.custom_options;
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    function defaultView() {
+
         return (
             <>
                 {Array.isArray(options?.buttons) && options.buttons.map((button, index) => (
@@ -21,17 +21,7 @@ const CustomButton = (props) => {
                 ))}
             </>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'buttons',
-        templateId: 'customButton',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            options,
-            ...props
-        }
-    })
 }
+CustomButton.category = 'buttons';
+CustomButton.templateId = 'customButton';
 export default CustomButton;

@@ -29,7 +29,7 @@ const RecentPostsWidget = (props) => {
         recentPostsListRequest();
     }, [data])
 
-    function defaultView() {
+
         return (
             <aside className="single_sidebar_widget popular_post_widget">
                 <h3 className="widget_title">{data?.title || "Recent Posts"}</h3>
@@ -57,20 +57,7 @@ const RecentPostsWidget = (props) => {
                 ))}
             </aside>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'widgets',
-        templateId: 'recentPostsWidget',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            recentPostsListRequest,
-            postData,
-            setPostData,
-            ...props
-        }
-    })
 };
-
+RecentPostsWidget.category = 'widgets';
+RecentPostsWidget.templateId = 'recentPostsWidget';
 export default RecentPostsWidget;

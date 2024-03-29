@@ -94,24 +94,24 @@ export class TemplateManager {
 
     getPostTemplateLayoutComponent(pageData) {
         if (!pageData?.post_type) {
-            return <FullWidthTemplate />;
+            return this.render(<FullWidthTemplate />);
         }
         switch (pageData?.post_type) {
             case 'page':
                 return this.getTemplateLayoutComponent(pageData?.page_options?.trf_gut_pmf_page_options_page_template);
             case 'post':
             default:
-                return <FullWidthTemplate />;
+                return this.render(<FullWidthTemplate />);
         }
     }
     getTemplateLayoutComponent(templateLayout) {
         switch (templateLayout) {
             case 'left-sidebar':
             case 'right-sidebar':
-                return <SidebarTemplate />;
+                return this.render(<SidebarTemplate />);
             case 'full-width':
             default:
-                return <FullWidthTemplate />;
+                return this.render(<FullWidthTemplate />);
         }
     }
 

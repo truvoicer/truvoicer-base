@@ -85,29 +85,13 @@ const ImageListLoader = (props) => {
         }
     }, [props.imageData])
 
-    function defaultView() {
+
     return (
         <>
             {getList(imageList, props.item.provider)}
         </>
     );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'loaders',
-        templateId: 'imageListLoader',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            fetchLoaderDataCallback: fetchLoaderDataCallback,
-            imageList: imageList,
-            setImageList: setImageList,
-            getList: getList,
-            getDivList: getDivList,
-            getOrderedList: getOrderedList,
-            getUnorderedList: getUnorderedList,
-            loaderDataRequest: loaderDataRequest,
-            ...props
-        }
-    })
 }
+ImageListLoader.category = 'loaders';
+ImageListLoader.templateId = 'imageListLoader';
 export default ImageListLoader;

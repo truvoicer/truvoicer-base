@@ -51,17 +51,17 @@ const UserAccountBlock = (props) => {
             {tabData.length > 0 &&
                 <>
                     {getTabOrientation() === "vertical" &&
-                        <VerticalTabLayout
+                        templateManager.render(<VerticalTabLayout
                             data={tabData}
                             tabIndex={getPageIndex()}
                             tabsBgImage={props.siteSettings?.sidebar_background_image}
-                        />
+                        />)
                     }
                     {getTabOrientation() === "horizontal" &&
-                        <HorizontalTabLayout
+                        templateManager.render(<HorizontalTabLayout
                             data={tabData}
                             tabIndex={getPageIndex()}
-                        />
+                        />)
                     }
                 </>
             }

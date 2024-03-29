@@ -37,7 +37,7 @@ const UserAccountLoader = (props) => {
             userMetaDataFetchRequest(userDataRequest)
         }
     }, [session[SESSION_AUTHENTICATED]]);
-    function defaultView() {
+
         return (
             <>
                 {session[SESSION_AUTHENTICATED] &&
@@ -45,18 +45,6 @@ const UserAccountLoader = (props) => {
                 }
             </>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'account',
-        templateId: 'userAccountLoader',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            userDataRequest: userDataRequest,
-            userMetaDataFetchRequest: userMetaDataFetchRequest,
-            ...props
-        }
-    });
 };
 function mapStateToProps(state) {
     return {
@@ -64,7 +52,8 @@ function mapStateToProps(state) {
         session: state.session
     };
 }
-
+UserAccountLoader.category = 'account';
+UserAccountLoader.templateId = 'userAccountLoader';
 export default connect(
     mapStateToProps,
     null

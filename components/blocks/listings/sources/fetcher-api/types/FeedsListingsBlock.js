@@ -99,7 +99,7 @@ const FeedsListingsBlock = (props) => {
                                     </div>
                                     <div className="col-lg-4">
                                         <div className="blog_right_sidebar">
-                                            <FeedsSidebar/>
+                                            {templateManager.render(<FeedsSidebar/>)}
                                         </div>
                                     </div>
                                 </>

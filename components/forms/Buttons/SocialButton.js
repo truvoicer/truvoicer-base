@@ -7,7 +7,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 const SocialButton = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    function defaultView() {
+
         return (
             <div className="btn-group social-button--group" onClick={props.onClick}>
                 <a className={'btn disabled social-button--icon ' + props.buttonClass}>
@@ -18,15 +18,7 @@ const SocialButton = (props) => {
                 </a>
             </div>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'social',
-        templateId: 'socialButton',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    });
 }
+SocialButton.category = 'social';
+SocialButton.templateId = 'socialButton';
 export default SocialButton;

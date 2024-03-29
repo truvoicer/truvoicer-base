@@ -11,7 +11,7 @@ function HtmlHead({siteSettings, pageData, page}) {
 
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const headScripts = getHeadScripts(pageData?.page_options, siteSettings);
-    function defaultView() {
+
     return (
         <>
         <Script id={'google_client_script'} src="https://accounts.google.com/gsi/client" />
@@ -26,18 +26,10 @@ function HtmlHead({siteSettings, pageData, page}) {
             </Head>
         </>
     );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'layout',
-        templateId: 'htmlHead',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            headScripts: headScripts
-        }
-    })
 }
+
+HtmlHead.category = 'layout';
+HtmlHead.templateId = 'htmlHead';
 
 function mapStateToProps(state) {
     return {

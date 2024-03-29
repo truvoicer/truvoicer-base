@@ -27,7 +27,7 @@ const EmailOptinWidget = (props) => {
         }
     }
 
-    function defaultView() {
+
         return (
             <aside className="single_sidebar_widget newsletter_widget">
                 <h4 className="widget_title">{data?.title || "Newsletter"}</h4>
@@ -92,20 +92,7 @@ const EmailOptinWidget = (props) => {
                 </Formik>
             </aside>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'widgets',
-        templateId: 'emailOptinWidget',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            response,
-            setResponse,
-            formResponseHandler,
-            ...props
-        }
-    })
 }
-
+EmailOptinWidget.category = 'widgets';
+EmailOptinWidget.templateId = 'emailOptinWidget';
 export default EmailOptinWidget;

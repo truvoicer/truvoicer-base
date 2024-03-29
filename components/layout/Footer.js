@@ -32,7 +32,7 @@ const Footer = (props) => {
 
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    function defaultView() {
+
         return (
             <footer className={`footer ${!session[SESSION_AUTHENTICATED] ? "ml-0" : ""}`}>
                 <div className="footer_top">
@@ -43,16 +43,16 @@ const Footer = (props) => {
                                     {data.map((item, index) => (
                                         <React.Fragment key={index.toString()}>
                                             {item.nav_menu &&
-                                                <FooterMenu data={item.nav_menu} sidebar={"footer"}/>
+                                                templateManager.render(<FooterMenu data={item.nav_menu} sidebar={"footer"}/>)
                                             }
                                             {item.text &&
-                                                <TextWidget data={item.text}/>
+                                                templateManager.render(<TextWidget data={item.text}/>)
                                             }
                                             {item.custom_html &&
-                                                <CustomHtmlWidget data={item.custom_html}/>
+                                                templateManager.render(<CustomHtmlWidget data={item.custom_html}/>)
                                             }
                                             {item.social_media_widget &&
-                                                <SocialIconsWidget data={item.social_media_widget}/>
+                                                templateManager.render(<SocialIconsWidget data={item.social_media_widget}/>)
                                             }
                                         </React.Fragment>
                                     ))}
@@ -63,18 +63,6 @@ const Footer = (props) => {
                 </div>
             </footer>
         )
-    }
-    return templateManager.getTemplateComponent({
-        category: 'layout',
-        templateId: 'footer',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            data: data,
-            setData: setData,
-            ...props
-        }
-    });
 }
 
 function mapStateToProps(state) {
@@ -83,7 +71,8 @@ function mapStateToProps(state) {
         session: state.session
     };
 }
-
+Footer.category = 'layout';
+Footer.templateId = 'footer';
 export default connect(
     mapStateToProps,
     null

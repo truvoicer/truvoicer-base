@@ -9,7 +9,7 @@ import {logout} from "../../redux/actions/session-actions";
 import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
 import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED} from "../../redux/constants/search-constants";
 import Dropdown from "react-bootstrap/Dropdown";
-import {CustomDropdownMenu} from "../dropdown/CustomDropdown";
+import CustomDropdownMenu from "../dropdown/CustomDropdownMenu";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
@@ -107,9 +107,9 @@ const DropdownMenuList = (props) => {
                 return false;
         }
     }
-    function defaultView() {
+
     return (
-        <Dropdown.Menu alignRight={true} as={CustomDropdownMenu}>
+        <Dropdown.Menu alignRight={true} as={templateManager.render(CustomDropdownMenu)}>
             {props.data.menu_items.map((item, index) => (
                 <React.Fragment key={index}>
                     {!siteConfig.authenticatedItems.includes(item.menu_item.post_type) &&
@@ -138,24 +138,6 @@ const DropdownMenuList = (props) => {
             ))}
         </Dropdown.Menu>
     )
-    }
-    return templateManager.getTemplateComponent({
-        category: 'menus',
-        templateId: 'dropdownMenuList',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            logoutHandler: logoutHandler,
-            pageClickHandler: pageClickHandler,
-            showAuthLoginModal: showAuthLoginModal,
-            showAuthRegisterModal: showAuthRegisterModal,
-            getListItem: getListItem,
-            getCollapseListItem: getCollapseListItem,
-            getMenuItem: getMenuItem,
-            getItemCallback: getItemCallback,
-            ...props
-        }
-    })
 }
 
 function mapStateToProps(state) {
@@ -163,7 +145,8 @@ function mapStateToProps(state) {
         session: state.session
     };
 }
-
+DropdownMenuList.category = 'menus';
+DropdownMenuList.templateId = 'dropdownMenuList';
 export default connect(
     mapStateToProps,
     {

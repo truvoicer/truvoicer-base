@@ -21,7 +21,7 @@ const YoutubePlayer = (props) => {
         setShowVideo(true)
     }
 
-    function defaultView() {
+
         return (
             <div className={"youtube-player thumbnail"}
                  style={{backgroundImage: "url(https://img.youtube.com/vi/" + props.video_id + "/default.jpg)"}}>
@@ -39,21 +39,7 @@ const YoutubePlayer = (props) => {
                 }
             </div>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'media',
-        templateId: 'youtubePlayer',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            getVideo: getVideo,
-            video: video,
-            setVideo: setVideo,
-            showVideo: showVideo,
-            setShowVideo: setShowVideo,
-            ...props
-        }
-    });
 }
+YoutubePlayer.category = 'media';
+YoutubePlayer.templateId = 'youtubePlayer';
 export default YoutubePlayer;

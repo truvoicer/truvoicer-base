@@ -27,7 +27,7 @@ const Search = (props) => {
         setQuery(e.target.value);
     }
 
-    function defaultView() {
+
         return (
             <form method="post" onSubmit={formClickHandler}>
                 <input type="text"
@@ -37,23 +37,9 @@ const Search = (props) => {
                 <span className={"search-icon"} onClick={formClickHandler}/>
             </form>
         )
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'widgets',
-        templateId: 'search',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            query,
-            setQuery,
-            formClickHandler,
-            formChangeHandler,
-            ...props
-        }
-    })
 }
-
+Search.category = 'widgets';
+Search.templateId = 'search';
 export default connect(
     null,
     null

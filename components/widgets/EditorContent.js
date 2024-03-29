@@ -6,24 +6,15 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 
 const EditorContent = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    function defaultView() {
+
     return (
         <>
             {parse(props.data)}
         </>
     )
-    }
-    return templateManager.getTemplateComponent({
-        category: 'widgets',
-        templateId: 'editorContent',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    })
 }
-
+EditorContent.category = 'widgets';
+EditorContent.templateId = 'editorContent';
 export default connect(
     null
 )(EditorContent);

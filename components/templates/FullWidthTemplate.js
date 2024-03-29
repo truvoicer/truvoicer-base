@@ -20,43 +20,31 @@ const FullWidthTemplate = (props) => {
         }
     }
 
-    function defaultView() {
+
         return (
             <>
                 {pageOptions?.pageType === "user_account"
                     ?
-                    <AccountArea data={pageData}/>
+                    templateManager.render(<AccountArea data={pageData}/>)
                     :
                     <div id={"public_area"}>
-                        <Header/>
+                        {templateManager.render(<Header/>)}
                         <>
                             {typeof pageData?.post_content === "string" && pageData
                                 ?
                                 <>
-                                    <HtmlHead/>
+                                    {templateManager.render(<HtmlHead/>)}
                                     {parse(pageData.post_content, htmlParserOptions)}
                                 </>
                                 :
                                 templateManager.render(<Loader></Loader>)
                             }
                         </>
-                        <Footer/>
+                        {templateManager.render(<Footer/>)}
                     </div>
                 }
             </>
         )
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'templates',
-        templateId: 'fullWidthTemplate',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            htmlParserOptions,
-            ...props
-        }
-    });
 }
 
 function mapStateToProps(state) {
@@ -66,6 +54,9 @@ function mapStateToProps(state) {
         pageOptions: state.page.pageDataOptions,
     };
 }
+
+FullWidthTemplate.category = 'templates';
+FullWidthTemplate.templateId = 'fullWidthTemplate';
 
 export default connect(
     mapStateToProps,

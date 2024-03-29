@@ -1,6 +1,5 @@
 import React from "react";
 import {blockComponentsConfig} from "../config/block-components-config";
-import SidebarMenu from "@/truvoicer-base/components/Menus/SidebarMenu";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 
 /**

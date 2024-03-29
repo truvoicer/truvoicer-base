@@ -24,7 +24,7 @@ function CircleProgressBar(props) {
         ringColorStyle.backgroundColor = ringColor;
     }
 
-    function defaultView() {
+
         return (
             <div className="circle-progress-bar">
                 <div className="circle">
@@ -40,21 +40,7 @@ function CircleProgressBar(props) {
                 </div>
             </div>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'progress_bars',
-        templateId: 'circleProgressBar',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            textStyle,
-            ringColorStyle,
-            animationStyle,
-            degStyle,
-            ...props
-        }
-    })
 }
-
+CircleProgressBar.category = 'progress_bars';
+CircleProgressBar.templateId = 'circleProgressBar';
 export default CircleProgressBar;

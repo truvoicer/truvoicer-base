@@ -28,7 +28,7 @@ const AccountAreaSidebar = (props) => {
     useEffect(() => {
         sidebarRequest();
     }, []);
-    function defaultView() {
+
         return (
             <>
                 <div id="sidebar-container" className="sidebar-expanded d-none d-md-block">
@@ -38,7 +38,7 @@ const AccountAreaSidebar = (props) => {
                                 <React.Fragment key={index}>
                                     {item.search &&
                                         <div>
-                                            <Search data={item.search}/>
+                                            {templateManager.render(<Search data={item.search}/>)}
                                         </div>
                                     }
                                     {item.custom_html && item.custom_html.content &&
@@ -47,10 +47,10 @@ const AccountAreaSidebar = (props) => {
                                         </div>
                                     }
                                     {item.nav_menu && item.nav_menu.menu_slug === siteConfig.myAccountMenu &&
-                                        <AccountAreaMenu data={item.nav_menu} sessionLinks={true}/>
+                                        templateManager.render(<AccountAreaMenu data={item.nav_menu} sessionLinks={true}/>)
                                     }
                                     {item.button_widget &&
-                                        <ButtonWidget data={item.button_widget}/>
+                                        templateManager.render(<ButtonWidget data={item.button_widget}/>)
                                     }
                                 </React.Fragment>
 
@@ -60,19 +60,6 @@ const AccountAreaSidebar = (props) => {
                 </div>
             </>
         )
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'sidebars',
-        templateId: 'accountAreaSidebar',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            data: data,
-            setData: setData,
-            ...props
-        }
-    })
 }
 
 function mapStateToProps(state) {
@@ -80,7 +67,8 @@ function mapStateToProps(state) {
         siteData: state.page.siteSettings
     };
 }
-
+AccountAreaSidebar.category = 'sidebars';
+AccountAreaSidebar.templateId = 'accountAreaSidebar';
 export default connect(
     mapStateToProps,
     null

@@ -19,20 +19,10 @@ const AuthGoogle = (props) => {
         });
     }, []);
 
-    function defaultView() {
+
         return (
             <div id="g-signin2"></div>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'auth',
-        templateId: 'authGoogle',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    });
 }
 
 function mapStateToProps(state) {
@@ -40,6 +30,8 @@ function mapStateToProps(state) {
         siteSettings: state.page.siteSettings
     };
 }
+AuthGoogle.category = 'auth';
+AuthGoogle.templateId = 'authGoogle';
 export default connect(
     mapStateToProps,
     null

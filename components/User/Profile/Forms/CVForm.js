@@ -9,22 +9,13 @@ function CvForm(props) {
     if (!isObject(props?.data?.form_block)) {
         return null;
     }
-    function defaultView() {
+
     return (
         <>
             {templateManager.render(<FormBlock data={props.data.form_block}/>)}
         </>
     );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'profile_forms',
-        templateId: 'cvForm',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    })
 }
-
+CvForm.category = 'profile_forms';
+CvForm.templateId = 'cvForm';
 export default CvForm;

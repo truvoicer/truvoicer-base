@@ -9,22 +9,14 @@ function SkillsForm(props) {
     if (!isObject(props?.data?.form_block)) {
         return null;
     }
-    function defaultView() {
+
     return (
         <>
             {templateManager.render(<FormBlock data={props.data.form_block}/>)}
         </>
     );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'profile_forms',
-        templateId: 'skillsForm',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    })
 }
+SkillsForm.category = 'profile_forms';
+SkillsForm.templateId = 'skillsForm';
 
 export default SkillsForm;

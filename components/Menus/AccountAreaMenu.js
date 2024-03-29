@@ -131,7 +131,7 @@ const AccountAreaMenu = (props) => {
                 return false;
         }
     }
-    function defaultView() {
+
     return (
         <ul className="list-group">
             {/*<ul className="site-menu js-clone-nav mr-auto d-none d-lg-block">*/}
@@ -163,24 +163,6 @@ const AccountAreaMenu = (props) => {
             ))}
         </ul>
     )
-    }
-    return templateManager.getTemplateComponent({
-        category: 'menus',
-        templateId: 'accountAreaMenu',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            logoutHandler: logoutHandler,
-            pageClickHandler: pageClickHandler,
-            showAuthLoginModal: showAuthLoginModal,
-            showAuthRegisterModal: showAuthRegisterModal,
-            getMenuItem: getMenuItem,
-            getItemCallback: getItemCallback,
-            getListItem: getListItem,
-            getCollapseListItem: getCollapseListItem,
-            ...props
-        }
-    })
 }
 
 function mapStateToProps(state) {
@@ -188,7 +170,8 @@ function mapStateToProps(state) {
         session: state.session
     };
 }
-
+AccountAreaMenu.category = 'menus';
+AccountAreaMenu.templateId = 'accountAreaMenu';
 export default connect(
     mapStateToProps,
     {

@@ -229,7 +229,7 @@ const SavedItemsVerticalTabs = (props) => {
         })
     }, [props.data])
 
-    function defaultView() {
+
         return (
             <div className={"tab-layout"}>
                 <Tabs
@@ -267,34 +267,6 @@ const SavedItemsVerticalTabs = (props) => {
 
             </div>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'tabs',
-        templateId: 'savedItemsVerticalTabs',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            handleTabChange: handleTabChange,
-            getItemsRequest: getItemsRequest,
-            getItemList: getItemList,
-            getItemById: getItemById,
-            getItemIndexByItemId: getItemIndexByItemId,
-            getProviderDataByName: getProviderDataByName,
-            closeModal: closeModal,
-            GetModal: GetModal,
-            tabProps: tabProps,
-            showInfo: showInfo,
-            TabPanel: TabPanel,
-            getItemsResponseHandler: getItemsResponseHandler,
-            tabValue: tabValue,
-            panelData: panelData,
-            modalData: modalData,
-            setModalData: setModalData,
-            setTabValue: setTabValue,
-            setPanelData: setPanelData,
-            ...props
-        }
-    })
 }
 
 function mapStateToProps(state) {
@@ -302,6 +274,9 @@ function mapStateToProps(state) {
         user: state.session[SESSION_USER]
     };
 }
+
+SavedItemsVerticalTabs.category = 'tabs';
+SavedItemsVerticalTabs.templateId = 'savedItemsVerticalTabs';
 
 export default connect(
     mapStateToProps,

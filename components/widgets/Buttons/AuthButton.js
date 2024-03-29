@@ -27,7 +27,7 @@ const AuthButton = (props) => {
         logout();
     }
 
-    function defaultView() {
+
         return (
             <div className="Appointment">
                 {!props.session.authenticated &&
@@ -58,20 +58,6 @@ const AuthButton = (props) => {
                 }
             </div>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'buttons',
-        templateId: 'authButton',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            options: options,
-            showAuthLoginModal,
-            logoutHandler,
-            ...props
-        }
-    })
 }
 
 function mapStateToProps(state) {
@@ -79,7 +65,8 @@ function mapStateToProps(state) {
         session: state.session
     };
 }
-
+AuthButton.category = 'buttons';
+AuthButton.templateId = 'authButton';
 export default connect(
     mapStateToProps,
     {

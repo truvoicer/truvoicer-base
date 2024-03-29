@@ -7,7 +7,7 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 const CustomHtmlWidget = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    function defaultView() {
+
         return (
             <div className="col-xl-3 col-md-6 col-lg-3">
                 <div className="footer_widget wow fadeInUp" data-wow-duration="1.3s" data-wow-delay=".6s">
@@ -20,17 +20,7 @@ const CustomHtmlWidget = (props) => {
                 </div>
             </div>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'widgets',
-        templateId: 'customHtmlWidget',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    })
 }
-
+CustomHtmlWidget.category = 'widgets';
+CustomHtmlWidget.templateId = 'customHtmlWidget';
 export default CustomHtmlWidget;

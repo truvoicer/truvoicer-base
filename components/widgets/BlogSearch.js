@@ -39,7 +39,7 @@ const BlogSearch = (props) => {
         }
     }, [searchContext?.searchOperation, query]);
 
-    function defaultView() {
+
         return (
             <aside className="single_sidebar_widget search_widget">
                 <form method="post" onSubmit={formClickHandler}>
@@ -63,23 +63,10 @@ const BlogSearch = (props) => {
                 </form>
             </aside>
         )
-    }
 
-    return templateManager.getTemplateComponent({
-        category: 'widgets',
-        templateId: 'blogSearch',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            query,
-            setQuery,
-            formClickHandler,
-            formChangeHandler,
-            ...props
-        }
-    })
 }
-
+BlogSearch.category = 'widgets';
+BlogSearch.templateId = 'blogSearch';
 export default connect(
     null,
     null

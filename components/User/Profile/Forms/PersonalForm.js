@@ -10,23 +10,14 @@ function PersonalForm(props) {
         return null;
     }
 
-    function defaultView() {
+
         return (
             <>
                 {templateManager.render(<FormBlock data={props.data.form_block}/>)}
             </>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'profile_forms',
-        templateId: 'personalForm',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    })
 }
+PersonalForm.category = 'profile_forms';
+PersonalForm.templateId = 'personalForm';
 
 export default PersonalForm;

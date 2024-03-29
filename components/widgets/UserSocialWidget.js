@@ -51,8 +51,8 @@ function UserSocialWidget(props) {
     ];
     const templateManager = new TemplateManager(useContext(TemplateContext));
     // console.log({userData})
-    function defaultView() {
-        return (
+
+        return  templateManager.render(
             <UserAccountLoader
                 dataCallback={setUserData}
                 fields={fields}
@@ -90,16 +90,7 @@ function UserSocialWidget(props) {
                 </div>
             </UserAccountLoader>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'widgets',
-        templateId: 'userSocialWidget',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    });
 }
-
+UserSocialWidget.category = 'widgets';
+UserSocialWidget.templateId = 'userSocialWidget';
 export default UserSocialWidget;

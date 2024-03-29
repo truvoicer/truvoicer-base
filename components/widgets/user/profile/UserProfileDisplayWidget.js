@@ -35,8 +35,8 @@ function UserProfileDisplayWidget(props) {
         return `Not yet filled.`
     }
 
-    function defaultView() {
-        return (
+
+        return templateManager.render(
             <UserAccountLoader
                 fields={fields}
                 dataCallback={setUserData}
@@ -90,18 +90,7 @@ function UserProfileDisplayWidget(props) {
                 </p>
             </UserAccountLoader>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'account',
-        templateId: 'userProfileDisplayWidget',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            userData: userData,
-            setUserData: setUserData,
-            ...props
-        }
-    });
 }
-
+UserProfileDisplayWidget.category = 'account';
+UserProfileDisplayWidget.templateId = 'userProfileDisplayWidget';
 export default UserProfileDisplayWidget;

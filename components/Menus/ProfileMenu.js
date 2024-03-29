@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import Dropdown from "react-bootstrap/Dropdown";
-import {CustomDropdownToggle} from "../dropdown/CustomDropdown";
+import CustomDropdownToggle from "../dropdown/CustomDropdownToggle";
 import DropdownMenuList from "./DropdownMenuList";
 import UserAccountLoader from "../loaders/UserAccountLoader";
 import {connect} from "react-redux";
@@ -17,7 +17,6 @@ const ProfileMenu = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const modalContext = useContext(AppModalContext);
 
-    function defaultView() {
         return (
             <>
                 {isObjectEmpty(userData) &&
@@ -50,7 +49,7 @@ const ProfileMenu = (props) => {
                         </div>
                     </div>
                 }
-
+                {templateManager.render(
                 <UserAccountLoader
                     dataCallback={setUserData}
                     fields={[
@@ -74,7 +73,7 @@ const ProfileMenu = (props) => {
                 >
                     <div className="profile-menu">
                         <Dropdown drop={"down"} alignRight={true}>
-                            <Dropdown.Toggle as={CustomDropdownToggle} id="dropdown-custom-components">
+                            <Dropdown.Toggle as={templateManager.render(CustomDropdownToggle)} id="dropdown-custom-components">
                                 <div className={"d-flex align-items-center justify-content-end"}>
                                     <span
                                         className="mr-2 d-none d-lg-inline text-gray-600 small">{userData?.user_email}</span>
@@ -85,25 +84,13 @@ const ProfileMenu = (props) => {
                                     />
                                 </div>
                             </Dropdown.Toggle>
-                            <DropdownMenuList data={data} sessionLinks={true}/>
+                            {templateManager.render(<DropdownMenuList data={data} sessionLinks={true}/>)}
                         </Dropdown>
                     </div>
                 </UserAccountLoader>
+                )}
             </>
         )
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'menus',
-        templateId: 'profileMenu',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            userData: userData,
-            setUserData: setUserData,
-            ...props
-        }
-    })
 }
 
 function mapStateToProps(state) {
@@ -111,7 +98,8 @@ function mapStateToProps(state) {
         siteSettings: state.page.siteSettings,
     };
 }
-
+ProfileMenu.category = 'menus';
+ProfileMenu.templateId = 'profileMenu';
 export default connect(
     mapStateToProps,
     null

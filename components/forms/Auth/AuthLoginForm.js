@@ -19,36 +19,23 @@ const AuthLoginForm = (props) => {
         getSessionTokenMiddleware(wpApiConfig.endpoints.auth.login, requestData, props.requestCallback)
     }
 
-    function defaultView() {
+
         return (
             <>
                 {!props.session.authenticated &&
                     <>
-                        <DataForm
+                        {templateManager.render(<DataForm
                             data={LoginFormData}
                             formType={"single"}
                             submitCallback={submitHandler}
                             submitButtonText={submitButtonText}
                         >
                             {props.children}
-                        </DataForm>
+                        </DataForm>)}
                     </>
                 }
             </>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'auth',
-        templateId: 'authLoginForm',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            submitHandler: submitHandler,
-            setSubmitButtonText: setSubmitButtonText,
-            submitButtonText: submitButtonText,
-            ...props
-        }
-    });
 }
 
 function mapStateToProps(state) {
@@ -57,7 +44,8 @@ function mapStateToProps(state) {
         session: state.session
     };
 }
-
+AuthLoginForm.category = 'auth';
+AuthLoginForm.templateId = 'authLoginForm';
 export default connect(
     mapStateToProps,
     null

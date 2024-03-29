@@ -21,24 +21,24 @@ const SidebarTemplate = (props) => {
         }
     }
     console.log('sidebarTemplate', pageData)
-    function defaultView() {
+
         return (
             <>
                 {pageOptions?.pageType === "user_account"
                     ?
-                    <AccountArea data={pageData}/>
+                    templateManager.render(<AccountArea data={pageData}/>)
                     :
                     <div id={"public_area"}>
-                        <Header/>
+                        {templateManager.render(<Header/>)}
                         <>
                             {pageData
                                 ?
                                 <>
-                                    <HtmlHead/>
+                                    {templateManager.render(<HtmlHead/>)}
                                     <div className={"row"}>
                                         {templateManager.isTemplateLayout(pageData, 'left-sidebar') &&
                                             <div className="col-12 col-sm-9 col-md-4 col-lg-2 d-none d-lg-block">
-                                                <LeftSidebar/>
+                                                {templateManager.render(<LeftSidebar/>)}
                                             </div>
                                         }
                                         <div className="col-12 col-lg-10">
@@ -46,7 +46,7 @@ const SidebarTemplate = (props) => {
                                         </div>
                                         {templateManager.isTemplateLayout(pageData, 'right-sidebar') &&
                                             <div className="col-12 col-sm-9 col-md-6 col-lg-3 d-none d-lg-block">
-                                                <RightSidebar />
+                                                {templateManager.render(<RightSidebar/>)}
                                             </div>
                                         }
                                     </div>
@@ -55,24 +55,12 @@ const SidebarTemplate = (props) => {
                                 templateManager.render(<Loader></Loader>)
                             }
                         </>
-                        <Footer/>
+                        {templateManager.render(<Footer/>)}
                     </div>
                 }
 
             </>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'templates',
-        templateId: 'sidebarTemplate',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            htmlParserOptions,
-            ...props
-        }
-    });
 }
 
 function mapStateToProps(state) {
@@ -83,7 +71,8 @@ function mapStateToProps(state) {
         modal: state.page.modal
     };
 }
-
+SidebarTemplate.category = 'templates';
+SidebarTemplate.templateId = 'sidebarTemplate';
 export default connect(
     mapStateToProps,
     null

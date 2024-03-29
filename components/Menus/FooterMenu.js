@@ -5,7 +5,7 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 
 const FooterMenu = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    function defaultView() {
+
     return (
         <div className="col-xl-2 col-md-6 col-lg-2">
             <div className="footer_widget wow fadeInUp" data-wow-duration="1.1s" data-wow-delay=".4s">
@@ -13,20 +13,12 @@ const FooterMenu = (props) => {
                     {props.data.title}
                 </h3>
 
-                <MenuList data={props.data}/>
+                {templateManager.render(<MenuList data={props.data}/>)}
 
             </div>
         </div>
     )
-    }
-    return templateManager.getTemplateComponent({
-        category: 'menus',
-        templateId: 'footerMenu',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    })
 }
+FooterMenu.category = 'menus';
+FooterMenu.templateId = 'footerMenu';
 export default FooterMenu;

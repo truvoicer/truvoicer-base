@@ -447,7 +447,7 @@ const FormBlock = (props) => {
                             </div>
                         }
                         {Array.isArray(response.errors) && response.errors.length > 0 && (
-                            <WPErrorDisplay errorData={response.errors} />
+                            templateManager.render(<WPErrorDisplay errorData={response.errors} />)
                         )}
                         {response.error &&
                             <div className="bg-white">
@@ -455,9 +455,9 @@ const FormBlock = (props) => {
                             </div>
                         }
                         {!isObjectEmpty(formDataConfig) &&
-                            <DataForm
+                            templateManager.render(<DataForm
                                 {...getDataFormProps()}
-                            />
+                            />)
                         }
                     </div>
                 </div>

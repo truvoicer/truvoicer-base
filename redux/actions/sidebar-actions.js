@@ -5,16 +5,22 @@ import React from "react";
 import CategoryListWidget from "../../components/widgets/CategoryListWidget";
 import RecentPostsWidget from "../../components/widgets/RecentPostsWidget";
 import EmailOptinWidget from "../../components/widgets/EmailOptinWidget";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 
-export const buildSidebar = ({sidebarData}) => {
+export const buildSidebar = ({sidebarData, templateManager = null}) => {
     let sideBarListData = [];
     if (Array.isArray(sidebarData) && sidebarData.length > 0) {
         sidebarData.map((item, index) => {
             const widgetComponent = getSidebarWidgetComponent({
                 item: item
+
             })
             if (widgetComponent) {
-                sideBarListData.push(widgetComponent)
+                if (typeof templateManager?.render === 'function') {
+                    sideBarListData.push(templateManager.render(widgetComponent))
+                } else {
+                    sideBarListData.push(widgetComponent)
+                }
             }
         })
     }

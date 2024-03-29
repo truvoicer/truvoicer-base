@@ -23,7 +23,7 @@ const ProsConsList = (props) => {
         }
     }
 
-    function defaultView() {
+
         return (
             <>
                 {Array.isArray(list) &&
@@ -44,18 +44,7 @@ const ProsConsList = (props) => {
                 }
             </>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'widgets',
-        templateId: 'prosConsList',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            getProps,
-            ...props
-        }
-    })
 };
-
+ProsConsList.category = 'widgets';
+ProsConsList.templateId = 'prosConsList';
 export default ProsConsList;

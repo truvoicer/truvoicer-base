@@ -33,7 +33,7 @@ const CommentsList = (props) => {
         return props.items.filter(item => parseInt(item.comment_parent) === parseInt(id));
     }
 
-    function defaultView() {
+
         return (
 
             <CommentsContext.Provider value={commentsData}>
@@ -44,10 +44,10 @@ const CommentsList = (props) => {
                                 {isSet(props.items) && Array.isArray(props.items) && props.items.length > 0
                                     ?
                                     <>
-                                        <CommentTextForm/>
+                                        {templateManager.render(<CommentTextForm/>)}
                                         {buildComments().map((item, index) => (
-                                            <CommentItem key={index} parentComment={item.parent}
-                                                         childComments={item.children}/>
+                                            templateManager.render(<CommentItem key={index} parentComment={item.parent}
+                                                         childComments={item.children}/>)
                                         ))}
                                     </>
                                     :
@@ -59,20 +59,7 @@ const CommentsList = (props) => {
                 </section>
             </CommentsContext.Provider>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'comments',
-        templateId: 'commentsList',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            commentSubmitCallback: commentSubmitCallback,
-            commentsData: commentsData,
-            setCommentsData: setCommentsData,
-            buildComments: buildComments,
-            getChildComments: getChildComments
-        }
-    })
 }
+CommentsList.category = 'comments';
+CommentsList.templateId = 'commentsList';
 export default CommentsList;

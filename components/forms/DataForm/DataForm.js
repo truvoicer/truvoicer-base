@@ -353,7 +353,7 @@ const DataForm = (props) => {
         )
     }
 
-    function defaultView() {
+
         return (
             <Formik
                 initialValues={initialValues}
@@ -417,33 +417,7 @@ const DataForm = (props) => {
                 )}
             </Formik>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'public',
-        templateId: 'dataForm',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            getInitialDataObject: getInitialDataObject,
-            getInitialValue: getInitialValue,
-            validationRules: validationRules,
-            getFieldByName: getFieldByName,
-            getIgnoredFields: getIgnoredFields,
-            validateForm: validateForm,
-            formSubmitHandler: formSubmitHandler,
-            dependsOnCheck: dependsOnCheck,
-            getFieldItemLabelPair: getFieldItemLabelPair,
-            getFieldRow: getFieldRow,
-            getFields: getFields,
-            getGridColumnClasses: getGridColumnClasses,
-            addRemovableFieldData: addRemovableFieldData,
-            buildFormRows: buildFormRows,
-            initialValues: initialValues,
-            setInitialValues: setInitialValues,
-            removableFieldData: removableFieldData,
-            setRemovableFieldData: setRemovableFieldData,
-            ...props
-        }
-    });
 }
+DataForm.category = 'public';
+DataForm.templateId = 'dataForm';
 export default DataForm;

@@ -39,7 +39,7 @@ const ItemViewVerticalTabList = (props) => {
         );
     }
 
-    function defaultView() {
+
     return (
         <div className={"tab-layout"}>
             <Tabs
@@ -63,7 +63,7 @@ const ItemViewVerticalTabList = (props) => {
                                         {tabDataItem.label}
                                     </div>
                                     <div className={"tab-layout--list--row--value"}>
-                                        {getListItemData(tabDataItem, props.item)}
+                                        {getListItemData(tabDataItem, props.item, templateManager)}
                                     </div>
                                 </div>
                             </li>
@@ -73,20 +73,7 @@ const ItemViewVerticalTabList = (props) => {
             ))}
         </div>
     );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'tabs',
-        templateId: 'itemViewVerticalTabList',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            tabValue,
-            setTabValue,
-            handleTabChange,
-            tabProps,
-            TabPanel,
-            ...props
-        }
-    })
 }
+ItemViewVerticalTabList.category = 'tabs';
+ItemViewVerticalTabList.templateId = 'itemViewVerticalTabList';
 export default ItemViewVerticalTabList;

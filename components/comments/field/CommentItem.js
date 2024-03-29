@@ -14,7 +14,7 @@ const CommentItem = (props) => {
         e.preventDefault();
         setShowReply(!showReply);
     }
-    function defaultView() {
+
     return (
         <div className="media">
             <a className="pull-left" href="#">
@@ -46,23 +46,12 @@ const CommentItem = (props) => {
                 {props.childComments && props.childComments.map((comment, index) => (
                     <CommentItem key={index} parentComment={comment} childItem={true} />
                 ))}
-                {showReply && <CommentTextForm parentCommentId={props.parentComment.comment_ID} />}
+                {showReply && templateManager.render(<CommentTextForm parentCommentId={props.parentComment.comment_ID} />)}
             </div>
         </div>
 
     );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'comments',
-        templateId: 'commentItem',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            replyClickHandler: replyClickHandler,
-            showReply: showReply,
-            setShowReply: setShowReply,
-            ...props
-        }
-    })
 }
+CommentItem.category = 'comments';
+CommentItem.templateId = 'commentItem';
 export default CommentItem;

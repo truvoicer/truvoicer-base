@@ -32,8 +32,8 @@ function UserProfileEditWidget(props) {
     const fieldEmptyMessage = (fieldName) => {
         return `Not yet filled.`
     }
-    function defaultView() {
-        return (
+
+        return templateManager.render(
             <UserAccountLoader
                 fields={fields}
                 dataCallback={setUserData}
@@ -41,18 +41,7 @@ function UserProfileEditWidget(props) {
                 <h1>Edit profile</h1>
             </UserAccountLoader>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'account',
-        templateId: 'userProfileEditWidget',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            userData: userData,
-            setUserData: setUserData,
-            ...props
-        }
-    });
 }
-
+UserProfileEditWidget.category = 'account';
+UserProfileEditWidget.templateId = 'userProfileEditWidget';
 export default UserProfileEditWidget;

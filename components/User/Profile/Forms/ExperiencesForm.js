@@ -9,22 +9,14 @@ function ExperiencesForm(props) {
     if (!isObject(props?.data?.form_block)) {
         return null;
     }
-    function defaultView() {
+
     return (
         <>
             {templateManager.render(<FormBlock data={props.data.form_block}/>)}
         </>
     );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'profile_forms',
-        templateId: 'experiencesForm',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    })
 }
+ExperiencesForm.category = 'profile_forms';
+ExperiencesForm.templateId = 'experiencesForm';
 
 export default ExperiencesForm;

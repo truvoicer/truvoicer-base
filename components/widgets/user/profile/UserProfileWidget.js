@@ -11,13 +11,13 @@ function UserProfileWidget({data}) {
     function getProfileComponent() {
         switch (data?.view) {
             case 'edit':
-                return <UserProfileEditWidget data={data} />;
+                return templateManager.render(<UserProfileEditWidget data={data} />);
             default:
-                return <UserProfileDisplayWidget data={data} />;
+                return templateManager.render(<UserProfileDisplayWidget data={data} />);
         }
     }
-    function defaultView() {
-        return (
+
+        return templateManager.render(
             <UserAccountLoader>
                 <div className="card card-primary">
                     <div className="card-header">
@@ -29,17 +29,7 @@ function UserProfileWidget({data}) {
                 </div>
             </UserAccountLoader>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'account',
-        templateId: 'userProfileWidget',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            getProfileComponent: getProfileComponent,
-        }
-    })
 }
-
+UserProfileWidget.category = 'account';
+UserProfileWidget.templateId = 'userProfileWidget';
 export default UserProfileWidget;

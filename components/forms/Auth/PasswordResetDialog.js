@@ -47,7 +47,7 @@ const PasswordResetDialog = (props) => {
         }
     }
 
-    function defaultView() {
+
         return (
             <div className={"auth-wrapper"}>
                 {!showForm &&
@@ -83,25 +83,9 @@ const PasswordResetDialog = (props) => {
                 }
             </div>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'account',
-        templateId: 'passwordResetDialog',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            showForm: showForm,
-            setShowForm: setShowForm,
-            showAuthRegisterModal: showAuthRegisterModal,
-            showAuthLoginModal: showAuthLoginModal,
-            requestCallback: requestCallback,
-            response: response,
-            setResponse: setResponse,
-            ...props
-        }
-    })
 }
+PasswordResetDialog.category = 'account';
+PasswordResetDialog.templateId = 'passwordResetDialog';
 export default connect(
     null,
     null

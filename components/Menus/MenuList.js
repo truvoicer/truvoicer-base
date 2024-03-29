@@ -115,7 +115,7 @@ const MenuList = (props) => {
         }
     }
 
-    function defaultView() {
+
         return (
             <ul id="navigation">
                 {/*<ul className="site-menu js-clone-nav mr-auto d-none d-lg-block">*/}
@@ -147,25 +147,6 @@ const MenuList = (props) => {
                 ))}
             </ul>
         )
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'menus',
-        templateId: 'MenuList',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            logoutHandler: logoutHandler,
-            pageClickHandler: pageClickHandler,
-            showAuthLoginModal: showAuthLoginModal,
-            showAuthRegisterModal: showAuthRegisterModal,
-            getListItem: getListItem,
-            getCollapseListItem: getCollapseListItem,
-            getMenuItem: getMenuItem,
-            getItemCallback: getItemCallback,
-            ...props
-        }
-    })
 }
 
 function mapStateToProps(state) {
@@ -173,7 +154,8 @@ function mapStateToProps(state) {
         session: state.session
     };
 }
-
+MenuList.category = 'menus';
+MenuList.templateId = 'MenuList';
 export default connect(
     mapStateToProps,
     {

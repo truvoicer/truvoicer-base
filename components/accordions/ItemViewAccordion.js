@@ -43,7 +43,7 @@ const ItemViewAccordion = (props) => {
                                             {tabDataItem.label}
                                         </div>
                                         <div className={"tab-layout--list--row--value"}>
-                                            {getListItemData(tabDataItem, props.item)}
+                                            {getListItemData(tabDataItem, props.item, templateManager)}
                                         </div>
                                     </div>
                                 </li>

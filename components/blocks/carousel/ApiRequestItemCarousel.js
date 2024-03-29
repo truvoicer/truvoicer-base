@@ -41,12 +41,14 @@ const ApiRequestItemCarousel = (props) => {
         <Slider {...settings}>
             {props.data.map((item, index) => (
                 <div className="single-games-slide" key={index}>
-                    <ImageLoader
-                        item={item}
-                        imageData={item.item_default_image}
-                        className={"slide-image"}
-                        background={false}
-                    />
+                    {templateManager.render(
+                        <ImageLoader
+                            item={item}
+                            imageData={item.item_default_image}
+                            className={"slide-image"}
+                            background={false}
+                        />
+                    )}
                     <div className="slide-text">
                         <a href="#" className="game-title">{item.item_name}</a>
                         <div className="meta-data">

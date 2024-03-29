@@ -8,7 +8,7 @@ function UserStatsWidget(props) {
     const {data} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    function defaultView() {
+
         return (
             <div className="row">
                 <div className="col-lg-4 col-6">
@@ -60,17 +60,7 @@ function UserStatsWidget(props) {
                 </div>
             </div>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'widgets',
-        templateId: 'userStatsWidget',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    });
 }
-
+UserStatsWidget.category = 'widgets';
+UserStatsWidget.templateId = 'userStatsWidget';
 export default UserStatsWidget;

@@ -31,7 +31,7 @@ const TopbarSearch = (props) => {
         setQuery(e.target.value);
     }
 
-    function defaultView() {
+
         return (
             <div className="top-search-area">
                 <form onSubmit={formSubmitHandler}>
@@ -49,23 +49,9 @@ const TopbarSearch = (props) => {
                 </form>
             </div>
         )
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'widgets',
-        templateId: 'topbarSearch',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            formSubmitHandler: formSubmitHandler,
-            formChangeHandler: formChangeHandler,
-            query,
-            setQuery,
-            ...props
-        }
-    })
 }
-
+TopbarSearch.category = 'widgets';
+TopbarSearch.templateId = 'topbarSearch';
 export default connect(
     null,
     null

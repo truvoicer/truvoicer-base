@@ -19,7 +19,7 @@ const MobileDrawerMenu = (props) => {
         setShowMenu(false)
         setShowOpener(true)
     }
-    function defaultView() {
+
     return (
             <div className="mobile_menu d-block d-lg-none">
                 {showOpener &&
@@ -40,27 +40,12 @@ const MobileDrawerMenu = (props) => {
                 {/*        // onClick={closeDrawer}*/}
                 {/*        // onKeyDown={closeDrawer}*/}
                 {/*    >*/}
-                {/*        <MenuList data={props.data} sessionLinks={true}/>*/}
+                {/*        {templateManager.render(<MenuList data={props.data} sessionLinks={true}/>)}*/}
                 {/*    </div>*/}
                 {/*</SwipeableDrawer>*/}
             </div>
     )
-    }
-    return templateManager.getTemplateComponent({
-        category: 'menus',
-        templateId: 'mobileDrawerMenu',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            showMenu: showMenu,
-            showOpener: showOpener,
-            setShowOpener: setShowOpener,
-            setShowMenu: setShowMenu,
-            openDrawer: openDrawer,
-            closeDrawer: closeDrawer,
-            ...props
-        }
-    })
 }
-
+MobileDrawerMenu.category = 'menus';
+MobileDrawerMenu.templateId = 'mobileDrawerMenu';
 export default MobileDrawerMenu;

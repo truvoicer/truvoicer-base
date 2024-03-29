@@ -27,34 +27,20 @@ const AuthRegisterForm = (props) => {
         props.createUserMiddleware(values, requestCallback)
     }
 
-    function defaultView() {
+
         return (
             <>
-                <DataForm
+                {templateManager.render(<DataForm
                     data={RegisterFormData}
                     formType={"single"}
                     submitCallback={formSubmitHandler}
                     submitButtonText={submitButtonLabel}
                 >
                     {props.children}
-                </DataForm>
+                </DataForm>)}
             </>
 
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'auth',
-        templateId: 'authRegisterForm',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            requestCallback: requestCallback,
-            formSubmitHandler: formSubmitHandler,
-            submitButtonLabel: submitButtonLabel,
-            setSubmitButtonLabel: setSubmitButtonLabel,
-            ...props
-        }
-    });
 }
 
 function mapStateToProps(state) {
@@ -64,6 +50,8 @@ function mapStateToProps(state) {
     };
 }
 
+AuthRegisterForm.category = 'auth';
+AuthRegisterForm.templateId = 'authRegisterForm';
 export default connect(
     mapStateToProps,
     {createUserMiddleware}

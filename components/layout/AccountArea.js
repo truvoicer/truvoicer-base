@@ -1,9 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
-import Header from "../../../views/Layout/Header";
 import HtmlHead from "./HtmlHead";
 import parse from 'html-react-parser';
 import LoaderComponent from "../loaders/Loader";
-import Footer from "../../../views/Layout/Footer";
 import {connect} from "react-redux";
 import {filterHtml} from "../../library/html-parser";
 import AccountAreaSidebar from "@/truvoicer-base/components/Sidebars/AccountAreaSidebar";
@@ -17,6 +15,8 @@ import {isNotEmpty} from "../../library/utils";
 import LoginBlock from "../forms/Auth/LoginBlock";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import Footer from "@/truvoicer-base/components/layout/Footer";
+import Header from "@/truvoicer-base/components/layout/Header";
 
 const AccountArea = (props) => {
     const {pageData, session} = props;
@@ -34,11 +34,11 @@ const AccountArea = (props) => {
     const getAccountArea = () => {
         return (
             <>
-                <HtmlHead />
+                {templateManager.render(<HtmlHead/>)}
                 <div className={"container-fluid"}>
                     <div className={"d-flex"}>
                         <div className="d-none d-md-block left-sidebar pl-0 pr-0">
-                            <AccountAreaSidebar />
+                            {templateManager.render(<AccountAreaSidebar/>)}
                         </div>
                         <div className="account-content">
                             {parse(pageData.content, htmlParserOptions)}
@@ -57,7 +57,7 @@ const AccountArea = (props) => {
                 return getAccountArea();
             case "show_login":
             default:
-                return <LoginBlock />;
+                return templateManager.render(<LoginBlock />);
         }
 
     }
@@ -74,31 +74,16 @@ const AccountArea = (props) => {
         }
     }, [session[SESSION_IS_AUTHENTICATING],session[SESSION_AUTHENTICATED], session[SESSION_USER][SESSION_USER_TOKEN]])
 
-    function defaultView() {
+
     return (
         <div id={"account_area"}>
             <>
-                <Header />
+                {templateManager.render(<Header/>)}
                 {loadAccountArea(loadKey)}
-                <Footer fluidContainer={true} />
+                {templateManager.render(<Footer fluidContainer={true}/>)}
             </>
         </div>
     );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'layout',
-        templateId: 'accountArea',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            loadAccountArea: loadAccountArea,
-            loadKey: loadKey,
-            setLoadKey: setLoadKey,
-            getAccountArea: getAccountArea,
-            htmlParserOptions: htmlParserOptions,
-            ...props
-        }
-    })
 };
 
 function mapStateToProps(state) {
@@ -108,7 +93,8 @@ function mapStateToProps(state) {
         session: state.session
     };
 }
-
+AccountArea.category = 'layout';
+AccountArea.templateId = 'accountArea';
 export default connect(
     mapStateToProps,
     null

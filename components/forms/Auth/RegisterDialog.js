@@ -40,7 +40,7 @@ const RegisterDialog = (props) => {
             show: true
         });
     }
-    function defaultView() {
+
         return (
             <div className={"auth-wrapper"}>
                 {!response.success &&
@@ -59,56 +59,42 @@ const RegisterDialog = (props) => {
                 {showRegisterForm &&
                     <>
                         <div className={"auth-wrapper--signup-form"}>
-                            <AuthRegisterForm requestCallback={requestCallback}>
+                            {templateManager.render(<AuthRegisterForm requestCallback={requestCallback}>
                                 <p className={"mb-0 text-center"}>
                                     Already registered?
-                                    <a className={"text-danger"} href={siteConfig.defaultLoginHref} onClick={showAuthLoginModal}>
+                                    <a className={"text-danger"} href={siteConfig.defaultLoginHref}
+                                       onClick={showAuthLoginModal}>
                                         Sign In
                                     </a>
                                 </p>
-                            </AuthRegisterForm>
+                            </AuthRegisterForm>)}
                         </div>
                         <div className={"horizontal-divider"}>
                             <span>OR</span>
                         </div>
                         <div className={"auth-wrapper--google auth-wrapper--button"}>
-                            <AuthGoogle
+                            {templateManager.render(<AuthGoogle
                                 requestCallback={requestCallback}
                                 buttonClass={"google-light-red"}
                                 iconClass={"fa-google"}
                                 buttonLabel={"Sign up with Google"}
-                            />
+                            />)}
                         </div>
                         <div className={"auth-wrapper--facebook auth-wrapper--button"}>
-                            <AuthFacebook
+                            {templateManager.render(<AuthFacebook
                                 requestCallback={requestCallback}
                                 buttonClass={"facebook-light-blue"}
                                 iconClass={"fa-facebook-f"}
                                 buttonLabel={"Sign up with Facebook"}
-                            />
+                            />)}
                         </div>
                     </>
                 }
             </div>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'auth',
-        templateId: 'registerDialog',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            showAuthLoginModal: showAuthLoginModal,
-            requestCallback: requestCallback,
-            response: response,
-            setResponse: setResponse,
-            showRegisterForm: showRegisterForm,
-            setShowRegisterForm: setShowRegisterForm,
-            ...props
-        }
-    })
 }
+RegisterDialog.category = 'auth';
+RegisterDialog.templateId = 'registerDialog';
 export default connect(
     null,
     null

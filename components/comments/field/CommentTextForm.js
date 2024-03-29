@@ -18,7 +18,7 @@ const CommentTextForm = (props) => {
         setContent("");
     }
 
-    function defaultView() {
+
     return (
         <form onSubmit={submitHandler}>
             <h3 className="pull-left">New Comment</h3>
@@ -44,19 +44,7 @@ const CommentTextForm = (props) => {
             </fieldset>
         </form>
     );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'comments',
-        templateId: 'commentTextForm',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            changeHandler: changeHandler,
-            submitHandler: submitHandler,
-            content: content,
-            setContent: setContent,
-            ...props
-        }
-    })
 }
+CommentTextForm.category = 'comments';
+CommentTextForm.templateId = 'commentTextForm';
 export default CommentTextForm;

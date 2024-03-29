@@ -47,34 +47,21 @@ const ListLoader = (props) => {
         return config;
     }
 
-    function defaultView() {
+
         return (
             <ul>
                 {list.map((item, index) => (
                     <li key={index}>
                         {props.listKeys.map((key, keyIndex) => (
                             <div key={keyIndex}>
-                                {getItemContentType(key.type, key.name, item, getConfigObject(key, item))}
+                                {templateManager.render(getItemContentType(key.type, key.name, item, getConfigObject(key, item)))}
                             </div>
                         ))}
                     </li>
                 ))}
             </ul>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'loaders',
-        templateId: 'listLoader',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            fetchLoaderDataCallback: fetchLoaderDataCallback,
-            loaderDataRequest: loaderDataRequest,
-            list: list,
-            setList: setList,
-            ...props
-        }
-    })
 }
+ListLoader.category = 'loaders';
+ListLoader.templateId = 'listLoader';
 export default ListLoader;

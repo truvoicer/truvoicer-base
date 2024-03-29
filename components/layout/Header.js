@@ -21,31 +21,19 @@ const Header = (props) => {
             setSticky(ref.current.getBoundingClientRect().top <= -50);
         }
     }
-    function defaultView() {
-        return (
-            <>
-                <header ref={ref}>
-                    <div className="header-area" id={"header"}>
-                        <div id="sticky-header" className={`main-header-area${isSticky ? ' sticky' : ''}`}>
-                            {templateManager.render(<NavBar/>)}
-                        </div>
+    return (
+        <>
+            <header ref={ref}>
+                <div className="header-area" id={"header"}>
+                    <div id="sticky-header" className={`main-header-area${isSticky ? ' sticky' : ''}`}>
+                        {templateManager.render(<NavBar/>)}
                     </div>
-                </header>
-            </>
-        )
-    }
-    return templateManager.getTemplateComponent({
-        category: 'layout',
-        templateId: 'header',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            isSticky,
-            setSticky,
-            handleScroll,
-            ...props
-        }
-    });
+                </div>
+            </header>
+        </>
+    )
 }
+Header.category = 'layout';
+Header.templateId = 'header';
 
 export default Header;

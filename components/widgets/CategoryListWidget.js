@@ -26,7 +26,7 @@ const CategoryListWidget = (props) => {
         categoryListRequest();
     }, [data])
 
-    function defaultView() {
+
         return (
             <aside className="single_sidebar_widget post_category_widget">
                 <h4 className="widget_title">{data?.title || "Categories"}</h4>
@@ -48,20 +48,7 @@ const CategoryListWidget = (props) => {
                 }
             </aside>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'widgets',
-        templateId: 'categoryListWidget',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            categoryListRequest,
-            categoryData,
-            setCategoryData,
-            ...props
-        }
-    })
 };
-
+CategoryListWidget.category = 'widgets';
+CategoryListWidget.templateId = 'categoryListWidget';
 export default CategoryListWidget;

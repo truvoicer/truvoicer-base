@@ -5,7 +5,7 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 const SocialIconsWidget = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    function defaultView() {
+
         return (
             <div className="col-xl-3 col-md-6 col-lg-3">
                 <div className="footer_widget wow fadeInUp" data-wow-duration="1s" data-wow-delay=".3s">
@@ -38,16 +38,7 @@ const SocialIconsWidget = (props) => {
                 </div>
             </div>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'widgets',
-        templateId: 'socialIconsWidget',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    })
 }
+SocialIconsWidget.category = 'widgets';
+SocialIconsWidget.templateId = 'socialIconsWidget';
 export default SocialIconsWidget;

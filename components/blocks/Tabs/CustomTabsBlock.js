@@ -43,13 +43,12 @@ const CustomTabsBlock = (props) => {
             return null
         }
         if (props.data?.access_control === 'protected') {
-            return (
-                <UserAccountLoader>
-                    <FormComponent data={tab}/>
+            return templateManager.render(<UserAccountLoader>
+                {templateManager.render(<FormComponent data={tab}/>)}
                 </UserAccountLoader>
             )
         }
-        return <FormComponent data={tab}/>
+        return templateManager.render(<FormComponent data={tab}/>)
     }
 
     const getTabContent = (tab) => {
@@ -62,7 +61,7 @@ const CustomTabsBlock = (props) => {
                 return (
                     <div className={"container"}>
                         <div className={"custom_content"}>
-                            <EditorContent data={tab.custom_content}/>
+                            {templateManager.render(<EditorContent data={tab.custom_content}/>)}
                         </div>
                     </div>
                 )

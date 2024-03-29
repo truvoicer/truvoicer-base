@@ -78,10 +78,10 @@ const PostItemBlock = (props) => {
                         <div className="single-post">
                             <h1>{post?.post_title}</h1>
                             <div className="blog_details">
-                                <BlogCategoryList
+                                {templateManager.render(<BlogCategoryList
                                     categories={post?.categories}
                                     classes={"blog-info-link mt-3 mb-4"}
-                                />
+                                />)}
                                 <>{parse(post?.post_content ? post.post_content : "")}</>
                             </div>
                         </div>

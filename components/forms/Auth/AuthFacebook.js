@@ -33,34 +33,24 @@ const AuthFacebook = (props) => {
         }, {scope: 'email'});
     }
 
-    function defaultView() {
+
         return (
             <div>
-                <SocialButton buttonClass={props.buttonClass}
-                             iconClass={<FontAwesomeIcon icon={faFacebookF} />}
-                             buttonLabel={props.buttonLabel}
-                             onClick={onCLick}
-                    />
+                {templateManager.render(<SocialButton buttonClass={props.buttonClass}
+                                                      iconClass={<FontAwesomeIcon icon={faFacebookF}/>}
+                                                      buttonLabel={props.buttonLabel}
+                                                      onClick={onCLick}
+                />)}
             </div>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'auth',
-        templateId: 'authFacebook',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            responseFacebook: responseFacebook,
-            ...props
-        }
-    });
 }
 function mapStateToProps(state) {
     return {
         siteSettings: state.page.siteSettings
     };
 }
-
+AuthFacebook.category = 'auth';
+AuthFacebook.templateId = 'authFacebook';
 export default connect(
     mapStateToProps,
     null

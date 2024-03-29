@@ -56,7 +56,7 @@ const NavBar = (props) => {
                                     <React.Fragment key={index}>
                                         {item.search &&
                                             <div>
-                                                <Search data={item.search}/>
+                                                {templateManager.render(<Search data={item.search}/>)}
                                             </div>
                                         }
                                         {item.custom_html && item.custom_html.content &&
@@ -66,13 +66,13 @@ const NavBar = (props) => {
                                         }
                                         {item.nav_menu && item.nav_menu.menu_slug === siteConfig.navMenu &&
                                             <div className="col-lg-6 col-xl-7">
-                                                <HeaderMenu data={item.nav_menu}/>
+                                                {templateManager.render(<HeaderMenu data={item.nav_menu}/>)}
                                             </div>
 
                                         }
                                         {item.button_widget &&
                                             <div className="col-lg-2 col-xl-2 d-none d-lg-block text-right">
-                                                <ButtonWidget data={item.button_widget}/>
+                                                {templateManager.render(<ButtonWidget data={item.button_widget}/>)}
                                             </div>
                                         }
                                         {item.saved_items_widget &&
@@ -82,7 +82,7 @@ const NavBar = (props) => {
                                         }
                                         {item.nav_menu && item.nav_menu.menu_slug === siteConfig.profileMenu &&
                                             <div className="col-lg-2 col-xl-2 d-none d-lg-block text-right">
-                                                <ProfileMenu data={item.nav_menu}/>
+                                                {templateManager.render(<ProfileMenu data={item.nav_menu}/>)}
                                             </div>
                                         }
                                     </React.Fragment>
@@ -92,7 +92,7 @@ const NavBar = (props) => {
                         }
                     </div>
                     {mobileMenu &&
-                        <MobileDrawerMenu data={mobileMenu.nav_menu}/>
+                        templateManager.render(<MobileDrawerMenu data={mobileMenu.nav_menu}/>)
                     }
                 </div>
             </div>

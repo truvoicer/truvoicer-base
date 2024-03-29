@@ -23,6 +23,7 @@ const BlogSidebar = (props) => {
 
                 setData(buildSidebar({
                     sidebarData: sidebar,
+                    templateManager
                 }))
             }
         } catch (e) {
@@ -34,7 +35,7 @@ const BlogSidebar = (props) => {
         sidebarRequest();
     }, []);
 
-    function defaultView() {
+
         return (
             <div className="job_filter white-bg">
                 <div className="form_inner white-bg">
@@ -46,24 +47,13 @@ const BlogSidebar = (props) => {
                 </div>
             </div>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'sidebars',
-        templateId: 'blogSidebar',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            data: data,
-            setData: setData,
-            ...props
-        }
-    });
 }
 
 function mapStateToProps(state) {
     return {};
 }
-
+BlogSidebar.category = 'sidebars';
+BlogSidebar.templateId = 'blogSidebar';
 export default connect(
     null,
     null

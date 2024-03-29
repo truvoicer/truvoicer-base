@@ -3,6 +3,8 @@ import {isSet} from "../../library/utils";
 import {blockComponentsConfig} from "../../config/block-components-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import Tab from "react-bootstrap/Tab";
+import {Tabs} from "react-bootstrap";
 
 const VerticalTabLayout = (props) => {
     const [tabValue, setTabValue] = useState(props.tabIndex);
@@ -62,7 +64,7 @@ const VerticalTabLayout = (props) => {
     }
 
     // const classes = useStyles();
-    function defaultView() {
+
         return (
             <div className={''}>
                 <Tabs
@@ -92,21 +94,7 @@ const VerticalTabLayout = (props) => {
                 ))}
             </div>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'tabs',
-        templateId: 'verticalTabLayout',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            handleTabChange: handleTabChange,
-            getTabComponent: getTabComponent,
-            tabProps: tabProps,
-            TabPanel: TabPanel,
-            tabValue: tabValue,
-            setTabValue: setTabValue,
-            ...props
-        }
-    });
 }
+VerticalTabLayout.category = 'tabs';
+VerticalTabLayout.templateId = 'verticalTabLayout';
 export default VerticalTabLayout;

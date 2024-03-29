@@ -94,7 +94,7 @@ function UserSavedItemsBlock(props) {
                         <div className="col-md-12 mb-5" data-aos="fade">
                             <h2>My Saved Items</h2>
                             {!isObjectEmpty(tabData) &&
-                                <SavedItemsVerticalTabs data={tabData}/>
+                                templateManager.render(<SavedItemsVerticalTabs data={tabData}/>)
                             }
                         </div>
                     </div>

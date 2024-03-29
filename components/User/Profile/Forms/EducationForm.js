@@ -9,22 +9,13 @@ function EducationForm(props) {
     if (!isObject(props?.data?.form_block)) {
         return null;
     }
-    function defaultView() {
+
     return (
         <>
             {templateManager.render(<FormBlock data={props.data.form_block}/>)}
         </>
     );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'profile_forms',
-        templateId: 'educationForm',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            ...props
-        }
-    })
 }
-
+EducationForm.category = 'profile_forms';
+EducationForm.templateId = 'educationForm';
 export default EducationForm;

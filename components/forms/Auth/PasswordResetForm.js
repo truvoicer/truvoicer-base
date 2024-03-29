@@ -22,35 +22,22 @@ const PasswordResetForm = (props) => {
         props.requestCallback(false, response.data);
     }
 
-    function defaultView() {
+
         return (
             <>
                 {!props.session.authenticated &&
                     <>
-                        <DataForm
+                        {templateManager.render(<DataForm
                             data={PasswordResetRequestData}
                             submitCallback={submitHandler}
                             submitButtonText={submitButtonText}
                         >
                             {props.children}
-                        </DataForm>
+                        </DataForm>)}
                     </>
                 }
             </>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'auth',
-        templateId: 'passwordResetForm',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            submitHandler: submitHandler,
-            submitButtonText: submitButtonText,
-            setSubmitButtonText: setSubmitButtonText,
-            ...props
-        }
-    });
 }
 
 function mapStateToProps(state) {
@@ -59,7 +46,8 @@ function mapStateToProps(state) {
         session: state.session
     };
 }
-
+PasswordResetForm.category = 'auth';
+PasswordResetForm.templateId = 'passwordResetForm';
 export default connect(
     mapStateToProps,
     null

@@ -9,7 +9,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 const BlogCategoryList = (props) => {
     const {categories = [], classes = ""} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    function defaultView() {
+
         return (
             <ul className={classes}>
                 {Array.isArray(categories) &&
@@ -26,17 +26,8 @@ const BlogCategoryList = (props) => {
                 }
             </ul>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'widgets',
-        templateId: 'blogCategoryList',
-        defaultComponent: defaultView(),
-        props: {
-            ...props
-        }
-    })
-}
-;
+};
+BlogCategoryList.category = 'widgets';
+BlogCategoryList.templateId = 'blogCategoryList';
 
 export default BlogCategoryList;

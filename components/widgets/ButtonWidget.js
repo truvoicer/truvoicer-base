@@ -9,29 +9,19 @@ const ButtonWidget = (props) => {
     const getButton = () => {
         switch (props.data.button_type) {
             case "auth":
-                return <AuthButton data={props.data}/>
+                return templateManager.render(<AuthButton data={props.data}/>)
             case "custom":
-                return <CustomButton data={props.data}/>
+                return templateManager.render(<CustomButton data={props.data}/>)
         }
     }
 
-    function defaultView() {
+
         return (
             <>
                 {getButton()}
             </>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'widgets',
-        templateId: 'buttonWidget',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            getButton,
-            ...props
-        }
-    })
 }
+ButtonWidget.category = 'widgets';
+ButtonWidget.templateId = 'buttonWidget';
 export default ButtonWidget;

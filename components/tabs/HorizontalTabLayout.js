@@ -49,7 +49,7 @@ const HorizontalTabLayout = (props) => {
         return null
     }
 
-    function defaultView() {
+
         return (
             <div>
                 <AppBar position="static">
@@ -78,21 +78,7 @@ const HorizontalTabLayout = (props) => {
                 ))}
             </div>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'tabs',
-        templateId: 'horizontalTabLayout',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            handleTabChange: handleTabChange,
-            getTabComponent: getTabComponent,
-            tabProps: tabProps,
-            TabPanel: TabPanel,
-            tabValue: tabValue,
-            setTabValue: setTabValue,
-            ...props
-        }
-    });
 }
+HorizontalTabLayout.category = 'tabs';
+HorizontalTabLayout.templateId = 'horizontalTabLayout';
 export default HorizontalTabLayout;

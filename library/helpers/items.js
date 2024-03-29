@@ -158,19 +158,19 @@ const getItemContent = (type, key, dataItem, config = null) => {
     return getItemContentType(type, key, dataItem, config);
 }
 
-export const getListItemData = (item, dataItem) => {
+export const getListItemData = (item, dataItem, templateManager) => {
     return (
         <>
             {!Array.isArray(item.dataKey)
                 ?
                 <>
-                    {getItemContent(item.type, item.dataKey, dataItem, item)}
+                    {templateManager.render(getItemContent(item.type, item.dataKey, dataItem, item))}
                 </>
                 :
                 <>
                     {item.dataKey.map((dataKeyName, keyIndex) => (
                         <React.Fragment key={keyIndex.toString()}>
-                            {getItemContent(item.type, item.dataKey, dataItem, item)}
+                            {templateManager.render(getItemContent(item.type, item.dataKey, dataItem, item))}
                         </React.Fragment>
                     ))}
                 </>

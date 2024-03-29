@@ -46,7 +46,7 @@ const LoginDialog = (props) => {
         }
     }
 
-    function defaultView() {
+
         return (
             <div className={"auth-wrapper"}>
                 {!showLoginForm &&
@@ -58,7 +58,7 @@ const LoginDialog = (props) => {
                             </div>
                         }
                         <div className={"auth-wrapper--login-form"}>
-                            <AuthLoginForm requestCallback={requestCallback}>
+                            {templateManager.render(<AuthLoginForm requestCallback={requestCallback}>
                                 <p className={"mb-0 text-center"}>
                                     <a className={"text-danger"} href={siteConfig.defaultForgotPasswordHref}
                                        onClick={showForgotPasswordModal}>
@@ -72,7 +72,7 @@ const LoginDialog = (props) => {
                                         Register
                                     </a>
                                 </p>
-                            </AuthLoginForm>
+                            </AuthLoginForm>)}
                         </div>
                         <div className={"horizontal-divider"}>
                             <span>OR</span>
@@ -80,45 +80,29 @@ const LoginDialog = (props) => {
 
                         <div className={"auth-wrapper--button-group"}>
                             <div className={"auth-wrapper--google auth-wrapper--button"}>
-                                <AuthGoogle
+                                {templateManager.render(<AuthGoogle
                                     requestCallback={requestCallback}
                                     buttonClass={"google-light-red"}
                                     iconClass={"google"}
                                     buttonLabel={"Sign in with Google"}
-                                />
+                                />)}
                             </div>
                             <div className={"auth-wrapper--facebook auth-wrapper--button"}>
-                                <AuthFacebook
+                                {templateManager.render(<AuthFacebook
                                     requestCallback={requestCallback}
                                     buttonClass={"facebook-light-blue"}
                                     iconClass={"facebook"}
                                     buttonLabel={"Sign in with Facebook"}
-                                />
+                                />)}
                             </div>
                         </div>
                     </>
                 }
             </div>
         );
-    }
-
-    return templateManager.getTemplateComponent({
-        category: 'auth',
-        templateId: 'loginDialog',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            showLoginForm: showLoginForm,
-            setShowLoginForm: setShowLoginForm,
-            showAuthRegisterModal: showAuthRegisterModal,
-            showForgotPasswordModal: showForgotPasswordModal,
-            requestCallback: requestCallback,
-            error: error,
-            setError: setError,
-            ...props
-        }
-    })
 }
+LoginDialog.category = 'auth';
+LoginDialog.templateId = 'loginDialog';
 export default connect(
     null,
     null

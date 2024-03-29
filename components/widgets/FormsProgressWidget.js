@@ -33,7 +33,7 @@ function FormsProgressWidget(props) {
     }, []);
     const overallPercentage = progressData?.overallProgressPercentage;
 
-    function defaultView() {
+
         return (
             <div className="row">
                 <div className="col-lg-12 col-12">
@@ -41,11 +41,11 @@ function FormsProgressWidget(props) {
                         <div className="inner">
                             <div className={"row align-items-center"}>
                                 <div className={"col-12 col-md-4 col-lg-3"}>
-                                    <CircleProgressBar
+                                    {templateManager.render(<CircleProgressBar
                                         percent={overallPercentage ? overallPercentage : 0}
                                         ringColor={"#0C89F0"}
                                         textColor={"#f40000"}
-                                    />
+                                    />)}
                                 </div>
                                 <div className={"col-12 col-md-8 col-lg-9"}>
                                     <h3 className={"text-white"}>
@@ -91,19 +91,7 @@ function FormsProgressWidget(props) {
                 </div>
             </div>
         );
-    }
-    return templateManager.getTemplateComponent({
-        category: 'widgets',
-        templateId: 'formsProgressWidget',
-        defaultComponent: defaultView(),
-        props: {
-            defaultView: defaultView,
-            formProgressRequest: formProgressRequest,
-            progressData: progressData,
-            setProgressData: setProgressData,
-            ...props
-        }
-    });
 }
-
+FormsProgressWidget.category = 'widgets';
+FormsProgressWidget.templateId = 'formsProgressWidget';
 export default FormsProgressWidget;
