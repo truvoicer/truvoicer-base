@@ -7,6 +7,7 @@ import {SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constant
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faClock, faEnvelope, faMapMarker} from "@fortawesome/free-solid-svg-icons";
 import {faFacebook, faGooglePlus, faTwitter} from "@fortawesome/free-brands-svg-icons";
+import Image from "next/image";
 
 const DefaultItemView = (props) => {
     const extraData = props.data?.extra_data;
@@ -36,7 +37,7 @@ const DefaultItemView = (props) => {
                             <div className="single_jobs white-bg d-flex justify-content-between">
                                 <div className="jobs_left d-flex align-items-center">
                                     <div className="thumb">
-                                        <img src={props.item.default_image? props.item.default_image : "/img/pticon.png"} alt=""/>
+                                        <img  src={props.item.default_image? props.item.default_image : "/img/pticon.png"} alt=""/>
                                     </div>
                                     <div className="jobs_conetent">
                                         <a href="#"><h4>{props.item.job_title}</h4></a>

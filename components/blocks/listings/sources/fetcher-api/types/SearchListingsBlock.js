@@ -36,7 +36,6 @@ const SearchListingsBlock = (props) => {
     }, [listingsContext.loaded]);
 
     const getListingsBlock = () => {
-        console.log(searchContext?.searchStatus, searchContext?.searchList?.length)
         return (
             <div className="more-news block color-default">
                 {isNotEmpty(listingsContext?.listingsData?.heading) &&
@@ -64,7 +63,7 @@ const SearchListingsBlock = (props) => {
         );
     }
 
-
+    console.log(props.data)
     return (
         <section className="block-wrapper p-bottom-0">
             <div className="container">

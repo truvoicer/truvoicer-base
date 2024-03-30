@@ -1,20 +1,21 @@
 import React, {useContext} from "react";
 import {connect} from "react-redux";
 import {itemDataTextFilter} from "../../library/helpers/items";
-import {isNotEmpty} from "../../library/utils";
+import {isNotEmpty, isValidImageSrc} from "../../library/utils";
 import {getExtraDataValue} from "../../library/helpers/pages";
 import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
+import Image from "next/image";
 
 const HeroBlock = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const modalContext = useContext(AppModalContext);
     let heroType = "full";
-    const primaryBgUrl = props?.data?.hero_background_image ? props.data.hero_background_image : "/img/banner/banner.png";
-    const secondaryBgUrl = props?.data?.hero_background_image_2 ? props.data.hero_background_image_2 : "";
-    const breadcrumbBgUrl = props?.data?.hero_background_image_3 ? props.data.hero_background_image_3 : "/img/banner/bradcam.png";
+    const primaryBgUrl = isValidImageSrc(props?.data?.hero_background_image) ? props.data.hero_background_image : "/img/banner/banner.png";
+    const secondaryBgUrl = isValidImageSrc(props?.data?.hero_background_image_2) ? props.data.hero_background_image_2 : "";
+    const breadcrumbBgUrl = isValidImageSrc(props?.data?.hero_background_image_3) ? props.data.hero_background_image_3 : "/img/banner/bradcam.png";
     if (isNotEmpty(props?.data?.hero_type)) {
         heroType = props.data.hero_type;
     }
@@ -79,7 +80,7 @@ const HeroBlock = (props) => {
                     </div>
                     <div className="ilstration_img wow fadeInRight d-none d-lg-block text-right" data-wow-duration="1s"
                          data-wow-delay=".2s">
-                        <img src={secondaryBgUrl} alt=""/>
+                        <img   src={secondaryBgUrl} alt=""/>
                     </div>
                 </div>
             }

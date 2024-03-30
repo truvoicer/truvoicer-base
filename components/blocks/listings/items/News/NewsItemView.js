@@ -3,6 +3,7 @@ import parse from 'html-react-parser';
 import {BlogContext} from "@/truvoicer-base/config/contexts/BlogContext";
 import {faClock, faLongArrowAltLeft} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 
 const NewsItemView = (props) => {
 
@@ -19,7 +20,7 @@ const NewsItemView = (props) => {
                     <div className="col-lg-12 posts-list">
                         <div className="single-post">
                             <div className="feature-img">
-                                <img className="img-fluid"
+                                <img  className="img-fluid"
                                      src={props.data.item_default_image? props.data.item_default_image : ""}
                                      alt=""/>
                             </div>

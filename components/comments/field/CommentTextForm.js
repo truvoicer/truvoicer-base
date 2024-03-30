@@ -2,6 +2,7 @@ import React, {useContext, useState} from "react";
 import {CommentsContext} from "../context/CommentsContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import Image from "next/image";
 
 const CommentTextForm = (props) => {
     const commentsContext = useContext(CommentsContext)
@@ -26,7 +27,7 @@ const CommentTextForm = (props) => {
             <fieldset>
                 <div className="row">
                     <div className="col-sm-3 col-lg-2 hidden-xs">
-                        <img className="img-responsive avatar-image"
+                        <img  className="img-responsive avatar-image"
                              src="https://bootdey.com/img/Content/avatar/avatar1.png"
                              alt=""/>
                     </div>

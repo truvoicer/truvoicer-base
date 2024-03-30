@@ -25,71 +25,76 @@ const PostsBlock = (props) => {
         }
         listingsManager.runSearch('postsBlock');
     }, [listingsContext.loaded]);
-
     const getListingsBlock = () => {
         return (
-            <>
-                {searchContext?.searchList?.length > 0 && searchContext?.searchStatus === SEARCH_REQUEST_COMPLETED ?
-                    <>
-                        {templateManager.render(<ListingsSortBar/>)}
-                        {listingsContext?.listingsData?.load_more_type === "pagination" &&
-                            templateManager.render(<Paginate/>)
-                        }
-                        {listingsContext?.listingsData?.load_more_type === "infinite_scroll" &&
-                            templateManager.render(<ListingsInfiniteScroll/>)
-                        }
-                    </>
-                    :
-                    templateManager.render(<LoaderComponent key={"loader"}/>)
+            <div className="block category-listing">
+                {isNotEmpty(listingsContext?.listingsData?.heading) &&
+                    <h3 className="block-title"><span>{listingsContext.listingsData.heading}</span></h3>
                 }
-            </>
+
+                <ul className="subCategory unstyled">
+                    <li><a href="#">Travel</a></li>
+                    <li><a href="#">Health</a></li>
+                    <li><a href="#">Architecture</a></li>
+                    <li><a href="#">Food</a></li>
+                </ul>
+                <div className="row">
+                    <div className="col-md-12">
+                    {searchContext?.searchList?.length > 0 && searchContext?.searchStatus === SEARCH_REQUEST_COMPLETED ?
+                        <>
+                            {templateManager.render(<ListingsSortBar/>)}
+                            {listingsContext?.listingsData?.load_more_type === "pagination" &&
+                                templateManager.render(<Paginate/>)
+                            }
+                            {listingsContext?.listingsData?.load_more_type === "infinite_scroll" &&
+                                templateManager.render(<ListingsInfiniteScroll/>)
+                            }
+                        </>
+                        :
+                        templateManager.render(<LoaderComponent key={"loader"}/>)
+                    }
+                </div>
+                </div>
+            </div>
         );
     }
 
     //console.log({props, listingsContext, searchContext})
 
-
-        return (
-                <section className="blog_area section-padding">
-                    <div className="container">
-                        <div className={"row"}>
-                            {isNotEmpty(listingsContext?.listingsData?.heading) &&
-                                <div className={"listings-heading"}>
-                                    <h3>{listingsContext.listingsData.heading}</h3>
+    console.log(props.data)
+    return (
+        <section className="block-wrapper">
+            <div className="container">
+                <div className="row">
+                    {props.data?.show_sidebar
+                        ?
+                        <>
+                            {filtersPosition === 'left' &&
+                                <div className="col-lg-4 col-sm-12">
+                                    {templateManager.render(<ListingsLeftSidebar/>)}
                                 </div>
                             }
+                            <div>
+                                <div className="col-lg-8 col-md-12">
+                                    {getListingsBlock()}
+                                </div>
+                            </div>
 
-                                {props.data?.show_sidebar
-                                    ?
-                                    <>
-                                        {filtersPosition === 'left' &&
+                            {filtersPosition === 'right' &&
+                                <div className="col-lg-4 col-sm-12">
+                                    {templateManager.render(<ListingsLeftSidebar/>)}
+                                </div>
+                            }
+                        </>
+                        :
+                        <div className="col-12">
+                                {getListingsBlock()}
+                            </div>
+                        }
 
-                                            <div className="col-12 col-sm-9 col-md-6 col-lg-3 d-none d-lg-block">
-                                                {templateManager.render(<ListingsLeftSidebar
-                                                    sidebarName={props.data?.select_sidebar}/>)}
-                                            </div>
-                                        }
-
-                                        <div className="col-12 col-lg-9">
-                                            <div className="blog_left_sidebar">
-                                                {getListingsBlock()}
-                                            </div>
-                                        </div>
-
-                                        {filtersPosition === 'right' &&
-                                            <div className="col-12 col-sm-9 col-md-6 col-lg-3 d-none d-lg-block">
-                                                {templateManager.render(<ListingsLeftSidebar sidebarName={props.data?.select_sidebar}/>)}
-                                            </div>
-                                        }
-                                    </>
-                                    :
-                                    <div className="blog_left_sidebar">
-                                        {getListingsBlock()}
-                                    </div>
-                                }
-                        </div>
                     </div>
-                </section>
+                </div>
+            </section>
         )
 };
 

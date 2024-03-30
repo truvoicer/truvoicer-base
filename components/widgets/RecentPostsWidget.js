@@ -6,6 +6,7 @@ import Link from "next/link";
 import {getPostItemUrl} from "../../library/helpers/posts";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import Image from "next/image";
 
 const RecentPostsWidget = (props) => {
     const {data} = props;
@@ -35,7 +36,7 @@ const RecentPostsWidget = (props) => {
                 <h3 className="widget_title">{data?.title || "Recent Posts"}</h3>
                 {Array.isArray(postData) && postData.map((post, index) => (
                     <div key={index} className="media post_item">
-                        <img
+                        <Image
                             src={post?.thumb}
                             alt="post"
                         />

@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {formatDate} from "@/truvoicer-base/library/utils";
+import {formatDate, isNotEmpty} from "@/truvoicer-base/library/utils";
 import {SESSION_USER, SESSION_USER_EMAIL, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
 import {connect} from "react-redux";
 import parse from 'html-react-parser';
@@ -41,49 +41,40 @@ const NewsItemListPost = (props) => {
     // console.log({linkProps})
 
     return (
-        <article className="blog_item">
-            <div className="blog_item_img">
-                <div className="blog_item_img_inner">
-                    <img
-                        className="card-img rounded-0"
-                        src={data?.featured_image ? data.featured_image : ""}
-                        alt=""
-                    />
-                </div>
-                <a className={"blog_item_date"}>
-                    <h3>{formatDate(data.post_modified, "D")}</h3>
-                    <p>{formatDate(data.post_modified, "MMM")}</p>
-                </a>
-            </div>
-
-            <div className="blog_details">
-                {linkProps.href
-                    ?
-                    <Link
-                        className="d-inline-block"
-                        {...linkProps}
-                        onClick={() => {
-                            setPostNavFromListAction(true)
-                            setPostNavIndexAction(postIndex)
-                            setNextPostNavDataAction(nextPost)
-                            setPrevPostNavDataAction(prevPost)
-                        }}
-                    >
-                        <h2>{data.post_title}</h2>
+            <div className="post-block-style post-grid clearfix">
+                {isNotEmpty(data?.featured_image) &&
+                <div className="post-thumb">
+                    <Link {...linkProps}>
+                        <Image
+                            className="img-fluid"
+                            src={data?.featured_image ? data.featured_image : ""}
+                            alt=""
+                        />
                     </Link>
-                    :
-                    <h2>{data.post_title}</h2>
+                </div>
                 }
-                <p>
-                    {parse(data.post_excerpt)}
-                </p>
-
-                <BlogCategoryList
-                    categories={data?.categories}
-                    classes={"blog-info-link"}
-                />
+                {isNotEmpty(category) &&
+                <Link className="post-cat" {...linkProps}>{category?.slug || ''}</Link>
+                }
+                {Array.isArray(data?.categories) &&
+                    <BlogCategoryList
+                        categories={data?.categories}
+                        classes={"blog-info-link"}
+                    />
+                }
+                <div className="post-content">
+                    <h2 className="post-title title-large">
+                        <Link {...linkProps}>{data.post_title}</Link>
+                    </h2>
+                    <div className="post-meta">
+                        <span className="post-author"><a href="#">John Doe</a></span>
+                        <span className="post-date">{formatDate(data.post_modified)}</span>
+                        <span className="post-comment pull-right"><i className="fa fa-comments-o"></i>
+                            <a href="#" className="comments-link"><span>03</span></a></span>
+                    </div>
+                    <p>{parse(data.post_excerpt)}</p>
+                </div>
             </div>
-        </article>
     );
 
 }

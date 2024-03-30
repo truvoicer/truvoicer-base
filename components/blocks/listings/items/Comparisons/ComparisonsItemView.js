@@ -3,6 +3,7 @@ import {isNotEmpty} from "@/truvoicer-base/library/utils";
 import parse from 'html-react-parser';
 import ItemViewComments from "@/truvoicer-base/components/comments/ItemViewComments";
 import {getExtraDataValue} from "@/truvoicer-base/library/helpers/pages";
+import Image from "next/image";
 
 const ComparisonsItemView = (props) => {
 
@@ -16,7 +17,7 @@ const ComparisonsItemView = (props) => {
                             <div className="single_jobs white-bg d-flex justify-content-between">
                                 <div className="jobs_left d-flex align-items-center">
                                     <div className="thumb">
-                                        <img src={props.item.item_logo? props.item.item_logo : "/img/pticon.png"} alt=""/>
+                                        <img  src={props.item.item_logo? props.item.item_logo : "/img/pticon.png"} alt=""/>
                                     </div>
                                     <div className="jobs_conetent">
                                         <a href="#"><h4>{props.item.item_name}</h4></a>

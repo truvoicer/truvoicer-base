@@ -4,6 +4,7 @@ import NextArrow from "../../arrows/NextArrow";
 import PrevArrow from "../../arrows/PrevArrow";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import Image from "next/image";
 
 /**
  *
@@ -46,7 +47,7 @@ const FullSingleTestimonialsCarousel = (props) => {
                                                 <div className="col-lg-11">
                                                     <div className="single_testmonial d-flex align-items-center">
                                                         <div className="thumb">
-                                                            <img src={item.item_image} alt=""/>
+                                                            <img  src={item.item_image} alt=""/>
                                                             <div className="quote_icon">
                                                                 <i className="Flaticon flaticon-quote"/>
                                                             </div>

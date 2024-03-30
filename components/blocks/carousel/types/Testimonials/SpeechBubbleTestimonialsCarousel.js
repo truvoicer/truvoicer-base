@@ -37,7 +37,7 @@ const SpeechBubbleTestimonialsCarousel = (props) => {
                             className={"slick-dot-item"}
                             onClick={item.props.children.props.onClick}
                         >
-                            <img src={itemData?.[index]?.item_image} alt=""/>
+                            <img  src={itemData?.[index]?.item_image} alt=""/>
                         </a>
                     )
                 })}

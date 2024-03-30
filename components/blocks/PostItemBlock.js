@@ -13,6 +13,7 @@ import ItemViewComments from "@/truvoicer-base/components/comments/ItemViewComme
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faHeart} from "@fortawesome/free-solid-svg-icons";
 import {faBehance, faDribbble, faFacebookF, faTwitter} from "@fortawesome/free-brands-svg-icons";
+import Image from "next/image";
 
 const PostItemBlock = (props) => {
     const {post, postList, postNav, data} = props;
@@ -115,7 +116,7 @@ const PostItemBlock = (props) => {
                                                             category_name: prevPostCategory?.slug
                                                         })}
                                                         onClick={prevPostClickHandler}>
-                                                        <img className="img-fluid"
+                                                        <img   className="img-fluid"
                                                              src={prevPost?.featured_image}
                                                              alt=""/>
                                                     </Link>
@@ -180,7 +181,7 @@ const PostItemBlock = (props) => {
                                                             category_name: nextPostCategory?.slug
                                                         })}
                                                         onClick={nextPostClickHandler}>
-                                                        <img className="img-fluid"
+                                                        <img   className="img-fluid"
                                                              src={nextPost?.featured_image}
                                                              alt=""/>
 

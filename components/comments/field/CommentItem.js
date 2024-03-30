@@ -5,6 +5,7 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {faCalendar, faHeart, faThumbsUp} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 
 const CommentItem = (props) => {
     const [showReply, setShowReply] = useState(false);
@@ -18,7 +19,7 @@ const CommentItem = (props) => {
     return (
         <div className="media">
             <a className="pull-left" href="#">
-                <img
+                <Image
                     className="media-object avatar-image"
                     src="https://bootdey.com/img/Content/avatar/avatar1.png"
                     alt=""

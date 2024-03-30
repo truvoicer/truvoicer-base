@@ -14,6 +14,7 @@ import {faClock, faMapMarker} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
 import SavedItemToggle from "@/truvoicer-base/components/blocks/listings/widgets/SavedItemToggle";
+import Image from "next/image";
 
 const DefaultItemList = (props) => {
     const listingsContext = useContext(ListingsContext);
@@ -57,7 +58,7 @@ const DefaultItemList = (props) => {
             <div className="post-block-style post-float-half clearfix">
                 <div className="post-thumb">
                     <Link {...linkProps}>
-                        <img className="img-fluid"
+                        <img  className="img-fluid"
                              src={props.data.default_image ? props.data.default_image : "/img/pticon.png"} alt=""/>
                     </Link>
                 </div>

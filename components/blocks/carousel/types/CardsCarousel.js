@@ -4,6 +4,7 @@ import NextArrow from "@/truvoicer-base/components/blocks/carousel/arrows/NextAr
 import PrevArrow from "@/truvoicer-base/components/blocks/carousel/arrows/PrevArrow";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import Image from "next/image";
 
 /**
  *
@@ -62,7 +63,7 @@ const CardsCarousel = (props) => {
                                     {props.data.item_list.map((item, index) => (
                                         <div className="single_company" key={index}>
                                             <div className="thumb">
-                                                <img src={item.item_image} alt=""/>
+                                                <img  src={item.item_image} alt=""/>
                                             </div>
                                             <a href={item.item_link}><h3>{item.item_header}</h3>
                                             </a>

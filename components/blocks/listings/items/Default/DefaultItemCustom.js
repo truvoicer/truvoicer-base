@@ -2,6 +2,7 @@ import React from "react";
 import {connect} from "react-redux";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faClock, faMapMarker} from "@fortawesome/free-solid-svg-icons";
+import Image from "next/image";
 
 const DefaultItemCustom = (props) => {
     return (
@@ -9,7 +10,7 @@ const DefaultItemCustom = (props) => {
         <div className="single_jobs white-bg d-flex justify-content-between">
             <div className="jobs_left d-flex align-items-center">
                 <div className="thumb">
-                    <img src={props.data.item_image} alt={""}/>
+                    <img  src={props.data.item_image} alt={""}/>
                 </div>
                 <div className="jobs_conetent">
                     <a

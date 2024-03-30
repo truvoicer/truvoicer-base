@@ -4,6 +4,7 @@ import React, {useContext, useState} from "react";
 import {convertLinkToHttps} from "../../library/helpers/items";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import Image from "next/image";
 
 const {useEffect} = require("react");
 
@@ -64,7 +65,7 @@ const ImageLoader = (props) => {
                     <div className={props.className ? props.className : ""}
                          style={{backgroundImage: "url(" + convertLinkToHttps(image.url) + ")"}}/>
                     :
-                    <img className={props.className ? props.className : ""} src={convertLinkToHttps(image.url)}
+                    <img  className={props.className ? props.className : ""} src={convertLinkToHttps(image.url)}
                          alt={props.item.provider}/>
                 }
 

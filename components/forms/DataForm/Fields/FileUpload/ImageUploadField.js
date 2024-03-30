@@ -1,6 +1,7 @@
 import React, {createRef, useEffect, useState} from 'react';
 import {useDropzone} from "react-dropzone";
 import Image from "react-bootstrap/Image";
+import NextImage from "next/image";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Modal from "react-bootstrap/Modal";
@@ -157,7 +158,7 @@ function ImageUploadField({
                 <Col sm={12} md={3} lg={3}>
                     <div {...getRootProps({className: 'dropzone'})}>
                         <input {...getInputProps()} />
-                        <Image src={imageSrc} roundedCircle/>
+                        <img  src={imageSrc} roundedCircle/>
                     </div>
                 </Col>
                 <Col sm={12} md={9} lg={9}>
@@ -212,7 +213,7 @@ function ImageUploadField({
                                         // }}
                                     >
 
-                                        <img ref={imageRef} src={image.preview} onLoad={onImageLoaded} alt="Preview" style={{maxWidth: "100%"}}/>
+                                        <NextImage ref={imageRef} src={image.preview} onLoad={onImageLoaded} alt="Preview" style={{maxWidth: "100%"}}/>
                                     </ReactCrop>
                                 </Col>
                                 <Col sm={12} md={6} lg={6}>

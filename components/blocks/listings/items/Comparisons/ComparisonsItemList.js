@@ -12,6 +12,7 @@ import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchCo
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import ProsConsList from "@/truvoicer-base/components/widgets/ProsConsList";
 import StarRatings from "@/truvoicer-base/components/widgets/StarRatings";
+import Image from "next/image";
 
 /**
  *
@@ -56,7 +57,7 @@ const ComparisonsItemList = ({data, searchCategory, index}) => {
                         }}
                     >
                         <a href={getFieldValue('item_url')}>
-                            <img src={getFieldValue('item_logo') ? getFieldValue('item_logo') : "/img/pticon.png"} alt=""/>
+                            <img  src={getFieldValue('item_logo') ? getFieldValue('item_logo') : "/img/pticon.png"} alt=""/>
                         </a>
                     </div>
                     <div
@@ -136,7 +137,7 @@ const ComparisonsItemList = ({data, searchCategory, index}) => {
             <CSSTransition in={showExpandedContent} timeout={200} classNames="app--css-transition">
                 <div className={`listings-table--row--expanded-content`}>
                     <div className={"listings-table--row--description"}>
-                        {parse(getFieldValue('item_content'))}
+                        {parse(getFieldValue('item_content') || '')}
                     </div>
                 </div>
             </CSSTransition>

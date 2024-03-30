@@ -7,6 +7,7 @@ import store from "../../redux/store";
 import {getItemViewUrl} from "../../redux/actions/item-actions";
 import {tagManagerSendDataLayer} from "../api/global-scripts";
 import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpers";
+import Image from "next/image";
 
 export function replaceItemDataPlaceholders(pageTitle, item) {
     const test = new RegExp("\\\[+(.*?)\\]", "g");
@@ -53,7 +54,7 @@ export const convertLinkToHttps = (url) => {
 }
 
 const getItemImage = (url, label) => {
-    return <img src={convertLinkToHttps(url)} alt={label}/>
+    return <img  src={convertLinkToHttps(url)} alt={label}/>
 }
 
 const getItemLink = (url, label) => {

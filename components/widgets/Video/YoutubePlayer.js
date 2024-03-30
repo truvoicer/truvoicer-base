@@ -1,6 +1,7 @@
 import React, {useContext, useState} from "react";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import Image from "next/image";
 
 const YoutubePlayer = (props) => {
     const [video, setVideo] = useState(null);
@@ -33,7 +34,7 @@ const YoutubePlayer = (props) => {
                     <div className="play-btn">
                         <a onClick={getVideo}
                            className="play-button">
-                            <img src="/img/play.png" alt=""/>
+                            <img   src="/img/play.png" alt=""/>
                         </a>
                     </div>
                 }

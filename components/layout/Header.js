@@ -75,7 +75,7 @@ const Header = (props) => {
                         <div className="col-md-3 col-sm-12">
                             <div className="logo">
                                 <a href="#">
-                                    <img src="/images/logos/logo.png" alt=""/>
+                                    {/*<img src="/images/logos/logo.png" alt=""/>*/}
                                 </a>
                             </div>
                         </div>

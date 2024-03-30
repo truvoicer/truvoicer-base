@@ -6,6 +6,7 @@ import parse from 'html-react-parser';
 import {BlogContext} from "@/truvoicer-base/config/contexts/BlogContext";
 import {faClock, faComments, faUser} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 
 const NewsItemList = (props) => {
 
@@ -13,7 +14,7 @@ const NewsItemList = (props) => {
     return (
         <article className="blog_item">
             <div className="blog_item_img">
-                <img
+                <Image
                     className="card-img rounded-0"
                     src={props.data.item_default_image? props.data.item_default_image : ""}
                     alt=""

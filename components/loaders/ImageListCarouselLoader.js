@@ -7,6 +7,7 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleLeft, faAngleRight} from "@fortawesome/free-solid-svg-icons";
+import Image from "next/image";
 
 const ImageListCarouselLoader = (props) => {
     const carouselClassName = "basic-carousel " + (props.className ? props.className : "");
@@ -77,7 +78,7 @@ const ImageListCarouselLoader = (props) => {
             >
                 {Array.isArray(imageList) && imageList.map((item, index) => (
                     <div key={index}>
-                        <img className={props.imageClassName? props.imageClassName : ""} src={convertLinkToHttps(item.url)} alt={props.item.provider}/>
+                        <img  className={props.imageClassName? props.imageClassName : ""} src={convertLinkToHttps(item.url)} alt={props.item.provider}/>
                     </div>
                 ))}
             </Carousel>

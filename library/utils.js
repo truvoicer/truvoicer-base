@@ -171,3 +171,14 @@ export const getAcceptedFileExtString = (allowedExtArray = null, allowedMessage)
 export function isComponentFunction(component) {
     return (component || isFunction(component) || isFunction(component?.type));
 }
+export function isValidImageSrc(src) {
+    return (
+        typeof src === "string" &&
+        src !== "" &&
+        (
+            src.startsWith("http") ||
+            src.startsWith("//") ||
+            src.startsWith("/")
+        )
+    );
+}

@@ -8,6 +8,7 @@ import {getPostItemUrl} from "@/truvoicer-base/library/helpers/posts";
 import {DISPLAY_AS_LIST, DISPLAY_AS_POST_LIST} from "@/truvoicer-base/redux/constants/general_constants";
 import {PostRoutes} from "@/config/post-routes";
 import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpers";
+import Image from 'next/image';
 
 export class ListingsEngine {
     constructor(context) {
@@ -219,7 +220,7 @@ export class ListingsEngine {
     }
 
     getItemImage(url, label) {
-        return <Image src={this.convertLinkToHttps(url)} alt={label}/>
+        return <img  src={this.convertLinkToHttps(url)} alt={label}/>
     }
 
     getItemLink(url, label) {

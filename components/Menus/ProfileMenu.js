@@ -10,6 +10,7 @@ import {siteConfig} from "@/config/site-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
+import Image from "next/image";
 
 const ProfileMenu = (props) => {
     const {data, siteSettings} = props;
@@ -77,7 +78,7 @@ const ProfileMenu = (props) => {
                                 <div className={"d-flex align-items-center justify-content-end"}>
                                     <span
                                         className="mr-2 d-none d-lg-inline text-gray-600 small">{userData?.user_email}</span>
-                                    <img
+                                    <img 
                                         className="profile-user-img img-fluid img-circle"
                                         src={isNotEmpty(userData?.profile_picture) ? userData.profile_picture : "https://via.placeholder.com/150"}
                                         alt="User profile picture"

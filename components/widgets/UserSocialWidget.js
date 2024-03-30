@@ -5,6 +5,7 @@ import {formatDate, isNotEmpty} from "../../library/utils";
 import UserAccountLoader from "../loaders/UserAccountLoader";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import Image from "next/image";
 
 /**
  *
@@ -60,7 +61,7 @@ function UserSocialWidget(props) {
                 <div className="card card-primary card-outline">
                     <div className="card-body box-profile">
                         <div className="text-center">
-                            <img
+                            <Image
                                 className="profile-user-img img-fluid img-circle"
                                 src={isNotEmpty(userData?.profile_picture) ? userData.profile_picture : "https://via.placeholder.com/150"}
                                 alt="User profile picture"

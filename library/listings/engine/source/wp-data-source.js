@@ -31,6 +31,7 @@ import {
     LISTINGS_REQ_OP,
     LISTINGS_REQ_OP_ITEM_LIST, LISTINGS_REQ_OP_POST_LIST
 } from "@/truvoicer-base/redux/constants/listings-constants";
+import {tr} from "date-fns/locale";
 
 export class WpDataSource extends DataSourceBase {
     constructor(listingsEngine, searchEngine) {
@@ -128,7 +129,7 @@ export class WpDataSource extends DataSourceBase {
         }
         return true;
     }
-    runSearch(source = null) {
+    async runSearch(source = null) {
         console.log('runSearch', {source})
 
         const listingsReqOp = this.listingsEngine?.listingsContext?.[LISTINGS_REQ_OP];
@@ -148,7 +149,7 @@ export class WpDataSource extends DataSourceBase {
         let request;
         switch (listingsReqOp) {
             case LISTINGS_REQ_OP_POST_LIST:
-                request = wpResourceRequest({
+                request = await wpResourceRequest({
                     endpoint: wpApiConfig.endpoints.postListRequest,
                     method: 'POST',
                     data: {
@@ -158,7 +159,7 @@ export class WpDataSource extends DataSourceBase {
                 });
                 break;
             case LISTINGS_REQ_OP_ITEM_LIST:
-                request = wpResourceRequest({
+                request = await wpResourceRequest({
                     endpoint: `${wpApiConfig.endpoints.listRequest}/${this.listingsEngine?.listingsContext?.listingsQueryData[ITEM_LIST_ID]}`,
                     method: 'GET',
                     query: {
@@ -171,28 +172,29 @@ export class WpDataSource extends DataSourceBase {
                 console.warn("Invalid request operation...")
                 return false;
         }
-        request.then(response => {
-            console.log('runSearch', {response})
-            this.postsRequestResponseHandler(response, true);
-        })
-            .catch(error => {
-                console.error(error)
-            })
-    }
-    postsRequestResponseHandler(response, completed = false) {
+        const response =  await request.json();
 
-        if (response?.status !== 200 || response?.data.status !== "success") {
+        if (response?.status === "success") {
+            this.postsRequestResponseHandler(response, true);
+        } else {
+            this.searchEngine.postsRequestResponseHandler(SEARCH_REQUEST_ERROR);
+            this.searchEngine.postsRequestResponseHandler(response?.message)
+        }
+    }
+    postsRequestResponseHandler(data, completed = false) {
+
+        if (data.status !== "success") {
             this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
-            this.searchEngine.setSearchRequestErrorAction(response?.data.message);
+            this.searchEngine.setSearchRequestErrorAction(data.message);
             return;
         }
         switch (this.listingsEngine?.listingsContext?.[LISTINGS_REQ_OP]) {
             case LISTINGS_REQ_OP_ITEM_LIST:
-                this.getUserItemsListAction(response?.data?.list, siteConfig.internalProviderName, siteConfig.internalCategory)
-                this.searchEngine.setSearchListDataAction(response?.data?.list);
+                this.getUserItemsListAction(data?.list, siteConfig.internalProviderName, siteConfig.internalCategory)
+                this.searchEngine.setSearchListDataAction(data?.list);
                 break;
             case LISTINGS_REQ_OP_POST_LIST:
-                this.searchEngine.setSearchListDataAction(response?.data?.postList);
+                this.searchEngine.setSearchListDataAction(data?.postList);
                 this.searchEngine.setSearchCategoryAction('posts')
                 break;
             default:
@@ -206,8 +208,8 @@ export class WpDataSource extends DataSourceBase {
             let pageControlData = {
                 [PAGE_CONTROL_REQ_PAGINATION_TYPE]: null
             };
-            if (isNotEmpty(response?.data?.pagination) && isObject(response?.data.pagination)) {
-                pageControlData = {...pageControlData, ...response?.data.pagination};
+            if (isNotEmpty(data?.pagination) && isObject(data.pagination)) {
+                pageControlData = {...pageControlData, ...data.pagination};
             }
             console.log('postsRequestResponseHandler', {pageControlData})
             this.searchEngine.setPageControlsAction(pageControlData)
