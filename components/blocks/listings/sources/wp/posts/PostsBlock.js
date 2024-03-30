@@ -59,9 +59,9 @@ const PostsBlock = (props) => {
         );
     }
 
-    //console.log({props, listingsContext, searchContext})
+    console.log({props, listingsContext, searchContext})
 
-    console.log(props.data)
+
     return (
         <section className="block-wrapper">
             <div className="container">
@@ -74,11 +74,9 @@ const PostsBlock = (props) => {
                                     {templateManager.render(<ListingsLeftSidebar/>)}
                                 </div>
                             }
-                            <div>
                                 <div className="col-lg-8 col-md-12">
                                     {getListingsBlock()}
                                 </div>
-                            </div>
 
                             {filtersPosition === 'right' &&
                                 <div className="col-lg-4 col-sm-12">

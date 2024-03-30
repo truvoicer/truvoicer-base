@@ -24,6 +24,7 @@ const ListingsLeftSidebar = (props) => {
             (isNotEmpty(sidebarName)) ? sidebarName : siteConfig.leftSidebarName,
             );
             const sidebar = fetchSidebar?.sidebar;
+
             if (Array.isArray(sidebar)) {
 
                 setData(buildSidebar({

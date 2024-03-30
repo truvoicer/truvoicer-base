@@ -39,7 +39,7 @@ const ListingsFilterListItem = (props) => {
         }
     }, [searchContext?.searchOperation]);
 
-
+    console.log('ListingsFilterListItem', props?.data)
     return (
         <div className="single_field">
             <label className="widget-title">{props.data.label}</label>

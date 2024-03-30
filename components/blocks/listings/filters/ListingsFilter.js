@@ -46,7 +46,6 @@ const ListingsFilter = (props) => {
     ) {
         return null;
     }
-
     return (
         <>
             {listingsFilterData?.filter_heading &&

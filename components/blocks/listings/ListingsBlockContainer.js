@@ -70,6 +70,7 @@ const ListingsBlockContainer = ({data, session, children}) => {
     if (listingsContext?.listingsScrollTop) {
         scrollToRef(myRef)
     }
+
     return (
         <div ref={myRef}>
             {children}

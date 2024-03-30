@@ -35,7 +35,9 @@ export class FetcherDataSource extends DataSourceBase {
     }
     async dataInit(data) {
         this.listingsEngine.updateContext({key: "listingsData", value: data})
+
         if (!isNotEmpty(data.api_listings_category)) {
+            console.warn('Api Listing category not set in block data')
             return false;
         }
         this.listingsEngine.updateContext({key: "category", value: data.api_listings_category})
@@ -213,6 +215,7 @@ export class FetcherDataSource extends DataSourceBase {
         providers_list
     }, endpoint = "providers") {
         let query = {};
+        console.log({api_listings_category, select_providers, providers_list})
         if (isSet(select_providers) && select_providers && Array.isArray(providers_list)) {
             query = {provider: providers_list};
         }
