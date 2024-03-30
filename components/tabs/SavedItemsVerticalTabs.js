@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {isNotEmpty, isSet} from "../../library/utils";
-import {defaultListingsGrid, listingsGridConfig} from "../../../config/listings-grid-config";
+import {defaultListingsGrid, listingsGridConfig} from "../../config/listings-grid-config";
 import {fetchData} from "../../library/api/fetcher/middleware";
 import {SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-constants";
 import {connect} from "react-redux";

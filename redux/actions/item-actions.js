@@ -2,7 +2,7 @@ import store from "../store"
 import React from "react";
 import {setItemCategory, setItemData, setItemError, setItemId, setItemProvider,} from "../reducers/item-reducer";
 import {fetchData} from "../../library/api/fetcher/middleware";
-import {listingsGridConfig} from "@/config/listings-grid-config";
+import {listingsGridConfig} from "@/truvoicer-base/config/listings-grid-config";
 import {isNotEmpty, isSet} from "../../library/utils";
 import {
     LISTINGS_GRID_COMPACT,

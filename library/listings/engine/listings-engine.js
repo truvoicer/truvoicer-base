@@ -437,6 +437,9 @@ export class ListingsEngine {
             }
             this.updateContext({key: "listingsQueryData", value: {}})
         }
+        if (typeof props?.href !== 'string') {
+            props.href = '#';
+        }
         return props;
     }
     extractItemListFromPost({post}) {

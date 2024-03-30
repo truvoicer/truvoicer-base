@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import Row from "react-bootstrap/Row";
 import {connect} from "react-redux";
-import {listingsGridConfig} from "@/config/listings-grid-config";
+import {listingsGridConfig} from "@/truvoicer-base/config/listings-grid-config";
 import {isNotEmpty, isSet} from "../../../../library/utils";
 import {SESSION_USER, SESSION_USER_ID} from "../../../../redux/constants/session-constants";
 import Col from "react-bootstrap/Col";

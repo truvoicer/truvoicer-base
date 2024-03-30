@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {listingsGridConfig} from "@/config/listings-grid-config";
+import {listingsGridConfig} from "@/truvoicer-base/config/listings-grid-config";
 import {isObjectEmpty, isSet} from "@/truvoicer-base/library/utils";
 import LoaderComponent from "../loaders/Loader";
 import {connect} from "react-redux";

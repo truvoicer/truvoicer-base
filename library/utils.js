@@ -2,6 +2,16 @@ import moment from 'moment';
 import {menuIcons} from "../../config/menu-icons";
 import {isFunction} from "underscore";
 
+export function findInObjectByIndex(obj,i) {
+    if (!obj) {
+        return null;
+    }
+    return obj[i];
+}
+export function findInObject(str, obj) {
+    return str.split('.').reduce(findInObjectByIndex, obj)
+}
+
 export const formatDate = (dateString, formatString = "Do MMMM YYYY") => {
     moment.updateLocale('en', {
         invalidDate : ""

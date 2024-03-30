@@ -15,6 +15,8 @@ import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext"
 import {SessionContext} from "@/truvoicer-base/config/contexts/SessionContext";
 import {AppContext} from "@/truvoicer-base/config/contexts/AppContext";
 import {AppManager} from "@/truvoicer-base/library/app/AppManager";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faAngleDown, faChevronDown} from "@fortawesome/free-solid-svg-icons";
 
 const MenuList = (props) => {
     const appContext = useContext(AppContext);
@@ -71,9 +73,9 @@ const MenuList = (props) => {
     }
     const getCollapseListItem = (item, subItems) => {
         return (
-            <li className="has-children">
-                <a>{item.menu_title} <i className="ti-angle-down"/></a>
-                <ul className="submenu">
+            <li className="nav-item">
+                <a className="nav-link" data-toggle="dropdown">{item.menu_title} <FontAwesomeIcon icon={faAngleDown} /></a>
+                <ul className="dropdown-menu" role="menu">
                     {subItems.map((subItem, subIndex) => (
                         <React.Fragment key={subIndex}>
                             {getListItem(subItem)}
@@ -117,7 +119,7 @@ const MenuList = (props) => {
 
 
         return (
-            <ul id="navigation">
+            <ul  className="nav navbar-nav">
                 {/*<ul className="site-menu js-clone-nav mr-auto d-none d-lg-block">*/}
                 {props.data.menu_items.map((item, index) => (
                     <React.Fragment key={index}>

@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {convertImageObjectsToArray, isSet} from "../../library/utils";
-import {defaultListingsGrid, listingsGridConfig} from "@/config/listings-grid-config";
+import {defaultListingsGrid, listingsGridConfig} from "@/truvoicer-base/config/listings-grid-config";
 import {
     LISTINGS_GRID_COMPACT,
     LISTINGS_GRID_DETAILED,

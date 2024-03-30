@@ -39,17 +39,9 @@ const NavBar = (props) => {
     }, []);
 
     return (
-        <>
-            <div className="container-fluid">
-                <div className="nav-bar">
-                    <div className="row align-items-center">
-                        <div className="col-lg-1">
-                            <div className="logo">
-                                {/*<Link href="/">*/}
-                                {/*    {props.siteData.blogname}*/}
-                                {/*</Link>*/}
-                            </div>
-                        </div>
+        <div className="main-nav clearfix">
+            <div className="container">
+                    <div className="row">
                         {Array.isArray(data) && data.length > 0 &&
                             <>
                                 {data.map((item, index) => (
@@ -94,9 +86,8 @@ const NavBar = (props) => {
                     {mobileMenu &&
                         templateManager.render(<MobileDrawerMenu data={mobileMenu.nav_menu}/>)
                     }
-                </div>
             </div>
-        </>
+        </div>
     )
 }
 

@@ -22,7 +22,7 @@ const FullWidthTemplate = (props) => {
 
 
         return (
-            <>
+            <div className={'body-inner'}>
                 {pageOptions?.pageType === "user_account"
                     ?
                     templateManager.render(<AccountArea data={pageData}/>)
@@ -43,7 +43,7 @@ const FullWidthTemplate = (props) => {
                         {templateManager.render(<Footer/>)}
                     </div>
                 }
-            </>
+            </div>
         )
 }
 

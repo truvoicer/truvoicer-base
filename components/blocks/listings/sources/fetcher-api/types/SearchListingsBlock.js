@@ -36,68 +36,75 @@ const SearchListingsBlock = (props) => {
     }, [listingsContext.loaded]);
 
     const getListingsBlock = () => {
-        // console.log(searchContext?.searchStatus, searchContext?.searchList?.length)
+        console.log(searchContext?.searchStatus, searchContext?.searchList?.length)
         return (
-            <>
-                {searchContext?.searchList?.length > 0 && searchContext?.searchStatus === SEARCH_REQUEST_COMPLETED ?
-                    <>
-                        {templateManager.render(<ListingsSortBar/>)}
-                        {listingsContext?.listingsData?.load_more_type === "pagination" &&
-                            templateManager.render(<Paginate />)
-                        }
-                        {listingsContext?.listingsData?.load_more_type === "infinite_scroll" &&
-                            templateManager.render(<ListingsInfiniteScroll />)
-                        }
-                    </>
-                    :
-                    templateManager.render(<LoaderComponent key={"loader"}/>)
+            <div className="more-news block color-default">
+                {isNotEmpty(listingsContext?.listingsData?.heading) &&
+                    <h3 className="block-title"><span>{listingsContext.listingsData.heading}</span></h3>
                 }
-            </>
+                <div id="more-news-slide" className="more-news-slide">
+
+                    <div className="item">
+                        {searchContext?.searchList?.length > 0 && searchContext?.searchStatus === SEARCH_REQUEST_COMPLETED ?
+                            <>
+                                {templateManager.render(<ListingsSortBar/>)}
+                                {listingsContext?.listingsData?.load_more_type === "pagination" &&
+                                    templateManager.render(<Paginate/>)
+                                }
+                                {listingsContext?.listingsData?.load_more_type === "infinite_scroll" &&
+                                    templateManager.render(<ListingsInfiniteScroll/>)
+                                }
+                            </>
+                            :
+                            templateManager.render(<LoaderComponent key={"loader"}/>)
+                        }
+                    </div>
+                </div>
+            </div>
         );
     }
 
 
-        return (
-            <div className={"listings-container"}>
-                {isNotEmpty(listingsContext?.listingsData?.heading) &&
-                    <div className={"listings-heading"}>
-                        <h3>{listingsContext.listingsData.heading}</h3>
-                    </div>
-                }
-                <div>
+    return (
+        <section className="block-wrapper p-bottom-0">
+            <div className="container">
+                <div className="row">
                     {props.data?.show_sidebar
                         ?
                         <>
                             {filtersPosition === 'left' &&
-                                <div>
+                                <div className="col-lg-4 col-sm-12">
                                     {templateManager.render(<ListingsLeftSidebar/>)}
                                 </div>
                             }
                             <div>
-                                <div className={"listings-block"}>
+                                <div className="col-lg-8 col-md-12">
                                     {getListingsBlock()}
                                 </div>
                             </div>
 
                             {filtersPosition === 'right' &&
-                                <div>
+                                <div className="col-lg-4 col-sm-12">
                                     {templateManager.render(<ListingsLeftSidebar/>)}
                                 </div>
                             }
                         </>
                         :
-                        <div className={"listings-block"}>
+                        <div className="col-12">
                             {getListingsBlock()}
                         </div>
                     }
+
                 </div>
             </div>
-        )
+        </section>
+    )
 }
 
 function mapStateToProps(state) {
     return {};
 }
+
 SearchListingsBlock.category = 'listings';
 SearchListingsBlock.templateId = 'searchListingsBlock';
 export default connect(
