@@ -19,8 +19,8 @@ const ListingsFilterApiListItem = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const getListItemsCallback = (status, data) => {
-        if (status === 200) {
-            setListItems(data.data)
+        if (status === 'success') {
+            setListItems(data)
         } else {
             console.error(data)
         }
@@ -57,9 +57,9 @@ const ListingsFilterApiListItem = (props) => {
     }, [searchContext?.searchOperation]);
 
         return (
-            <div className="single_field">
-                <label className="widget-title">{props.data.label}</label>
-                <ul className="">
+            <div className="widget">
+                <h3 className="block-title"><span>{props.data.label}</span></h3>
+                <ul className="list-unstyled">
                     {listItems &&
                         listItems.map((item, index) => (
                             <li key={"api_list_control_" + index.toString()}>

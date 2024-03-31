@@ -11,6 +11,7 @@ import {AppContext} from "@/truvoicer-base/config/contexts/AppContext";
 import {AppManager} from "@/truvoicer-base/library/app/AppManager";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import Link from "next/link";
 
 const SearchBlock = (props) => {
     const [query, setQuery] = useState("")
@@ -178,7 +179,7 @@ const SearchBlock = (props) => {
                                         <ul>
                                             {featured_categories && featured_categories.map((item, index) => (
                                                 <li key={index} value={item.name}>
-                                                    <a onClick={categoriesClickHandler.bind(this, item.name)}>{item.label}</a>
+                                                    <Link href={'#'} onClick={categoriesClickHandler.bind(this, item.name)}>{item.label}</Link>
                                                 </li>
                                             ))}
                                         </ul>

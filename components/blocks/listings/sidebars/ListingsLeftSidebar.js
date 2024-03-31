@@ -43,16 +43,14 @@ const ListingsLeftSidebar = (props) => {
 
 
         return (
-            <div className="job_filter white-bg">
-                <div className="form_inner white-bg">
-                    <Left />
+            <div className="sidebar sidebar-right">
+                    <Left/>
                     {templateManager.render(<ListingsFilter listingsContextGroup={{fetchListingsContextGroups}}/>)}
                     {data.map((item, index) => (
                         <React.Fragment key={index.toString()}>
                             {item}
                         </React.Fragment>
                     ))}
-                </div>
             </div>
         )
 }

@@ -39,25 +39,24 @@ const ListingsFilterListItem = (props) => {
         }
     }, [searchContext?.searchOperation]);
 
-    console.log('ListingsFilterListItem', props?.data)
     return (
-        <div className="single_field">
-            <label className="widget-title">{props.data.label}</label>
-            <ul className="">
+        <div className="widget">
+            <h3 className="block-title"><span>{props.data.label}</span></h3>
+                <ul className="list-unstyled">
                 {props.data.source === "wordpress" &&
                     filterList.map((item, index) => (
 
-                    <li key={"list_control_" + index.toString()}>
-                        <Form.Check
-                            type={"checkbox"}
-                            label={item.label}
-                            id={props.controlPrefix + item.name}
-                            name={props.data.name + "[]"}
-                            value={item.name}
-                            onChange={formChangeHandler}
-                        />
-                    </li>
-                ))
+                        <li key={"list_control_" + index.toString()}>
+                            <Form.Check
+                                type={"checkbox"}
+                                label={item.label}
+                                id={props.controlPrefix + item.name}
+                                name={props.data.name + "[]"}
+                                value={item.name}
+                                onChange={formChangeHandler}
+                            />
+                        </li>
+                    ))
                 }
 
             </ul>
