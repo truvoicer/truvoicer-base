@@ -17,8 +17,9 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 import {ListingsEngine} from "@/truvoicer-base/library/listings/engine/listings-engine";
 import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
 import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpers";
+import ListingsItemsContext, {itemsContextData} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsItemsContext";
 
-const GridItems = (props) => {
+const GridItems = ({children, ...props}) => {
     const {listStart, listEnd, customPosition, grid, listItems, category} = props;
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
@@ -182,32 +183,33 @@ const GridItems = (props) => {
         }
         return searchList;
     }
-
+    const [itemsContextState, setItemsContextState] = useState(itemsContextData);
 
         return (
-            <>
-                <Row>
-                    {getSearchList().map((item, index) => (
-                        <React.Fragment key={index}>
-                            <Col {...getGridItemColumns(grid)}>
-                                {listingsGrid.getGridItem(
-                                    item,
-                                    listingsContext?.listingsData?.[DISPLAY_AS],
-                                    searchContext.category,
-                                    grid,
-                                    props.user[SESSION_USER_ID],
-                                    showInfo,
-                                    index
-                                )}
-                            </Col>
-                        </React.Fragment>
-                    ))}
-                </Row>
+            <ListingsItemsContext.Provider value={itemsContextState}>
+                {children}
+                {/*<Row>*/}
+                {/*    {getSearchList().map((item, index) => (*/}
+                {/*        <React.Fragment key={index}>*/}
+                {/*            <Col {...getGridItemColumns(grid)}>*/}
+                {/*                {listingsGrid.getGridItem(*/}
+                {/*                    item,*/}
+                {/*                    listingsContext?.listingsData?.[DISPLAY_AS],*/}
+                {/*                    searchContext.category,*/}
+                {/*                    grid,*/}
+                {/*                    props.user[SESSION_USER_ID],*/}
+                {/*                    showInfo,*/}
+                {/*                    index*/}
+                {/*                )}*/}
+                {/*            </Col>*/}
+                {/*        </React.Fragment>*/}
+                {/*    ))}*/}
+                {/*</Row>*/}
 
                 {modalData.show &&
                     <GetModal/>
                 }
-            </>
+            </ListingsItemsContext.Provider>
         )
 }
 
