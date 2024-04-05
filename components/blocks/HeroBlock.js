@@ -13,9 +13,22 @@ const HeroBlock = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const modalContext = useContext(AppModalContext);
     let heroType = "full";
-    const primaryBgUrl = isValidImageSrc(props?.data?.hero_background_image) ? props.data.hero_background_image : "/img/banner/banner.png";
-    const secondaryBgUrl = isValidImageSrc(props?.data?.hero_background_image_2) ? props.data.hero_background_image_2 : "";
-    const breadcrumbBgUrl = isValidImageSrc(props?.data?.hero_background_image_3) ? props.data.hero_background_image_3 : "/img/banner/bradcam.png";
+    console.log(props?.data)
+    function getImageSrc(index) {
+        if (!Array.isArray(props?.data?.images)) {
+            return null;
+        }
+        if (!props.data.images.length) {
+            return null;
+        }
+         if (!props.data.images?.[index]?.src) {
+             return null;
+         }
+         return isValidImageSrc(props.data.images[index].src) ? props.data.images[index].src : null;
+    }
+    const primaryBgUrl = getImageSrc(0)  || "/img/banner/banner.png";
+    const secondaryBgUrl = getImageSrc(1) || "";
+    const breadcrumbBgUrl = getImageSrc(2) || "/img/banner/bradcam.png";
     if (isNotEmpty(props?.data?.hero_type)) {
         heroType = props.data.hero_type;
     }

@@ -11,6 +11,11 @@ import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
 import ListingsLeftSidebar from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsLeftSidebar";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {
+    DISPLAY_AS,
+    DISPLAY_AS_COMPARISONS, DISPLAY_AS_LIST,
+    DISPLAY_AS_POST_LIST, DISPLAY_AS_TILES
+} from "@/truvoicer-base/redux/constants/general_constants";
 
 const PostsBlock = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
@@ -25,6 +30,20 @@ const PostsBlock = (props) => {
         }
         listingsManager.runSearch('postsBlock');
     }, [listingsContext.loaded]);
+
+    function renderList() {
+
+    }
+    function renderBlock() {
+        switch (listingsContext?.listingsData?.[DISPLAY_AS]) {
+            case DISPLAY_AS_TILES:
+                return
+            case DISPLAY_AS_POST_LIST:
+            case DISPLAY_AS_LIST:
+            case DISPLAY_AS_COMPARISONS:
+                return getListingsBlock();
+        }
+    }
     const getListingsBlock = () => {
         return (
             <div className="block category-listing">
@@ -32,12 +51,6 @@ const PostsBlock = (props) => {
                     <h3 className="block-title"><span>{listingsContext.listingsData.heading}</span></h3>
                 }
 
-                <ul className="subCategory unstyled">
-                    <li><a href="#">Travel</a></li>
-                    <li><a href="#">Health</a></li>
-                    <li><a href="#">Architecture</a></li>
-                    <li><a href="#">Food</a></li>
-                </ul>
                 <div className="row">
                     <div className="col-md-12">
                     {searchContext?.searchList?.length > 0 && searchContext?.searchStatus === SEARCH_REQUEST_COMPLETED ?

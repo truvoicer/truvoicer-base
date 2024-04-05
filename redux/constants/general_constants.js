@@ -6,3 +6,4 @@ export const DISPLAY_AS = "display_as";
 export const DISPLAY_AS_POST_LIST = "post_list";
 export const DISPLAY_AS_LIST = "list";
 export const DISPLAY_AS_COMPARISONS = "comparisons";
+export const DISPLAY_AS_TILES = "tiles";

@@ -66,6 +66,7 @@ const SearchBlock = (props) => {
 
 
     useEffect(() => {
+        console.log(searchContext?.searchEntity)
         switch (searchContext?.searchEntity) {
             case 'searchBlockCategory':
                 if (
@@ -120,7 +121,7 @@ const SearchBlock = (props) => {
         listingsManager.getSearchEngine().setSearchEntity('searchBlock');
     }
 
-    //console.log(searchContext?.searchOperation)
+    console.log(listingsContext)
     return (
         <>
             {showSearch &&
@@ -176,9 +177,9 @@ const SearchBlock = (props) => {
                                 <div className="col-lg-12">
                                     <div className="popular_search d-flex align-items-center">
                                         <span>{featuredCategoriesLabel}</span>
-                                        <ul>
+                                        <ul className={'list-unstyled'}>
                                             {featured_categories && featured_categories.map((item, index) => (
-                                                <li key={index} value={item.name}>
+                                                <li className={'d-inline-block'} key={index} value={item.name}>
                                                     <Link href={'#'} onClick={categoriesClickHandler.bind(this, item.name)}>{item.label}</Link>
                                                 </li>
                                             ))}
