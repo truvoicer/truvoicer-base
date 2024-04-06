@@ -7,39 +7,38 @@ import Head from "next/head";
 import {getItemViewPageTitle} from "@/truvoicer-base/library/helpers/pages";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
-import {DISPLAY_AS_POST_LIST} from "@/truvoicer-base/redux/constants/general_constants";
+import {DISPLAY_AS_LIST, DISPLAY_AS_POST_LIST} from "@/truvoicer-base/redux/constants/general_constants";
 
 const ItemViewBlock = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const getItemView = (item) => {
         const gridConfig = listingsGridConfig.gridItems;
-        if (!isSet(gridConfig[DISPLAY_AS_POST_LIST])) {
+        if (!isSet(gridConfig[DISPLAY_AS_LIST])) {
             return null;
         }
-        if (!isSet(gridConfig[DISPLAY_AS_POST_LIST].single)) {
+        if (!isSet(gridConfig[DISPLAY_AS_LIST].single)) {
             return null;
         }
-        const ItemView = gridConfig[DISPLAY_AS_POST_LIST].single;
+        const ItemView = gridConfig[DISPLAY_AS_LIST].single;
         return <ItemView item={item} data={props.data} category={props.item.category}/>
     }
     //console.log({props})
-    function defaultView() {
-        return (
-            <>
-                <Head>
-                    <title>{getItemViewPageTitle()}</title>
-                </Head>
-                {!isObjectEmpty(props.item.data)
-                    ?
-                    <>
-                        {getItemView(props.item.data)}
-                    </>
-                    :
-                    templateManager.render(<LoaderComponent/>)
-                }
-            </>
-        );
-    }
+    return (
+        <>
+            <Head>
+                <title>{getItemViewPageTitle()}</title>
+            </Head>
+            {!isObjectEmpty(props.item.data)
+                ?
+                <>
+                    {getItemView(props.item.data)}
+                </>
+                :
+                templateManager.render(<LoaderComponent/>)
+            }
+        </>
+    );
+
 }
 
 ItemViewBlock.category = 'public';

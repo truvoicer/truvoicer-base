@@ -11,13 +11,6 @@ import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
 import ListingsLeftSidebar from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsLeftSidebar";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
-import {
-    DISPLAY_AS,
-    DISPLAY_AS_COMPARISONS, DISPLAY_AS_LIST,
-    DISPLAY_AS_POST_LIST, DISPLAY_AS_TILES
-} from "@/truvoicer-base/redux/constants/general_constants";
-import GridItems from "@/truvoicer-base/components/blocks/listings/items/GridItems";
-import DefaultTiles from "@/truvoicer-base/components/blocks/listings/items/Default/DefaultTiles";
 
 const ListDisplay = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));

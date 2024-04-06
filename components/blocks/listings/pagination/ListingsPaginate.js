@@ -42,17 +42,22 @@ const ListingsPaginate = (props) => {
 
 
     const getPaginationRange = (currentPage) => {
+        const pageControls = searchContext?.pageControls;
         let range = [];
         if (currentPage > paginationLimit - paginationRange) {
             for (let i = currentPage - paginationRange; i < currentPage; i++) {
                 range.push(i)
             }
             for (let i = currentPage; i <= currentPage + paginationRange; i++) {
-                range.push(i)
+                if (i < pageControls[PAGINATION_TOTAL_PAGES]) {
+                    range.push(i)
+                }
             }
         } else {
             for (let i = 1; i <= paginationLimit; i++) {
-                range.push(i)
+                if (i < pageControls[PAGINATION_TOTAL_PAGES]) {
+                    range.push(i)
+                }
             }
         }
         return range;
@@ -61,9 +66,10 @@ const ListingsPaginate = (props) => {
     const GetPagination = () => {
         const pageControls = searchContext?.pageControls;
         let range = getPaginationRange(pageControls[PAGINATION_PAGE_NUMBER]);
+        console.log('range', range, pageControls, pageControls[PAGINATION_TOTAL_PAGES])
         return (
-            <div className="pagination">
-                <ul>
+            <div className="paging">
+                <ul className="pagination">
                     {pageControls[PAGINATION_PAGE_NUMBER] > paginationLimit - paginationRange &&
                     <li className="pagination--list-item">
                         <a

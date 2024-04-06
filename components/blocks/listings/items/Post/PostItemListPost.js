@@ -18,7 +18,7 @@ import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchCo
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
 
-const NewsItemListPost = (props) => {
+const PostItemListPost = (props) => {
     const {data, nextPost, prevPost, postIndex} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
@@ -45,7 +45,7 @@ const NewsItemListPost = (props) => {
                 {isNotEmpty(data?.featured_image) &&
                 <div className="post-thumb">
                     <Link {...linkProps}>
-                        <Image
+                        <img
                             className="img-fluid"
                             src={data?.featured_image ? data.featured_image : ""}
                             alt=""
@@ -88,4 +88,4 @@ function mapStateToProps(state) {
 export default connect(
     mapStateToProps,
     null
-)(NewsItemListPost);
+)(PostItemListPost);

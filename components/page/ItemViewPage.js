@@ -5,7 +5,7 @@ import {loadBaseItemPage} from "@/truvoicer-base/redux/actions/page-actions";
 import {
     setItemCategoryAction, setItemDataAction,
     setItemIdAction,
-    setItemProviderAction, setSingleItemPostState
+    setItemProviderAction, setItemTypeAction, setSingleItemPostState
 } from "@/truvoicer-base/redux/actions/item-actions";
 import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
 import {
@@ -35,6 +35,7 @@ const ItemViewPage = (props) => {
     function itemPageInit() {
         loadBaseItemPage(page, settings)
         setItemDataAction(itemData)
+        setItemTypeAction(type);
         switch (type) {
             case 'internal':
                 if (!isNotEmpty(item)) {

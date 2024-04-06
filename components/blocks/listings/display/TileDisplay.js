@@ -3,25 +3,16 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
-import {SEARCH_REQUEST_COMPLETED} from "@/truvoicer-base/redux/constants/search-constants";
-import ListingsSortBar from "@/truvoicer-base/components/blocks/listings/components/ListingsSortBar";
-import Paginate from "@/truvoicer-base/components/blocks/listings/pagination/ListingsPaginate";
-import ListingsInfiniteScroll from "@/truvoicer-base/components/blocks/listings/pagination/ListingsInfiniteScroll";
-import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
-import {isNotEmpty} from "@/truvoicer-base/library/utils";
-import ListingsLeftSidebar from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsLeftSidebar";
+import {formatDate, isNotEmpty} from "@/truvoicer-base/library/utils";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {
     DISPLAY_AS,
-    DISPLAY_AS_COMPARISONS, DISPLAY_AS_LIST,
-    DISPLAY_AS_POST_LIST, DISPLAY_AS_TILES
 } from "@/truvoicer-base/redux/constants/general_constants";
-import GridItems from "@/truvoicer-base/components/blocks/listings/items/GridItems";
-import DefaultTiles from "@/truvoicer-base/components/blocks/listings/items/Default/DefaultTiles";
-import NextArrow from "@/truvoicer-base/components/blocks/carousel/arrows/NextArrow";
-import PrevArrow from "@/truvoicer-base/components/blocks/carousel/arrows/PrevArrow";
 import Slider from "react-slick";
 import ListingsItemsContext from "@/truvoicer-base/components/blocks/listings/contexts/ListingsItemsContext";
+import {SESSION_USER, SESSION_USER_EMAIL, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
+import Link from "next/link";
+import {connect} from "react-redux";
 
 const TileDisplay = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
@@ -45,61 +36,98 @@ const TileDisplay = (props) => {
         slidesToShow: 1,
         slidesToScroll: 1,
         centerMode: false,
-        variableWidth: true,
-        nextArrow: templateManager.render(<NextArrow/>),
-        prevArrow: templateManager.render(<PrevArrow/>),
+        variableWidth: false,
+        arrows: false
+        // nextArrow: templateManager.render(<NextArrow/>),
+        // prevArrow: templateManager.render(<PrevArrow/>),
     };
 
     console.log({props, itemsContext, listingsContext, searchContext})
 
+    function getItems() {
+        let items = {
+            featured: [],
+            hot: [],
+            bottom: [],
+            bottom2: [],
+        };
+        if (!itemsContext?.items?.length) {
+            return items;
+        }
+        const split = Math.ceil(itemsContext.items.length / 4);
+        items.featured = itemsContext.items.slice(0, split);
+        items.hot = itemsContext.items.slice(split, split * 2);
+        items.bottom = itemsContext.items.slice(split * 2, split * 3);
+        items.bottom2 = itemsContext.items.slice(split * 3);
+        return items;
+    }
+    function getFeaturedBackgroundProps(item) {
+        if (!isNotEmpty(item?.item_image)) {
+            return {
+                className: 'item no-image',
+            };
 
+        }
+        return {
+            className: 'item with-image',
+            style: {
+                 backgroundImage: `url(${item?.item_image || ''})`
+            }
+        };
+    }
+    function getPostOverlayClasses(item) {
+        if (!isNotEmpty(item?.item_image)) {
+            return 'post-overaly-style contentTop hot-post-top no-image clearfix';
+
+        }
+        return 'post-overaly-style contentTop hot-post-top with-image clearfix';
+    }
+    function getLinkProps(item) {
+        return listingsManager.getListingsEngine().getItemLinkProps({
+            displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
+            category: props.searchCategory,
+            item,
+            showInfoCallback: props.showInfoCallback,
+            trackData: {
+                dataLayerName: "listItemClick",
+                dataLayer: {
+                    provider: item.provider,
+                    category: props.searchCategory,
+                    item_id: item.item_id,
+                    user_id: props.user[SESSION_USER_ID] || "unregistered",
+                    user_email: props.user[SESSION_USER_EMAIL] || "unregistered",
+                },
+            }
+        })
+    }
+    const items = getItems();
     return (
-        <section className="featured-post-area no-padding">
+        <section className="featured-post-area">
             <div className="container">
                 <div className="row">
                     <div className="col-lg-7 col-md-12 pad-r">
                         <div id="featured-slider" className="owl-carousel owl-theme featured-slider">
                             <Slider {...defaultSettings}>
-                                <div className="item"
-                                     style={{backgroundImage: 'url(images/news/lifestyle/health5.jpg)'}}>
-                                    <div className="featured-post">
-                                        <div className="post-content">
-                                            <a className="post-cat" href="#">Health</a>
-                                            <h2 className="post-title title-extra-large">
-                                                <a href="#">Netcix cuts out the chill with an integrated personal
-                                                    trainer on running</a>
-                                            </h2>
-                                            <span className="post-date">March 16, 2017</span>
+                                {items.featured.map((item, index) => {
+                                    return (
+                                        <div key={index}>
+                                            <div {...getFeaturedBackgroundProps(item)}>
+                                                <div className="featured-post">
+                                                    <div className="post-content">
+                                                        <a className="post-cat" href="#">Health</a>
+                                                        <h2 className="post-title title-extra-large">
+                                                            <Link {...getLinkProps(item)}>
+                                                                {item?.job_title || ''}
+                                                            </Link>
+                                                        </h2>
+                                                        <span
+                                                            className="post-date">{formatDate(item?.date_expires)}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-
-                                </div>
-                                <div className="item" style={{backgroundImage: 'url(images/news/tech/gadget2.jpg)'}}>
-                                    <div className="featured-post">
-                                        <div className="post-content">
-                                            <a className="post-cat" href="#">Gadget</a>
-                                            <h2 className="post-title title-extra-large">
-                                                <a href="#">Samsung Gear S3 review: A whimper, when smartwatches need a
-                                                    bang</a>
-                                            </h2>
-                                            <span className="post-date">March 16, 2017</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="item"
-                                     style={{backgroundImage: 'url(images/news/lifestyle/travel5.jpg)'}}>
-                                    <div className="featured-post">
-                                        <div className="post-content">
-                                            <a className="post-cat" href="#">Travel</a>
-                                            <h2 className="post-title title-extra-large">
-                                                <a href="#">Hynopedia helps female travelers find health care in
-                                                    Maldivs</a>
-                                            </h2>
-                                            <span className="post-date">March 16, 2017</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                    );
+                                })}
                             </Slider>
 
                         </div>
@@ -108,50 +136,83 @@ const TileDisplay = (props) => {
                     <div className="col-lg-5 col-md-12 pad-l">
                         <div className="row">
                             <div className="col-md-12">
-                                <div className="post-overaly-style contentTop hot-post-top clearfix">
-                                    <div className="post-thumb">
-                                        <a href="#"><img className="img-fluid" src="images/news/tech/gadget4.jpg"
-                                                         alt=""/></a>
-                                    </div>
-                                    <div className="post-content">
-                                        <a className="post-cat" href="#">Gadget</a>
-                                        <h2 className="post-title title-large">
-                                            <a href="#">Why The iPhone X Will Force Apple To Choose Between Good Or
-                                                Evil</a>
-                                        </h2>
-                                        <span className="post-date">February 19, 2017</span>
-                                    </div>
-                                </div>
+                                <Slider {...defaultSettings}>
+                                    {items.hot.map((item, index) => {
+                                        const linkProps = getLinkProps(item);
+                                        return (
+                                            <div key={index}
+                                                 className={getPostOverlayClasses(item)}>
+                                                <div className="post-thumb">
+                                                    <Link {...linkProps}>
+                                                        <img className="img-fluid"
+                                                             src={item?.item_image || ''}
+                                                             alt=""/>
+                                                    </Link>
+                                                </div>
+                                                <div className="post-content">
+                                                    <a className="post-cat" href="#">Gadget</a>
+                                                    <h2 className="post-title title-large">
+                                                        <Link {...linkProps}>
+                                                            {item?.job_title || ''}
+                                                        </Link>
+                                                    </h2>
+                                                    <span className="post-date">{formatDate(item?.date_expires)}</span>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </Slider>
                             </div>
 
                             <div className="col-md-6 pad-r-small">
-                                <div className="post-overaly-style contentTop hot-post-bottom clearfix">
-                                    <div className="post-thumb">
-                                        <a href="#"><img className="img-fluid"
-                                                         src="images/news/lifestyle/travel2.jpg" alt=""/></a>
-                                    </div>
-                                    <div className="post-content">
-                                        <a className="post-cat" href="#">Travel</a>
-                                        <h2 className="post-title title-medium">
-                                            <a href="#">Early tourists choices to the sea of Maldiv…</a>
-                                        </h2>
-                                    </div>
-                                </div>
+                                <Slider {...defaultSettings}>
+                                    {items.bottom.map((item, index) => {
+                                        const linkProps = getLinkProps(item);
+                                        return (
+                                            <div key={index}
+                                                 className={`${getPostOverlayClasses(item)} hot-post-bottom`}>
+                                                <div className="post-thumb">
+                                                    <Link {...linkProps}>
+                                                        <img className="img-fluid"
+                                                                     src={item?.item_image || ''}
+                                                             alt=""/>
+                                                    </Link>
+                                                </div>
+                                                <div className="post-content">
+                                                    <a className="post-cat" href="#">Travel</a>
+                                                    <h2 className="post-title title-medium">
+                                                        <Link {...linkProps}>
+                                                            {item?.job_title || ''}
+                                                        </Link>
+                                                    </h2>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </Slider>
                             </div>
 
                             <div className="col-md-6 pad-l-small">
-                                <div className="post-overaly-style contentTop hot-post-bottom clearfix">
-                                    <div className="post-thumb">
-                                        <a href="#"><img className="img-fluid"
-                                                         src="images/news/lifestyle/health1.jpg" alt=""/></a>
-                                    </div>
-                                    <div className="post-content">
-                                        <a className="post-cat" href="#">Health</a>
-                                        <h2 className="post-title title-medium">
-                                            <a href="#">That wearable on your wrist could soon...</a>
-                                        </h2>
-                                    </div>
-                                </div>
+                                <Slider {...defaultSettings}>
+                                    {items.bottom2.map((item, index) => {
+                                        return (
+                                            <div key={index}
+                                                 className={`${getPostOverlayClasses(item)} hot-post-bottom`}>
+                                                <div className="post-thumb">
+                                                    <a href="#"><img className="img-fluid"
+                                                                     src={item?.item_image || ''}
+                                                                     alt=""/></a>
+                                                </div>
+                                                <div className="post-content">
+                                                    <a className="post-cat" href="#">Health</a>
+                                                    <h2 className="post-title title-medium">
+                                                        <a href="#">{item?.job_title || ''}</a>
+                                                    </h2>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </Slider>
                             </div>
                         </div>
                     </div>
@@ -165,4 +226,13 @@ const TileDisplay = (props) => {
 TileDisplay.category = 'listings';
 TileDisplay.templateId = 'tileDisplay';
 
-export default TileDisplay;
+function mapStateToProps(state) {
+    return {
+        user: state.session[SESSION_USER],
+    };
+}
+
+export default connect(
+    mapStateToProps,
+    null
+)(TileDisplay);

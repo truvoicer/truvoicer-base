@@ -4,7 +4,7 @@ import {faClock, faMapMarker} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 
-const NewsItemCustom = (props) => {
+const PostItemCustom = (props) => {
     return (
 
         <div className="single_jobs white-bg d-flex justify-content-between">
@@ -59,4 +59,4 @@ const NewsItemCustom = (props) => {
 export default connect(
     null,
     null
-)(NewsItemCustom);
+)(PostItemCustom);

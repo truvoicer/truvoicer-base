@@ -176,9 +176,6 @@ export class SearchEngine {
     setPageControlsAction(extraData) {
         // console.log('setPageControlsAction', {extraData})
         let pageControlsState = this.searchContext?.pageControls;
-        if (pageControlsState[PAGE_CONTROL_PAGINATION_REQUEST]) {
-            return false;
-        }
         const hasMorePages = this.hasMore(pageControlsState, extraData);
         const totalItems = this.getTotalItems(pageControlsState, extraData);
         const totalPages = this.getTotalPages(pageControlsState, extraData);

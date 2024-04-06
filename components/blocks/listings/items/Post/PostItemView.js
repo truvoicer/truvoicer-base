@@ -1,17 +1,15 @@
 import React, {useContext} from 'react';
 import parse from 'html-react-parser';
-import {BlogContext} from "@/truvoicer-base/config/contexts/BlogContext";
 import {faClock, faLongArrowAltLeft} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 
-const NewsItemView = (props) => {
+const PostItemView = (props) => {
 
-    const blogContext = useContext(BlogContext);
     return (
         <section className="blog_area single-post-area section-padding">
             <div className={"single-blog-nav"}>
-                <a onClick={blogContext.itemLinkClickHandler.bind(this, props.data, false)}>
+                <a >
                     <FontAwesomeIcon icon={faLongArrowAltLeft} /> Go Back
                 </a>
             </div>
@@ -35,4 +33,4 @@ const NewsItemView = (props) => {
     );
 }
 
-export default NewsItemView;
+export default PostItemView;

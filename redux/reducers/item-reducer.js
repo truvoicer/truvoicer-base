@@ -4,6 +4,7 @@ import {createSlice} from "@reduxjs/toolkit";
 import {getReducers, getState} from "../../library/helpers/redux";
 
 const defaultState = {
+    type: null,
     data: {},
     provider: "",
     category: "",
@@ -12,6 +13,9 @@ const defaultState = {
 };
 
 const defaultReducers = {
+    setItemType: (state, action) => {
+        state.type = action.payload;
+    },
     setItemData: (state, action) => {
         state.data = action.payload;
     },
@@ -37,4 +41,4 @@ export const itemSlice = createSlice({
 });
 
 export const itemReducer = itemSlice.reducer;
-export const { setItemId, setItemCategory, setItemData, setItemProvider, setItemError } = itemSlice.actions;
+export const { setItemType, setItemId, setItemCategory, setItemData, setItemProvider, setItemError } = itemSlice.actions;

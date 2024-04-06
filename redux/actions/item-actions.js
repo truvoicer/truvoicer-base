@@ -1,6 +1,13 @@
 import store from "../store"
 import React from "react";
-import {setItemCategory, setItemData, setItemError, setItemId, setItemProvider,} from "../reducers/item-reducer";
+import {
+    setItemCategory,
+    setItemData,
+    setItemError,
+    setItemId,
+    setItemProvider,
+    setItemType,
+} from "../reducers/item-reducer";
 import {fetchData} from "../../library/api/fetcher/middleware";
 import {listingsGridConfig} from "@/truvoicer-base/config/listings-grid-config";
 import {isNotEmpty, isSet} from "../../library/utils";
@@ -25,6 +32,9 @@ export function setItemProviderAction(provider) {
 }
 export function setItemIdAction(itemId) {
     store.dispatch(setItemId(itemId))
+}
+export function setItemTypeAction(itemType) {
+    store.dispatch(setItemType(itemType))
 }
 
 export function setItemDataAction(itemData) {

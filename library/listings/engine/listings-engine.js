@@ -5,7 +5,11 @@ import {tagManagerSendDataLayer} from "@/truvoicer-base/library/api/global-scrip
 import {sprintf} from "sprintf-js";
 import {ItemRoutes} from "@/config/item-routes";
 import {getPostItemUrl} from "@/truvoicer-base/library/helpers/posts";
-import {DISPLAY_AS_LIST, DISPLAY_AS_POST_LIST} from "@/truvoicer-base/redux/constants/general_constants";
+import {
+    DISPLAY_AS_LIST,
+    DISPLAY_AS_POST_LIST,
+    DISPLAY_AS_TILES
+} from "@/truvoicer-base/redux/constants/general_constants";
 import {PostRoutes} from "@/config/post-routes";
 import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpers";
 import Image from 'next/image';
@@ -165,6 +169,7 @@ export class ListingsEngine {
                 endpoint = PostRoutes.externalPost;
                 break;
             case DISPLAY_AS_LIST:
+            case DISPLAY_AS_TILES:
                 endpoint = ItemRoutes.externalItemView;
                 break;
             default:
@@ -410,6 +415,7 @@ export class ListingsEngine {
                     category_name: category
                 });
             case DISPLAY_AS_LIST:
+            case DISPLAY_AS_TILES:
                 return this.buildInternalItemViewUrl({category, item})
             default:
                 return null;

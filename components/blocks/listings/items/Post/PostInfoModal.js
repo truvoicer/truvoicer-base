@@ -9,7 +9,7 @@ import {getItemViewUrl} from "@/truvoicer-base/redux/actions/item-actions";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
-const NewsInfoModal = (props) => {
+const PostInfoModal = (props) => {
     const router = useRouter();
 
     const [data, setData] = useState({})
@@ -73,4 +73,4 @@ const NewsInfoModal = (props) => {
     )
 }
 
-export default NewsInfoModal;
+export default PostInfoModal;
