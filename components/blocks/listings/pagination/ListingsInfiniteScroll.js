@@ -14,6 +14,13 @@ import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchCo
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import ListingsItemsContext from "@/truvoicer-base/components/blocks/listings/contexts/ListingsItemsContext";
+import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import {getGridItemColumns} from "@/truvoicer-base/redux/actions/item-actions";
+import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
+import {SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
 
 const ListingsInfiniteScroll = (props) => {
 
@@ -22,6 +29,12 @@ const ListingsInfiniteScroll = (props) => {
 
     const listingsManager = new ListingsManager(listingsContext, searchContext)
     const templateManager = new TemplateManager(useContext(TemplateContext));
+
+    const itemsContext = useContext(ListingsItemsContext);
+    const listingsGrid = new ListingsGrid(listingsContext, searchContext);
+    listingsGrid.setKeyMap(listingsContext?.listingsData?.keymap);
+    const grid = listingsContext?.listingsGrid;
+
     const loadMore = () => {
         if (searchContext.searchStatus !== SEARCH_REQUEST_COMPLETED) {
             return false;
@@ -51,13 +64,22 @@ const ListingsInfiniteScroll = (props) => {
                 hasMore={searchContext.pageControls[PAGE_CONTROL_HAS_MORE]}
                 loader={templateManager.render(<LoaderComponent key={"loader"}/>)}
             >
-                {templateManager.render(<GridItems
-                    listStart={listingsContext?.listingsData?.list_start}
-                    listEnd={listingsContext?.listingsData?.list_end}
-                    customPosition={listingsContext?.listingsData?.custom_position}
-                    grid={listingsContext?.listingsGrid}
-                    listItems={searchContext?.searchList || []}
-                />)}
+                <Row>
+                    {itemsContext.items.map((item, index) => (
+                        <React.Fragment key={index}>
+                            <Col {...getGridItemColumns(grid)}>
+                                {listingsGrid.getGridItem(
+                                    item,
+                                    listingsContext?.listingsData?.[DISPLAY_AS],
+                                    searchContext.category,
+                                    grid,
+                                    props.user[SESSION_USER_ID],
+                                    index
+                                )}
+                            </Col>
+                        </React.Fragment>
+                    ))}
+                </Row>
             </InfiniteScroll>
 
         )

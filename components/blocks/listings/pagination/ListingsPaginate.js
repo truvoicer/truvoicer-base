@@ -11,15 +11,27 @@ import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/Listin
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import ListingsItemsContext from "@/truvoicer-base/components/blocks/listings/contexts/ListingsItemsContext";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
+import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
+import {SESSION_USER, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
+import {getGridItemColumns} from "@/truvoicer-base/redux/actions/item-actions";
 
 const ListingsPaginate = (props) => {
     const [paginationLimit, setPaginationLimit] = useState(10);
     const [paginationRange, setPaginationRange] = useState(4);
 
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
-    const templateManager = new TemplateManager(useContext(TemplateContext));
+
+    const itemsContext = useContext(ListingsItemsContext);
+    const listingsGrid = new ListingsGrid(listingsContext, searchContext);
+    listingsGrid.setKeyMap(listingsContext?.listingsData?.keymap);
+    const grid = listingsContext?.listingsGrid;
 
     const paginationClickHandler = (pageNumber) => {
         listingsManager.getSearchEngine().setSearchEntity('listingsPaginate');
@@ -115,13 +127,22 @@ const ListingsPaginate = (props) => {
 
         return (
             <>
-                {templateManager.render(<GridItems
-                    listStart={listingsContext?.listingsData?.list_start}
-                    listEnd={listingsContext?.listingsData?.list_end}
-                    customPosition={listingsContext?.listingsData?.custom_position}
-                    grid={listingsContext?.listingsGrid}
-                    listItems={searchContext?.searchList || []}
-                />)}
+                <Row>
+                    {itemsContext.items.map((item, index) => (
+                        <React.Fragment key={index}>
+                            <Col {...getGridItemColumns(grid)}>
+                                {listingsGrid.getGridItem(
+                                    item,
+                                    listingsContext?.listingsData?.[DISPLAY_AS],
+                                    searchContext.category,
+                                    grid,
+                                    props.user[SESSION_USER_ID],
+                                    index
+                                )}
+                            </Col>
+                        </React.Fragment>
+                    ))}
+                </Row>
                 <GetPagination/>
             </>
         )
@@ -129,7 +150,9 @@ const ListingsPaginate = (props) => {
 ListingsPaginate.category = 'listings';
 ListingsPaginate.templateId = 'listingsPaginate';
 function mapStateToProps(state) {
-    return {};
+    return {
+        user: state.session[SESSION_USER],
+    };
 }
 
 export default connect(

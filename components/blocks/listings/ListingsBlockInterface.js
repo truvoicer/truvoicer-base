@@ -1,43 +1,34 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
-    DISPLAY_AS, DISPLAY_AS_COMPARISONS, DISPLAY_AS_LIST, DISPLAY_AS_POST_LIST,
+    DISPLAY_AS, DISPLAY_AS_COMPARISONS, DISPLAY_AS_LIST, DISPLAY_AS_POST_LIST, DISPLAY_AS_TILES,
     LISTINGS_BLOCK_SOURCE_API,
     LISTINGS_BLOCK_SOURCE_WORDPRESS, LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST, LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {ListingsContext, listingsData} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext, searchData} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {updateStateNestedObjectData, updateStateObject} from "@/truvoicer-base/library/helpers/state-helpers";
-import PostsBlock from "@/truvoicer-base/components/blocks/listings/sources/wp/posts/PostsBlock";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
-import SearchListingsBlock
-    from "@/truvoicer-base/components/blocks/listings/sources/fetcher-api/types/SearchListingsBlock";
 import ListingsBlockContainer from "@/truvoicer-base/components/blocks/listings/ListingsBlockContainer";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import TileDisplay from "@/truvoicer-base/components/blocks/listings/display/TileDisplay";
+import ListDisplay from "@/truvoicer-base/components/blocks/listings/display/ListDisplay";
+import GridItems from "@/truvoicer-base/components/blocks/listings/items/GridItems";
 
 const ListingsBlockInterface = ({data}) => {
 
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    function loadByWpDataSource() {
-        switch (data?.wordpress_data_source) {
-            case LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST:
-                return templateManager.render(<SearchListingsBlock data={data}/>);
-            case LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS:
-                return templateManager.render(<PostsBlock data={data}/>);
-            default:
-                return null;
-        }
-    }
-    function loadBySource() {
-        switch (data?.source) {
-            case LISTINGS_BLOCK_SOURCE_WORDPRESS:
-                return loadByWpDataSource();
-            case LISTINGS_BLOCK_SOURCE_API:
-            default:
-                return templateManager.render(<SearchListingsBlock data={data}/>);
-        }
-    }
 
+    function renderDisplay() {
+        switch (listingsContextState?.listingsData?.[DISPLAY_AS]) {
+            case DISPLAY_AS_TILES:
+                return templateManager.render(<TileDisplay data={data} />)
+            case DISPLAY_AS_POST_LIST:
+            case DISPLAY_AS_LIST:
+            case DISPLAY_AS_COMPARISONS:
+                return templateManager.render(<ListDisplay data={data} />)
+        }
+    }
     const loadByDisplayAs = () => {
         if (!isNotEmpty(data?.[DISPLAY_AS])) {
             return false;
@@ -45,23 +36,19 @@ const ListingsBlockInterface = ({data}) => {
 
         switch (data[DISPLAY_AS]) {
             case DISPLAY_AS_POST_LIST:
-                return templateManager.render(<PostsBlock data={data}/>);
             case DISPLAY_AS_LIST:
-                return templateManager.render(<SearchListingsBlock data={data}/>);
             case DISPLAY_AS_COMPARISONS:
-                return templateManager.render(<SearchListingsBlock data={data}/>);
+            case DISPLAY_AS_TILES:
+                return renderDisplay();
             default:
                 console.warn("No display type set");
                 return null;
         }
     }
     const loadListings = () => {
-        const load = loadByDisplayAs();
-        if (!load) {
-            return loadBySource();
-        }
-        return load;
+        return loadByDisplayAs();
     }
+
     const [listingsContextState, setListingsContextState] = useState({
         ...listingsData,
         updateData: ({key, value}) => {
@@ -104,7 +91,9 @@ const ListingsBlockInterface = ({data}) => {
             <ListingsContext.Provider value={listingsContextState}>
                 <SearchContext.Provider value={searchContextState}>
                     <ListingsBlockContainer data={data}>
-                        {loadListings()}
+                        <GridItems>
+                            {loadListings()}
+                        </GridItems>
                     </ListingsBlockContainer>
                 </SearchContext.Provider>
             </ListingsContext.Provider>

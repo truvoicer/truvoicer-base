@@ -18,9 +18,11 @@ import {ListingsEngine} from "@/truvoicer-base/library/listings/engine/listings-
 import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
 import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpers";
 import ListingsItemsContext, {itemsContextData} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsItemsContext";
+import {updateStateObject} from "@/truvoicer-base/library/helpers/state-helpers";
 
 const GridItems = ({children, ...props}) => {
-    const {listStart, listEnd, customPosition, grid, listItems, category} = props;
+    const {category} = props;
+
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const router = useRouter();
@@ -31,10 +33,13 @@ const GridItems = ({children, ...props}) => {
     });
     const [listPosition, setListPosition] = useState(null);
     // const [searchList, setSearchList] = useState([]);
-    const listingsGrid = new ListingsGrid(listingsContext, searchContext);
-    listingsGrid.setKeyMap(listingsContext?.listingsData?.keymap);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
+
+    const listStart = listingsContext?.listingsData?.list_start;
+    const listEnd = listingsContext?.listingsData?.list_end;
+    const customPosition = listingsContext?.listingsData?.custom_position;
+    const listItems = searchContext?.searchList || [];
 
     const showInfo = (item, category, e) => {
         e.preventDefault()
@@ -183,29 +188,30 @@ const GridItems = ({children, ...props}) => {
         }
         return searchList;
     }
-    const [itemsContextState, setItemsContextState] = useState(itemsContextData);
+    const [itemsContextState, setItemsContextState] = useState({
+        ...itemsContextData,
+        updateData: ({key, value}) => {
+            updateStateObject({
+                key,
+                value,
+                setStateObj: setItemsContextState
+            })
+        },
+    });
 
+    useEffect(() => {
+        updateStateObject({
+            key: 'items',
+            value: getSearchList(),
+            setStateObj: setItemsContextState
+        })
+    }, [
+        listItems,
+        listPosition,
+    ])
         return (
             <ListingsItemsContext.Provider value={itemsContextState}>
                 {children}
-                {/*<Row>*/}
-                {/*    {getSearchList().map((item, index) => (*/}
-                {/*        <React.Fragment key={index}>*/}
-                {/*            <Col {...getGridItemColumns(grid)}>*/}
-                {/*                {listingsGrid.getGridItem(*/}
-                {/*                    item,*/}
-                {/*                    listingsContext?.listingsData?.[DISPLAY_AS],*/}
-                {/*                    searchContext.category,*/}
-                {/*                    grid,*/}
-                {/*                    props.user[SESSION_USER_ID],*/}
-                {/*                    showInfo,*/}
-                {/*                    index*/}
-                {/*                )}*/}
-                {/*            </Col>*/}
-                {/*        </React.Fragment>*/}
-                {/*    ))}*/}
-                {/*</Row>*/}
-
                 {modalData.show &&
                     <GetModal/>
                 }

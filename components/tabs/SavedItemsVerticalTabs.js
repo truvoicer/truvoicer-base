@@ -169,8 +169,7 @@ const SavedItemsVerticalTabs = (props) => {
                             listingsContext?.listingsData?.[DISPLAY_AS],
                             item.category,
                             listingsGrid,
-                            props.user[SESSION_USER_ID],
-                            showInfo
+                            props.user[SESSION_USER_ID]
                         )}
                     </Col>
                 ))
