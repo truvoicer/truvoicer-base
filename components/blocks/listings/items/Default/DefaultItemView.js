@@ -162,12 +162,27 @@ const DefaultItemView = (props) => {
 
                             <div className="post-content-area">
                                 <div className="post-media post-featured-image">
-                                    <a href="images/news/lifestyle/health5.jpg" className="gallery-popup"><img src="images/news/lifestyle/health5.jpg" className="img-fluid" alt=""/></a>
+                                    <a href="images/news/lifestyle/health5.jpg" className="gallery-popup"><img
+                                        src="images/news/lifestyle/health5.jpg" className="img-fluid" alt=""/></a>
                                 </div>
                                 <div className="entry-content">
                                     {parse(props.item.job_description)}
                                 </div>
+                                <div className="apply_job_form white-bg">
+                                    <h4>{getExtraDataValue("apply_section_heading", extraData) ?? "Apply for this job"}</h4>
 
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <div className="submit_btn">
+                                                <a target={"_blank"}
+                                                   href={props.item.url}
+                                                   className="boxed-btn3 w-100">
+                                                    {getExtraDataValue("apply_button_label", extraData) ?? "Apply Now"}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div className="tags-area clearfix">
                                     <div className="post-tags">
                                         <span>Tags:</span>
@@ -181,11 +196,13 @@ const DefaultItemView = (props) => {
                                     <ul className="post-social-icons unstyled">
                                         <li className="facebook">
                                             <a href="#">
-                                                <i className="fa fa-facebook"></i> <span className="ts-social-title">Facebook</span></a>
+                                                <i className="fa fa-facebook"></i> <span
+                                                className="ts-social-title">Facebook</span></a>
                                         </li>
                                         <li className="twitter">
                                             <a href="#">
-                                                <i className="fa fa-twitter"></i> <span className="ts-social-title">Twitter</span></a>
+                                                <i className="fa fa-twitter"></i> <span
+                                                className="ts-social-title">Twitter</span></a>
                                         </li>
                                         <li className="gplus">
                                             <a href="#">
@@ -193,7 +210,8 @@ const DefaultItemView = (props) => {
                                         </li>
                                         <li className="pinterest">
                                             <a href="#">
-                                                <i className="fa fa-pinterest"></i> <span className="ts-social-title">Pinterest</span></a>
+                                                <i className="fa fa-pinterest"></i> <span
+                                                className="ts-social-title">Pinterest</span></a>
                                         </li>
                                     </ul>
                                 </div>
@@ -360,6 +378,21 @@ const DefaultItemView = (props) => {
                                                 <span>{props.item.part_time && "Part-time"}{props.item.full_time && "Full-time"}</span>
                                             </li>
                                         </ul>
+                                        <div className="apply_job_form white-bg">
+                                            <h4>{getExtraDataValue("apply_section_heading", extraData) ?? "Apply for this job"}</h4>
+
+                                            <div className="row">
+                                                <div className="col-md-12">
+                                                    <div className="submit_btn">
+                                                        <a target={"_blank"}
+                                                           href={props.item.url}
+                                                           className="boxed-btn3 w-100">
+                                                            {getExtraDataValue("apply_button_label", extraData) ?? "Apply Now"}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
