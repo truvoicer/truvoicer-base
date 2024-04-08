@@ -1,5 +1,5 @@
-import React from 'react';
-import {isNotEmpty} from "@/truvoicer-base/library/utils";
+import React, {useContext} from 'react';
+import {formatDate, isNotEmpty} from "@/truvoicer-base/library/utils";
 import parse from 'html-react-parser';
 import ItemViewComments from "@/truvoicer-base/components/comments/ItemViewComments";
 import {getExtraDataValue} from "@/truvoicer-base/library/helpers/pages";
@@ -8,10 +8,14 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faClock, faEnvelope, faMapMarker} from "@fortawesome/free-solid-svg-icons";
 import {faFacebook, faGooglePlus, faTwitter} from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
+import {template} from "underscore";
+import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
+import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import BlogCategoryList from "@/truvoicer-base/components/widgets/BlogCategoryList";
 
 const DefaultItemView = (props) => {
     const extraData = props.data?.extra_data;
-
+    const templateManager = new TemplateManager(useContext(TemplateContext));
     // const itemId = listingsManager.listingsEngine.extractItemId(props.data);
 
     // const savedItem = listingsManager.searchEngine.isSavedItemAction(
@@ -27,7 +31,7 @@ const DefaultItemView = (props) => {
     //     props.searchCategory,
     //     props.user[SESSION_USER_ID]
     // );
-    // console.log({props})
+    console.log({props})
     return (
         // <div className="job_details_area">
         //     <div className="container">
@@ -145,7 +149,9 @@ const DefaultItemView = (props) => {
                         <div className="single-post">
 
                             <div className="post-title-area">
-                                <a className="post-cat" href="#">Health</a>
+                                {isNotEmpty(props.item.provider) &&
+                                    <a className="post-cat" href="#">{props?.item?.provider}</a>
+                                }
                                 <h2 className="post-title">
                                     {props.item.job_title}
                                 </h2>
@@ -153,7 +159,12 @@ const DefaultItemView = (props) => {
 								<span className="post-author">
 									By <a href="#">John Doe</a>
 								</span>
-                                    <span className="post-date"><i className="fa fa-clock-o"></i> March 14, 2017</span>
+                                    {props.data.date_expires &&
+                                        <span className="post-date">
+                                            <i className="fa fa-clock-o"></i>
+                                            {formatDate(props.data.date_expires)}
+                                        </span>
+                                    }
                                     <span className="post-hits"><i className="fa fa-eye"></i> 21</span>
                                     <span className="post-comment"><i className="fa fa-comments-o"></i>
 								<a href="#" className="comments-link"><span>01</span></a></span>
@@ -161,15 +172,21 @@ const DefaultItemView = (props) => {
                             </div>
 
                             <div className="post-content-area">
+                                {isNotEmpty(props.item.item_image) && (
                                 <div className="post-media post-featured-image">
-                                    <a href="images/news/lifestyle/health5.jpg" className="gallery-popup"><img
-                                        src="images/news/lifestyle/health5.jpg" className="img-fluid" alt=""/></a>
+                                    <a href="#" className="gallery-popup">
+                                        <img src={props.item.item_image}
+                                        className="img-fluid" alt=""/>
+                                    </a>
                                 </div>
+                                )}
                                 <div className="entry-content">
                                     {parse(props.item.job_description)}
                                 </div>
-                                <div className="apply_job_form white-bg">
-                                    <h4>{getExtraDataValue("apply_section_heading", extraData) ?? "Apply for this job"}</h4>
+                                <div className="apply_job_form white-bg mt-5">
+                                    <h3 className={'title-normal'}>
+                                        {getExtraDataValue("apply_section_heading", extraData) ?? "Apply for this job"}
+                                    </h3>
 
                                     <div className="row">
                                         <div className="col-md-12">
@@ -183,14 +200,11 @@ const DefaultItemView = (props) => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="tags-area clearfix">
-                                    <div className="post-tags">
-                                        <span>Tags:</span>
-                                        <a href="#"># Food</a>
-                                        <a href="#"># Lifestyle</a>
-                                        <a href="#"># Travel</a>
-                                    </div>
-                                </div>
+                                {templateManager.render(
+                                    <BlogCategoryList
+                                        categories={props?.item?.categories || []}
+                                    />
+                                )}
 
                                 <div className="share-items clearfix">
                                     <ul className="post-social-icons unstyled">
@@ -238,103 +252,6 @@ const DefaultItemView = (props) => {
                             </div>
                         </nav>
 
-                        <div className="author-box">
-                            <div className="author-img pull-left">
-                                <img src="images/news/author.png" alt=""/>
-                            </div>
-                            <div className="author-info">
-                                <h3>Razon Khan</h3>
-                                <p className="author-url"><a href="#">http://www.newsdaily247.com</a></p>
-                                <p>Selfies labore, leggings cupidatat sunt taxidermy umami fanny pack typewriter hoodie art party voluptate. Listicle meditation paleo, drinking vinegar sint direct trade.</p>
-                                <div className="authors-social">
-                                    <span>Follow Me: </span>
-                                    <a href="#"><i className="fa fa-behance"></i></a>
-                                    <a href="#"><i className="fa fa-twitter"></i></a>
-                                    <a href="#"><i className="fa fa-facebook"></i></a>
-                                    <a href="#"><i className="fa fa-google-plus"></i></a>
-                                    <a href="#"><i className="fa fa-pinterest-p"></i></a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="related-posts block">
-                            <h3 className="block-title"><span>Related Posts</span></h3>
-
-                            <div id="latest-news-slide" className="owl-carousel owl-theme latest-news-slide">
-                                <div className="item">
-                                    <div className="post-block-style clearfix">
-                                        <div className="post-thumb">
-                                            <a href="#"><img className="img-fluid" src="images/news/lifestyle/travel5.jpg" alt="" /></a>
-                                        </div>
-                                        <a className="post-cat" href="#">Health</a>
-                                        <div className="post-content">
-                                            <h2 className="post-title title-medium">
-                                                <a href="#">Hynopedia helps female travelers find health care in Maldivs</a>
-                                            </h2>
-                                            <div className="post-meta">
-                                                <span className="post-author"><a href="#">John Doe</a></span>
-                                                <span className="post-date">Feb 19, 2017</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="item">
-                                    <div className="post-block-style clearfix">
-                                        <div className="post-thumb">
-                                            <a href="#"><img className="img-fluid" src="images/news/lifestyle/health5.jpg" alt="" /></a>
-                                        </div>
-                                        <a className="post-cat" href="#">Health</a>
-                                        <div className="post-content">
-                                            <h2 className="post-title title-medium">
-                                                <a href="#">Netcix cuts out the chill with an integrated...</a>
-                                            </h2>
-                                            <div className="post-meta">
-                                                <span className="post-author"><a href="#">John Doe</a></span>
-                                                <span className="post-date">Feb 19, 2017</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="item">
-                                    <div className="post-block-style clearfix">
-                                        <div className="post-thumb">
-                                            <a href="#"><img className="img-fluid" src="images/news/lifestyle/travel3.jpg" alt="" /></a>
-                                        </div>
-                                        <a className="post-cat" href="#">Travel</a>
-                                        <div className="post-content">
-                                            <h2 className="post-title title-medium">
-                                                <a href="#">This Aeroplane that looks like a butt is the largest aircraft in the world</a>
-                                            </h2>
-                                            <div className="post-meta">
-                                                <span className="post-author"><a href="#">John Doe</a></span>
-                                                <span className="post-date">Feb 19, 2017</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="item">
-                                    <div className="post-block-style clearfix">
-                                        <div className="post-thumb">
-                                            <a href="#"><img className="img-fluid" src="images/news/lifestyle/travel4.jpg" alt="" /></a>
-                                        </div>
-                                        <a className="post-cat" href="#">Travel</a>
-                                        <div className="post-content">
-                                            <h2 className="post-title title-medium">
-                                                <a href="#">19 incredible photos from Disney's 'Star Wars' cruise algore</a>
-                                            </h2>
-                                            <div className="post-meta">
-                                                <span className="post-author"><a href="#">John Doe</a></span>
-                                                <span className="post-date">Feb 19, 2017</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
                         <ItemViewComments
                             category={props.category}
                             provider={props.item.provider}

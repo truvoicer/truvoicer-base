@@ -11,20 +11,18 @@ const BlogCategoryList = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
         return (
-            <ul className={classes}>
-                {Array.isArray(categories) &&
-                    <li>
-                        {categories.map((category, index) => (
-                            <React.Fragment key={index}>
-                                <Link href={getPostCategoryUrl({category_name: category?.slug})}>
-                                    {/*<FontAwesomeIcon icon={faUser} />*/}
-                                    {category?.name}
-                                </Link>
-                            </React.Fragment>
-                        ))}
-                    </li>
-                }
-            </ul>
+            <div className={`tags-area clearfix ${classes}`}>
+                <div className="post-tags">
+                    <span>Tags:</span>
+                    {Array.isArray(categories) && categories.map((category, index) => (
+                        <React.Fragment key={index}>
+                            <Link href={getPostCategoryUrl({category_name: category?.slug})}>
+                                # {category?.name}
+                            </Link>
+                        </React.Fragment>
+                    ))}
+                </div>
+            </div>
         );
 };
 BlogCategoryList.category = 'widgets';

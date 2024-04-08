@@ -52,7 +52,7 @@ const DefaultItemList = (props) => {
             },
         }
     })
-
+    console.log('linkProps', props)
     return (
         <>
             <div className="post-block-style post-float-half clearfix">
@@ -62,7 +62,9 @@ const DefaultItemList = (props) => {
                              src={props.data.default_image ? props.data.default_image : "/img/pticon.png"} alt=""/>
                     </Link>
                 </div>
-                <Link className="post-cat" {...linkProps}>Video</Link>
+                {props.data.provider && (
+                    <Link className="post-cat" {...linkProps}>{props.data.provider}</Link>
+                )}
                 <div className="post-content">
                     <h2 className="post-title">
                         <Link {...linkProps}>{props.data.job_title}</Link>

@@ -427,8 +427,8 @@ export class ListingsEngine {
         let props = {
             href: '#'
         };
-        switch (item?.provider) {
-            case "internal":
+        switch (listingsData?.source) {
+            case "wordpress":
                 props.href = this.getInternalItemUrl({category, item, displayAs})
                 break;
             default:

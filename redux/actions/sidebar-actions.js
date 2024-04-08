@@ -5,7 +5,6 @@ import React from "react";
 import CategoryListWidget from "../../components/widgets/CategoryListWidget";
 import RecentPostsWidget from "../../components/widgets/RecentPostsWidget";
 import EmailOptinWidget from "../../components/widgets/EmailOptinWidget";
-import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 
 export const buildSidebar = ({sidebarData, templateManager = null}) => {
     let sideBarListData = [];

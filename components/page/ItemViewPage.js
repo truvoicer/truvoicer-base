@@ -44,8 +44,8 @@ const ItemViewPage = (props) => {
                 setItemProviderAction(provider)
                 setItemCategoryAction(category)
                 setSingleItemPostState({
-                    dataKeys: item?.single_item?.data_keys,
-                    databaseId: item?.ID
+                    dataKeys: itemData?.single_item?.data_keys,
+                    databaseId: itemData?.ID
                 })
                 break;
             case 'external':
