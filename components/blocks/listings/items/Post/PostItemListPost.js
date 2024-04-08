@@ -33,7 +33,7 @@ const PostItemListPost = (props) => {
     }
 
     const category = getCategory();
-    const linkProps = listingsManager.getListingsEngine().getItemLinkProps({
+    const linkProps = listingsManager.getListingsEngine().getListingsItemLinkProps({
         displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
         category: category?.slug,
         item: props.data,

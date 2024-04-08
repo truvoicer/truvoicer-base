@@ -50,10 +50,11 @@ export function loadBasePageData({page, settings, post = {}, postNavigation = {}
     }
 }
 
-export function loadBaseItemPage(pageData, settings) {
+export function loadBaseItemPage({page, settings, postNav = {}}) {
     const data = {
-        page: pageData,
-        settings: settings
+        page: page,
+        settings: settings,
+        postNavigation: postNav
     }
     loadBasePageData(data);
 }

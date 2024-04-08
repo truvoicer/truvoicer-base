@@ -27,13 +27,14 @@ const ItemViewPage = (props) => {
         provider,
         item_id,
         settings,
-        page
+        page,
+        postNav
     } = props;
     const [showLoader, setShowLoader] = useState(true);
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     function itemPageInit() {
-        loadBaseItemPage(page, settings)
+        loadBaseItemPage({page, settings, postNav})
         setItemDataAction(itemData)
         setItemTypeAction(type);
         switch (type) {

@@ -83,11 +83,10 @@ const TileDisplay = (props) => {
         return 'post-overaly-style contentTop hot-post-top with-image clearfix';
     }
     function getLinkProps(item) {
-        return listingsManager.getListingsEngine().getItemLinkProps({
+        return listingsManager.getListingsEngine().getListingsItemLinkProps({
             displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
             category: props.searchCategory,
             item,
-            showInfoCallback: props.showInfoCallback,
             trackData: {
                 dataLayerName: "listItemClick",
                 dataLayer: {

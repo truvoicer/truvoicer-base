@@ -27,7 +27,7 @@ const ComparisonsItemList = ({data, searchCategory, index}) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
-    const linkProps = listingsManager.getListingsEngine().getItemLinkProps({
+    const linkProps = listingsManager.getListingsEngine().getListingsItemLinkProps({
         category: searchCategory,
         item: data,
     });

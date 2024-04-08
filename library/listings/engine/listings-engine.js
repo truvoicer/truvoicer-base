@@ -416,18 +416,17 @@ export class ListingsEngine {
                 });
             case DISPLAY_AS_LIST:
             case DISPLAY_AS_TILES:
-                return this.buildInternalItemViewUrl({category, item})
+                return this.buildInternalItemViewUrl({item})
             default:
                 return null;
         }
     }
-    getItemLinkProps({category, item, displayAs, trackData = {}}) {
-        const listingsData = this.listingsContext?.listingsData;
-
+    getItemLinkProps({source, category, item, displayAs, trackData = {}, onClick = () => {}}) {
         let props = {
             href: '#'
         };
-        switch (listingsData?.source) {
+        switch (source) {
+            case "internal":
             case "wordpress":
                 props.href = this.getInternalItemUrl({category, item, displayAs})
                 break;
@@ -435,19 +434,34 @@ export class ListingsEngine {
                 props.href = this.getExternalItemViewUrl({item, category, displayAs});
                 break;
         }
-
         props.onClick = (e) => {
             console.log("Item Link Clicked", trackData)
             this.globalItemLinkClick(trackData);
-            if (isSet(listingsData?.item_view_display) && listingsData.item_view_display === "page") {
-                // e.preventDefault()
+            if (typeof onClick === "function") {
+                onClick(e);
             }
-            this.updateContext({key: "listingsQueryData", value: {}})
-        }
+        };
         if (typeof props?.href !== 'string') {
             props.href = '#';
         }
         return props;
+    }
+    getListingsItemLinkProps({category, item, displayAs, trackData = {}}) {
+        const listingsData = this.listingsContext?.listingsData;
+
+        return this.getItemLinkProps({
+           category,
+           item,
+            source: listingsData?.source,
+            displayAs,
+            trackData,
+            onClick: (e) => {
+                if (isSet(listingsData?.item_view_display) && listingsData.item_view_display === "page") {
+                    // e.preventDefault()
+                }
+                this.updateContext({key: "listingsQueryData", value: {}})
+            }
+        });
     }
     extractItemListFromPost({post}) {
         if (!Array.isArray(post?.item_list?.item_list)) {

@@ -12,6 +12,8 @@ import {template} from "underscore";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import BlogCategoryList from "@/truvoicer-base/components/widgets/BlogCategoryList";
+import PostNavigation from "@/truvoicer-base/components/widgets/post/PostNavigation";
+import SocialShareWidget from "@/truvoicer-base/components/widgets/SocialShareWidget";
 
 const DefaultItemView = (props) => {
     const extraData = props.data?.extra_data;
@@ -173,12 +175,12 @@ const DefaultItemView = (props) => {
 
                             <div className="post-content-area">
                                 {isNotEmpty(props.item.item_image) && (
-                                <div className="post-media post-featured-image">
-                                    <a href="#" className="gallery-popup">
-                                        <img src={props.item.item_image}
-                                        className="img-fluid" alt=""/>
-                                    </a>
-                                </div>
+                                    <div className="post-media post-featured-image">
+                                        <a href="#" className="gallery-popup">
+                                            <img src={props.item.item_image}
+                                                 className="img-fluid" alt=""/>
+                                        </a>
+                                    </div>
                                 )}
                                 <div className="entry-content">
                                     {parse(props.item.job_description)}
@@ -206,51 +208,21 @@ const DefaultItemView = (props) => {
                                     />
                                 )}
 
-                                <div className="share-items clearfix">
-                                    <ul className="post-social-icons unstyled">
-                                        <li className="facebook">
-                                            <a href="#">
-                                                <i className="fa fa-facebook"></i> <span
-                                                className="ts-social-title">Facebook</span></a>
-                                        </li>
-                                        <li className="twitter">
-                                            <a href="#">
-                                                <i className="fa fa-twitter"></i> <span
-                                                className="ts-social-title">Twitter</span></a>
-                                        </li>
-                                        <li className="gplus">
-                                            <a href="#">
-                                                <i className="fa fa-google-plus"></i> <span className="ts-social-title">Google +</span></a>
-                                        </li>
-                                        <li className="pinterest">
-                                            <a href="#">
-                                                <i className="fa fa-pinterest"></i> <span
-                                                className="ts-social-title">Pinterest</span></a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                {templateManager.render(
+                                    <SocialShareWidget
+                                        href={props?.item?.url}
+                                    />
+                                )}
 
                             </div>
                         </div>
 
-                        <nav className="post-navigation clearfix">
-                            <div className="post-previous">
-                                <a href="#">
-                                    <span><i className="fa fa-angle-left"></i>Previous Post</span>
-                                    <h3>
-                                        Deleting fears from the brain means you might never need to face them
-                                    </h3>
-                                </a>
-                            </div>
-                            <div className="post-next">
-                                <a href="#">
-                                    <span>Next Post <i className="fa fa-angle-right"></i></span>
-                                    <h3>
-                                        Smart packs parking sensor tech and beeps when collisions
-                                    </h3>
-                                </a>
-                            </div>
-                        </nav>
+                        {templateManager.render(
+                            <PostNavigation
+                                navigation={props?.postNav || {}}
+                                source={props?.type}
+                            />
+                        )}
 
                         <ItemViewComments
                             category={props.category}
@@ -332,7 +304,7 @@ const DefaultItemView = (props) => {
                                 <div className="post-overaly-style clearfix">
                                     <div className="post-thumb">
                                         <a href="#">
-                                            <img className="img-fluid" src="images/news/lifestyle/health4.jpg" alt="" />
+                                            <img className="img-fluid" src="images/news/lifestyle/health4.jpg" alt=""/>
                                         </a>
                                     </div>
 
@@ -354,14 +326,16 @@ const DefaultItemView = (props) => {
                                             <div className="post-block-style post-float clearfix">
                                                 <div className="post-thumb">
                                                     <a href="#">
-                                                        <img className="img-fluid" src="images/news/tech/gadget3.jpg" alt="" />
+                                                        <img className="img-fluid" src="images/news/tech/gadget3.jpg"
+                                                             alt=""/>
                                                     </a>
                                                     <a className="post-cat" href="#">Gadgets</a>
                                                 </div>
 
                                                 <div className="post-content">
                                                     <h2 className="post-title title-small">
-                                                        <a href="#">Panasonic's new Sumix CH7 an ultra portable filmmaker's drea…</a>
+                                                        <a href="#">Panasonic's new Sumix CH7 an ultra portable
+                                                            filmmaker's drea…</a>
                                                     </h2>
                                                     <div className="post-meta">
                                                         <span className="post-date">Mar 13, 2017</span>
@@ -374,14 +348,16 @@ const DefaultItemView = (props) => {
                                             <div className="post-block-style post-float clearfix">
                                                 <div className="post-thumb">
                                                     <a href="#">
-                                                        <img className="img-fluid" src="images/news/lifestyle/travel5.jpg" alt="" />
+                                                        <img className="img-fluid"
+                                                             src="images/news/lifestyle/travel5.jpg" alt=""/>
                                                     </a>
                                                     <a className="post-cat" href="#">Travel</a>
                                                 </div>
 
                                                 <div className="post-content">
                                                     <h2 className="post-title title-small">
-                                                        <a href="#">Hynopedia helps female travelers find health care...</a>
+                                                        <a href="#">Hynopedia helps female travelers find health
+                                                            care...</a>
                                                     </h2>
                                                     <div className="post-meta">
                                                         <span className="post-date">Jan 11, 2017</span>
@@ -394,14 +370,16 @@ const DefaultItemView = (props) => {
                                             <div className="post-block-style post-float clearfix">
                                                 <div className="post-thumb">
                                                     <a href="#">
-                                                        <img className="img-fluid" src="images/news/tech/robot5.jpg" alt="" />
+                                                        <img className="img-fluid" src="images/news/tech/robot5.jpg"
+                                                             alt=""/>
                                                     </a>
                                                     <a className="post-cat" href="#">Robotics</a>
                                                 </div>
 
                                                 <div className="post-content">
                                                     <h2 className="post-title title-small">
-                                                        <a href="#">Robots in hospitals can be quite handy to navigate around...</a>
+                                                        <a href="#">Robots in hospitals can be quite handy to navigate
+                                                            around...</a>
                                                     </h2>
                                                     <div className="post-meta">
                                                         <span className="post-date">Feb 19, 2017</span>
@@ -414,14 +392,16 @@ const DefaultItemView = (props) => {
                                             <div className="post-block-style post-float clearfix">
                                                 <div className="post-thumb">
                                                     <a href="#">
-                                                        <img className="img-fluid" src="images/news/lifestyle/food1.jpg" alt="" />
+                                                        <img className="img-fluid" src="images/news/lifestyle/food1.jpg"
+                                                             alt=""/>
                                                     </a>
                                                     <a className="post-cat" href="#">Food</a>
                                                 </div>
 
                                                 <div className="post-content">
                                                     <h2 className="post-title title-small">
-                                                        <a href="#">Tacos ditched the naked chicken chalupa, so here's how…</a>
+                                                        <a href="#">Tacos ditched the naked chicken chalupa, so here's
+                                                            how…</a>
                                                     </h2>
                                                     <div className="post-meta">
                                                         <span className="post-date">Feb 27, 2017</span>
@@ -436,7 +416,7 @@ const DefaultItemView = (props) => {
                             </div>
 
                             <div className="widget text-center">
-                                <img className="banner img-fluid" src="images/banner-ads/ad-sidebar.png" alt="" />
+                                <img className="banner img-fluid" src="images/banner-ads/ad-sidebar.png" alt=""/>
                             </div>
 
                             <div className="widget widget-tags">
@@ -468,8 +448,10 @@ const DefaultItemView = (props) => {
                                     <div className="newsletter-form">
                                         <form action="#" method="post">
                                             <div className="form-group">
-                                                <input type="email" name="email" id="newsletter-form-email" className="form-control form-control-lg" placeholder="E-mail" autocomplete="off" />
-                                                    <button className="btn btn-primary">Subscribe</button>
+                                                <input type="email" name="email" id="newsletter-form-email"
+                                                       className="form-control form-control-lg" placeholder="E-mail"
+                                                       autocomplete="off"/>
+                                                <button className="btn btn-primary">Subscribe</button>
                                             </div>
                                         </form>
                                     </div>

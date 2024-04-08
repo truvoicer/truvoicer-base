@@ -36,24 +36,20 @@ function FBAuthProvider({children, siteSettings}) {
         if (!isNotEmpty(siteSettings?.facebook_app_id)) {
             return;
         }
-        if (typeof window === "undefined") {
-            return;
-        }
-        if (typeof window.FB === "undefined") {
-            return;
-        }
-        window.FB.init({
-            appId            : siteSettings?.facebook_app_id,
-            xfbml            : true,
-            version          : 'v19.0'
-        });
+        window.fbAsyncInit = function() {
+            window.FB.init({
+                appId            : siteSettings?.facebook_app_id,
+                xfbml            : true,
+                version          : 'v19.0'
+            });
 
-        updateState({
-            appId: siteSettings?.facebook_app_id,
-            fb: window.FB
-        })
+            updateState({
+                appId: siteSettings?.facebook_app_id,
+                fb: window.FB
+            })
+        }
 
-    }, [siteSettings.google_login_client_id]);
+    }, [siteSettings.facebook_app_id]);
     return (
         <FbAuthContext.Provider value={fbAuthState}>
             {children}

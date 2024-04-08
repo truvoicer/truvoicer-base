@@ -6,7 +6,7 @@ import ProsConsList from "../../../../../Widgets/ProsConsList";
 import parse from 'html-react-parser';
 import Link from "next/link";
 import {getComparisonItemViewUrl, getExternalItemViewUrl} from "../../../../../../../truvoicer-base/redux/actions/item-actions";
-import {getItemLinkProps} from "../../../../../../../truvoicer-base/library/helpers/items";
+import {getListingsItemLinkProps} from "../../../../../../../truvoicer-base/library/helpers/items";
 
 /**
  *

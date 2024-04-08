@@ -36,7 +36,7 @@ const DefaultItemList = (props) => {
     //     props.user[SESSION_USER_ID]
     // );
 
-    const linkProps = listingsManager.getListingsEngine().getItemLinkProps({
+    const linkProps = listingsManager.getListingsEngine().getListingsItemLinkProps({
         displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
         category: props.searchCategory,
         item: props.data,

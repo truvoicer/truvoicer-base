@@ -4,9 +4,21 @@ import {isObject} from 'underscore';
 import {REQUEST_GET} from '../../constants/request-constants';
 import {getSignedJwt} from "@/truvoicer-base/library/api/auth/jwt-helpers";
 import {getSessionObject} from "@/truvoicer-base/redux/actions/session-actions";
+import {getSiteSettings} from "@/truvoicer-base/library/api/wp/middleware";
 
 const sprintf = require('sprintf-js').sprintf;
+export async function getGlobalMeta() {
+  const settings = await getSiteSettings();
+  if (!isNotEmpty(settings?.settings?.google_login_client_id)) {
+    return false;
+  }
 
+  return {
+      other: {
+        'google_login_client_id': settings?.settings?.google_login_client_id
+      },
+  };
+}
 function getHeaders(config) {
   return config.headers;
 }

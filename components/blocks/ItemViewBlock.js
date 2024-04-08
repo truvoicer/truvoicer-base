@@ -20,7 +20,7 @@ const ItemViewBlock = (props) => {
             return null;
         }
         const ItemView = gridConfig[DISPLAY_AS_LIST].single;
-        return <ItemView item={item} data={props.data} category={props.item.category}/>
+        return <ItemView type={props?.item?.type} item={item} data={props.data} category={props.item.category} postNav={props.postNavData}/>
     }
     //console.log({props})
     return (
@@ -47,6 +47,7 @@ function mapStateToProps(state) {
     return {
         siteSettings: state.page.siteSettings,
         pageData: state.page.pageData,
+        postNavData: state.page.postNavData,
         item: state.item,
     };
 }
