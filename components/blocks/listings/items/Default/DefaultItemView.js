@@ -211,6 +211,7 @@ const DefaultItemView = (props) => {
                                 {templateManager.render(
                                     <SocialShareWidget
                                         href={props?.item?.url}
+                                        text={props?.item?.job_title}
                                     />
                                 )}
 

@@ -2,10 +2,6 @@ import React, {useContext, useEffect, useState} from 'react';
 import {AppContext, appContextData} from "@/truvoicer-base/config/contexts/AppContext";
 import {updateStateNestedObjectData, updateStateObject} from "@/truvoicer-base/library/helpers/state-helpers";
 import {TemplateContext, templateData} from "@/truvoicer-base/config/contexts/TemplateContext";
-import {GoogleAuthContext} from "@/truvoicer-base/config/contexts/GoogleAuthContext";
-import {FbAuthContext} from "@/truvoicer-base/config/contexts/FacebookAuthContext";
-import {connect} from "react-redux";
-import {sessionContextData} from "@/truvoicer-base/config/contexts/SessionContext";
 import SessionLayout from "@/truvoicer-base/components/layout/SessionLayout";
 import GoogleAuthProvider from "@/truvoicer-base/components/providers/GoogleAuthProvider";
 import FBAuthProvider from "@/truvoicer-base/components/providers/FBAuthProvider";
@@ -18,18 +14,22 @@ import {isNotEmpty, isSet} from "@/truvoicer-base/library/utils";
 import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
 import {LoadEnvironment} from "@/truvoicer-base/library/api/global-scripts";
 import {validateToken} from "@/truvoicer-base/redux/actions/session-actions";
+import TwitterProvider from "@/truvoicer-base/components/providers/TwitterProvider";
+import PinterestProvider from "@/truvoicer-base/components/providers/PinterestProvider";
 
 const AppLoader = ({templateConfig = {}, page}) => {
 
     const router = useRouter();
     const templateContext = useContext(TemplateContext);
     const templateManager = new TemplateManager(templateContext);
+
     function getWidget(component, data) {
         if (isSet(blockComponentsConfig.components[component]) && isSet(blockComponentsConfig.components[component].component)) {
             const ModalContent = blockComponentsConfig.components[component].component;
-            return <ModalContent data={data} />;
+            return <ModalContent data={data}/>;
         }
     }
+
     function updateModalState(data) {
         setModalState(modalState => {
             let cloneState = {...modalState};
@@ -106,37 +106,41 @@ const AppLoader = ({templateConfig = {}, page}) => {
         console.log("AppLoader useEffect")
     }, [])
     return (
-            <AppContext.Provider value={appContextState}>
-                <TemplateContext.Provider value={templateContextState}>
-                    <AppModalContext.Provider value={modalState}>
-                        <GoogleAuthProvider>
-                            <FBAuthProvider>
-                                <SessionLayout>
-                                    {templateManager.getPostTemplateLayoutComponent(page)}
-                                    <Modal show={modalState.show} onHide={handleModalCancel}>
-                                        <Modal.Header closeButton>
-                                            <Modal.Title>{modalState?.title || ''}</Modal.Title>
-                                        </Modal.Header>
-                                        <Modal.Body>
-                                            {modalState?.component || ''}
-                                        </Modal.Body>
-                                        {modalState?.showFooter &&
-                                            <Modal.Footer>
-                                                <Button variant="secondary" onClick={handleModalCancel}>
-                                                    Close
-                                                </Button>
-                                                <Button variant="primary" onClick={handleModalCancel}>
-                                                    Save Changes
-                                                </Button>
-                                            </Modal.Footer>
-                                        }
-                                    </Modal>
-                                </SessionLayout>
-                            </FBAuthProvider>
-                        </GoogleAuthProvider>
-                    </AppModalContext.Provider>
-                </TemplateContext.Provider>
-            </AppContext.Provider>
+        <AppContext.Provider value={appContextState}>
+            <TemplateContext.Provider value={templateContextState}>
+                <AppModalContext.Provider value={modalState}>
+                    <GoogleAuthProvider>
+                        <FBAuthProvider>
+                            <TwitterProvider>
+                                <PinterestProvider>
+                                    <SessionLayout>
+                                        {templateManager.getPostTemplateLayoutComponent(page)}
+                                        <Modal show={modalState.show} onHide={handleModalCancel}>
+                                            <Modal.Header closeButton>
+                                                <Modal.Title>{modalState?.title || ''}</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body>
+                                                {modalState?.component || ''}
+                                            </Modal.Body>
+                                            {modalState?.showFooter &&
+                                                <Modal.Footer>
+                                                    <Button variant="secondary" onClick={handleModalCancel}>
+                                                        Close
+                                                    </Button>
+                                                    <Button variant="primary" onClick={handleModalCancel}>
+                                                        Save Changes
+                                                    </Button>
+                                                </Modal.Footer>
+                                            }
+                                        </Modal>
+                                    </SessionLayout>
+                                </PinterestProvider>
+                            </TwitterProvider>
+                        </FBAuthProvider>
+                    </GoogleAuthProvider>
+                </AppModalContext.Provider>
+            </TemplateContext.Provider>
+        </AppContext.Provider>
     );
 };
 export default AppLoader;
