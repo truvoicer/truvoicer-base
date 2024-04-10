@@ -54,7 +54,7 @@ const ItemViewComments = (props) => {
             'GET',
             buildWpApiUrl(wpApiConfig.endpoints.commentsByItemId, data)
         );
-        if (response.data.status === "success") {
+        if (Array.isArray(response?.data)) {
             setComments(response.data);
         }
     }

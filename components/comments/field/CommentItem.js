@@ -17,40 +17,40 @@ const CommentItem = (props) => {
     }
 
     return (
-        <div className="media">
-            <a className="pull-left" href="#">
-                <Image
-                    className="media-object avatar-image"
+        <>
+            <div className="comment">
+                <img
+                    className="comment-avatar"
                     src="https://bootdey.com/img/Content/avatar/avatar1.png"
                     alt=""
                 />
-            </a>
-            <div className="media-body">
-                <h4 className="media-heading">{props.parentComment.comment_author}</h4>
-                <p>{props.parentComment.comment_content}</p>
-                <div className={"media-controls d-flex align-items-center justify-content-between"}>
-                <ul className="list-unstyled list-inline media-detail d-flex pull-left">
-                    <li>
-                        <FontAwesomeIcon icon={faCalendar} />
-                        {formatDate(props.parentComment.comment_date)}
-                    </li>
-                    <li>
-                        <FontAwesomeIcon icon={faThumbsUp} />
-                        13
-                    </li>
-                </ul>
-                <ul className="list-unstyled list-inline media-detail d-flex pull-right">
-                    <li className=""><a href="">Like</a></li>
-                    {!props.childItem && <li className=""><a href="" onClick={replyClickHandler}>Reply</a></li>}
-                </ul>
+                <div className="comment-body">
+                    <div className="meta-data">
+                        <span className="comment-author">{props.parentComment.comment_author}</span>
+                        <span className="comment-date pull-right">{formatDate(props.parentComment.comment_date)}</span>
+                    </div>
+                    <div className="comment-content">
+                        <p>{props.parentComment.comment_content}</p>
+                    </div>
+                    <div className="text-left">
+                        {!props.childItem && <a href="comment-reply" onClick={replyClickHandler}>Reply</a>}
+                    </div>
                 </div>
-                {props.childComments && props.childComments.map((comment, index) => (
-                    <CommentItem key={index} parentComment={comment} childItem={true} />
-                ))}
-                {showReply && templateManager.render(<CommentTextForm parentCommentId={props.parentComment.comment_ID} />)}
             </div>
-        </div>
 
+            <ul className="comments-reply">
+                {props.childComments && props.childComments.map((comment, index) => (
+                    <li key={index}>
+                        <CommentItem key={index} parentComment={comment} childItem={true}/>
+                    </li>
+                ))}
+                {showReply && templateManager.render(
+                    <CommentTextForm
+                    parentCommentId={props.parentComment.comment_ID}
+                    />)}
+
+            </ul>
+        </>
     );
 }
 CommentItem.category = 'comments';

@@ -21,29 +21,28 @@ const CommentTextForm = (props) => {
 
 
     return (
-        <form onSubmit={submitHandler}>
-            <h3 className="pull-left">New Comment</h3>
-            <button type="submit" className="btn btn-normal pull-right">Submit</button>
-            <fieldset>
+        <div className="comments-form">
+            <h3 className="title-normal">Leave a comment</h3>
+            <form onSubmit={submitHandler} role="form">
                 <div className="row">
-                    <div className="col-sm-3 col-lg-2 hidden-xs">
-                        <img  className="img-responsive avatar-image"
-                             src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                             alt=""/>
-                    </div>
-                    <div className="form-group col-xs-12 col-sm-9 col-lg-10">
-                        <textarea
-                            onChange={changeHandler}
-                            className="form-control"
-                            id="message"
-                            placeholder="Your message"
-                            required=""
-                            value={content}
-                        />
+                    <div className="col-md-12">
+                        <div className="form-group">
+                            <textarea
+                                onChange={changeHandler}
+                                className="form-control required-field"
+                                id="message"
+                                placeholder="Your message"
+                                required=""
+                                value={content}
+                            />
+                        </div>
                     </div>
                 </div>
-            </fieldset>
-        </form>
+                <div className="clearfix">
+                    <button className="comments-btn btn btn-primary" type="submit">Post Comment</button>
+                </div>
+            </form>
+        </div>
     );
 }
 CommentTextForm.category = 'comments';

@@ -38,12 +38,12 @@ export const buildWpApiUrl = (endpoint, param = "") => {
 //     })
 // }
 //
-// export async function getAllPagesWithUri() {
-//     return await wpResourceRequestHandler({
-//         endpoint: wpApiConfig.endpoints.pageList,
-//         method: 'GET',
-//     });
-// }
+export async function getAllPagesWithUri() {
+    return await wpResourceRequestHandler({
+        endpoint: wpApiConfig.endpoints.pageList,
+        method: 'GET',
+    });
+}
 
 
 export async function getAllSingleItemPosts() {

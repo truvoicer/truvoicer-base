@@ -34,31 +34,36 @@ const CommentsList = (props) => {
     }
 
 
-        return (
+    return (
 
-            <CommentsContext.Provider value={commentsData}>
-                <section className="content-item" id="comments">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-12">
-                                {isSet(props.items) && Array.isArray(props.items) && props.items.length > 0
-                                    ?
-                                    <>
-                                        {templateManager.render(<CommentTextForm/>)}
-                                        {buildComments().map((item, index) => (
-                                            templateManager.render(<CommentItem key={index} parentComment={item.parent}
-                                                         childComments={item.children}/>)
-                                        ))}
-                                    </>
-                                    :
-                                    <CommentTextForm/>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </CommentsContext.Provider>
-        );
+        <CommentsContext.Provider value={commentsData}>
+
+            <div id="comments" class="comments-area block">
+                <h3 className="block-title"><span>03 Comments</span></h3>
+                {isSet(props.items) &&
+                    <ul className="comments-list">
+                        {Array.isArray(props.items) && props.items.length > 0
+                            ?
+                            <>
+                                {buildComments().map((item, index) => (
+                                    <li key={index}>
+                                        {templateManager.render(
+                                            <CommentItem key={index}
+                                                         parentComment={item.parent}
+                                                         childComments={item.children}/>
+                                        )}
+                                    </li>
+                                ))}
+                                {templateManager.render(<CommentTextForm/>)}
+                            </>
+                            :
+                            <CommentTextForm/>
+                        }
+                    </ul>
+                }
+            </div>
+        </CommentsContext.Provider>
+    );
 }
 CommentsList.category = 'comments';
 CommentsList.templateId = 'commentsList';

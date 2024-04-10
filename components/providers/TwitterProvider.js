@@ -60,18 +60,6 @@ function TwitterProvider({children, siteSettings}) {
         logout: logout
     });
 
-    useEffect(() => {
-        // if (!isNotEmpty(siteSettings?.facebook_app_id)) {
-        //     return;
-        // }
-        window.twttr.ready(function() {
-            updateState({
-                // appId: siteSettings?.facebook_app_id,
-                twitter: window.twttr
-            })
-        })
-
-    }, []);
     return (
         <TwitterContext.Provider value={twitterState}>
             {children}
