@@ -35,10 +35,8 @@ const CommentsList = (props) => {
 
 
     return (
-
         <CommentsContext.Provider value={commentsData}>
-
-            <div id="comments" class="comments-area block">
+            <div id="comments" className="comments-area block">
                 <h3 className="block-title"><span>03 Comments</span></h3>
                 {isSet(props.items) &&
                     <ul className="comments-list">

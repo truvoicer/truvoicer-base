@@ -17,50 +17,94 @@ const SidebarTemplate = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const htmlParserOptions = {
         replace: (node, index) => {
-            return filterHtml(node, index)
+            return filterHtml(
+                node,
+                index,
+                (data) => {
+                    console.log('sidebarTemplate', data)
+                    return true
+                }
+            )
         }
     }
     console.log('sidebarTemplate', pageData)
 
-        return (
-            <>
-                {pageOptions?.pageType === "user_account"
-                    ?
-                    templateManager.render(<AccountArea data={pageData}/>)
-                    :
-                    <div id={"public_area"}>
-                        {templateManager.render(<Header/>)}
-                        <>
-                            {pageData
-                                ?
-                                <>
-                                    {templateManager.render(<HtmlHead/>)}
-                                    <div className={"row"}>
+    return (
+        <div className={'body-inner'}>
+            {pageOptions?.pageType === "user_account"
+                ?
+                templateManager.render(<AccountArea data={pageData}/>)
+                :
+                <div id={"public_area"}>
+                    {templateManager.render(<Header/>)}
+
+                    {pageData?.post_content && parse(pageData.post_content, {
+                        replace: (node, index) => {
+                            return filterHtml(
+                                node,
+                                index,
+                                (data) => (data?.sidebar_layout_position === 'outside_top')
+                            )
+                        }
+                    })}
+                    <section className="block-wrapper">
+                        <div className="container">
+                            <div className="row">
+                                {pageData
+                                    ?
+                                    <>
+                                        {templateManager.render(<HtmlHead/>)}
                                         {templateManager.isTemplateLayout(pageData, 'left-sidebar') &&
-                                            <div className="col-12 col-sm-9 col-md-4 col-lg-2 d-none d-lg-block">
+                                            <div className="col-12 col-sm-9 col-md-4 col-lg-4 d-none d-lg-block">
                                                 {templateManager.render(<LeftSidebar/>)}
                                             </div>
                                         }
-                                        <div className="col-12 col-lg-10">
-                                            {parse(pageData.post_content, htmlParserOptions)}
+                                        <div className="col-12 col-lg-8">
+                                            {pageData?.post_content && parse(pageData.post_content, {
+                                                replace: (node, index) => {
+                                                    return filterHtml(
+                                                        node,
+                                                        index,
+                                                        (data) => {
+                                                            switch (data?.sidebar_layout_position) {
+                                                                case 'outside_top':
+                                                                case 'outside_bottom':
+                                                                    return false;
+                                                                default:
+                                                                    return true;
+                                                            }
+                                                        }
+                                                    )
+                                                }
+                                            })}
                                         </div>
                                         {templateManager.isTemplateLayout(pageData, 'right-sidebar') &&
-                                            <div className="col-12 col-sm-9 col-md-6 col-lg-3 d-none d-lg-block">
+                                            <div className="col-12 col-sm-9 col-md-6 col-lg-4 d-none d-lg-block">
                                                 {templateManager.render(<RightSidebar/>)}
                                             </div>
                                         }
-                                    </div>
-                                </>
-                                :
-                                templateManager.render(<Loader></Loader>)
-                            }
-                        </>
-                        {templateManager.render(<Footer/>)}
-                    </div>
-                }
+                                    </>
+                                    :
+                                    templateManager.render(<Loader></Loader>)
+                                }
+                            </div>
+                        </div>
+                    </section>
+                    {pageData?.post_content && parse(pageData.post_content, {
+                        replace: (node, index) => {
+                            return filterHtml(
+                                node,
+                                index,
+                                (data) => (data?.sidebar_layout_position === 'outside_bottom')
+                            )
+                        }
+                    })}
+                    {templateManager.render(<Footer/>)}
+                </div>
+            }
 
-            </>
-        );
+        </div>
+    );
 }
 
 function mapStateToProps(state) {
@@ -71,6 +115,7 @@ function mapStateToProps(state) {
         modal: state.page.modal
     };
 }
+
 SidebarTemplate.category = 'templates';
 SidebarTemplate.templateId = 'sidebarTemplate';
 export default connect(

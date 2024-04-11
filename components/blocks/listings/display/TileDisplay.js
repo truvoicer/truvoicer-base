@@ -42,8 +42,6 @@ const TileDisplay = (props) => {
         // prevArrow: templateManager.render(<PrevArrow/>),
     };
 
-    console.log({props, itemsContext, listingsContext, searchContext})
-
     function getItems() {
         let items = {
             featured: [],

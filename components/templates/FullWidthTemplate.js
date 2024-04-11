@@ -34,7 +34,7 @@ const FullWidthTemplate = (props) => {
                                 ?
                                 <>
                                     {templateManager.render(<HtmlHead/>)}
-                                    {parse(pageData.post_content, htmlParserOptions)}
+                                    {pageData?.post_content && parse(pageData.post_content, htmlParserOptions)}
                                 </>
                                 :
                                 templateManager.render(<Loader></Loader>)

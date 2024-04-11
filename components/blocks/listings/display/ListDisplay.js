@@ -60,7 +60,7 @@ const ListDisplay = (props) => {
         <section className="block-wrapper">
             <div className="container">
                 <div className="row">
-                    {props.data?.show_sidebar
+                    {props.data?.show_filters_toggle
                         ?
                         <>
                             {filtersPosition === 'left' &&

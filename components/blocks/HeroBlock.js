@@ -13,7 +13,6 @@ const HeroBlock = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const modalContext = useContext(AppModalContext);
     let heroType = "full";
-    console.log(props?.data)
     function getImageSrc(index) {
         if (!Array.isArray(props?.data?.images)) {
             return null;
