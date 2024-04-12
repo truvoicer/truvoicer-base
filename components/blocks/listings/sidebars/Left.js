@@ -14,7 +14,7 @@ const Left = () => {
     return (
         <>
             {fetchListingsContextGroups.map((listingsContextGroup, index) => {
-                if (!listingsContextGroup.listingsContext?.listingsData?.show_filters_toggle) {
+                if (!listingsContextGroup.listingsContext?.listingsData?.show_filters) {
                     return null;
                 }
                 return templateManager.render(<ListingsFilter key={index} listingsContextGroup={listingsContextGroup} />)

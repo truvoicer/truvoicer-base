@@ -14,8 +14,11 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ListingsFilterListItem = (props) => {
-    const listingsContext = useContext(ListingsContext);
-    const searchContext = useContext(SearchContext);
+    const {listingsContextGroup} = props;
+
+    const listingsContext = listingsContextGroup?.listingsContext;
+    const searchContext = listingsContextGroup?.searchContext;
+
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const formChangeHandler = (e) => {

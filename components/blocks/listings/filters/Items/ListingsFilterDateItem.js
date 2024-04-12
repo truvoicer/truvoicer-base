@@ -14,8 +14,10 @@ const ListingsFilterDateItem = (props) => {
     const dateFormatString = "YYYYMMDD";
     const [startDate, setStartDate] = useState(new Date())
 
-    const listingsContext = useContext(ListingsContext);
-    const searchContext = useContext(SearchContext);
+    const {listingsContextGroup} = props;
+
+    const listingsContext = listingsContextGroup?.listingsContext;
+    const searchContext = listingsContextGroup?.searchContext;
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
 

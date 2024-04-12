@@ -10,8 +10,10 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 const ListingsFilterTextItem = (props) => {
     const [query, setQuery] = useState();
 
-    const listingsContext = useContext(ListingsContext);
-    const searchContext = useContext(SearchContext);
+    const {listingsContextGroup} = props;
+
+    const listingsContext = listingsContextGroup?.listingsContext;
+    const searchContext = listingsContextGroup?.searchContext;
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
 

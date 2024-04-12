@@ -11,6 +11,8 @@ import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
 import ListingsLeftSidebar from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsLeftSidebar";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {connect} from "react-redux";
+import {tr} from "date-fns/locale";
 
 const ListDisplay = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
@@ -55,12 +57,23 @@ const ListDisplay = (props) => {
 
     console.log({props, listingsContext, searchContext})
 
-
+    function showSidebar() {
+        if (!props.data?.show_filters) {
+            return false;
+        }
+        switch (props?.page?.pageData?.page_options?.trf_gut_pmf_page_options_page_template) {
+            case 'left-sidebar':
+            case 'right-sidebar':
+                return false;
+            default:
+                return true;
+        }
+    }
     return (
         <section className="block-wrapper">
             <div className="container">
                 <div className="row">
-                    {props.data?.show_filters_toggle
+                    {showSidebar()
                         ?
                         <>
                             {filtersPosition === 'left' &&
@@ -93,4 +106,10 @@ const ListDisplay = (props) => {
 ListDisplay.category = 'listings';
 ListDisplay.templateId = 'listDisplay';
 
-export default ListDisplay;
+export default connect(
+    state => {
+        return {
+            page: state.page
+        }
+    }
+)(ListDisplay);

@@ -12,15 +12,16 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 const ListingsFilter = (props) => {
     const {listingsContextGroup} = props;
 
-    const controlPrefix = "filter_control_";
 
     const listingsContext = listingsContextGroup?.listingsContext;
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
+    const controlPrefix = "filter_control_";
     const getDataList = (item) => {
         if (item.type === "list" && item.source === "wordpress") {
             return templateManager.render(
                 <ListingsFilterListItem
+                    listingsContextGroup={listingsContextGroup}
                     controlPrefix={controlPrefix}
                     data={item}
                 />
@@ -29,6 +30,7 @@ const ListingsFilter = (props) => {
             if (isSet(listingsContext?.listingsData.listings_category)) {
                 return templateManager.render(
                     <ListingsFilterApiListItem
+                        listingsContextGroup={listingsContextGroup}
                         controlPrefix={controlPrefix}
                         data={item}
                     />
@@ -55,12 +57,14 @@ const ListingsFilter = (props) => {
                 <React.Fragment key={index}>
                     {item.type === "text" &&
                         templateManager.render(<ListingsFilterTextItem
+                            listingsContextGroup={listingsContextGroup}
                         controlPrefix={controlPrefix}
                         data={item}
                     />)
                     }
                     {item.type === "date" &&
                         templateManager.render(<ListingsFilterDateItem
+                            listingsContextGroup={listingsContextGroup}
                         controlPrefix={controlPrefix}
                         data={item}
                     />)
