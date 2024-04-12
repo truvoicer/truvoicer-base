@@ -71,17 +71,17 @@ const ListingsPaginate = (props) => {
             <div className="paging">
                 <ul className="pagination">
                     {pageControls[PAGINATION_PAGE_NUMBER] > paginationLimit - paginationRange &&
-                    <li className="pagination--list-item">
-                        <a
-                            className={"pagination--list-item__a"}
-                            onClick={() => {
-                                listingsManager.searchEngine.setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
-                                paginationClickHandler(1)
-                            }}
-                        >
-                            <span>1</span>
-                        </a>
-                    </li>
+                        <li className="pagination--list-item">
+                            <a
+                                className={"pagination--list-item__a"}
+                                onClick={() => {
+                                    listingsManager.searchEngine.setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+                                    paginationClickHandler(1)
+                                }}
+                            >
+                                <span>1</span>
+                            </a>
+                        </li>
                     }
                     {range.map((num, index) => (
                         <React.Fragment key={index.toString()}>
@@ -103,17 +103,17 @@ const ListingsPaginate = (props) => {
                         </React.Fragment>
                     ))}
                     {pageControls[PAGINATION_TOTAL_PAGES] > 0 &&
-                    <>
-                        <li className="pagination--list-item">
-                            <span className="more-page">...</span>
-                        </li>
-                        <li className="pagination--list-item">
-                            <a className={"pagination--list-item__a"}
-                               onClick={paginationClickHandler.bind(this, pageControls[PAGINATION_TOTAL_PAGES])}>
-                                <span>{pageControls[PAGINATION_TOTAL_PAGES]}</span>
-                            </a>
-                        </li>
-                    </>
+                        <>
+                            <li className="pagination--list-item">
+                                <span className="more-page">...</span>
+                            </li>
+                            <li className="pagination--list-item">
+                                <a className={"pagination--list-item__a"}
+                                   onClick={paginationClickHandler.bind(this, pageControls[PAGINATION_TOTAL_PAGES])}>
+                                    <span>{pageControls[PAGINATION_TOTAL_PAGES]}</span>
+                                </a>
+                            </li>
+                        </>
                     }
                 </ul>
             </div>
@@ -131,30 +131,31 @@ const ListingsPaginate = (props) => {
     }, [searchContext?.searchOperation]);
 
 
-        return (
-            <>
-                <Row>
-                    {itemsContext.items.map((item, index) => (
-                        <React.Fragment key={index}>
-                            <Col {...getGridItemColumns(grid)}>
-                                {listingsGrid.getGridItem(
-                                    item,
-                                    listingsContext?.listingsData?.[DISPLAY_AS],
-                                    searchContext.category,
-                                    grid,
-                                    props.user[SESSION_USER_ID],
-                                    index
-                                )}
-                            </Col>
-                        </React.Fragment>
-                    ))}
-                </Row>
-                <GetPagination/>
-            </>
-        )
+    return (
+        <>
+            <Row>
+                {itemsContext.items.map((item, index) => (
+                    <React.Fragment key={index}>
+                        <Col {...getGridItemColumns(grid)}>
+                            {listingsGrid.getGridItem(
+                                item,
+                                listingsContext?.listingsData?.[DISPLAY_AS],
+                                searchContext.category,
+                                grid,
+                                props.user[SESSION_USER_ID],
+                                index
+                            )}
+                        </Col>
+                    </React.Fragment>
+                ))}
+            </Row>
+            <GetPagination/>
+        </>
+    )
 }
 ListingsPaginate.category = 'listings';
 ListingsPaginate.templateId = 'listingsPaginate';
+
 function mapStateToProps(state) {
     return {
         user: state.session[SESSION_USER],

@@ -55,8 +55,6 @@ const ListDisplay = (props) => {
         );
     }
 
-    console.log({props, listingsContext, searchContext})
-
     function showSidebar() {
         if (!props.data?.show_filters) {
             return false;
