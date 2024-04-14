@@ -26,9 +26,30 @@ export const buildSidebar = ({sidebarData, templateManager = null}) => {
     return sideBarListData;
 }
 
+function buildGroupWidgets({groupData}) {
+    let widgets = [];
+    if (Array.isArray(groupData) && groupData.length > 0) {
+        groupData.map((item, index) => {
+            const widgetComponent = getSidebarWidgetComponent({
+                item: item
+            })
+            if (widgetComponent) {
+                widgets.push(widgetComponent)
+            }
+        })
+    }
+    return widgets;
+}
+
 const getSidebarWidgetComponent = ({item}) => {
-    if (item?.search) {
-        return <BlogSearch data={item.search}/>
+    if (item?.['core/search']) {
+        return <BlogSearch data={item['core/search']}/>
+    }
+    if (item?.['core/group']) {
+        return buildGroupWidgets({groupData: item['core/group']})
+    }
+    if (item?.['core/heading']) {
+        return <BlogSearch data={item['core/heading']}/>
     }
     if (isSet(item.nav_menu)) {
         return <SidebarMenu data={item.nav_menu}/>
@@ -36,8 +57,11 @@ const getSidebarWidgetComponent = ({item}) => {
     if (isSet(item.categories)) {
         return <CategoryListWidget data={item.categories}/>
     }
-    if (isSet(item["recent-posts"])) {
-        return <RecentPostsWidget data={item["recent-posts"]}/>
+    if (isSet(item["core/recent-posts"])) {
+        return <RecentPostsWidget data={item["core/recent-posts"]}/>
+    }
+    if (isSet(item["core/latest-posts"])) {
+        return <RecentPostsWidget data={item["core/latest-posts"]}/>
     }
     if (isSet(item.email_optin_widget)) {
         return <EmailOptinWidget data={item.email_optin_widget}/>
