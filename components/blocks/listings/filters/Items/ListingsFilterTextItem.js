@@ -35,8 +35,7 @@ const ListingsFilterTextItem = (props) => {
     }, [searchContext?.searchOperation]);
 
     return (
-        <div className="single_field">
-            <label className="widget-title">{props.data.label}</label>
+        <>
             <input
                 type={"text"}
                 name={"query"}
@@ -44,7 +43,7 @@ const ListingsFilterTextItem = (props) => {
                 className={"form-control rounded"}
                 onChange={formChangeHandler}
             />
-        </div>
+        </>
     )
 }
 

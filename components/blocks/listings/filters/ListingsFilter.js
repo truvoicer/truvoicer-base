@@ -8,6 +8,7 @@ import {connect} from "react-redux";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import WidgetContainer from "@/truvoicer-base/components/Sidebars/partials/WidgetContainer";
 
 const ListingsFilter = (props) => {
     const {listingsContextGroup} = props;
@@ -54,25 +55,29 @@ const ListingsFilter = (props) => {
                 <h3>{listingsFilterData.filter_heading}</h3>
             }
             {listingsFilterData.map((item, index) => (
-                <React.Fragment key={index}>
+                <WidgetContainer key={index} title={item?.label || ''}>
                     {item.type === "text" &&
-                        templateManager.render(<ListingsFilterTextItem
-                            listingsContextGroup={listingsContextGroup}
-                        controlPrefix={controlPrefix}
-                        data={item}
-                    />)
+                        templateManager.render(
+                            <ListingsFilterTextItem
+                                listingsContextGroup={listingsContextGroup}
+                                controlPrefix={controlPrefix}
+                                data={item}
+                            />
+                        )
                     }
                     {item.type === "date" &&
-                        templateManager.render(<ListingsFilterDateItem
-                            listingsContextGroup={listingsContextGroup}
-                        controlPrefix={controlPrefix}
-                        data={item}
-                    />)
+                        templateManager.render(
+                            <ListingsFilterDateItem
+                                listingsContextGroup={listingsContextGroup}
+                                controlPrefix={controlPrefix}
+                                data={item}
+                            />
+                        )
                     }
                     {item.type === "list" &&
-                    getDataList(item)
+                        getDataList(item)
                     }
-                </React.Fragment>
+                </WidgetContainer>
             ))}
         </>
     )

@@ -43,9 +43,8 @@ const ListingsFilterListItem = (props) => {
     }, [searchContext?.searchOperation]);
 
     return (
-        <div className="widget">
-            <h3 className="block-title"><span>{props.data.label}</span></h3>
-                <ul className="list-unstyled">
+        <>
+            <ul className="list-unstyled">
                 {props.data.source === "wordpress" &&
                     filterList.map((item, index) => (
 
@@ -63,7 +62,7 @@ const ListingsFilterListItem = (props) => {
                 }
 
             </ul>
-        </div>
+        </>
     )
 }
 

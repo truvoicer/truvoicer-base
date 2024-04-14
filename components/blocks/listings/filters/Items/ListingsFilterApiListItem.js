@@ -59,8 +59,7 @@ const ListingsFilterApiListItem = (props) => {
     }, [searchContext?.searchOperation]);
 
         return (
-            <div className="widget">
-                <h3 className="block-title"><span>{props.data.label}</span></h3>
+            <>
                 <ul className="list-unstyled">
                     {listItems &&
                         listItems.map((item, index) => (
@@ -77,7 +76,7 @@ const ListingsFilterApiListItem = (props) => {
                         ))
                     }
                 </ul>
-            </div>
+            </>
         )
 }
 

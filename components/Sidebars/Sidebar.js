@@ -1,11 +1,10 @@
-
 import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {siteConfig} from "@/config/site-config";
 import {buildSidebar} from "/truvoicer-base/redux/actions/sidebar-actions";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
-import Left from "@/truvoicer-base/components/blocks/listings/sidebars/Left";
+import ListingsFilterInterface from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsFilterInterface";
 import {fetchSidebarRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 import BlogSearch from "@/truvoicer-base/components/widgets/BlogSearch";
 import {isSet} from "@/truvoicer-base/library/utils";
@@ -13,6 +12,12 @@ import SidebarMenu from "@/truvoicer-base/components/Menus/SidebarMenu";
 import CategoryListWidget from "@/truvoicer-base/components/widgets/CategoryListWidget";
 import RecentPostsWidget from "@/truvoicer-base/components/widgets/RecentPostsWidget";
 import EmailOptinWidget from "@/truvoicer-base/components/widgets/EmailOptinWidget";
+import WidgetGroup from "@/truvoicer-base/components/Sidebars/partials/WidgetGroup";
+import WidgetContainer from "@/truvoicer-base/components/Sidebars/partials/WidgetContainer";
+import {da} from "date-fns/locale";
+import parse from "html-react-parser";
+import HeadingWidget from "@/truvoicer-base/components/widgets/HeadingWidget";
+import {getSidebarWidget} from "@/truvoicer-base/components/Sidebars/partials/SidebarWidgets";
 
 const Sidebar = ({name}) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
@@ -31,104 +36,62 @@ const Sidebar = ({name}) => {
         }
     }
 
-    function buildGroupBlock({groupData}) {
-        let widgets = [];
-        if (Array.isArray(groupData) && groupData.length > 0) {
-            console.log({groupData})
-            groupData.forEach((item, index) => {
-                const widgetComponent = getSidebarWidgetComponent({
-                    item: item
-                })
-                if (widgetComponent) {
-                    widgets.push(widgetComponent)
-                }
-            })
-        }
-        return widgets;
-    }
-    function buildGroupWidgets({groupData}) {
-        let widgets = [];
-        if (Array.isArray(groupData) && groupData.length > 0) {
-            console.log({groupData})
-            groupData.forEach((item, index) => {
-                widgets = [
-                    ...widgets,
-                    ...buildGroupBlock({groupData: item['innerBlocks']})
-                ];
-            })
-        }
-        return widgets;
-    }
-    const getSidebarWidgetComponent = ({item}) => {
-        if (item?.['core/search'] || item?.blockName === 'core/search') {
-            return <BlogSearch data={item['core/search']}/>
-        }
-        if (item?.['core/group'] || item?.blockName === 'core/group') {
-            return buildGroupWidgets({groupData: item['core/group']})
-        }
-        if (item?.['core/heading'] || item?.blockName === 'core/heading') {
-            return <BlogSearch data={item['core/heading']}/>
-        }
-        if (isSet(item.nav_menu) || item?.blockName === 'core/navigation') {
-            return <SidebarMenu data={item.nav_menu}/>
-        }
-        if (isSet(item.categories) || item?.blockName === 'core/categories') {
-            return <CategoryListWidget data={item.categories}/>
-        }
-        if (isSet(item["core/recent-posts"]) || item?.blockName === 'core/recent-posts') {
-            return <RecentPostsWidget data={item["core/recent-posts"]}/>
-        }
-        if (isSet(item["core/latest-posts"])) {
-            return <RecentPostsWidget data={item["core/latest-posts"]}/>
-        }
-        if (isSet(item.email_optin_widget)) {
-            return <EmailOptinWidget data={item.email_optin_widget}/>
-        }
-
-        return null;
-    }
 
     useEffect(() => {
         sidebarRequest();
     }, []);
 
+    function buildWidgets(widgetData) {
+        return widgetData.map((item, index) => {
+            return getSidebarWidget({item});
+        });
+    }
 
+    function renderWidgets(widgetData) {
         return (
-            <div className="job_filter white-bg">
-                <div className="form_inner white-bg">
-
-                    {data.map((item, index) => {
-                        const widgetComponent = getSidebarWidgetComponent({item});
-                        if (Array.isArray(widgetComponent) && widgetComponent.length > 0) {
-                            return (
-                                <React.Fragment key={index.toString()}>
-                                    {widgetComponent.map((subItem, subIndex) => {
-                                        return (
-                                            <React.Fragment key={index.toString()}>
-                                                {templateManager.render(subItem)}
-                                            </React.Fragment>
-                                        )
-                                    })}
-                                </React.Fragment>
-                            )
-                        }
-                        return (
-                            <React.Fragment key={index.toString()}>
-                                {templateManager.render(widgetComponent)}
-                            </React.Fragment>
+            <>
+                {widgetData.map((item, index) => {
+                    if (Array.isArray(item) && item.length > 0) {
+                        return templateManager.render(
+                            <WidgetGroup key={index.toString()} widgets={item} />
                         )
-                    })}
-                    <Left />
-                </div>
-            </div>
+                    }
+
+                    if (!item) {
+                        return null;
+                    }
+
+                    if (!item?.component) {
+                        return null;
+                    }
+                    if (item?.hasWidgetContainer === false) {
+                        return templateManager.render(item.component);
+                    }
+                    return templateManager.render(
+                        <WidgetContainer key={index.toString()} title={item?.title || ''}>
+                            {templateManager.render(item.component)}
+                        </WidgetContainer>
+                    )
+                })}
+            </>
         )
+    }
+
+    return (
+        <div className="job_filter white-bg">
+            <div className="form_inner white-bg">
+                {renderWidgets(buildWidgets(data))}
+            </div>
+        </div>
+    )
 }
 
 function mapStateToProps(state) {
     return {};
 }
+
 Sidebar.category = 'sidebars';
-Sidebar.templateId = 'leftSidebar';
+Sidebar.templateId = 'sidebar';
 export default connect(
     mapStateToProps,
     null

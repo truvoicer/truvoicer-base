@@ -40,8 +40,7 @@ const BlogSearch = (props) => {
     }, [searchContext?.searchOperation, query]);
 
         return (
-            <div className="widget">
-                <h3 className="block-title"><span>Search</span></h3>
+            <>
                 <form method="post" onSubmit={formClickHandler}>
                     <div className="form-group">
                         <div className="input-group mb-3">
@@ -61,7 +60,7 @@ const BlogSearch = (props) => {
                         </div>
                     </div>
                 </form>
-            </div>
+            </>
         )
 
 }

@@ -5,7 +5,7 @@ import {buildSidebar} from "../../../../redux/actions/sidebar-actions";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import ListingsFilter from "@/truvoicer-base/components/blocks/listings/filters/ListingsFilter";
-import Left from "@/truvoicer-base/components/blocks/listings/sidebars/Left";
+import ListingsFilterInterface from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsFilterInterface";
 import {fetchSidebarRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 import {AppContext} from "@/truvoicer-base/config/contexts/AppContext";
 import {AppManager} from "@/truvoicer-base/library/app/AppManager";
@@ -44,7 +44,7 @@ const ListingsLeftSidebar = (props) => {
 
         return (
             <div className="sidebar sidebar-right">
-                    <Left/>
+                    <ListingsFilterInterface/>
                     {templateManager.render(<ListingsFilter listingsContextGroup={{fetchListingsContextGroups}}/>)}
                     {data.map((item, index) => (
                         <React.Fragment key={index.toString()}>

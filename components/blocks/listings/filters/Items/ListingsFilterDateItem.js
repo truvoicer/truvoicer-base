@@ -39,15 +39,14 @@ const ListingsFilterDateItem = (props) => {
     }, [searchContext?.searchOperation]);
 
         return (
-            <div className="single_field">
-                <label>{props.data.label}</label>
+            <>
                 <DatePicker
                     className={"filter-datepicker form-control rounded"}
                     selected={startDate}
                     onChange={handleStartDateChange}
                     startDate={startDate}
                 />
-            </div>
+            </>
         )
 }
 
