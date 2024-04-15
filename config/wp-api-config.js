@@ -39,7 +39,7 @@ export const wpApiConfig = {
         formsRedirectPublic: publicEndpoint + "/forms/redirect",
         generalData: publicEndpoint + "/general/%s",
         listRequest: publicEndpoint + "/list",
-        postListRequest: publicEndpoint + "/posts/list/request",
+        postListRequest: publicEndpoint + "/posts/list",
         recentPostsListRequest: publicEndpoint + "/posts/list/recent",
         categoryListRequest: publicEndpoint + "/posts/category/list",
         auth: {

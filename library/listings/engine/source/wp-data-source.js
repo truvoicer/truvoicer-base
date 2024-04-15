@@ -151,8 +151,8 @@ export class WpDataSource extends DataSourceBase {
             case LISTINGS_REQ_OP_POST_LIST:
                 request = await wpResourceRequest({
                     endpoint: wpApiConfig.endpoints.postListRequest,
-                    method: 'POST',
-                    data: {
+                    method: 'GET',
+                    query: {
                         ...this.listingsEngine?.listingsContext?.listingsQueryData,
                         ...this.searchEngine.addPaginationQueryParameters({}, siteConfig.internalProviderName)
                     }
