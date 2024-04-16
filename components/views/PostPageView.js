@@ -61,7 +61,7 @@ const PostPageView = (props) => {
                     templateManager.render(<LoaderComponent/>)
                     :
 
-                    <AppLoader templateConfig={templateConfig()} page={page} />
+                    <AppLoader templateConfig={templateConfig()} page={pageData} />
                 }
             </>
         )

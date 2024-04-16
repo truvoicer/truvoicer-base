@@ -53,7 +53,7 @@ const Sidebar = ({name}) => {
                 {widgetData.map((item, index) => {
                     if (Array.isArray(item) && item.length > 0) {
                         return templateManager.render(
-                            <WidgetGroup key={index.toString()} widgets={item} />
+                            <WidgetGroup key={index} widgets={item} />
                         )
                     }
 
@@ -68,7 +68,7 @@ const Sidebar = ({name}) => {
                         return templateManager.render(item.component);
                     }
                     return templateManager.render(
-                        <WidgetContainer key={index.toString()} title={item?.title || ''}>
+                        <WidgetContainer key={index} title={item?.title || ''}>
                             {templateManager.render(item.component)}
                         </WidgetContainer>
                     )

@@ -98,7 +98,8 @@ export class TemplateManager {
         }
         switch (pageData?.post_type) {
             case 'page':
-                return this.getTemplateLayoutComponent(pageData?.page_options?.trf_gut_pmf_page_options_page_template);
+            case 'trf_post_tpl':
+                return this.getTemplateLayoutComponent(pageData?.page_options?.trf_gut_pmf_page_options_layout);
             case 'post':
             default:
                 return this.render(<FullWidthTemplate />);
@@ -106,8 +107,7 @@ export class TemplateManager {
     }
     getTemplateLayoutComponent(templateLayout) {
         switch (templateLayout) {
-            case 'left-sidebar':
-            case 'right-sidebar':
+            case 'sidebar':
                 return this.render(<SidebarTemplate />);
             case 'full-width':
             default:
@@ -115,7 +115,7 @@ export class TemplateManager {
         }
     }
 
-    isTemplateLayout(pageData, templateLayout) {
-        return (pageData?.page_options?.trf_gut_pmf_page_options_page_template === templateLayout);
+    isSidebar(pageData, templateLayout) {
+        return (pageData?.page_options?.trf_gut_pmf_page_options_sidebar === templateLayout);
     }
 }

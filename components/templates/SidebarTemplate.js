@@ -54,7 +54,7 @@ const SidebarTemplate = (props) => {
                                     ?
                                     <>
                                         {templateManager.render(<HtmlHead/>)}
-                                        {templateManager.isTemplateLayout(pageData, 'left-sidebar') &&
+                                        {templateManager.isSidebar(pageData, 'left-sidebar') &&
                                             <div className="col-12 col-sm-9 col-md-4 col-lg-4 d-none d-lg-block">
                                                 {templateManager.render(<Sidebar name={siteConfig.leftSidebarName}/>)}
                                             </div>
@@ -78,7 +78,7 @@ const SidebarTemplate = (props) => {
                                                 }
                                             })}
                                         </div>
-                                        {templateManager.isTemplateLayout(pageData, 'right-sidebar') &&
+                                        {templateManager.isSidebar(pageData, 'right-sidebar') &&
                                             <div className="col-12 col-sm-9 col-md-6 col-lg-4 d-none d-lg-block">
                                                 {templateManager.render(<Sidebar name={siteConfig.rightSidebarName}/>)}
                                             </div>
