@@ -16,7 +16,6 @@ import ListDisplay from "@/truvoicer-base/components/blocks/listings/display/Lis
 import GridItems from "@/truvoicer-base/components/blocks/listings/items/GridItems";
 
 const ListingsBlockInterface = ({data}) => {
-
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     function renderDisplay() {
@@ -49,8 +48,19 @@ const ListingsBlockInterface = ({data}) => {
         return loadByDisplayAs();
     }
 
+    function getExtraListingsData() {
+        let extraData = {};
+        if (isNotEmpty(data?.grid_layout)) {
+            extraData = {
+                listingsGrid: data.grid_layout
+            }
+        }
+        return extraData;
+    }
+
     const [listingsContextState, setListingsContextState] = useState({
         ...listingsData,
+        ...getExtraListingsData(),
         updateData: ({key, value}) => {
             updateStateObject({
                 key,
@@ -99,5 +109,6 @@ const ListingsBlockInterface = ({data}) => {
             </ListingsContext.Provider>
     );
 };
-
+ListingsBlockInterface.category = 'listings';
+ListingsBlockInterface.templateId = 'listingsBlockInterface';
 export default ListingsBlockInterface;

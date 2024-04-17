@@ -86,7 +86,9 @@ const ListingsInfiniteScroll = (props) => {
 }
 
 function mapStateToProps(state) {
-    return {};
+    return {
+        user: state.session.user
+    };
 }
 ListingsInfiniteScroll.category = 'listings';
 ListingsInfiniteScroll.templateId = 'listingsInfiniteScroll';

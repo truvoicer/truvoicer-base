@@ -7,6 +7,7 @@ import CategoryListWidget from "@/truvoicer-base/components/widgets/CategoryList
 import RecentPostsWidget from "@/truvoicer-base/components/widgets/RecentPostsWidget";
 import EmailOptinWidget from "@/truvoicer-base/components/widgets/EmailOptinWidget";
 import ListingsFilterInterface from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsFilterInterface";
+import ListingsBlockInterface from "@/truvoicer-base/components/blocks/listings/ListingsBlockInterface";
 
 function buildGroupBlock({groupData}) {
     let widgets = [];
@@ -87,6 +88,13 @@ export function getSidebarWidget({item}) {
             return {
                 hasWidgetContainer: false,
                 component: <ListingsFilterInterface />
+            };
+        }
+        if (item.hasOwnProperty('listings_widget') || item?.blockName === 'listings_widget') {
+            console.log({item})
+            return {
+                title: item?.title || '',
+                component: <ListingsBlockInterface data={item?.listings_widget || {}} />
             };
         }
 
