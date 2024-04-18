@@ -38,7 +38,7 @@ export class ListingsGrid {
         return gridConfig[displayAs][listingsGrid];
     }
 
-    getGridItem(item, displayAs, category, listingsGrid, userId, index) {
+    getGridItem({item, displayAs, category, listingsGrid, userId, index}) {
         let gridItem = {...item};
         if (isSet(gridItem.image_list)) {
             gridItem.image_list = convertImageObjectsToArray(gridItem.image_list);

@@ -18,40 +18,23 @@ import Image from "next/image";
 import {getPostCategoryUrl, getPostItemUrl} from "@/truvoicer-base/library/helpers/posts";
 
 const DefaultItemList = (props) => {
+    const {data, nextPost, prevPost, postIndex} = props;
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
-    const itemId = listingsManager.listingsEngine.extractItemId(props.data);
 
-    const savedItem = listingsManager.searchEngine.isSavedItemAction(
-        itemId,
-        props?.data?.provider,
-        props.searchCategory,
-        props.user[SESSION_USER_ID]
-    );
+    function getCategory() {
+        if (Array.isArray(data?.categories) && data?.categories?.length > 0) {
+            return data.categories[0]
+        }
+        return null
+    }
 
-    // const ratingsData = listingsManager.searchEngine.getItemRatingDataAction(
-    //     itemId,
-    //     props?.data?.provider,
-    //     props.searchCategory,
-    //     props.user[SESSION_USER_ID]
-    // );
-
+    const category = getCategory();
     const linkProps = listingsManager.getListingsEngine().getListingsItemLinkProps({
         displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
-        category: props.searchCategory,
+        category: category?.slug,
         item: props.data,
-        showInfoCallback: props.showInfoCallback,
-        trackData: {
-            dataLayerName: "listItemClick",
-            dataLayer: {
-                provider: props.data.provider,
-                category: props.searchCategory,
-                item_id: props.data.item_id,
-                user_id: props.user[SESSION_USER_ID] || "unregistered",
-                user_email: props.user[SESSION_USER_EMAIL] || "unregistered",
-            },
-        }
     })
 
     return (
@@ -60,13 +43,13 @@ const DefaultItemList = (props) => {
                 <Link {...linkProps}>
                     <img
                         className="img-fluid"
-                        src={props.data.default_image ? props.data.default_image : "/img/pticon.png"}
+                        src={props.data.featured_image ? props.data.featured_image : "/img/pticon.png"}
                         alt=""
                     />
                 </Link>
-                {props.data.provider && (
-                    <Link className="post-cat" {...linkProps}>{props.data.provider}</Link>
-                )}
+                {isNotEmpty(category) &&
+                    <Link className="post-cat" {...linkProps}>{category?.slug || ''}</Link>
+                }
             </div>
 
 
@@ -74,12 +57,14 @@ const DefaultItemList = (props) => {
                 <h2 className="post-title title-small">
 
                     <Link {...linkProps}>
-                        {props?.data?.job_title || ""}
+                        {props?.data?.post_title || ""}
                     </Link>
                 </h2>
                 <div className="post-meta">
-                        <span
-                            className="post-date">{isNotEmpty(props?.data?.date_expires) ? formatDate(props.data.date_expires) : ""}</span>
+                    <span
+                        className="post-date">
+                        {isNotEmpty(props?.data?.post_modified) ? formatDate(props.data.post_modified) : ""}
+                    </span>
                 </div>
             </div>
         </div>

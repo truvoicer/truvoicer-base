@@ -37,7 +37,7 @@ const SavedItemsVerticalTabs = (props) => {
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const router = useRouter();
-    const listingsGrid = isSet(defaultListingsGrid)? defaultListingsGrid : listingsContext.listingsGrid;
+    const listingsGrid = isSet(defaultListingsGrid) ? defaultListingsGrid : listingsContext.listingsGrid;
     listingsGrid.setKeyMap(listingsContext?.listingsData?.keymap);
     const [modalData, setModalData] = useState({
         show: false,
@@ -162,17 +162,18 @@ const SavedItemsVerticalTabs = (props) => {
         return (
             <Row>
                 {isSet(data) &&
-                data.items_response.map((item, index) => (
-                    <Col key={index} {...getGridItemColumns(listingsGrid)}>
-                        {listingsGridManager.getGridItem(
-                            item,
-                            listingsContext?.listingsData?.[DISPLAY_AS],
-                            item.category,
-                            listingsGrid,
-                            props.user[SESSION_USER_ID]
-                        )}
-                    </Col>
-                ))
+                    data.items_response.map((item, index) => (
+                        <Col key={index} {...getGridItemColumns(listingsGrid)}>
+                            {listingsGridManager.getGridItem({
+                                item,
+                                displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
+                                category: item.category,
+                                listingsGrid,
+                                userId: props.user[SESSION_USER_ID],
+                                index
+                            })}
+                        </Col>
+                    ))
                 }
             </Row>
         )
@@ -229,43 +230,43 @@ const SavedItemsVerticalTabs = (props) => {
     }, [props.data])
 
 
-        return (
-            <div className={"tab-layout"}>
-                <Tabs
-                    // action={getItemsRequest(getItemByIndex(0).name, true)}
-                    orientation="vertical"
-                    variant="scrollable"
-                    value={tabValue}
-                    onChange={handleTabChange}
-                    aria-label="Vertical tabs example"
-                    // className={classes.tabs}
-                >
-                    {Object.keys(props.data).map((itemKey, index) => (
-                        <Tab
-                            label={props.data[itemKey].label}
-                            key={index.toString()}
-                            value={itemKey}
-                            {...tabProps(index)} />
-                    ))}
-                </Tabs>
-                {Object.keys(props.data).map((itemKey, tabDataIndex) => (
-                    <React.Fragment key={tabDataIndex.toString()}>
-                        <TabPanel
-                            value={tabValue}
-                            index={itemKey}
-                            className={"tab-layout--panel" +
-                                ""}
-                        >
-                            {getItemList(panelData[itemKey])}
-                        </TabPanel>
-                        {modalData.show &&
-                            GetModal(panelData[itemKey].category)
-                        }
-                    </React.Fragment>
+    return (
+        <div className={"tab-layout"}>
+            <Tabs
+                // action={getItemsRequest(getItemByIndex(0).name, true)}
+                orientation="vertical"
+                variant="scrollable"
+                value={tabValue}
+                onChange={handleTabChange}
+                aria-label="Vertical tabs example"
+                // className={classes.tabs}
+            >
+                {Object.keys(props.data).map((itemKey, index) => (
+                    <Tab
+                        label={props.data[itemKey].label}
+                        key={index.toString()}
+                        value={itemKey}
+                        {...tabProps(index)} />
                 ))}
+            </Tabs>
+            {Object.keys(props.data).map((itemKey, tabDataIndex) => (
+                <React.Fragment key={tabDataIndex.toString()}>
+                    <TabPanel
+                        value={tabValue}
+                        index={itemKey}
+                        className={"tab-layout--panel" +
+                            ""}
+                    >
+                        {getItemList(panelData[itemKey])}
+                    </TabPanel>
+                    {modalData.show &&
+                        GetModal(panelData[itemKey].category)
+                    }
+                </React.Fragment>
+            ))}
 
-            </div>
-        );
+        </div>
+    );
 }
 
 function mapStateToProps(state) {

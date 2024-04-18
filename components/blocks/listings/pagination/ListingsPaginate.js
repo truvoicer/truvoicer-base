@@ -18,6 +18,7 @@ import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid
 import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
 import {SESSION_USER, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
 import {getGridItemColumns} from "@/truvoicer-base/redux/actions/item-actions";
+import ListingsItemsLoader from "@/truvoicer-base/components/blocks/listings/items/ListingsItemsLoader";
 
 const ListingsPaginate = (props) => {
     const [paginationLimit, setPaginationLimit] = useState(10);
@@ -28,7 +29,6 @@ const ListingsPaginate = (props) => {
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
 
-    const itemsContext = useContext(ListingsItemsContext);
     const listingsGrid = new ListingsGrid(listingsContext, searchContext);
     listingsGrid.setKeyMap(listingsContext?.listingsData?.keymap);
     const grid = listingsContext?.listingsGrid;
@@ -131,26 +131,10 @@ const ListingsPaginate = (props) => {
     }, [searchContext?.searchOperation]);
 
 
-    return (
-        <>
-            <Row>
-                {itemsContext.items.map((item, index) => (
-                    <React.Fragment key={index}>
-                        <Col {...getGridItemColumns(grid)}>
-                            {listingsGrid.getGridItem(
-                                item,
-                                listingsContext?.listingsData?.[DISPLAY_AS],
-                                searchContext.category,
-                                grid,
-                                props.user[SESSION_USER_ID],
-                                index
-                            )}
-                        </Col>
-                    </React.Fragment>
-                ))}
-            </Row>
+    return templateManager.render(
+        <ListingsItemsLoader>
             <GetPagination/>
-        </>
+        </ListingsItemsLoader>
     )
 }
 ListingsPaginate.category = 'listings';

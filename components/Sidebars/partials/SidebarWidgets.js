@@ -91,9 +91,8 @@ export function getSidebarWidget({item}) {
             };
         }
         if (item.hasOwnProperty('listings_widget') || item?.blockName === 'listings_widget') {
-            console.log({item})
             return {
-                title: item?.title || '',
+                title: item?.listings_widget?.heading || '',
                 component: <ListingsBlockInterface data={item?.listings_widget || {}} />
             };
         }

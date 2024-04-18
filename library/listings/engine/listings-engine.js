@@ -7,7 +7,7 @@ import {ItemRoutes} from "@/config/item-routes";
 import {getPostItemUrl} from "@/truvoicer-base/library/helpers/posts";
 import {
     DISPLAY_AS_LIST,
-    DISPLAY_AS_POST_LIST,
+    DISPLAY_AS_POST_LIST, DISPLAY_AS_SIDEBAR_LIST, DISPLAY_AS_SIDEBAR_POST,
     DISPLAY_AS_TILES
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {PostRoutes} from "@/config/post-routes";
@@ -166,8 +166,10 @@ export class ListingsEngine {
         let endpoint = null;
         switch (displayAs) {
             case DISPLAY_AS_POST_LIST:
+            case DISPLAY_AS_SIDEBAR_POST:
                 endpoint = PostRoutes.externalPost;
                 break;
+            case DISPLAY_AS_SIDEBAR_LIST:
             case DISPLAY_AS_LIST:
             case DISPLAY_AS_TILES:
                 endpoint = ItemRoutes.externalItemView;
@@ -410,11 +412,13 @@ export class ListingsEngine {
     getInternalItemUrl({item, category, displayAs}) {
         switch (displayAs) {
             case DISPLAY_AS_POST_LIST:
+            case DISPLAY_AS_SIDEBAR_POST:
                 return getPostItemUrl({
                     post_name: item?.post_name,
                     category_name: category
                 });
             case DISPLAY_AS_LIST:
+            case DISPLAY_AS_SIDEBAR_LIST:
             case DISPLAY_AS_TILES:
                 return this.buildInternalItemViewUrl({item})
             default:

@@ -56,33 +56,33 @@ const ListingsInfiniteScroll = (props) => {
     }, [searchContext?.searchOperation]);
 
 
-        return (
-            <InfiniteScroll
-                pageStart={0}
-                initialLoad={false}
-                loadMore={loadMore}
-                hasMore={searchContext.pageControls[PAGE_CONTROL_HAS_MORE]}
-                loader={templateManager.render(<LoaderComponent key={"loader"}/>)}
-            >
-                <Row>
-                    {itemsContext.items.map((item, index) => (
-                        <React.Fragment key={index}>
-                            <Col {...getGridItemColumns(grid)}>
-                                {listingsGrid.getGridItem(
-                                    item,
-                                    listingsContext?.listingsData?.[DISPLAY_AS],
-                                    searchContext.category,
-                                    grid,
-                                    props.user[SESSION_USER_ID],
-                                    index
-                                )}
-                            </Col>
-                        </React.Fragment>
-                    ))}
-                </Row>
-            </InfiniteScroll>
+    return (
+        <InfiniteScroll
+            pageStart={0}
+            initialLoad={false}
+            loadMore={loadMore}
+            hasMore={searchContext.pageControls[PAGE_CONTROL_HAS_MORE]}
+            loader={templateManager.render(<LoaderComponent key={"loader"}/>)}
+        >
+            <Row>
+                {itemsContext.items.map((item, index) => (
+                    <React.Fragment key={index}>
+                        <Col {...getGridItemColumns(grid)}>
+                            {listingsGrid.getGridItem({
+                                item,
+                                displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
+                                category: searchContext.category,
+                                listingsGrid: grid,
+                                userId: props.user[SESSION_USER_ID],
+                                index
+                            })}
+                        </Col>
+                    </React.Fragment>
+                ))}
+            </Row>
+        </InfiniteScroll>
 
-        )
+    )
 }
 
 function mapStateToProps(state) {
@@ -90,6 +90,7 @@ function mapStateToProps(state) {
         user: state.session.user
     };
 }
+
 ListingsInfiniteScroll.category = 'listings';
 ListingsInfiniteScroll.templateId = 'listingsInfiniteScroll';
 export default connect(

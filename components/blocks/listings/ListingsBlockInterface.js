@@ -1,8 +1,15 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {
-    DISPLAY_AS, DISPLAY_AS_COMPARISONS, DISPLAY_AS_LIST, DISPLAY_AS_POST_LIST, DISPLAY_AS_TILES,
+    DISPLAY_AS,
+    DISPLAY_AS_COMPARISONS,
+    DISPLAY_AS_LIST,
+    DISPLAY_AS_POST_LIST,
+    DISPLAY_AS_SIDEBAR_LIST, DISPLAY_AS_SIDEBAR_POST,
+    DISPLAY_AS_TILES,
     LISTINGS_BLOCK_SOURCE_API,
-    LISTINGS_BLOCK_SOURCE_WORDPRESS, LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST, LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
+    LISTINGS_BLOCK_SOURCE_WORDPRESS,
+    LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST,
+    LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {ListingsContext, listingsData} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext, searchData} from "@/truvoicer-base/library/listings/contexts/SearchContext";
@@ -14,17 +21,19 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 import TileDisplay from "@/truvoicer-base/components/blocks/listings/display/TileDisplay";
 import ListDisplay from "@/truvoicer-base/components/blocks/listings/display/ListDisplay";
 import GridItems from "@/truvoicer-base/components/blocks/listings/items/GridItems";
+import SidebarDisplay from "@/truvoicer-base/components/blocks/listings/display/SidebarDisplay";
 
 const ListingsBlockInterface = ({data}) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     function renderDisplay() {
         switch (listingsContextState?.listingsData?.[DISPLAY_AS]) {
+            case DISPLAY_AS_SIDEBAR_POST:
+            case DISPLAY_AS_SIDEBAR_LIST:
+                return templateManager.render(<SidebarDisplay data={data} />)
             case DISPLAY_AS_TILES:
                 return templateManager.render(<TileDisplay data={data} />)
-            case DISPLAY_AS_POST_LIST:
-            case DISPLAY_AS_LIST:
-            case DISPLAY_AS_COMPARISONS:
+            default:
                 return templateManager.render(<ListDisplay data={data} />)
         }
     }
@@ -34,6 +43,8 @@ const ListingsBlockInterface = ({data}) => {
         }
 
         switch (data[DISPLAY_AS]) {
+            case DISPLAY_AS_SIDEBAR_POST:
+            case DISPLAY_AS_SIDEBAR_LIST:
             case DISPLAY_AS_POST_LIST:
             case DISPLAY_AS_LIST:
             case DISPLAY_AS_COMPARISONS:
