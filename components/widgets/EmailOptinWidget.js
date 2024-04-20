@@ -4,6 +4,7 @@ import {Formik} from "formik";
 import {wpApiConfig} from "../../config/wp-api-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 
 const EmailOptinWidget = (props) => {
     const {data} = props;
@@ -28,9 +29,15 @@ const EmailOptinWidget = (props) => {
     }
 
 
-        return (
-            <aside className="single_sidebar_widget newsletter_widget">
-                <h4 className="widget_title">{data?.title || "Newsletter"}</h4>
+    return (
+
+        <div className="ts-newsletter">
+            <div className="newsletter-introtext">
+                <h4>{data?.heading || 'Get Updates'}</h4>
+                <p>{data?.description || 'Subscribe our newsletter to get the best stories into your inbox!'}</p>
+            </div>
+
+            <div className="newsletter-form">
                 {response.status === "success" &&
                     <p className={"text-success"}>{response.message}</p>
                 }
@@ -45,17 +52,19 @@ const EmailOptinWidget = (props) => {
                         return errors;
                     }}
                     onSubmit={async (values, {resetForm, setSubmitting}) => {
-                        const response = await publicApiRequest(
-                            'POST',
-                            buildWpApiUrl(wpApiConfig.endpoints.formsRedirectPublic),
-                            {
+                        const response = await wpResourceRequest({
+                            endpoint: wpApiConfig.endpoints.formsRedirectPublic,
+                            method: 'POST',
+                            data: {
                                 ...values,
                                 ...{
                                     endpoint_providers: data?.endpoint_providers,
                                 }
                             }
-                        );
-                        formResponseHandler(response.status, response.data);
+                        });
+                        const responseData = await response.json();
+                        console.log({responseData})
+                        formResponseHandler(responseData.status, responseData.data);
                     }}
                     enableReinitialize={true}
                 >
@@ -72,26 +81,24 @@ const EmailOptinWidget = (props) => {
                                     <label className={"text-danger"}>{errors.email}</label>
                                 }
                                 <input
-                                    type="email"
-                                    className="form-control"
-                                    name={"email"}
-                                    onChange={handleChange}
                                     onBlur={handleBlur}
-                                    placeholder={data?.placeholder || "Enter your email"}
-                                    required
-                                />
+                                    onChange={handleChange}
+                                    type="email"
+                                    name="email"
+                                    id="newsletter-form-email"
+                                    className="form-control form-control-lg"
+                                    placeholder={data?.placeholder || "E-mail"}
+                                    autoComplete="off"/>
+                                <button className="btn btn-primary" type={"submit"}>
+                                    {data?.button_text || "Subscribe"}
+                                </button>
                             </div>
-                            <button
-                                className="button rounded-0 primary-bg text-white w-100 btn_1 boxed-btn"
-                                type="submit"
-                            >
-                                {data?.button_label || "Subscribe"}
-                            </button>
                         </form>
                     )}
                 </Formik>
-            </aside>
-        );
+            </div>
+        </div>
+    );
 }
 EmailOptinWidget.category = 'widgets';
 EmailOptinWidget.templateId = 'emailOptinWidget';

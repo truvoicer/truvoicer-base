@@ -78,10 +78,10 @@ export function getSidebarWidget({item}) {
                 component: <RecentPostsWidget data={item["core/latest-posts"]}/>
             };
         }
-        if (isSet(item.email_optin_widget) || item?.blockName === 'email_optin_widget') {
+        if (isSet(item.tru_fetcher_email_optin) || item?.blockName === 'tru_fetcher_email_optin') {
             return {
-                title: '',
-                component: <EmailOptinWidget data={item.email_optin_widget}/>
+                title: item?.tru_fetcher_email_optin?.title || '',
+                component: <EmailOptinWidget data={item.tru_fetcher_email_optin}/>
             };
         }
         if (item.hasOwnProperty('listings_filter_widget') || item?.blockName === 'listings_filter_widget') {
@@ -90,10 +90,10 @@ export function getSidebarWidget({item}) {
                 component: <ListingsFilterInterface />
             };
         }
-        if (item.hasOwnProperty('listings_widget') || item?.blockName === 'listings_widget') {
+        if (item.hasOwnProperty('tru_fetcher_listings') || item?.blockName === 'tru_fetcher_listings') {
             return {
-                title: item?.listings_widget?.heading || '',
-                component: <ListingsBlockInterface data={item?.listings_widget || {}} />
+                title: item?.tru_fetcher_listings?.title || item?.tru_fetcher_listings?.data?.heading || '',
+                component: <ListingsBlockInterface data={item?.tru_fetcher_listings?.data || {}} />
             };
         }
 
