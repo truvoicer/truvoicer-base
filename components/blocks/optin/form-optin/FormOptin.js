@@ -11,7 +11,7 @@ const FormOptin = (props) => {
     //console.log(data.carousel)
 
         return (
-            <div className="section_gap registration_area">
+            <section className="block-wrapper">
                 <div className="container">
                     <div className="row align-items-center">
                         <div className="col-lg-7">
@@ -50,7 +50,7 @@ const FormOptin = (props) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         );
 }
 

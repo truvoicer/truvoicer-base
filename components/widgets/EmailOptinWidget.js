@@ -14,17 +14,26 @@ const EmailOptinWidget = (props) => {
     });
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    const formResponseHandler = (status, data) => {
-        if (data?.status === "success") {
-            setResponse({
-                status: "success",
-                message: data.message
-            })
-        } else {
+    const formResponseHandler = (responseData) => {
+        if (responseData?.status !== "success") {
             setResponse({
                 status: "error",
-                message: "There was an error, please try again."
-            })
+                message: data?.error_message || "There was an error, please try again."
+            });
+            return;
+        }
+        switch (data?.response_type) {
+            case "redirect":
+                window.location.href = data?.redirect_url;
+                break;
+            case "message":
+                setResponse({
+                    status: "success",
+                    message: data?.success_message || "Thank you for subscribing!"
+                });
+                break;
+            default:
+                break;
         }
     }
 
@@ -64,7 +73,7 @@ const EmailOptinWidget = (props) => {
                         });
                         const responseData = await response.json();
                         console.log({responseData})
-                        formResponseHandler(responseData.status, responseData.data);
+                        formResponseHandler(responseData);
                     }}
                     enableReinitialize={true}
                 >
