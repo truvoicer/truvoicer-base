@@ -27,7 +27,6 @@ function TwitterProvider({children, siteSettings}) {
     }
 
     function handleIntent(e) {
-        console.log('handleIntent', e)
         e = e || window.event;
         let target = e.target || e.srcElement,
             m, left, top;

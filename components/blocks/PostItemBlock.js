@@ -59,7 +59,6 @@ const PostItemBlock = (props) => {
         })
     }
     const linkProps = getItemUrl(post);
-    console.log(props)
     return (
         <section className="block-wrapper">
             <div className="container">

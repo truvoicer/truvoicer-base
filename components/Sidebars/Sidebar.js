@@ -28,7 +28,6 @@ const Sidebar = ({name}) => {
             const fetchSidebar = await fetchSidebarRequest(name);
             const sidebar = fetchSidebar?.sidebar;
             if (Array.isArray(sidebar)) {
-                console.log({sidebar})
                 setData(sidebar);
             }
         } catch (e) {

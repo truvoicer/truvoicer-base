@@ -15,19 +15,6 @@ import {siteConfig} from "@/config/site-config";
 const SidebarTemplate = (props) => {
     const {modal, pageData, pageOptions} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    const htmlParserOptions = {
-        replace: (node, index) => {
-            return filterHtml(
-                node,
-                index,
-                (data) => {
-                    console.log('sidebarTemplate', data)
-                    return true
-                }
-            )
-        }
-    }
-    console.log('sidebarTemplate', pageData)
 
     return (
         <div className={'body-inner'}>

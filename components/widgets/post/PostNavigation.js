@@ -80,7 +80,6 @@ const PostNavigation = ({
 
     const prevPostCategory = getCategory(prevPost?.categories);
     const nextPostCategory = getCategory(nextPost?.categories);
-    console.log({prevPostCategory, nextPostCategory})
     return (
             <nav className="post-navigation clearfix">
                 <div className="post-previous">

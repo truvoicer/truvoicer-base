@@ -21,7 +21,6 @@ const Header = (props) => {
             setSticky(ref.current.getBoundingClientRect().top <= -50);
         }
     }
-    console.log('base Header')
     return (
         <>
             <div id="top-bar" className="top-bar">

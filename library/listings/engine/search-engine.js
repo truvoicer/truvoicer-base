@@ -273,7 +273,14 @@ export class SearchEngine {
     }
 
     getTotalPages(pageControlsState, requestPageControls) {
+        if (
+            isSet(requestPageControls?.[PAGINATION_TOTAL_PAGES]) &&
+            !isNaN(requestPageControls[PAGINATION_TOTAL_PAGES])
+        ) {
+            return parseInt(requestPageControls[PAGINATION_TOTAL_PAGES]);
+        }
         let totalPages = pageControlsState[PAGINATION_TOTAL_PAGES];
+
         if (isNaN(totalPages)) {
             totalPages = 0;
         }

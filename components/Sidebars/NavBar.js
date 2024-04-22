@@ -31,7 +31,6 @@ const NavBar = (props) => {
     }
 
     useEffect(() => {
-        console.log(templateManager.hasTemplateComponent('sidebars', 'navBar'))
         if (templateManager.hasTemplateComponent('sidebars', 'navBar')) {
             return;
         }

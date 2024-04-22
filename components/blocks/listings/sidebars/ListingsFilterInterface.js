@@ -6,12 +6,11 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ListingsFilterInterface = () => {
-    console.log('ListingsFilterInterface.js')
     const appContext = useContext(AppContext);
     const appManager = new AppManager(appContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const fetchListingsContextGroups = appManager.findContextGroupsByContextId("listingsContext");
-    console.log('fetchListingsContextGroups', fetchListingsContextGroups)
+
     return (
         <>
             {fetchListingsContextGroups.map((listingsContextGroup, index) => {

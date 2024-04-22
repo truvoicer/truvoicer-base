@@ -42,7 +42,6 @@ export class WpDataSource extends DataSourceBase {
         let cloneData = {...data};
         cloneData.providers = [];
         this.listingsEngine.updateContext({key: "listingsData", value: cloneData})
-        console.log('dataInit', {cloneData})
         this.setPostsBlocksDataAction(cloneData);
         this.listingsEngine.updateContext({key: "providers", value: []})
         this.getInitialLoad(cloneData);
@@ -60,7 +59,6 @@ export class WpDataSource extends DataSourceBase {
     }
 
     postRequestInit(listingsDataState) {
-        console.log('postRequestInit', {listingsDataState})
         this.searchEngine.setSearchRequestOperationAction(NEW_SEARCH_REQUEST);
         const category = listingsDataState?.category_id;
         this.getSearchEngine().setSearchEntity('listItemsRequestInit');

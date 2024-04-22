@@ -16,6 +16,7 @@ export const PAGE_CONTROL_REQ_PAGINATION_TYPE = "pagination_type";
 export const PAGE_CONTROL_REQ_PAGINATION_OFFSET = "offset";
 export const PAGE_CONTROL_REQ_PAGINATION_PAGE = "page";
 
+export const PAGINATION_LAST_PAGE = "last_page";
 export const PAGINATION_TOTAL_PAGES = "total_pages";
 export const PAGINATION_PAGE_SIZE = "page_size";
 export const PAGINATION_OFFSET = "offset";

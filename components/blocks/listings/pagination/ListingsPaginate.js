@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {
-    NEW_SEARCH_REQUEST,
+    NEW_SEARCH_REQUEST, PAGINATION_LAST_PAGE,
     PAGINATION_PAGE_NUMBER,
     PAGINATION_TOTAL_PAGES, SEARCH_REQUEST_COMPLETED, SEARCH_REQUEST_STARTED,
 } from "@/truvoicer-base/redux/constants/search-constants";
@@ -19,10 +19,13 @@ import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
 import {SESSION_USER, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
 import {getGridItemColumns} from "@/truvoicer-base/redux/actions/item-actions";
 import ListingsItemsLoader from "@/truvoicer-base/components/blocks/listings/items/ListingsItemsLoader";
+import Link from "next/link";
+import {useRouter, useSearchParams} from "next/navigation";
 
 const ListingsPaginate = (props) => {
-    const [paginationLimit, setPaginationLimit] = useState(10);
-    const [paginationRange, setPaginationRange] = useState(4);
+    const [padding, setPadding] = useState(2);
+    const [pageNumber, setPageNumber] = useState(1);
+    const searchParams = useSearchParams();
 
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const listingsContext = useContext(ListingsContext);
@@ -32,6 +35,7 @@ const ListingsPaginate = (props) => {
     const listingsGrid = new ListingsGrid(listingsContext, searchContext);
     listingsGrid.setKeyMap(listingsContext?.listingsData?.keymap);
     const grid = listingsContext?.listingsGrid;
+    const lastPageNumber = getLastPageNumber();
 
     const paginationClickHandler = (pageNumber) => {
         listingsManager.getSearchEngine().setSearchEntity('listingsPaginate');
@@ -40,22 +44,37 @@ const ListingsPaginate = (props) => {
         listingsManager.searchEngine.setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
     }
 
+    function getLastPageNumber() {
+        return searchContext?.pageControls[PAGINATION_LAST_PAGE];
+    }
+    function getCurrentPageNumber() {
+        const pageQueryVal = searchParams.get('page');
+        if (pageQueryVal) {
+            return parseInt(pageQueryVal);
+        }
+        const pageControls = searchContext?.pageControls;
+        return pageControls[PAGINATION_PAGE_NUMBER];
+    }
 
-    const getPaginationRange = (currentPage) => {
+    const getpadding = (currentPage) => {
         const pageControls = searchContext?.pageControls;
         let range = [];
-        if (currentPage > paginationLimit - paginationRange) {
-            for (let i = currentPage - paginationRange; i < currentPage; i++) {
+        if (currentPage >= pageControls?.last_page) {
+            for (let i = currentPage - padding; i < currentPage; i++) {
                 range.push(i)
             }
-            for (let i = currentPage; i <= currentPage + paginationRange; i++) {
-                if (i < pageControls[PAGINATION_TOTAL_PAGES]) {
+        } else if (currentPage <= 1) {
+            for (let i = currentPage + 1; i < currentPage + padding + 1; i++) {
+                range.push(i)
+            }
+        } else {
+            for (let i = currentPage - padding; i <= currentPage; i++) {
+                if (i > 1) {
                     range.push(i)
                 }
             }
-        } else {
-            for (let i = 1; i <= paginationLimit; i++) {
-                if (i < pageControls[PAGINATION_TOTAL_PAGES]) {
+            for (let i = currentPage + 1; i < currentPage + padding + 1; i++) {
+                if (i < pageControls?.last_page) {
                     range.push(i)
                 }
             }
@@ -63,58 +82,101 @@ const ListingsPaginate = (props) => {
         return range;
     }
 
+    function getNextPageNumber() {
+        const nextPageNumber = pageNumber + 1;
+        if (nextPageNumber > lastPageNumber) {
+            return lastPageNumber;
+        }
+        return nextPageNumber;
+    }
+
+    function getPreviousPageNumber() {
+        const previousPageNumber = pageNumber - 1;
+        if (previousPageNumber < 1) {
+            return 1;
+        }
+        return previousPageNumber;
+    }
+
+    function getPageListItemProps(page) {
+        return {
+            className: page === pageNumber ? 'active' : ''
+        }
+    }
+
+    function getPageLinkProps(page) {
+        return {
+            scroll: false,
+            href: {
+                query: {
+                    page: page
+                }
+            },
+            onClick: paginationClickHandler.bind(this, page)
+        }
+    }
+
+    const nextPageNumber = getNextPageNumber();
+    const previousPageNumber = getPreviousPageNumber();
+
+    useEffect(() => {
+        setPageNumber(getCurrentPageNumber());
+    }, []);
     const GetPagination = () => {
         const pageControls = searchContext?.pageControls;
-        let range = getPaginationRange(pageControls[PAGINATION_PAGE_NUMBER]);
-        console.log('range', range, pageControls, pageControls[PAGINATION_TOTAL_PAGES])
+        let range = getpadding(pageNumber);
         return (
             <div className="paging">
                 <ul className="pagination">
-                    {pageControls[PAGINATION_PAGE_NUMBER] > paginationLimit - paginationRange &&
-                        <li className="pagination--list-item">
-                            <a
-                                className={"pagination--list-item__a"}
-                                onClick={() => {
-                                    listingsManager.searchEngine.setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
-                                    paginationClickHandler(1)
-                                }}
-                            >
-                                <span>1</span>
-                            </a>
+
+                    <li {...getPageListItemProps(1)}>
+                        <Link
+                            className={""}
+                            {...getPageLinkProps(1)}
+                        >
+                            <span>1</span>
+                        </Link>
+                    </li>
+                    {range[0] > padding &&
+                        <li className="">
+                            <Link
+                                className={""}
+                                {...getPageLinkProps(previousPageNumber)}>
+                                <span>{'<<'}</span>
+                            </Link>
                         </li>
                     }
                     {range.map((num, index) => (
-                        <React.Fragment key={index.toString()}>
-                            {num === pageControls[PAGINATION_PAGE_NUMBER]
-                                ?
-                                <li className="pagination--list-item">
-                                    <a className={"pagination--list-item__a active"}
-                                       onClick={() => {
-                                           listingsManager.searchEngine.setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
-                                           paginationClickHandler(num)
-                                       }}><span>{num}</span></a>
-                                </li>
-                                :
-                                <li className="pagination--list-item">
-                                    <a className={"pagination--list-item__a "}
-                                       onClick={paginationClickHandler.bind(this, num)}><span>{num}</span></a>
-                                </li>
-                            }
-                        </React.Fragment>
+                        <li key={index} {...getPageListItemProps(num)}>
+                            <Link
+                                className={""}
+                                {...getPageLinkProps(num)}
+                            >
+                                <span>{num}</span>
+                            </Link>
+                        </li>
                     ))}
-                    {pageControls[PAGINATION_TOTAL_PAGES] > 0 &&
-                        <>
-                            <li className="pagination--list-item">
-                                <span className="more-page">...</span>
-                            </li>
-                            <li className="pagination--list-item">
-                                <a className={"pagination--list-item__a"}
-                                   onClick={paginationClickHandler.bind(this, pageControls[PAGINATION_TOTAL_PAGES])}>
-                                    <span>{pageControls[PAGINATION_TOTAL_PAGES]}</span>
-                                </a>
-                            </li>
-                        </>
+                    {range[range.length - 1] <= lastPageNumber - padding &&
+                        <li className="">
+                            <Link
+                                {...getPageLinkProps(nextPageNumber)}
+                            >
+                                <span>{'>>'}</span>
+                            </Link>
+                        </li>
                     }
+                    <li {...getPageListItemProps(pageControls?.[PAGINATION_LAST_PAGE])}>
+                        <Link
+                            {...getPageLinkProps(pageControls?.[PAGINATION_LAST_PAGE])}
+                        >
+                            <span>{pageControls?.[PAGINATION_LAST_PAGE]}</span>
+                        </Link>
+                    </li>
+                    <li>
+                        <span className="page-numbers">
+                            {`Page ${pageNumber} of ${pageControls?.[PAGINATION_TOTAL_PAGES]}`}
+                        </span>
+                    </li>
                 </ul>
             </div>
         )

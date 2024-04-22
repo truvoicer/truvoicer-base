@@ -12,7 +12,6 @@ import ListingsBlockInterface from "@/truvoicer-base/components/blocks/listings/
 function buildGroupBlock({groupData}) {
     let widgets = [];
     if (Array.isArray(groupData) && groupData.length > 0) {
-        console.log({groupData})
         groupData.forEach((item, index) => {
             const widgetComponent = getSidebarWidget({
                 item: item

@@ -129,7 +129,6 @@ export class ListingsManager extends ListingsEngineBase {
         }
     }
     validateSearchParams() {
-        console.log('validateSearchParams')
         const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
 
         switch (listingsDataState?.source) {
