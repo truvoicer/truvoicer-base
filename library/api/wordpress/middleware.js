@@ -12,8 +12,12 @@ export async function getGlobalMeta() {
   if (!isNotEmpty(settings?.settings?.google_login_client_id)) {
     return false;
   }
-
+  let blogName = settings?.settings?.blogname || '';
   return {
+    title: {
+      template: `%s | ${blogName}`,
+      default: blogName, // a default is required when creating a template
+    },
       other: {
         'google_login_client_id': settings?.settings?.google_login_client_id
       },

@@ -11,7 +11,6 @@ function HtmlHead({siteSettings, pageData, page}) {
 
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const headScripts = getHeadScripts(pageData?.page_options, siteSettings);
-
     return (
         <>
         <Script id={'google_client_script'} async={true} src="https://accounts.google.com/gsi/client" />
@@ -45,7 +44,6 @@ function HtmlHead({siteSettings, pageData, page}) {
                 }(document, "script", "twitter-wjs"));`}
             </Script>
             <Head>
-                <title>{pageData.seo_title ? pageData.seo_title : "Loading..."}</title>
                 {isNotEmpty(headScripts) &&
                     <Script id={'header_scripts'}>
                         {headScripts}

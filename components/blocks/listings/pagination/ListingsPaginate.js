@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {
     NEW_SEARCH_REQUEST, PAGINATION_LAST_PAGE,
-    PAGINATION_PAGE_NUMBER,
+    PAGINATION_PAGE_NUMBER, PAGINATION_PAGE_SIZE, PAGINATION_TOTAL_ITEMS,
     PAGINATION_TOTAL_PAGES, SEARCH_REQUEST_COMPLETED, SEARCH_REQUEST_STARTED,
 } from "@/truvoicer-base/redux/constants/search-constants";
 import GridItems from "../items/GridItems";
@@ -45,7 +45,14 @@ const ListingsPaginate = (props) => {
     }
 
     function getLastPageNumber() {
-        return searchContext?.pageControls[PAGINATION_LAST_PAGE];
+        if (searchContext?.pageControls[PAGINATION_LAST_PAGE]) {
+            return searchContext?.pageControls[PAGINATION_LAST_PAGE];
+        }
+        if (searchContext?.pageControls[PAGINATION_TOTAL_PAGES] && searchContext?.pageControls[PAGINATION_TOTAL_ITEMS]) {
+            const calculate = Math.ceil(searchContext?.pageControls[PAGINATION_TOTAL_ITEMS] / searchContext?.pageControls[PAGINATION_PAGE_SIZE]);
+            return calculate;
+        }
+        return 1;
     }
     function getCurrentPageNumber() {
         const pageQueryVal = searchParams.get('page');
@@ -57,24 +64,27 @@ const ListingsPaginate = (props) => {
     }
 
     const getpadding = (currentPage) => {
-        const pageControls = searchContext?.pageControls;
         let range = [];
-        if (currentPage >= pageControls?.last_page) {
+        if (currentPage >= lastPageNumber) {
             for (let i = currentPage - padding; i < currentPage; i++) {
-                range.push(i)
+                if (i > 1 && i < lastPageNumber) {
+                    range.push(i)
+                }
             }
         } else if (currentPage <= 1) {
             for (let i = currentPage + 1; i < currentPage + padding + 1; i++) {
-                range.push(i)
+                if (i > 1 && i < lastPageNumber) {
+                    range.push(i)
+                }
             }
         } else {
             for (let i = currentPage - padding; i <= currentPage; i++) {
-                if (i > 1) {
+                if (i > 1 && i < lastPageNumber) {
                     range.push(i)
                 }
             }
             for (let i = currentPage + 1; i < currentPage + padding + 1; i++) {
-                if (i < pageControls?.last_page) {
+                if (i > 1 && i < lastPageNumber) {
                     range.push(i)
                 }
             }
@@ -123,7 +133,6 @@ const ListingsPaginate = (props) => {
         setPageNumber(getCurrentPageNumber());
     }, []);
     const GetPagination = () => {
-        const pageControls = searchContext?.pageControls;
         let range = getpadding(pageNumber);
         return (
             <div className="paging">
@@ -165,16 +174,18 @@ const ListingsPaginate = (props) => {
                             </Link>
                         </li>
                     }
-                    <li {...getPageListItemProps(pageControls?.[PAGINATION_LAST_PAGE])}>
-                        <Link
-                            {...getPageLinkProps(pageControls?.[PAGINATION_LAST_PAGE])}
-                        >
-                            <span>{pageControls?.[PAGINATION_LAST_PAGE]}</span>
-                        </Link>
-                    </li>
+                    {lastPageNumber > 1 &&
+                        <li {...getPageListItemProps(lastPageNumber)}>
+                            <Link
+                                {...getPageLinkProps(lastPageNumber)}
+                            >
+                                <span>{lastPageNumber}</span>
+                            </Link>
+                        </li>
+                    }
                     <li>
                         <span className="page-numbers">
-                            {`Page ${pageNumber} of ${pageControls?.[PAGINATION_TOTAL_PAGES]}`}
+                            {`Page ${pageNumber} of ${lastPageNumber}`}
                         </span>
                     </li>
                 </ul>

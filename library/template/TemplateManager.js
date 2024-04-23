@@ -99,6 +99,7 @@ export class TemplateManager {
         switch (pageData?.post_type) {
             case 'page':
             case 'trf_post_tpl':
+            case 'trf_item_view_tpl':
                 return this.getTemplateLayoutComponent(pageData?.page_options?.trf_gut_pmf_page_options_layout);
             case 'post':
             default:

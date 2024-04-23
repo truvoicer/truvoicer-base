@@ -1,4 +1,4 @@
-import {isNotEmpty, isObject, isObjectEmpty} from "@/truvoicer-base/library/utils";
+import {isNotEmpty, isObject, isObjectEmpty, isSet, uCaseFirst} from "@/truvoicer-base/library/utils";
 import {siteConfig} from "@/config/site-config";
 
 export function buildFilterList(data) {
@@ -109,3 +109,12 @@ export function mapDataToKeymap({keymap, item}) {
     return {...item, ...data};
 }
 
+export function replaceItemDataPlaceholders(pageTitle, item) {
+    const test = new RegExp("\\\[+(.*?)\\]", "g");
+    return pageTitle.replace(test, (match, value) => {
+        if (isSet(item[value])) {
+            return uCaseFirst(item[value]);
+        }
+        return "loading..."
+    });
+}

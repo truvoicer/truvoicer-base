@@ -1,23 +1,12 @@
 import parse from 'html-react-parser';
 import React from "react";
-import {formatDate, isNotEmpty, isObjectEmpty, isSet, uCaseFirst} from "../utils";
+import {formatDate, isNotEmpty, isObjectEmpty, isSet} from "../utils";
 import ImageLoader from "../../components/loaders/ImageLoader";
 import ListLoader from "../../components/loaders/ListLoader";
 import store from "../../redux/store";
 import {getItemViewUrl} from "../../redux/actions/item-actions";
 import {tagManagerSendDataLayer} from "../api/global-scripts";
-import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpers";
-import Image from "next/image";
-
-export function replaceItemDataPlaceholders(pageTitle, item) {
-    const test = new RegExp("\\\[+(.*?)\\]", "g");
-    return pageTitle.replace(test, (match, value) => {
-        if (isSet(item[value])) {
-            return uCaseFirst(item[value]);
-        }
-        return "loading..."
-    });
-}
+import {extractItemListFromPost, replaceItemDataPlaceholders} from "@/truvoicer-base/library/helpers/wp-helpers";
 
 export const itemDataTextFilter = (text) => {
     const itemState = {...store.getState().item};
