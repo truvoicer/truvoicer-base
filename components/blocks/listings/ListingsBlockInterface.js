@@ -22,6 +22,7 @@ import TileDisplay from "@/truvoicer-base/components/blocks/listings/display/Til
 import ListDisplay from "@/truvoicer-base/components/blocks/listings/display/ListDisplay";
 import GridItems from "@/truvoicer-base/components/blocks/listings/items/GridItems";
 import SidebarDisplay from "@/truvoicer-base/components/blocks/listings/display/SidebarDisplay";
+import ComparisonDisplay from "@/truvoicer-base/components/blocks/listings/display/ComparisonDisplay";
 
 const ListingsBlockInterface = ({data}) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
@@ -33,6 +34,8 @@ const ListingsBlockInterface = ({data}) => {
                 return templateManager.render(<SidebarDisplay data={data} />)
             case DISPLAY_AS_TILES:
                 return templateManager.render(<TileDisplay data={data} />)
+            case DISPLAY_AS_COMPARISONS:
+                return templateManager.render(<ComparisonDisplay data={data} />)
             default:
                 return templateManager.render(<ListDisplay data={data} />)
         }

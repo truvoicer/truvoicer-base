@@ -21,34 +21,64 @@ import DefaultSidebarPostItem from "@/truvoicer-base/components/blocks/listings/
 
 export const defaultListingsGrid = LISTINGS_GRID_LIST;
 
-export const listingsGridConfig =  {
+export const listingsGridConfig = {
     gridItems: {
         [DISPLAY_AS_POST_LIST]: {
-            [LISTINGS_GRID_LIST]: PostItemListPost,
-            [LISTINGS_GRID_COMPACT]: PostItemListPost,
-            [LISTINGS_GRID_DETAILED]: PostItemListPost,
-            modal: PostInfoModal,
+            templates: {
+                default: {
+                    grid: {
+                        [LISTINGS_GRID_LIST]: PostItemListPost,
+                        [LISTINGS_GRID_COMPACT]: PostItemListPost,
+                        [LISTINGS_GRID_DETAILED]: PostItemListPost,
+                    },
+                    modal: PostInfoModal,
+                }
+            }
         },
         [DISPLAY_AS_LIST]: {
-            [LISTINGS_GRID_LIST]: DefaultItemList,
-            [LISTINGS_GRID_COMPACT]: DefaultItemList,
-            [LISTINGS_GRID_DETAILED]: DefaultItemList,
-            modal: DefaultInfoModal,
+            templates: {
+                default: {
+                    grid: {
+                        [LISTINGS_GRID_LIST]: DefaultItemList,
+                        [LISTINGS_GRID_COMPACT]: DefaultItemList,
+                        [LISTINGS_GRID_DETAILED]: DefaultItemList,
+                    },
+                    modal: DefaultInfoModal,
+                }
+            }
         },
         [DISPLAY_AS_SIDEBAR_LIST]: {
-            [LISTINGS_GRID_LIST]: DefaultSidebarItemList,
-            [LISTINGS_GRID_COMPACT]: DefaultSidebarItemList,
-            [LISTINGS_GRID_DETAILED]: DefaultSidebarItemList,
+            templates: {
+                default: {
+                    grid: {
+                        [LISTINGS_GRID_LIST]: DefaultSidebarItemList,
+                        [LISTINGS_GRID_COMPACT]: DefaultSidebarItemList,
+                        [LISTINGS_GRID_DETAILED]: DefaultSidebarItemList,
+                    },
+                }
+            }
         },
         [DISPLAY_AS_SIDEBAR_POST]: {
-            [LISTINGS_GRID_LIST]: DefaultSidebarPostItem,
-            [LISTINGS_GRID_COMPACT]: DefaultSidebarPostItem,
-            [LISTINGS_GRID_DETAILED]: DefaultSidebarPostItem,
+            templates: {
+                default: {
+                    grid: {
+                        [LISTINGS_GRID_LIST]: DefaultSidebarPostItem,
+                        [LISTINGS_GRID_COMPACT]: DefaultSidebarPostItem,
+                        [LISTINGS_GRID_DETAILED]: DefaultSidebarPostItem,
+                    },
+                }
+            }
         },
         [DISPLAY_AS_COMPARISONS]: {
-            [LISTINGS_GRID_LIST]: ComparisonsItemList,
-            modal: ComparisonsInfoModal,
-            single: ComparisonsItemView
+            templates: {
+                default: {
+                    grid: {
+                        [LISTINGS_GRID_LIST]: ComparisonsItemList,
+                    },
+                    modal: ComparisonsInfoModal,
+                    single: ComparisonsItemView
+                }
+            }
         },
     },
 }
