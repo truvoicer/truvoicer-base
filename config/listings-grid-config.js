@@ -9,7 +9,7 @@ import ComparisonsItemView
 import {
     DISPLAY_AS_COMPARISONS,
     DISPLAY_AS_LIST,
-    DISPLAY_AS_POST_LIST, DISPLAY_AS_SIDEBAR_LIST, DISPLAY_AS_SIDEBAR_POST
+    DISPLAY_AS_POST_LIST, DISPLAY_AS_SIDEBAR_LIST, DISPLAY_AS_SIDEBAR_POST, DISPLAY_AS_TILES
 } from "@/truvoicer-base/redux/constants/general_constants";
 import PostItemListPost from "@/truvoicer-base/components/blocks/listings/items/Post/PostItemListPost";
 import DefaultItemList from "@/truvoicer-base/components/blocks/listings/items/Default/DefaultItemList";
@@ -18,15 +18,17 @@ import DefaultInfoModal from "@/truvoicer-base/components/blocks/listings/items/
 import ComparisonsItemList from "@/truvoicer-base/components/blocks/listings/items/Comparisons/ComparisonsItemList";
 import DefaultSidebarItemList from "@/truvoicer-base/components/blocks/listings/items/Default/DefaultSidebarItemList";
 import DefaultSidebarPostItem from "@/truvoicer-base/components/blocks/listings/items/Post/DefaultSidebarPostItem";
+import HorizontalComparisons
+    from "@/truvoicer-base/components/blocks/listings/display/comparisons/HorizontalComparisons";
+import TileDisplay from "@/truvoicer-base/components/blocks/listings/display/TileDisplay";
 
 export const defaultListingsGrid = LISTINGS_GRID_LIST;
 
 export const listingsGridConfig = {
-    gridItems: {
         [DISPLAY_AS_POST_LIST]: {
             templates: {
                 default: {
-                    grid: {
+                    gridItems: {
                         [LISTINGS_GRID_LIST]: PostItemListPost,
                         [LISTINGS_GRID_COMPACT]: PostItemListPost,
                         [LISTINGS_GRID_DETAILED]: PostItemListPost,
@@ -38,7 +40,7 @@ export const listingsGridConfig = {
         [DISPLAY_AS_LIST]: {
             templates: {
                 default: {
-                    grid: {
+                    gridItems: {
                         [LISTINGS_GRID_LIST]: DefaultItemList,
                         [LISTINGS_GRID_COMPACT]: DefaultItemList,
                         [LISTINGS_GRID_DETAILED]: DefaultItemList,
@@ -50,7 +52,7 @@ export const listingsGridConfig = {
         [DISPLAY_AS_SIDEBAR_LIST]: {
             templates: {
                 default: {
-                    grid: {
+                    gridItems: {
                         [LISTINGS_GRID_LIST]: DefaultSidebarItemList,
                         [LISTINGS_GRID_COMPACT]: DefaultSidebarItemList,
                         [LISTINGS_GRID_DETAILED]: DefaultSidebarItemList,
@@ -61,7 +63,7 @@ export const listingsGridConfig = {
         [DISPLAY_AS_SIDEBAR_POST]: {
             templates: {
                 default: {
-                    grid: {
+                    gridItems: {
                         [LISTINGS_GRID_LIST]: DefaultSidebarPostItem,
                         [LISTINGS_GRID_COMPACT]: DefaultSidebarPostItem,
                         [LISTINGS_GRID_DETAILED]: DefaultSidebarPostItem,
@@ -72,13 +74,20 @@ export const listingsGridConfig = {
         [DISPLAY_AS_COMPARISONS]: {
             templates: {
                 default: {
-                    grid: {
+                    gridItems: {
                         [LISTINGS_GRID_LIST]: ComparisonsItemList,
                     },
+                    layout: HorizontalComparisons,
                     modal: ComparisonsInfoModal,
                     single: ComparisonsItemView
                 }
             }
         },
-    },
-}
+        [DISPLAY_AS_TILES]: {
+            templates: {
+                default: {
+                    layout: TileDisplay,
+                }
+            }
+        },
+    }

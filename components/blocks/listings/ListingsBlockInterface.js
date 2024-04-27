@@ -22,7 +22,7 @@ import TileDisplay from "@/truvoicer-base/components/blocks/listings/display/Til
 import ListDisplay from "@/truvoicer-base/components/blocks/listings/display/ListDisplay";
 import GridItems from "@/truvoicer-base/components/blocks/listings/items/GridItems";
 import SidebarDisplay from "@/truvoicer-base/components/blocks/listings/display/SidebarDisplay";
-import ComparisonDisplay from "@/truvoicer-base/components/blocks/listings/display/ComparisonDisplay";
+import ComparisonDisplay from "@/truvoicer-base/components/blocks/listings/display/comparisons/ComparisonDisplay";
 
 const ListingsBlockInterface = ({data}) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));

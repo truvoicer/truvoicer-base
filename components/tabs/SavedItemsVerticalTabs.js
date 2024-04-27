@@ -137,18 +137,18 @@ const SavedItemsVerticalTabs = (props) => {
         // })
     }
 
-    const GetModal = (category) => {
-        const gridConfig = listingsGridConfig.gridItems;
-        if (!isSet(gridConfig[category])) {
-            return null
-        }
-        if (!isSet(gridConfig[category].modal)) {
-            return null;
-        }
-        const ItemModal = gridConfig[category].modal;
-        return <ItemModal data={modalData} category={category} close={closeModal}/>
-
-    }
+    // const GetModal = (category) => {
+    //     const gridConfig = listingsGridConfig.gridItems;
+    //     if (!isSet(gridConfig[category])) {
+    //         return null
+    //     }
+    //     if (!isSet(gridConfig[category].modal)) {
+    //         return null;
+    //     }
+    //     const ItemModal = gridConfig[category].modal;
+    //     return <ItemModal data={modalData} category={category} close={closeModal}/>
+    //
+    // }
 
     const closeModal = () => {
         setModalData({
@@ -259,9 +259,9 @@ const SavedItemsVerticalTabs = (props) => {
                     >
                         {getItemList(panelData[itemKey])}
                     </TabPanel>
-                    {modalData.show &&
-                        GetModal(panelData[itemKey].category)
-                    }
+                    {/*{modalData.show &&*/}
+                    {/*    GetModal(panelData[itemKey].category)*/}
+                    {/*}*/}
                 </React.Fragment>
             ))}
 

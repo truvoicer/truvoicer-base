@@ -195,7 +195,7 @@ const SavedItemsVerticalTabsOld = (props) => {
                 {isSet(data) &&
                     data.items_response.map((item, index) => (
                         <Grid item xs={gridItemSize} key={index}>
-                            {getGridItem(item, item.category)}
+                            {/*{getGridItem(item, item.category)}*/}
                         </Grid>
                     ))
                 }
@@ -255,9 +255,9 @@ const SavedItemsVerticalTabsOld = (props) => {
                         >
                             {getItemList(panelData[itemKey])}
                         </TabPanel>
-                        {modalData.show &&
-                            GetModal(panelData[itemKey].category)
-                        }
+                        {/*{modalData.show &&*/}
+                        {/*    GetModal(panelData[itemKey].category)*/}
+                        {/*}*/}
                     </React.Fragment>
                 ))}
 

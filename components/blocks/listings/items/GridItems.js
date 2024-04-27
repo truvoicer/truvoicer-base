@@ -51,18 +51,18 @@ const GridItems = ({children, ...props}) => {
         })
     }
 
-    const GetModal = () => {
-        const gridConfig = listingsGridConfig.gridItems;
-        if (!isSet(gridConfig[searchContext.category])) {
-            return null
-        }
-        if (!isSet(gridConfig[searchContext.category].modal)) {
-            return null;
-        }
-        const ItemModal = gridConfig[searchContext.category].modal;
-        return <ItemModal data={modalData} category={searchContext.category} close={closeModal}/>
-
-    }
+    // const GetModal = () => {
+    //     const gridConfig = listingsGridConfig.gridItems;
+    //     if (!isSet(gridConfig[searchContext.category])) {
+    //         return null
+    //     }
+    //     if (!isSet(gridConfig[searchContext.category].modal)) {
+    //         return null;
+    //     }
+    //     const ItemModal = gridConfig[searchContext.category].modal;
+    //     return <ItemModal data={modalData} category={searchContext.category} close={closeModal}/>
+    //
+    // }
 
     const closeModal = () => {
         setModalData({
@@ -212,9 +212,9 @@ const GridItems = ({children, ...props}) => {
         return (
             <ListingsItemsContext.Provider value={itemsContextState}>
                 {children}
-                {modalData.show &&
-                    <GetModal/>
-                }
+                {/*{modalData.show &&*/}
+                {/*    <GetModal/>*/}
+                {/*}*/}
             </ListingsItemsContext.Provider>
         )
 }
