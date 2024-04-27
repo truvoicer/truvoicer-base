@@ -23,43 +23,24 @@ import ListDisplay from "@/truvoicer-base/components/blocks/listings/display/Lis
 import GridItems from "@/truvoicer-base/components/blocks/listings/items/GridItems";
 import SidebarDisplay from "@/truvoicer-base/components/blocks/listings/display/SidebarDisplay";
 import ComparisonDisplay from "@/truvoicer-base/components/blocks/listings/display/comparisons/ComparisonDisplay";
+import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
 
-const ListingsBlockInterface = ({data}) => {
+const ListingsBlockInterface = (props) => {
+    const {data} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    function renderDisplay() {
-        switch (listingsContextState?.listingsData?.[DISPLAY_AS]) {
-            case DISPLAY_AS_SIDEBAR_POST:
-            case DISPLAY_AS_SIDEBAR_LIST:
-                return templateManager.render(<SidebarDisplay data={data} />)
-            case DISPLAY_AS_TILES:
-                return templateManager.render(<TileDisplay data={data} />)
-            case DISPLAY_AS_COMPARISONS:
-                return templateManager.render(<ComparisonDisplay data={data} />)
-            default:
-                return templateManager.render(<ListDisplay data={data} />)
-        }
-    }
-    const loadByDisplayAs = () => {
+    const listingsGrid = new ListingsGrid();
+    const loadListings = () => {
         if (!isNotEmpty(data?.[DISPLAY_AS])) {
             return false;
         }
 
-        switch (data[DISPLAY_AS]) {
-            case DISPLAY_AS_SIDEBAR_POST:
-            case DISPLAY_AS_SIDEBAR_LIST:
-            case DISPLAY_AS_POST_LIST:
-            case DISPLAY_AS_LIST:
-            case DISPLAY_AS_COMPARISONS:
-            case DISPLAY_AS_TILES:
-                return renderDisplay();
-            default:
-                console.warn("No display type set");
-                return null;
-        }
-    }
-    const loadListings = () => {
-        return loadByDisplayAs();
+        return  listingsGrid.getTemplateLayoutComponent({
+            displayAs: data[DISPLAY_AS],
+            category: searchContextState?.category,
+            template: listingsContextState?.listingsData?.template,
+            props: props
+        });
     }
 
     function getExtraListingsData() {

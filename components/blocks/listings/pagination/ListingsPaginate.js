@@ -32,7 +32,7 @@ const ListingsPaginate = (props) => {
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
 
-    const listingsGrid = new ListingsGrid(listingsContext, searchContext);
+    const listingsGrid = new ListingsGrid();
     listingsGrid.setKeyMap(listingsContext?.listingsData?.keymap);
     const grid = listingsContext?.listingsGrid;
     const lastPageNumber = getLastPageNumber();

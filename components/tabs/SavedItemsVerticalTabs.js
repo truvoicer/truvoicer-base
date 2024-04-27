@@ -45,7 +45,7 @@ const SavedItemsVerticalTabs = (props) => {
         provider: ""
     });
 
-    const listingsGridManager = new ListingsGrid(listingsContext, searchContext);
+    const listingsGridManager = new ListingsGrid();
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const getProviderDataByName = (index) => {
         let item = {};

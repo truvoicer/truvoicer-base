@@ -31,7 +31,7 @@ const ListingsInfiniteScroll = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const itemsContext = useContext(ListingsItemsContext);
-    const listingsGrid = new ListingsGrid(listingsContext, searchContext);
+    const listingsGrid = new ListingsGrid();
     listingsGrid.setKeyMap(listingsContext?.listingsData?.keymap);
     const grid = listingsContext?.listingsGrid;
 

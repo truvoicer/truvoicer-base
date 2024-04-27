@@ -21,6 +21,9 @@ import DefaultSidebarPostItem from "@/truvoicer-base/components/blocks/listings/
 import HorizontalComparisons
     from "@/truvoicer-base/components/blocks/listings/display/comparisons/HorizontalComparisons";
 import TileDisplay from "@/truvoicer-base/components/blocks/listings/display/TileDisplay";
+import ListDisplay from "@/truvoicer-base/components/blocks/listings/display/ListDisplay";
+import SidebarDisplay from "@/truvoicer-base/components/blocks/listings/display/SidebarDisplay";
+import ComparisonDisplay from "@/truvoicer-base/components/blocks/listings/display/comparisons/ComparisonDisplay";
 
 export const defaultListingsGrid = LISTINGS_GRID_LIST;
 
@@ -34,6 +37,7 @@ export const listingsGridConfig = {
                         [LISTINGS_GRID_DETAILED]: PostItemListPost,
                     },
                     modal: PostInfoModal,
+                    layout: ListDisplay,
                 }
             }
         },
@@ -46,6 +50,7 @@ export const listingsGridConfig = {
                         [LISTINGS_GRID_DETAILED]: DefaultItemList,
                     },
                     modal: DefaultInfoModal,
+                    layout: ListDisplay,
                 }
             }
         },
@@ -57,6 +62,7 @@ export const listingsGridConfig = {
                         [LISTINGS_GRID_COMPACT]: DefaultSidebarItemList,
                         [LISTINGS_GRID_DETAILED]: DefaultSidebarItemList,
                     },
+                    layout: SidebarDisplay,
                 }
             }
         },
@@ -68,6 +74,7 @@ export const listingsGridConfig = {
                         [LISTINGS_GRID_COMPACT]: DefaultSidebarPostItem,
                         [LISTINGS_GRID_DETAILED]: DefaultSidebarPostItem,
                     },
+                    layout: SidebarDisplay,
                 }
             }
         },
@@ -77,10 +84,26 @@ export const listingsGridConfig = {
                     gridItems: {
                         [LISTINGS_GRID_LIST]: ComparisonsItemList,
                     },
+                    layout: ComparisonDisplay,
+                    modal: ComparisonsInfoModal,
+                    single: ComparisonsItemView
+                },
+                'vertical_desc_slide': {
+                    gridItems: {
+                        [LISTINGS_GRID_LIST]: ComparisonsItemList,
+                    },
+                    layout: ComparisonDisplay,
+                    modal: ComparisonsInfoModal,
+                    single: ComparisonsItemView
+                },
+                'horizontal_compare': {
+                    gridItems: {
+                        [LISTINGS_GRID_LIST]: ComparisonsItemList,
+                    },
                     layout: HorizontalComparisons,
                     modal: ComparisonsInfoModal,
                     single: ComparisonsItemView
-                }
+                },
             }
         },
         [DISPLAY_AS_TILES]: {

@@ -38,7 +38,7 @@ const PostItemListPost = (props) => {
         category: category?.slug,
         item: props.data,
     })
-    // console.log({linkProps})
+    console.log({props})
 
     return (
             <div className="post-block-style post-grid clearfix">
