@@ -199,6 +199,9 @@ export class WpDataSource extends DataSourceBase {
                 console.warn("Invalid request operation...")
                 return false;
         }
+        if (isNotEmpty(data?.labels) && isObject(data.labels)) {
+            this.searchEngine.setLabelsAction(data.labels);
+        }
             // this.getUserItemsListAction(data.request_data, data.provider, data.category)
             // this.searchEngine.setSearchExtraDataAction(data.extra_data, data.provider, data.request_data)
             // this.searchEngine.setSearchRequestServiceAction(data.request_service)

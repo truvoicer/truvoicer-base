@@ -190,6 +190,7 @@ const GridItems = ({children, ...props}) => {
     }
     const [itemsContextState, setItemsContextState] = useState({
         ...itemsContextData,
+        labels: searchContext?.labels || {},
         updateData: ({key, value}) => {
             updateStateObject({
                 key,
@@ -199,6 +200,12 @@ const GridItems = ({children, ...props}) => {
         },
     });
 
+    useEffect(() => {
+        setItemsContextState({
+            ...itemsContextState,
+            labels: searchContext?.labels || {}
+        })
+    }, [searchContext?.labels])
     useEffect(() => {
         updateStateObject({
             key: 'items',

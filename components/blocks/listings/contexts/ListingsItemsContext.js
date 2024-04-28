@@ -1,6 +1,7 @@
 
 import React from "react";
 export const itemsContextData = {
-    items: []
+    items: [],
+    labels: {},
 }
 export default React.createContext(itemsContextData);

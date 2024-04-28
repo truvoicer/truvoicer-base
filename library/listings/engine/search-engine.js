@@ -81,6 +81,9 @@ export class SearchEngine {
         this.updateContext({key: "searchList", value: nextState})
     }
 
+    setLabelsAction(labels) {
+        this.updateContext({key: "labels", value: labels})
+    }
     setSearchProviderAction(provider) {
         this.updateContext({key: "provider", value: provider})
     }

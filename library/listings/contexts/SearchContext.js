@@ -17,6 +17,7 @@ export const searchData = {
     searchList: [],
     savedItemsList: [],
     itemRatingsList: [],
+    labels: {},
     query: {
         [PAGINATION_PAGE_NUMBER]: 1,
         [PAGINATION_PAGE_SIZE]: null,

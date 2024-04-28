@@ -41,7 +41,18 @@ function HorizontalComparisons(props) {
     function isItemSelected(index) {
         return selectedItems.includes(index);
     }
-    console.log(getItems())
+    function getLabels() {
+        return Object.keys(itemsContext?.labels || {}).map(key => itemsContext.labels[key]);
+    }
+    function getItemValue(item) {
+        return Object.keys(itemsContext?.labels || {}).map(key => item[key]);
+    }
+
+    function getFieldValue(field) {
+        return data?.override?.[field] || data?.[field] || null
+    }
+    const labels = getLabels();
+    console.log(labels, getItems())
     return (
         <section className="cd-products-comparison-table">
             <header>
@@ -57,17 +68,11 @@ function HorizontalComparisons(props) {
                 <div className="features">
                     <div className="top-info">Models</div>
                     <ul className="cd-features-list">
-                        <li>Price</li>
-                        <li>Customer Rating</li>
-                        <li>Resolution</li>
-                        <li>Screen Type</li>
-                        <li>Display Size</li>
-                        <li>Refresh Rate</li>
-                        <li>Model Year</li>
-                        <li>Tuner Technology</li>
-                        <li>Ethernet Input</li>
-                        <li>USB Input</li>
-                        <li>Scart Input</li>
+                        {labels.map((label, index) => {
+                            return (
+                                <li key={index}>{label}</li>
+                            );
+                        })}
                     </ul>
                 </div>
 
@@ -78,22 +83,27 @@ function HorizontalComparisons(props) {
                                 <li key={index} className={`product ${isItemSelected(index) ? 'selected' : ''}`}>
                                     <div className="top-info" onClick={(e) => handleItemClick(item, index, e)}>
                                         <div className={`check`}></div>
-                                        <img src="img/product.png" alt="product image"/>
+                                        {item?.item_image && <img src={item.item_image} alt="product image"/>}
                                         <h3>Sumsung Series 6 J6300</h3>
                                     </div>
 
                                     <ul className="cd-features-list">
-                                        <li>$600</li>
-                                        <li className="rate"><span>5/5</span></li>
-                                        <li>1080p</li>
-                                        <li>LED</li>
-                                        <li>47.6 inches</li>
-                                        <li>800Hz</li>
-                                        <li>2015</li>
-                                        <li>mpeg4</li>
-                                        <li>1 Side</li>
-                                        <li>3 Port</li>
-                                        <li>1 Rear</li>
+                                        {getItemValue(item).map((value, index) => {
+                                            return (
+                                                <li key={index}>{value}</li>
+                                            );
+                                        })}
+                                        {/*<li>$600</li>*/}
+                                        {/*<li className="rate"><span>5/5</span></li>*/}
+                                        {/*<li>1080p</li>*/}
+                                        {/*<li>LED</li>*/}
+                                        {/*<li>47.6 inches</li>*/}
+                                        {/*<li>800Hz</li>*/}
+                                        {/*<li>2015</li>*/}
+                                        {/*<li>mpeg4</li>*/}
+                                        {/*<li>1 Side</li>*/}
+                                        {/*<li>3 Port</li>*/}
+                                        {/*<li>1 Rear</li>*/}
                                     </ul>
                                 </li>
                             );
