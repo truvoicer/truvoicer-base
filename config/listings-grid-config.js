@@ -2,10 +2,6 @@ import {
     LISTINGS_GRID_COMPACT, LISTINGS_GRID_DETAILED,
     LISTINGS_GRID_LIST
 } from "@/truvoicer-base/redux/constants/listings-constants";
-import ComparisonsInfoModal
-    from "../../views/Components/Blocks/Listings/ListingsItems/Items/Comparisons/ComparisonsInfoModal";
-import ComparisonsItemView
-    from "../../views/Components/Blocks/Listings/ListingsItems/Items/Comparisons/ComparisonsItemView";
 import {
     DISPLAY_AS_COMPARISONS,
     DISPLAY_AS_LIST,
@@ -24,6 +20,8 @@ import TileDisplay from "@/truvoicer-base/components/blocks/listings/display/Til
 import ListDisplay from "@/truvoicer-base/components/blocks/listings/display/ListDisplay";
 import SidebarDisplay from "@/truvoicer-base/components/blocks/listings/display/SidebarDisplay";
 import ComparisonDisplay from "@/truvoicer-base/components/blocks/listings/display/comparisons/ComparisonDisplay";
+import ComparisonsInfoModal from "@/truvoicer-base/components/blocks/listings/items/Comparisons/ComparisonsInfoModal";
+import ComparisonsItemView from "@/truvoicer-base/components/blocks/listings/items/Comparisons/ComparisonsItemView";
 
 export const defaultListingsGrid = LISTINGS_GRID_LIST;
 

@@ -114,11 +114,11 @@ const TileDisplay = (props) => {
                                                         <a className="post-cat" href="#">Health</a>
                                                         <h2 className="post-title title-extra-large">
                                                             <Link {...getLinkProps(item)}>
-                                                                {item?.job_title || ''}
+                                                                {item?.item_title || ''}
                                                             </Link>
                                                         </h2>
                                                         <span
-                                                            className="post-date">{formatDate(item?.date_expires)}</span>
+                                                            className="post-date">{formatDate(item?.item_date)}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -150,10 +150,10 @@ const TileDisplay = (props) => {
                                                     <a className="post-cat" href="#">Gadget</a>
                                                     <h2 className="post-title title-large">
                                                         <Link {...linkProps}>
-                                                            {item?.job_title || ''}
+                                                            {item?.item_title || ''}
                                                         </Link>
                                                     </h2>
-                                                    <span className="post-date">{formatDate(item?.date_expires)}</span>
+                                                    <span className="post-date">{formatDate(item?.item_date)}</span>
                                                 </div>
                                             </div>
                                         );
@@ -179,7 +179,7 @@ const TileDisplay = (props) => {
                                                     <a className="post-cat" href="#">Travel</a>
                                                     <h2 className="post-title title-medium">
                                                         <Link {...linkProps}>
-                                                            {item?.job_title || ''}
+                                                            {item?.item_title || ''}
                                                         </Link>
                                                     </h2>
                                                 </div>
@@ -203,7 +203,7 @@ const TileDisplay = (props) => {
                                                 <div className="post-content">
                                                     <a className="post-cat" href="#">Health</a>
                                                     <h2 className="post-title title-medium">
-                                                        <a href="#">{item?.job_title || ''}</a>
+                                                        <a href="#">{item?.item_title || ''}</a>
                                                     </h2>
                                                 </div>
                                             </div>

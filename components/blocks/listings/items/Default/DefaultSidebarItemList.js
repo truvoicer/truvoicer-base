@@ -60,7 +60,7 @@ const DefaultItemList = (props) => {
                 <Link {...linkProps}>
                     <img
                         className="img-fluid"
-                        src={props.data.default_image ? props.data.default_image : "/img/pticon.png"}
+                        src={props.data.item_image ? props.data.item_image : "/img/pticon.png"}
                         alt=""
                     />
                 </Link>
@@ -74,12 +74,12 @@ const DefaultItemList = (props) => {
                 <h2 className="post-title title-small">
 
                     <Link {...linkProps}>
-                        {props?.data?.job_title || ""}
+                        {props?.data?.item_title || ""}
                     </Link>
                 </h2>
                 <div className="post-meta">
                         <span
-                            className="post-date">{isNotEmpty(props?.data?.date_expires) ? formatDate(props.data.date_expires) : ""}</span>
+                            className="post-date">{isNotEmpty(props?.data?.item_date) ? formatDate(props.data.item_date) : ""}</span>
                 </div>
             </div>
         </div>

@@ -47,16 +47,16 @@ const DefaultItemView = (props) => {
                                     <a className="post-cat" href="#">{props?.item?.provider}</a>
                                 }
                                 <h2 className="post-title">
-                                    {props.item.job_title}
+                                    {props.item.item_title}
                                 </h2>
                                 <div className="post-meta">
 								<span className="post-author">
 									By <a href="#">John Doe</a>
 								</span>
-                                    {props.data.date_expires &&
+                                    {props.data.item_date &&
                                         <span className="post-date">
                                             <i className="fa fa-clock-o"></i>
-                                            {formatDate(props.data.date_expires)}
+                                            {formatDate(props.data.item_date)}
                                         </span>
                                     }
                                     <span className="post-hits"><i className="fa fa-eye"></i> 21</span>
@@ -75,7 +75,7 @@ const DefaultItemView = (props) => {
                                     </div>
                                 )}
                                 <div className="entry-content">
-                                    {parse(props.item.job_description)}
+                                    {parse(props.item.item_description)}
                                 </div>
                                 <div className="apply_job_form white-bg mt-5">
                                     <h3 className={'title-normal'}>
@@ -103,7 +103,7 @@ const DefaultItemView = (props) => {
                                 {templateManager.render(
                                     <SocialShareWidget
                                         href={props?.item?.url}
-                                        text={props?.item?.job_title}
+                                        text={props?.item?.item_title}
                                     />
                                 )}
 

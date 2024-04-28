@@ -58,7 +58,7 @@ const DefaultItemList = (props) => {
                 <div className="post-thumb">
                     <Link {...linkProps}>
                         <img  className="img-fluid"
-                             src={props.data.default_image ? props.data.default_image : "/img/pticon.png"} alt=""/>
+                             src={props.data.item_image ? props.data.item_image : "/img/pticon.png"} alt=""/>
                     </Link>
                 </div>
                 {props.data.provider && (
@@ -66,11 +66,11 @@ const DefaultItemList = (props) => {
                 )}
                 <div className="post-content">
                     <h2 className="post-title">
-                        <Link {...linkProps}>{props.data.job_title}</Link>
+                        <Link {...linkProps}>{props.data.item_title}</Link>
                     </h2>
                     <div className="post-meta">
                         <span className="post-author"><a href="#">John Doe</a></span>
-                        <span className="post-date">{formatDate(props.data.date_expires)}</span>
+                        <span className="post-date">{formatDate(props.data.item_date)}</span>
                     </div>
                     <SavedItemToggle
                         provider={props.data.provider}
@@ -79,7 +79,7 @@ const DefaultItemList = (props) => {
                         user_id={props.user[SESSION_USER_ID]}
                         savedItem={savedItem}
                     />
-                    <p>{props.data.job_description}</p>
+                    <p>{props.data.item_description}</p>
                 </div>
             </div>
 
