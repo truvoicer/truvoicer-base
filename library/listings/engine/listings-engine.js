@@ -6,6 +6,7 @@ import {sprintf} from "sprintf-js";
 import {ItemRoutes} from "@/config/item-routes";
 import {getPostItemUrl} from "@/truvoicer-base/library/helpers/posts";
 import {
+    DISPLAY_AS_COMPARISONS,
     DISPLAY_AS_LIST,
     DISPLAY_AS_POST_LIST, DISPLAY_AS_SIDEBAR_LIST, DISPLAY_AS_SIDEBAR_POST,
     DISPLAY_AS_TILES
@@ -420,6 +421,7 @@ export class ListingsEngine {
             case DISPLAY_AS_LIST:
             case DISPLAY_AS_SIDEBAR_LIST:
             case DISPLAY_AS_TILES:
+            case DISPLAY_AS_COMPARISONS:
                 return this.buildInternalItemViewUrl({item})
             default:
                 return null;

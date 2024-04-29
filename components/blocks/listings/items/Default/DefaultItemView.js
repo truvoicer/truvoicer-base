@@ -75,7 +75,7 @@ const DefaultItemView = (props) => {
                                     </div>
                                 )}
                                 <div className="entry-content">
-                                    {parse(props.item.item_description)}
+                                    {parse(props?.item?.item_description || '')}
                                 </div>
                                 <div className="apply_job_form white-bg mt-5">
                                     <h3 className={'title-normal'}>
