@@ -1,5 +1,6 @@
 import {fetcherApiConfig} from "../../../config/fetcher-api-config";
 import {isEmpty} from "../../utils";
+import store from "@/truvoicer-base/redux/store";
 
 const vsprintf = require('sprintf-js').vsprintf;
 
@@ -18,13 +19,18 @@ export const fetchData = async (endpoint, operation, queryData = {}) => {
 }
 
 const fetchFromApi = async (endpoint, operation, queryData) => {
+    const siteSettings = store.getState().page.siteSettings;
+    const apiToken = siteSettings?.api_token;
+    if (!apiToken) {
+        throw new Error("API Token not found");
+    }
     const url = getApiUrl(endpoint, operation, queryData);
     console.log({url})
     let config = {
         method: "get",
         headers: {
             "Content-Type": "application/json",
-            'Authorization': 'Bearer ' + process.env.NEXT_PUBLIC_FETCHER_API_TOKEN
+            'Authorization': 'Bearer ' + apiToken
         }
     }
     //console.log(endpoint, operation, queryData)
@@ -32,8 +38,13 @@ const fetchFromApi = async (endpoint, operation, queryData) => {
 }
 
 const getApiUrl = (endpoint, operation, queryData = {}) => {
+    const siteSettings = store.getState().page.siteSettings;
+    const apiUrl = siteSettings?.api_url;
+    if (!apiUrl) {
+        throw new Error("API URL not found");
+    }
     let baseUrl;
-    baseUrl = fetcherApiConfig.apiBaseUrl + vsprintf(fetcherApiConfig.endpoints[endpoint], operation);
+    baseUrl = apiUrl + vsprintf(fetcherApiConfig.endpoints[endpoint], operation);
     return baseUrl + (isEmpty(!buildQueryString(queryData)) ? buildQueryString(queryData) : "");
 }
 

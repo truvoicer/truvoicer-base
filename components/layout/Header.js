@@ -2,8 +2,9 @@ import React, {useContext, useEffect, useRef, useState} from "react";
 import NavBar from "@/truvoicer-base/components/Sidebars/NavBar";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {connect} from "react-redux";
 
-const Header = (props) => {
+const Header = ({siteSettings}) => {
     const [isSticky, setSticky] = useState(false);
     const ref = useRef(null);
 
@@ -21,6 +22,7 @@ const Header = (props) => {
             setSticky(ref.current.getBoundingClientRect().top <= -50);
         }
     }
+    console.log('siteSettings', siteSettings)
     return (
         <>
             <div id="top-bar" className="top-bar">
@@ -70,11 +72,14 @@ const Header = (props) => {
                 {/*    {templateManager.render(<NavBar/>)}*/}
                 {/*</div>*/}
                 <div className="container">
-                    <div className="row">
+                    <div className="row justify-content-center">
                         <div className="col-md-3 col-sm-12">
                             <div className="logo">
                                 <a href="#">
-                                    {/*<img src="/images/logos/logo.png" alt=""/>*/}
+                                    {siteSettings?.logo
+                                        ? <img src={siteSettings.logo} alt=""/>
+                                        : siteSettings?.blogname || ''
+                                    }
                                 </a>
                             </div>
                         </div>
@@ -89,4 +94,10 @@ const Header = (props) => {
 Header.category = 'layout';
 Header.templateId = 'header';
 
-export default Header;
+export default connect(
+    (state) => ({
+        siteSettings: state.page.siteSettings,
+        pageData: state.page.pageData,
+    }),
+    null
+)(Header);
