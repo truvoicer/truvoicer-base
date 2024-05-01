@@ -3,6 +3,7 @@ import NavBar from "@/truvoicer-base/components/Sidebars/NavBar";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {connect} from "react-redux";
+import TopSidebar from "@/views/sidebars/TopSidebar";
 
 const Header = ({siteSettings}) => {
     const [isSticky, setSticky] = useState(false);
@@ -22,55 +23,11 @@ const Header = ({siteSettings}) => {
             setSticky(ref.current.getBoundingClientRect().top <= -50);
         }
     }
-    console.log('siteSettings', siteSettings)
+
     return (
         <>
-            <div id="top-bar" className="top-bar">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-md-8">
-                            <div className="ts-date">
-                                <i className="fa fa-calendar-check-o"></i>May 29, 2017
-                            </div>
-                            <ul className="unstyled top-nav">
-                                <li><a href="#">About</a></li>
-                                <li><a href="#">Write for Us</a></li>
-                                <li><a href="#">Advertise</a></li>
-                                <li><a href="#">Contact</a></li>
-                            </ul>
-                        </div>
-
-                        <div className="col-md-4 top-social text-lg-right text-md-center">
-                            <ul className="unstyled">
-                                <li>
-                                    <a title="Facebook" href="#">
-                                        <span className="social-icon"><i className="fa fa-facebook"></i></span>
-                                    </a>
-                                    <a title="Twitter" href="#">
-                                        <span className="social-icon"><i className="fa fa-twitter"></i></span>
-                                    </a>
-                                    <a title="Google+" href="#">
-                                        <span className="social-icon"><i className="fa fa-google-plus"></i></span>
-                                    </a>
-                                    <a title="Linkdin" href="#">
-                                        <span className="social-icon"><i className="fa fa-linkedin"></i></span>
-                                    </a>
-                                    <a title="Rss" href="#">
-                                        <span className="social-icon"><i className="fa fa-rss"></i></span>
-                                    </a>
-                                    <a title="Skype" href="#">
-                                        <span className="social-icon"><i className="fa fa-skype"></i></span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {/*<TopSidebar />*/}
             <header ref={ref} id="header" className="header">
-                {/*<div id="sticky-header" className={`main-header-area${isSticky ? ' sticky' : ''}`}>*/}
-                {/*    {templateManager.render(<NavBar/>)}*/}
-                {/*</div>*/}
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-md-3 col-sm-12">
