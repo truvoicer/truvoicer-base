@@ -12,8 +12,8 @@ function TwitterProvider({children, siteSettings}) {
         windowOptions = 'scrollbars=yes,resizable=yes,toolbar=no,location=yes',
         width = 550,
         height = 420,
-        winHeight = screen?.height,
-        winWidth = screen?.width;
+        winHeight = (typeof screen !== 'undefined')? screen?.height : height,
+        winWidth = (typeof screen !== 'undefined')? screen?.width : width;
     function updateState(data) {
         setTwitterState(modalState => {
             let cloneState = {...modalState};
