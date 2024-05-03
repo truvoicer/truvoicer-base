@@ -20,7 +20,7 @@ export const fetchData = async (endpoint, operation, queryData = {}) => {
 
 const fetchFromApi = async (endpoint, operation, queryData) => {
     const siteSettings = store.getState().page.siteSettings;
-    const apiToken = siteSettings?.api_token;
+    const apiToken = siteSettings?.frontend_api_token;
     if (!apiToken) {
         throw new Error("API Token not found");
     }
