@@ -22,12 +22,18 @@ const ListingsBlockInterface = (props) => {
             return false;
         }
 
-        return  listingsGrid.getTemplateLayoutComponent({
+        const layoutCompoent =  listingsGrid.getTemplateLayoutComponent({
             displayAs: data[DISPLAY_AS],
             category: searchContextState?.category,
             template: listingsContextState?.listingsData?.template,
             props: props
         });
+        console.log(`No layout component found for display as: ${data[DISPLAY_AS]} | category: ${searchContextState?.category}`, layoutCompoent)
+        if (!layoutCompoent) {
+            console.warn(`No layout component found for display as: ${data[DISPLAY_AS]} | category: ${searchContextState?.category}`);
+            return null
+        }
+        return layoutCompoent;
     }
 
     function getExtraListingsData() {
