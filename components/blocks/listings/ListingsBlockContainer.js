@@ -65,7 +65,7 @@ const ListingsBlockContainer = ({data, session, children}) => {
             }
         })
     }, [listingsContext, searchContext])
-
+    console.log({listingsContext})
     const myRef = useRef(null)
     if (listingsContext?.listingsScrollTop) {
         scrollToRef(myRef)
