@@ -28,7 +28,7 @@ const ListingsBlockInterface = (props) => {
             template: listingsContextState?.listingsData?.template,
             props: props
         });
-        console.log(`No layout component found for display as: ${data[DISPLAY_AS]} | category: ${searchContextState?.category}`, layoutCompoent)
+
         if (!layoutCompoent) {
             console.warn(`No layout component found for display as: ${data[DISPLAY_AS]} | category: ${searchContextState?.category}`);
             return null

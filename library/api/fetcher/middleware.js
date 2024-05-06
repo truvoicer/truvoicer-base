@@ -1,16 +1,17 @@
 import {fetcherApiConfig} from "../../../config/fetcher-api-config";
 import {isEmpty} from "../../utils";
 import store from "@/truvoicer-base/redux/store";
+import {REQUEST_GET, REQUEST_POST} from "@/truvoicer-base/library/constants/request-constants";
 
 const vsprintf = require('sprintf-js').vsprintf;
 
-export const fetchData = async (endpoint, operation, queryData = {}) => {
+export const fetchData = async (endpoint, operation, queryData = {}, data = {}, method = REQUEST_GET) => {
     if (!validateEndpoint(endpoint)) {
         console.error("Endpoint not found")
     }
 
     try {
-        const response = await fetchFromApi(endpoint, operation, queryData);
+        const response = await fetchFromApi(endpoint, operation, queryData, data, method);
         return await response.json();
     } catch (e) {
         console.error(e)
@@ -18,7 +19,7 @@ export const fetchData = async (endpoint, operation, queryData = {}) => {
     }
 }
 
-const fetchFromApi = async (endpoint, operation, queryData) => {
+const fetchFromApi = async (endpoint, operation, queryData, data = {}, method = REQUEST_GET) => {
     const siteSettings = store.getState().page.siteSettings;
     const apiToken = siteSettings?.frontend_api_token;
     if (!apiToken) {
@@ -27,11 +28,26 @@ const fetchFromApi = async (endpoint, operation, queryData) => {
     const url = getApiUrl(endpoint, operation, queryData);
     console.log({url})
     let config = {
-        method: "get",
         headers: {
             "Content-Type": "application/json",
             'Authorization': 'Bearer ' + apiToken
         }
+    }
+
+    switch (method) {
+        default:
+            config = {
+                ...config,
+                method: 'GET',
+            };
+            break;
+        case REQUEST_POST:
+            config = {
+                ...config,
+                method: 'POST',
+                body: JSON.stringify(data),
+            };
+            break;
     }
     //console.log(endpoint, operation, queryData)
     return await fetch(url, config)

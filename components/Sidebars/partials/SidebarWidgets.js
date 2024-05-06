@@ -83,9 +83,10 @@ export function getSidebarWidget({item}) {
                 component: <EmailOptinWidget data={item.tru_fetcher_email_optin}/>
             };
         }
-        if (item.hasOwnProperty('listings_filter_widget') || item?.blockName === 'listings_filter_widget') {
+        if (item.hasOwnProperty('tru_fetcher_listings_filter') || item?.blockName === 'tru_fetcher_listings_filter') {
             return {
                 hasWidgetContainer: false,
+                title: item?.tru_fetcher_listings_filter?.title || item?.tru_fetcher_listings_filter?.data?.heading || '',
                 component: <ListingsFilterInterface />
             };
         }

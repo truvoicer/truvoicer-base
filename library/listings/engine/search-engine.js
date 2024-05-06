@@ -130,11 +130,16 @@ export class SearchEngine {
     }
 
 
-    buildQueryData(allProviders, provider, queryData = {}) {
+    buildQueryData(allProviders, queryData = {}) {
         let cloneQueryData = {...queryData};
 
         cloneQueryData[fetcherApiConfig.searchLimitKey] = this.calculateLimit(allProviders.length, cloneQueryData?.[fetcherApiConfig.searchLimitKey]);
-        cloneQueryData = this.addPaginationQueryParameters(cloneQueryData, provider);
+        cloneQueryData = this.addPaginationQueryParameters(cloneQueryData);
+        return cloneQueryData;
+    }
+    buildPostData(provider, queryData = {}) {
+        let cloneQueryData = {...queryData};
+
         cloneQueryData["provider"] = provider;
         return cloneQueryData;
     }
@@ -320,7 +325,7 @@ export class SearchEngine {
     }
 
 
-    addPaginationQueryParameters(queryData, providerName = null) {
+    addPaginationQueryParameters(queryData) {
         const searchQueryState = this.searchContext.query;
         const currentPage = searchQueryState[PAGINATION_PAGE_NUMBER];
         let pageSize = siteConfig.defaultSearchLimit

@@ -27,7 +27,7 @@ const ListingsFilter = (props) => {
                     data={item}
                 />
             );
-        } else if (item.type === "list" && item.source === "api") {
+        } else if (item.type === "list" &&  ["api", 'providers'].includes(item.source)) {
             if (isSet(listingsContext?.listingsData.listings_category)) {
                 return templateManager.render(
                     <ListingsFilterApiListItem

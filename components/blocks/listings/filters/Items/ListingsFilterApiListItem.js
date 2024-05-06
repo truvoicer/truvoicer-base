@@ -4,17 +4,14 @@ import {connect} from "react-redux";
 import {
     NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED
 } from "@/truvoicer-base/redux/constants/search-constants";
-import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
-import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
 const ListingsFilterApiListItem = (props) => {
-    const [listItems, setListItems] = useState([]);
 
     const {listingsContextGroup} = props;
-
+    const [listItems, setListItems] = useState([]);
     const listingsContext = listingsContextGroup?.listingsContext;
     const searchContext = listingsContextGroup?.searchContext;
     const listingsManager = new ListingsManager(listingsContext, searchContext);
@@ -28,6 +25,9 @@ const ListingsFilterApiListItem = (props) => {
         }
     }
     useEffect(() => {
+        if (props.data.source !== 'api') {
+            return;
+        }
         let isCancelled = false;
         if (listingsContext?.category !== "") {
             listingsManager.getListingsProviders(listingsContext?.listingsData, props.data.api_endpoint, getListItemsCallback)
@@ -36,15 +36,43 @@ const ListingsFilterApiListItem = (props) => {
                 isCancelled = true;
             };
         }
-    }, [])
+    }, [props.data.source])
+
+    function getKey() {
+        switch (props.data.source) {
+            case 'api':
+                return props.data.api_endpoint;
+            case 'providers':
+                return 'providers';
+            default:
+                console.warn('No source provided for ListingsFilterApiListItem');
+                return null;
+        }
+    }
 
     const formChangeHandler = (e) => {
         listingsManager.getSearchEngine().setSearchEntity('listingsFilterApiListItem');
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+        let key = getKey();
+        if (!key) {
+            return;
+        }
         if (e.target.checked) {
-            listingsManager.getListingsEngine().addArrayItem(props.data.api_endpoint, e.target.value, true)
+            listingsManager.getListingsEngine().addArrayItem(key, e.target.value, true)
         } else {
-            listingsManager.getListingsEngine().removeArrayItem(props.data.api_endpoint, e.target.value, true)
+            listingsManager.getListingsEngine().removeArrayItem(key, e.target.value, true)
+        }
+    }
+
+    function getListItems() {
+        switch (props.data.source) {
+            case 'api':
+                return listItems;
+            case 'providers':
+                return listingsContext.providers;
+            default:
+                console.warn('No source provided for ListingsFilterApiListItem');
+                return [];
         }
     }
 
@@ -58,26 +86,29 @@ const ListingsFilterApiListItem = (props) => {
         }
     }, [searchContext?.searchOperation]);
 
-        return (
-            <>
-                <ul className="list-unstyled">
-                    {listItems &&
-                        listItems.map((item, index) => (
-                            <li key={"api_list_control_" + index.toString()}>
-                                <Form.Check
-                                    type={"checkbox"}
-                                    label={item.label}
-                                    id={props.controlPrefix + item.name}
-                                    name={props.data.api_endpoint + "[]"}
-                                    value={item.name}
-                                    onChange={formChangeHandler}
-                                />
-                            </li>
-                        ))
-                    }
-                </ul>
-            </>
-        )
+    const items = getListItems();
+    let key = getKey();
+
+    return (
+        <>
+            <ul className="list-unstyled">
+                {Array.isArray(items) &&
+                    items.map((item, index) => (
+                        <li key={"api_list_control_" + index.toString()}>
+                            <Form.Check
+                                type={"checkbox"}
+                                label={item.label}
+                                id={props.controlPrefix + item.name}
+                                name={key + "[]"}
+                                value={item.name}
+                                onChange={formChangeHandler}
+                            />
+                        </li>
+                    ))
+                }
+            </ul>
+        </>
+    )
 }
 
 function mapStateToProps(state) {

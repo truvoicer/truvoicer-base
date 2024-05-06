@@ -17,6 +17,7 @@ import {
     LISTINGS_BLOCK_SOURCE_WORDPRESS,
     LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST, LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
 } from "@/truvoicer-base/redux/constants/general_constants";
+import {REQUEST_POST} from "@/truvoicer-base/library/constants/request-constants";
 
 export class FetcherDataSource extends DataSourceBase {
 
@@ -41,17 +42,27 @@ export class FetcherDataSource extends DataSourceBase {
             return false;
         }
         this.listingsEngine.updateContext({key: "category", value: data.api_listings_category})
+
         const response = await this.getListingsProviders(
             data,
             "providers"
         );
-        if (Array.isArray(response?.data)) {
-            this.listingsEngine.updateListingsData({key: "providers", value: response.data})
-            this.listingsEngine.updateContext({key: "providers", value: response.data})
-            // this.getListingsInitialLoad();
-        } else {
+        if (!Array.isArray(response?.data)) {
             this.getListingsEngine().addError(response?.message)
         }
+        let listingsProviders = [];
+        if (Array.isArray(data?.providers_list)) {
+            listingsProviders = response.data.map(provider => {
+                const findProvider = data.providers_list.find(item => item?.provider_name === provider?.name);
+                if (findProvider) {
+                    return {...provider, ...findProvider};
+                }
+                return provider;
+            })
+        } else {
+            listingsProviders = response.data;
+        }
+        this.listingsEngine.updateContext({key: "providers", value: listingsProviders})
         this.getSearchEngine().setSearchRequestOperationMiddleware(INIT_SEARCH_REQUEST);
     }
 
@@ -59,20 +70,6 @@ export class FetcherDataSource extends DataSourceBase {
         console.log('runSearch', {source})
         const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
         this.runFetcherApiListingsSearch()
-    }
-    addQueryDataObjectAction(queryData, search = false) {
-        let listingsQueryData = this.listingsEngine.listingsContext?.listingsQueryData
-        let newQueryData = {};
-        Object.keys(queryData).map(value => {
-            newQueryData[value] = queryData[value];
-
-        });
-        const object = Object.assign({}, listingsQueryData, newQueryData);
-
-        this.updateContext({key: "listingsQueryData", value: object})
-        if (search) {
-            this.runSearch();
-        }
     }
 
     validateInitData() {
@@ -82,7 +79,7 @@ export class FetcherDataSource extends DataSourceBase {
         if (isObjectEmpty(this.listingsEngine.listingsContext?.listingsData)) {
             return false;
         }
-        if (!Array.isArray(this.listingsEngine.listingsContext?.listingsData?.providers)) {
+        if (!Array.isArray(this.listingsEngine.listingsContext?.listingsData?.providers_list)) {
             return false;
         }
         if ( this.searchEngine.searchContext.initialRequestHasRun) {
@@ -125,16 +122,20 @@ export class FetcherDataSource extends DataSourceBase {
         }
         const providers = this.getSearchProviders();
         const filterProviders = this.searchEngine.filterSearchProviders(providers);
-
+        console.log({filterProviders, providers})
         filterProviders.map(async (provider, index) => {
             const response = await fetchData(
                 "operation",
                 ['search', 'list'],
                 this.searchEngine.buildQueryData(
                     filterProviders,
+                    this.listingsEngine?.listingsContext?.listingsQueryData
+                ),
+                this.searchEngine.buildPostData(
                     provider,
                     this.listingsEngine?.listingsContext?.listingsQueryData
-                )
+                ),
+                REQUEST_POST
             );
             if (response?.status === "success") {
                 this.searchResponseHandler(response.data, index === filterProviders.length - 1);
@@ -191,21 +192,29 @@ export class FetcherDataSource extends DataSourceBase {
     }
     getSearchProviders() {
         const queryDataState = this.listingsEngine?.listingsContext?.listingsQueryData;
+        const listingsContext = this.listingsEngine?.listingsContext;
         const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
         let providers = [];
         if (!Array.isArray(queryDataState?.providers) || queryDataState.providers.length === 0) {
-            if (Array.isArray(listingsDataState?.providers) && listingsDataState.providers.length) {
-                providers = listingsDataState.providers.map(provider => {
-                    return provider.name;
-                });
-                providers.map((provider) => {
-                    this.listingsEngine.addArrayItem("providers", provider)
-                });
+            if  (
+                Array.isArray(listingsContext?.providers) &&
+                listingsContext.providers.length
+            )  {
+                providers = listingsContext.providers;
+            } else if  (
+                Array.isArray(listingsDataState?.providers_list) &&
+                listingsDataState.providers_list.length
+            )  {
+                providers = listingsDataState.providers_list;
             }
         } else {
             providers = queryDataState.providers.map(provider => {
-                return provider;
-            });
+                const findProvider = listingsContext.providers.find(item => item?.name === provider);
+                if (findProvider) {
+                    return findProvider;
+                }
+                return false;
+            }).filter(provider => isObject(provider) && !isObjectEmpty(provider));
         }
         return providers
     }

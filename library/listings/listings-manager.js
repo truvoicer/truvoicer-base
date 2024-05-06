@@ -60,22 +60,6 @@ export class ListingsManager extends ListingsEngineBase {
         }
 
     }
-    async getListingsProviders(listingsData, endpoint = "providers", callback) {
-        let response = null;
-        switch (listingsData?.source) {
-            case LISTINGS_BLOCK_SOURCE_WORDPRESS:
-                response = await this.wpDataSource.getListingsProviders(listingsData, endpoint = "providers");
-                break;
-            case LISTINGS_BLOCK_SOURCE_API:
-            default:
-                response = await this.fetcherDataSource.getListingsProviders(listingsData, endpoint = "providers");
-                break;
-        }
-        if (isEmpty(response)) {
-            return;
-        }
-        callback(response.status, response.data)
-    }
 
 
     getSearchLimit(data) {
