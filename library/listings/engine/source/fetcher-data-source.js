@@ -129,7 +129,7 @@ export class FetcherDataSource extends DataSourceBase {
         filterProviders.map(async (provider, index) => {
             const response = await fetchData(
                 "operation",
-                [this.searchEngine.getEndpointOperation()],
+                ['search', 'list'],
                 this.searchEngine.buildQueryData(
                     filterProviders,
                     provider,
@@ -215,9 +215,10 @@ export class FetcherDataSource extends DataSourceBase {
         providers_list
     }, endpoint = "providers") {
         let query = {};
-        console.log({api_listings_category, select_providers, providers_list})
         if (isSet(select_providers) && select_providers && Array.isArray(providers_list)) {
-            query = {provider: providers_list};
+            query = {
+                provider: providers_list.map(provider => provider?.provider_name)
+            };
         }
         return await fetchData("list", [api_listings_category, endpoint], query);
     }
