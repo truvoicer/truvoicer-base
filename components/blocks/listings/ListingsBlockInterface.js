@@ -21,10 +21,10 @@ const ListingsBlockInterface = (props) => {
         if (!isNotEmpty(data?.[DISPLAY_AS])) {
             return false;
         }
-
+        console.log('data', searchContextState?.category)
         const layoutCompoent =  listingsGrid.getTemplateLayoutComponent({
             displayAs: data[DISPLAY_AS],
-            category: searchContextState?.category,
+            category: listingsContextState?.listingsData?.api_listings_service,
             template: listingsContextState?.listingsData?.template,
             props: props
         });

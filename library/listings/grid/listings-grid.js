@@ -124,12 +124,6 @@ export class ListingsGrid {
             template
         });
         if (!GridLayoutComponent) {
-            GridLayoutComponent = this.findDefaultLayoutComponent({
-                displayAs,
-                template
-            });
-        }
-        if (!GridLayoutComponent) {
             console.warn("No template layout component found for", displayAs, category);
             return null;
         }

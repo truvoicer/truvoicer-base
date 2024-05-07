@@ -106,7 +106,7 @@ export class FetcherDataSource extends DataSourceBase {
         }
         return true;
     }
-    runFetcherApiListingsSearch() {
+    async runFetcherApiListingsSearch() {
         console.log('runFetcherApiListingsSearch')
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
         this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
@@ -123,28 +123,27 @@ export class FetcherDataSource extends DataSourceBase {
         const providers = this.getSearchProviders();
         const filterProviders = this.searchEngine.filterSearchProviders(providers);
         console.log({filterProviders, providers})
-        filterProviders.map(async (provider, index) => {
-            const response = await fetchData(
-                "operation",
-                ['search', 'list'],
-                this.searchEngine.buildQueryData(
-                    filterProviders,
-                    this.listingsEngine?.listingsContext?.listingsQueryData
-                ),
-                this.searchEngine.buildPostData(
-                    provider,
-                    this.listingsEngine?.listingsContext?.listingsData?.api_listings_service,
-                    this.listingsEngine?.listingsContext?.listingsQueryData
-                ),
-                REQUEST_POST
-            );
-            if (response?.status === "success") {
-                this.searchResponseHandler(response.data, index === filterProviders.length - 1);
-            } else {
-                this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
-                this.searchEngine.setSearchRequestErrorAction(response?.message)
-            }
-        })
+        const response = await fetchData(
+            "operation",
+            ['search', 'list'],
+            this.searchEngine.buildQueryData(
+                filterProviders,
+                this.listingsEngine?.listingsContext?.listingsQueryData
+            ),
+            this.searchEngine.buildPostData(
+                filterProviders,
+                this.listingsEngine?.listingsContext?.listingsData?.api_listings_service,
+                this.listingsEngine?.listingsContext?.listingsQueryData
+            ),
+            REQUEST_POST
+        );
+        if (response?.status === "success") {
+            this.searchResponseHandler(response.data, true);
+        } else {
+            this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
+            this.searchEngine.setSearchRequestErrorAction(response?.message)
+        }
+
     }
 
     searchResponseHandler(data, completed = false) {
