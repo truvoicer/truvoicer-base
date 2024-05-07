@@ -137,10 +137,11 @@ export class SearchEngine {
         cloneQueryData = this.addPaginationQueryParameters(cloneQueryData);
         return cloneQueryData;
     }
-    buildPostData(provider, queryData = {}) {
+    buildPostData(provider, service,  queryData = {}) {
         let cloneQueryData = {...queryData};
 
         cloneQueryData["provider"] = provider;
+        cloneQueryData["service"] = service;
         return cloneQueryData;
     }
 

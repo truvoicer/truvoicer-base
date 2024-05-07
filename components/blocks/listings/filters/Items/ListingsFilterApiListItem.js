@@ -37,13 +37,12 @@ const ListingsFilterApiListItem = (props) => {
             };
         }
     }, [props.data.source])
-
     function getKey() {
         switch (props.data.source) {
             case 'api':
                 return props.data.api_endpoint;
             case 'providers':
-                return 'providers';
+                return 'provider';
             default:
                 console.warn('No source provided for ListingsFilterApiListItem');
                 return null;
@@ -57,10 +56,15 @@ const ListingsFilterApiListItem = (props) => {
         if (!key) {
             return;
         }
+
+        const findProvider = listingsContext.providers.find(item => item?.name === e.target.value);
+        if (findProvider) {
+            return;
+        }
         if (e.target.checked) {
-            listingsManager.getListingsEngine().addArrayItem(key, e.target.value, true)
+            listingsManager.getListingsEngine().addArrayItem(key, findProvider, true)
         } else {
-            listingsManager.getListingsEngine().removeArrayItem(key, e.target.value, true)
+            listingsManager.getListingsEngine().removeArrayObject(key, 'name',  e.target.value, true)
         }
     }
 
@@ -88,7 +92,7 @@ const ListingsFilterApiListItem = (props) => {
 
     const items = getListItems();
     let key = getKey();
-
+    console.log('ListingsFilterApiListItem', items, key)
     return (
         <>
             <ul className="list-unstyled">

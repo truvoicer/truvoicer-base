@@ -133,6 +133,7 @@ export class FetcherDataSource extends DataSourceBase {
                 ),
                 this.searchEngine.buildPostData(
                     provider,
+                    this.listingsEngine?.listingsContext?.listingsData?.api_listings_service,
                     this.listingsEngine?.listingsContext?.listingsQueryData
                 ),
                 REQUEST_POST
@@ -190,6 +191,16 @@ export class FetcherDataSource extends DataSourceBase {
             this.searchEngine.setSearchRequestOperationAction(null);
         }
     }
+    buildProviderPostData(providers = []) {
+        const listingsContext = this.listingsEngine?.listingsContext;
+        return providers.map(provider => {
+            const findProvider = listingsContext.providers.find(item => item?.name === provider);
+            if (findProvider) {
+                return findProvider;
+            }
+            return false;
+        }).filter(provider => isObject(provider) && !isObjectEmpty(provider));
+    }
     getSearchProviders() {
         const queryDataState = this.listingsEngine?.listingsContext?.listingsQueryData;
         const listingsContext = this.listingsEngine?.listingsContext;
@@ -208,13 +219,7 @@ export class FetcherDataSource extends DataSourceBase {
                 providers = listingsDataState.providers_list;
             }
         } else {
-            providers = queryDataState.providers.map(provider => {
-                const findProvider = listingsContext.providers.find(item => item?.name === provider);
-                if (findProvider) {
-                    return findProvider;
-                }
-                return false;
-            }).filter(provider => isObject(provider) && !isObjectEmpty(provider));
+            providers = this.buildProviderPostData(queryDataState.providers)
         }
         return providers
     }

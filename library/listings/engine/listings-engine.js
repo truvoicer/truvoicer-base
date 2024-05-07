@@ -63,6 +63,18 @@ export class ListingsEngine {
         });
         this.updateContext({key: "listingsQueryData", value: object})
     }
+    removeArrayObject(key, compareKey, value, search = false) {
+        let listingsQueryData = this.listingsContext?.listingsQueryData
+        let index = listingsQueryData[key].findIndex(item => item[compareKey] === value);
+        const newArray = [...listingsQueryData[key]]
+        newArray.splice(index, 1)
+        if (index === -1) return;
+
+        const object = Object.assign({}, listingsQueryData, {
+            [key]: newArray
+        });
+        this.updateContext({key: "listingsQueryData", value: object})
+    }
 
     addListingsQueryDataString(key, value) {
         this.updateContextNestedObjectData({key, object: "listingsQueryData", value})
