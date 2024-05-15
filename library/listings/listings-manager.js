@@ -112,6 +112,25 @@ export class ListingsManager extends ListingsEngineBase {
                 return false;
         }
     }
+    getListingsProviders({api_listings_category, select_providers, providers_list}, endpoint = "providers", callback) {
+        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
+
+        switch (listingsDataState?.source) {
+            case LISTINGS_BLOCK_SOURCE_WORDPRESS:
+                return this.wpDataSource.getListingsProviders(
+                    {api_listings_category, select_providers, providers_list},
+                    endpoint = "providers", callback
+                );
+            case LISTINGS_BLOCK_SOURCE_API:
+                return this.fetcherDataSource.getListingsProviders(
+                    {api_listings_category, select_providers, providers_list},
+                    endpoint = "providers",
+                    callback
+                );
+            default:
+                return false;
+        }
+    }
     validateSearchParams() {
         const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
 
