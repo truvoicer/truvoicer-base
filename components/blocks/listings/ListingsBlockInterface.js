@@ -66,6 +66,7 @@ const ListingsBlockInterface = (props) => {
         },
     })
 
+    console.log('listingsGrid', listingsContextState?.listingsData)
     const [searchContextState, setSearchContextState] = useState({
         ...searchData,
         updateData: ({key, value}) => {

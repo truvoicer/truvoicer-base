@@ -110,7 +110,7 @@ const DropdownMenuList = (props) => {
 
     return (
         <Dropdown.Menu alignRight={true} as={templateManager.render(CustomDropdownMenu)}>
-            {props.data.menu_items.map((item, index) => (
+            {Array.isArray(props?.data?.menu_items) && props.data.menu_items.map((item, index) => (
                 <React.Fragment key={index}>
                     {!siteConfig.authenticatedItems.includes(item.menu_item.post_type) &&
                     !siteConfig.notAuthenticatedItems.includes(item.menu_item.post_type) &&
@@ -118,7 +118,7 @@ const DropdownMenuList = (props) => {
                     }
                 </React.Fragment>
             ))}
-            {props.data.menu_items.map((item, index) => (
+            {Array.isArray(props?.data?.menu_items) && props.data.menu_items.map((item, index) => (
                 <React.Fragment key={index}>
                     {props.sessionLinks && props.session.authenticated &&
                     <>

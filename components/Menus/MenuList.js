@@ -121,7 +121,7 @@ const MenuList = (props) => {
         return (
             <ul  className="nav navbar-nav">
                 {/*<ul className="site-menu js-clone-nav mr-auto d-none d-lg-block">*/}
-                {props.data.menu_items.map((item, index) => (
+                {Array.isArray(props?.data?.menu_items) && props.data.menu_items.map((item, index) => (
                     <React.Fragment key={index}>
                         {!siteConfig.authenticatedItems.includes(item.menu_item.post_type) &&
                             !siteConfig.notAuthenticatedItems.includes(item.menu_item.post_type) &&
@@ -129,7 +129,7 @@ const MenuList = (props) => {
                         }
                     </React.Fragment>
                 ))}
-                {props.data.menu_items.map((item, index) => (
+                {Array.isArray(props?.data?.menu_items) && props.data.menu_items.map((item, index) => (
                     <React.Fragment key={index}>
                         {props.sessionLinks && props.session.authenticated &&
                             <>
