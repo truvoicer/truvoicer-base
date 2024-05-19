@@ -153,11 +153,13 @@ export class ListingsEngine {
         return serviceRequest;
     }
 
-    buildInternalItemViewUrl({item}) {
+    buildInternalItemViewUrl({item, category}) {
         if (!isNotEmpty(item)) {
             return null;
         }
-        let data = {}
+        let data = {
+            service: category
+        }
         if (isNotEmpty(item?.post_name)) {
             data.item_id = item.post_name;
         } else if (isNotEmpty(item?.item_id)) {
@@ -446,7 +448,7 @@ export class ListingsEngine {
             case DISPLAY_AS_SIDEBAR_LIST:
             case DISPLAY_AS_TILES:
             case DISPLAY_AS_COMPARISONS:
-                return this.buildInternalItemViewUrl({item})
+                return this.buildInternalItemViewUrl({item, category})
             default:
                 return null;
         }

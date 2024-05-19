@@ -13,17 +13,43 @@ import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid
 const ItemViewBlock = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const listingsGrid = new ListingsGrid();
-
+    function validate(item) {
+        switch (props.item.type) {
+            case 'internal':
+                if (!isNotEmpty(props?.item?.category)) {
+                    return false;
+                }
+                break;
+            case 'external':
+                if (!isNotEmpty(item?.service?.name)) {
+                    return false;
+                }
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+    function getService(item) {
+        switch (props.item.type) {
+            case 'internal':
+                return props?.item?.category;
+            case 'external':
+                return item?.service?.name;
+            default:
+                return null;
+        }
+    }
     const getItemView = (item) => {
         if (!isNotEmpty(props?.item?.[DISPLAY_AS])) {
             return false;
         }
-        if (!isNotEmpty(item?.service?.name)) {
+        if (!validate(item)) {
             return false;
         }
         const layoutComponent =  listingsGrid.getTemplateListingComponent({
             displayAs: props.item[DISPLAY_AS],
-            category: item?.service?.name,
+            category: getService(item),
             component: 'itemView',
             props: {
                 type: props?.item?.type,
@@ -38,7 +64,6 @@ const ItemViewBlock = (props) => {
             console.warn(`No itemView component found for display as: ${props.item[DISPLAY_AS]} | category: ${item?.service?.name}`);
             return null
         }
-        console.log('itemviewblock', layoutComponent)
         // return layoutCompoent;
         return layoutComponent;
     }

@@ -17,13 +17,24 @@ const ListingsBlockInterface = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const listingsGrid = new ListingsGrid();
+
+    function getListingService() {
+        switch (listingsContextState?.listingsData?.source) {
+            case 'api':
+                return listingsContextState?.listingsData?.api_listings_service;
+            case 'wordpress':
+                return listingsContextState?.listingsData?.listings_category;
+            default:
+                return null;
+        }
+    }
     const loadListings = () => {
         if (!isNotEmpty(data?.[DISPLAY_AS])) {
             return false;
         }
         const layoutCompoent =  listingsGrid.getTemplateListingComponent({
             displayAs: data[DISPLAY_AS],
-            category: listingsContextState?.listingsData?.api_listings_service,
+            category: getListingService(),
             template: listingsContextState?.listingsData?.template,
             component: 'layout',
             props: props
