@@ -4,11 +4,12 @@ import Nav from "react-bootstrap/Nav";
 import Tab from "react-bootstrap/Tab";
 import YoutubePlayer from "@/truvoicer-base/components/widgets/Video/YoutubePlayer";
 import {isSet} from "@/truvoicer-base/library/utils";
-import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
+import {FetcherApiMiddleware} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {getSiteSettings} from "@/truvoicer-base/library/api/wp/middleware";
 
 const RequestVideoTabsBlock = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
@@ -17,6 +18,8 @@ const RequestVideoTabsBlock = (props) => {
 
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
+
+    const fetcherApiMiddleware = new FetcherApiMiddleware();
     const getDataCallback = (status, requestData) => {
         if (status === 200) {
             requestData.map(item => {
@@ -36,7 +39,7 @@ const RequestVideoTabsBlock = (props) => {
 
     function fetchProviderVideoRequest() {
         listingsContext?.listingsData?.providers.map(async provider => {
-            const response = await fetchData(
+            const response = await fetcherApiMiddleware.fetchData(
                 "operation",
                 [requestConfig.request_name],
                 {

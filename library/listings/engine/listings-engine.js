@@ -1,6 +1,5 @@
 import store from "@/truvoicer-base/redux/store";
 import {isSet, isEmpty, isNotEmpty, isObject, isObjectEmpty} from "@/truvoicer-base/library/utils";
-import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {tagManagerSendDataLayer} from "@/truvoicer-base/library/api/global-scripts";
 import {sprintf} from "sprintf-js";
 import {ItemRoutes} from "@/config/item-routes";
@@ -142,6 +141,17 @@ export class ListingsEngine {
         }
         return itemId;
     }
+    extractServiceRequest(item) {
+        let serviceRequest = null;
+        if (Array.isArray(item?.item_id)) {
+            const filterItemId = item?.item_id.filter((id) => id?.request_item?.request_operation).map((id) => id?.request_item?.request_operation);
+            if (filterItemId.length === 0) {
+                return null;
+            }
+            serviceRequest = filterItemId[0];
+        }
+        return serviceRequest;
+    }
 
     buildInternalItemViewUrl({item}) {
         if (!isNotEmpty(item)) {
@@ -164,8 +174,10 @@ export class ListingsEngine {
             return null;
         }
         let itemId = this.extractItemId(item);
-
+        let serviceRequest = this.extractServiceRequest(item);
         let data = {
+            service: category,
+            service_request: serviceRequest,
             item_id: itemId
         }
 

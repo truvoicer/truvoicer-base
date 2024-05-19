@@ -1,6 +1,6 @@
 import Modal from "react-bootstrap/Modal";
 import React, {useContext, useEffect, useState} from "react";
-import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
+import {FetcherApiMiddleware} from "@/truvoicer-base/library/api/fetcher/middleware";
 import ItemViewAccordion from "@/truvoicer-base/components/accordions/ItemViewAccordion";
 import {useRouter} from "next/navigation";
 import {GameTabConfig} from "@/truvoicer-base/config/tabs/item/game";
@@ -8,6 +8,7 @@ import ImageLoader from "@/truvoicer-base/components/loaders/ImageLoader";
 import {getItemViewUrl} from "@/truvoicer-base/redux/actions/item-actions";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {getSiteSettings} from "@/truvoicer-base/library/api/wp/middleware";
 
 const ComparisonsInfoModal = (props) => {
     const router = useRouter();
@@ -16,11 +17,12 @@ const ComparisonsInfoModal = (props) => {
     const [show, setShow] = useState(false)
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
+    const fetcherApiMiddleware = new FetcherApiMiddleware();
     async function initRequest() {
         const url = getItemViewUrl(props.data.item, props.category)
         // router.push(url, url, { shallow: true });
 
-        const response = await fetchData("operation", ["single"], {
+        const response = await fetcherApiMiddleware.fetchData("operation", ["single"], {
             query: props.data.item.item_id,
             provider: props.data.item.provider
         });

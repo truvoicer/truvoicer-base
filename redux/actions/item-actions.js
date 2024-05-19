@@ -2,13 +2,13 @@ import store from "../store"
 import React from "react";
 import {
     setItemCategory,
-    setItemData,
+    setItemData, setItemDisplayAs,
     setItemError,
     setItemId,
     setItemProvider,
     setItemType,
 } from "../reducers/item-reducer";
-import {fetchData} from "../../library/api/fetcher/middleware";
+import {FetcherApiMiddleware} from "../../library/api/fetcher/middleware";
 import {listingsGridConfig} from "@/truvoicer-base/config/listings-grid-config";
 import {isNotEmpty, isSet} from "../../library/utils";
 import {
@@ -18,8 +18,10 @@ import {
     LISTINGS_GRID_LIST
 } from "../constants/listings-constants";
 import {ItemRoutes} from "@/config/item-routes";
+import {getSiteSettings} from "@/truvoicer-base/library/api/wp/middleware";
 
 const sprintf = require('sprintf-js').sprintf;
+const fetcherApiMiddleware = new FetcherApiMiddleware();
 
 export function setItemErrorAction(error) {
     store.dispatch(setItemError(error))
@@ -36,6 +38,9 @@ export function setItemIdAction(itemId) {
 export function setItemTypeAction(itemType) {
     store.dispatch(setItemType(itemType))
 }
+export function setItemDisplayAsAction(displayAs) {
+    store.dispatch(setItemDisplayAs(displayAs))
+}
 
 export function setItemDataAction(itemData) {
     const itemDataState = {...store.getState().item.data};
@@ -44,11 +49,11 @@ export function setItemDataAction(itemData) {
 }
 
 export async function getItemAction(requestData) {
-    return await fetchData("operation", ["single"], requestData)
+    return await fetcherApiMiddleware.fetchData("operation", ["single"], requestData)
 }
 
 export async function fetchLoaderDataAction(operation, requestData, callback) {
-    const response = await fetchData("operation", [operation], requestData);
+    const response = await fetcherApiMiddleware.fetchData("operation", [operation], requestData);
     callback(response.status, response.data)
 }
 

@@ -11,8 +11,8 @@ export class ListingsGrid {
         this.keyMap = keyMap;
     }
 
-    buildTemplateLayoutConfigIdentifier({displayAs, category, template = 'default'}) {
-        return `listings.grid.${displayAs}.${category}.templates.${template}.layout`;
+    buildTemplateComponentConfigIdentifier({displayAs, category, template = 'default', component}) {
+        return `listings.grid.${displayAs}.${category}.templates.${template}.${component}`;
     }
     buildTemplateConfigIdentifier({displayAs, category, listingsGrid, template = 'default'}) {
         return `listings.grid.${displayAs}.${category}.templates.${template}.gridItems.${listingsGrid}`;
@@ -29,13 +29,14 @@ export class ListingsGrid {
             gridConfig
         );
     }
-    findTemplateLayoutComponent({displayAs, category, listingsGrid, template = 'default'}) {
+    findTemplateListingComponent({displayAs, category, component, template = 'default'}) {
         const gridConfig = templateConfig();
         return findInObject(
-            this.buildTemplateLayoutConfigIdentifier({
+            this.buildTemplateComponentConfigIdentifier({
                 displayAs,
                 category,
-                template
+                template,
+                component
             }),
             gridConfig
         );
@@ -117,11 +118,12 @@ export class ListingsGrid {
             />
         )
     }
-    getTemplateLayoutComponent({displayAs, category, template, props}) {
-        let GridLayoutComponent = this.findTemplateLayoutComponent({
+    getTemplateListingComponent({displayAs, category, template, component, props}) {
+        let GridLayoutComponent = this.findTemplateListingComponent({
             displayAs,
             category,
-            template
+            template,
+            component
         });
         if (!GridLayoutComponent) {
             console.warn("No template layout component found for", displayAs, category);

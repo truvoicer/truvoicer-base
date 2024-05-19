@@ -2,12 +2,13 @@ import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import Nav from "react-bootstrap/Nav";
 import Tab from "react-bootstrap/Tab";
-import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
+import {FetcherApiMiddleware} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {uCaseFirst} from "@/truvoicer-base/library/utils";
 import ApiRequestItemCarousel from "../carousel/ApiRequestItemCarousel";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {getSiteSettings} from "@/truvoicer-base/library/api/wp/middleware";
 
 const RequestCarouselTabsBlock = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
@@ -16,6 +17,7 @@ const RequestCarouselTabsBlock = (props) => {
 
     const listingsContext = useContext(ListingsContext);
 
+    const fetcherApiMiddleware = new FetcherApiMiddleware();
     const getDataCallback = (status, requestData) => {
         if (status === 200) {
             setData(data => {
@@ -28,7 +30,7 @@ const RequestCarouselTabsBlock = (props) => {
     function providersFetchRequest() {
         if (Array.isArray(listingsContext?.listingsData?.providers) && listingsContext?.listingsData?.providers.length > 0) {
             listingsContext?.listingsData?.providers.map(async provider => {
-                const response = await fetchData(
+                const response = await fetcherApiMiddleware.fetchData(
                     "operation",
                     [requestConfig.request_name],
                     {

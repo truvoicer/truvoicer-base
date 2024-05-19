@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {isNotEmpty, isSet} from "../../library/utils";
 import {defaultListingsGrid, listingsGridConfig} from "../../config/listings-grid-config";
-import {fetchData} from "../../library/api/fetcher/middleware";
+import {FetcherApiMiddleware} from "../../library/api/fetcher/middleware";
 import {SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-constants";
 import {connect} from "react-redux";
 import {useRouter} from "next/navigation";
@@ -16,6 +16,7 @@ import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
+import {getSiteSettings} from "@/truvoicer-base/library/api/wp/middleware";
 
 
 // const useStyles = makeStyles((theme) => ({
@@ -47,6 +48,8 @@ const SavedItemsVerticalTabs = (props) => {
 
     const listingsGridManager = new ListingsGrid();
     const templateManager = new TemplateManager(useContext(TemplateContext));
+
+    const fetcherApiMiddleware = new FetcherApiMiddleware();
     const getProviderDataByName = (index) => {
         let item = {};
         Object.keys(props.data).map((key, objectIndex) => {
@@ -65,7 +68,7 @@ const SavedItemsVerticalTabs = (props) => {
                 category: item.category
             }
 
-            const response = await fetchData("operation", ["single"], data);
+            const response = await fetcherApiMiddleware.fetchData("operation", ["single"], data);
             if (response.status === 200) {
                 getItemsResponseHandler(response.data, new_request);
                 new_request = false;

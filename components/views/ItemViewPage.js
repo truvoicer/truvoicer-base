@@ -3,7 +3,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {connect} from "react-redux";
 import {loadBaseItemPage} from "@/truvoicer-base/redux/actions/page-actions";
 import {
-    setItemCategoryAction, setItemDataAction,
+    setItemCategoryAction, setItemDataAction, setItemDisplayAsAction,
     setItemIdAction,
     setItemProviderAction, setItemTypeAction, setSingleItemPostState
 } from "@/truvoicer-base/redux/actions/item-actions";
@@ -21,6 +21,7 @@ import {templateConfig} from "@/config/template-config";
 const ItemViewPage = (props) => {
     const {
         type,
+        displayAs,
         item,
         itemData,
         category,
@@ -37,6 +38,7 @@ const ItemViewPage = (props) => {
         loadBaseItemPage({page, settings, postNav})
         setItemDataAction(itemData)
         setItemTypeAction(type);
+        setItemDisplayAsAction(displayAs);
         switch (type) {
             case 'internal':
                 if (!isNotEmpty(item)) {

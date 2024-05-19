@@ -2,8 +2,10 @@
 // AUTH STATE
 import {createSlice} from "@reduxjs/toolkit";
 import {getReducers, getState} from "../../library/helpers/redux";
+import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
 
 const defaultState = {
+    [DISPLAY_AS]: null,
     type: null,
     data: {},
     provider: "",
@@ -13,6 +15,9 @@ const defaultState = {
 };
 
 const defaultReducers = {
+    setItemDisplayAs: (state, action) => {
+        state[DISPLAY_AS] = action.payload;
+    },
     setItemType: (state, action) => {
         state.type = action.payload;
     },
@@ -41,4 +46,4 @@ export const itemSlice = createSlice({
 });
 
 export const itemReducer = itemSlice.reducer;
-export const { setItemType, setItemId, setItemCategory, setItemData, setItemProvider, setItemError } = itemSlice.actions;
+export const { setItemDisplayAs, setItemType, setItemId, setItemCategory, setItemData, setItemProvider, setItemError } = itemSlice.actions;

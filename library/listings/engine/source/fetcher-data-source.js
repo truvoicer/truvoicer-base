@@ -1,6 +1,6 @@
 import {DataSourceBase} from "@/truvoicer-base/library/listings/engine/source/data-source-base";
 import {isNotEmpty, isObject, isObjectEmpty, isSet} from "@/truvoicer-base/library/utils";
-import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
+import {FetcherApiMiddleware} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {
     INIT_SEARCH_REQUEST,
     NEW_SEARCH_REQUEST,
@@ -18,11 +18,14 @@ import {
     LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST, LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {REQUEST_POST} from "@/truvoicer-base/library/constants/request-constants";
+import {getSiteSettings} from "@/truvoicer-base/library/api/wp/middleware";
 
 export class FetcherDataSource extends DataSourceBase {
 
+    fetcherApiMiddleware = null;
     constructor(listingsEngine, searchEngine) {
         super(listingsEngine, searchEngine);
+        this.fetcherApiMiddleware = new FetcherApiMiddleware();
     }
     getProvidersCallback(status, data) {
         console.log('getProvidersCallback', {status, data})
@@ -123,7 +126,7 @@ export class FetcherDataSource extends DataSourceBase {
         const providers = this.getSearchProviders();
         const filterProviders = this.searchEngine.filterSearchProviders(providers);
         console.log({filterProviders, providers})
-        const response = await fetchData(
+        const response = await this.fetcherApiMiddleware.fetchData(
             "operation",
             ['search', 'list'],
             this.searchEngine.buildQueryData(
@@ -233,6 +236,6 @@ export class FetcherDataSource extends DataSourceBase {
                 provider: providers_list.map(provider => provider?.provider_name)
             };
         }
-        return await fetchData("list", [api_listings_category, endpoint], query);
+        return await this.fetcherApiMiddleware.fetchData("list", [api_listings_category, endpoint], query);
     }
 }

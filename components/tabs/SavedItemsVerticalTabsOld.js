@@ -6,7 +6,7 @@ import {
     LISTINGS_GRID_DETAILED,
     LISTINGS_GRID_LIST
 } from "../../redux/constants/listings-constants";
-import {fetchData} from "../../library/api/fetcher/middleware";
+import {FetcherApiMiddleware} from "../../library/api/fetcher/middleware";
 import {SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-constants";
 import {connect} from "react-redux";
 import {useRouter} from "next/navigation";
@@ -15,12 +15,15 @@ import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchCo
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {getSiteSettings} from "@/truvoicer-base/library/api/wp/middleware";
 
 const SavedItemsVerticalTabsOld = (props) => {
     const searchContext = useContext(SearchContext);
     const listingsContext = useContext(ListingsContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
+
+    const fetcherApiMiddleware = new FetcherApiMiddleware();
     const router = useRouter();
     const listingsGrid = isSet(defaultListingsGrid) ? defaultListingsGrid : listingsContext.listingsGrid;
     const [modalData, setModalData] = useState({
@@ -47,7 +50,7 @@ const SavedItemsVerticalTabsOld = (props) => {
                 category: item.category
             }
             //console.log(data)
-            const response = await fetchData("operation", ["single"], data);
+            const response = await fetcherApiMiddleware.fetchData("operation", ["single"], data);
             if (response.status === 200) {
                 getItemsResponseHandler(response.data, new_request);
                 new_request = false;

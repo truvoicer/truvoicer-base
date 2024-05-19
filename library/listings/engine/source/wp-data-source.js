@@ -1,10 +1,7 @@
 import {DataSourceBase} from "@/truvoicer-base/library/listings/engine/source/data-source-base";
 import {isNotEmpty, isObject, isObjectEmpty, isSet} from "@/truvoicer-base/library/utils";
-import {fetchData} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {
     DISPLAY_AS,
-    LISTINGS_BLOCK_SOURCE_API,
-    LISTINGS_BLOCK_SOURCE_WORDPRESS,
     LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST,
     LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
 } from "@/truvoicer-base/redux/constants/general_constants";
