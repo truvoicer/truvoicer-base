@@ -232,7 +232,7 @@ export class WpDataSource extends DataSourceBase {
                 break;
         }
     }
-    getListingsProviders({api_listings_category, select_providers, providers_list}, endpoint = "providers", callback) {
+    getListingsProviders({api_listings_service, select_providers, providers_list}, endpoint = "providers", callback) {
 
     }
 }

@@ -1,6 +1,6 @@
 export const fetcherApiConfig = {
     endpoints: {
-        list: "/front/category/%s/%s",
+        list: "/front/service/%s/%s",
         operation: "/front/operation/%s/%s",
     },
     itemIdKey: "item_id",
