@@ -54,16 +54,16 @@ export class FetcherDataSource extends DataSourceBase {
             this.getListingsEngine().addError(response?.message)
         }
         let listingsProviders = [];
-        if (Array.isArray(data?.providers_list)) {
-            listingsProviders = response.data.map(provider => {
+        if (Array.isArray(data?.providers_list) && Array.isArray(response?.data?.providers)) {
+            listingsProviders = response.data.providers.map(provider => {
                 const findProvider = data.providers_list.find(item => item?.provider_name === provider?.name);
                 if (findProvider) {
                     return {...provider, ...findProvider};
                 }
                 return provider;
             })
-        } else {
-            listingsProviders = response.data;
+        } else if (Array.isArray(response?.data?.providers)) {
+            listingsProviders = response.data.providers;
         }
         this.listingsEngine.updateContext({key: "providers", value: listingsProviders})
         this.getSearchEngine().setSearchRequestOperationMiddleware(INIT_SEARCH_REQUEST);
