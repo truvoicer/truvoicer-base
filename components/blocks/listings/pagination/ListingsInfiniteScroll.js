@@ -36,12 +36,12 @@ const ListingsInfiniteScroll = (props) => {
     const grid = listingsContext?.listingsGrid;
 
     const loadMore = () => {
-        if (searchContext.searchStatus !== SEARCH_REQUEST_COMPLETED) {
-            return false;
-        }
-        listingsManager.getSearchEngine().setSearchEntity('listingsInfiniteScroll');
-        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(APPEND_SEARCH_REQUEST);
-        listingsManager.loadNextPageNumberMiddleware(searchContext.pageControls[PAGINATION_PAGE_NUMBER] + 1);
+        // if (searchContext.searchStatus !== SEARCH_REQUEST_COMPLETED) {
+        //     return false;
+        // }
+        // listingsManager.getSearchEngine().setSearchEntity('listingsInfiniteScroll');
+        // listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(APPEND_SEARCH_REQUEST);
+        // listingsManager.loadNextPageNumberMiddleware(searchContext.pageControls[PAGINATION_PAGE_NUMBER] + 1);
     }
 
     useEffect(() => {
@@ -51,7 +51,7 @@ const ListingsInfiniteScroll = (props) => {
             searchContext?.searchEntity === 'listingsInfiniteScroll' &&
             searchContext.query[PAGINATION_PAGE_NUMBER] > searchContext.pageControls[PAGINATION_PAGE_NUMBER]
         ) {
-            listingsManager.runSearch('ListingsInfiniteScroll');
+            // listingsManager.runSearch('ListingsInfiniteScroll');
         }
     }, [searchContext?.searchOperation]);
 
@@ -65,20 +65,20 @@ const ListingsInfiniteScroll = (props) => {
             loader={templateManager.render(<LoaderComponent key={"loader"}/>)}
         >
             <Row>
-                {itemsContext.items.map((item, index) => (
-                    <React.Fragment key={index}>
-                        <Col {...getGridItemColumns(grid)}>
-                            {listingsGrid.getGridItem({
-                                item,
-                                displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
-                                category: searchContext.category,
-                                listingsGrid: grid,
-                                userId: props.user[SESSION_USER_ID],
-                                index
-                            })}
-                        </Col>
-                    </React.Fragment>
-                ))}
+                {/*{itemsContext.items.map((item, index) => (*/}
+                {/*    <React.Fragment key={index}>*/}
+                {/*        <Col {...getGridItemColumns(grid)}>*/}
+                {/*            {listingsGrid.getGridItem({*/}
+                {/*                item,*/}
+                {/*                displayAs: listingsContext?.listingsData?.[DISPLAY_AS],*/}
+                {/*                category: searchContext.category,*/}
+                {/*                listingsGrid: grid,*/}
+                {/*                userId: props.user[SESSION_USER_ID],*/}
+                {/*                index*/}
+                {/*            })}*/}
+                {/*        </Col>*/}
+                {/*    </React.Fragment>*/}
+                {/*))}*/}
             </Row>
         </InfiniteScroll>
 

@@ -72,17 +72,6 @@ export class ListingsGrid {
         }
         return listingsGridConfig[displayAs]?.templates[template].gridItems[listingsGrid];
     }
-    findDefaultLayoutComponent({displayAs, template = 'default'}) {
-        const templateConfig = this.findGridTemplateConfig({displayAs, template});
-        if (!templateConfig) {
-            return null;
-        }
-        if (!isSet(listingsGridConfig[displayAs]?.templates[template]?.layout)) {
-            console.warn(`Invalid layout config for (displayAs ${displayAs}) | template ${template} | layout object not set`);
-            return null;
-        }
-        return listingsGridConfig[displayAs]?.templates[template].layout;
-    }
 
     getGridItem({item, displayAs, category, listingsGrid, template, index}) {
         let gridItem = {...item};

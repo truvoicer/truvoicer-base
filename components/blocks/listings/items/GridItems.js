@@ -207,6 +207,7 @@ const GridItems = ({children, ...props}) => {
         })
     }, [searchContext?.labels])
     useEffect(() => {
+        console.log('griditems listItems', listItems)
         updateStateObject({
             key: 'items',
             value: getSearchList(),

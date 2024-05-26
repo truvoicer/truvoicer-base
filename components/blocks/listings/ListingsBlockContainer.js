@@ -34,7 +34,6 @@ const ListingsBlockContainer = ({data, session, children}) => {
             return;
         }
 
-        console.log({listingsContext})
         if (!listingsManager.validateInitData()) {
             return;
         }
@@ -66,6 +65,7 @@ const ListingsBlockContainer = ({data, session, children}) => {
             }
         })
     }, [listingsContext, searchContext])
+
     const myRef = useRef(null)
     if (listingsContext?.listingsScrollTop) {
         scrollToRef(myRef)

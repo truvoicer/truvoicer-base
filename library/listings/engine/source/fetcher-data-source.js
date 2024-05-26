@@ -72,7 +72,7 @@ export class FetcherDataSource extends DataSourceBase {
     runSearch(source = null) {
         console.log('runSearch', {source})
         const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
-        this.runFetcherApiListingsSearch()
+        this.runFetcherApiListingsSearch(source)
     }
 
     validateInitData() {
@@ -109,7 +109,7 @@ export class FetcherDataSource extends DataSourceBase {
         }
         return true;
     }
-    async runFetcherApiListingsSearch() {
+    async runFetcherApiListingsSearch(source = null) {
         console.log('runFetcherApiListingsSearch')
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
         this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
@@ -140,6 +140,7 @@ export class FetcherDataSource extends DataSourceBase {
             ),
             REQUEST_POST
         );
+        console.log(source, this.listingsEngine?.listingsContext?.listingsData?.api_listings_service, response)
         if (response?.status === "success") {
             this.searchResponseHandler(response.data, true);
         } else {

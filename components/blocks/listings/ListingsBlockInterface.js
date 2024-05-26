@@ -14,48 +14,8 @@ import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid
 
 const ListingsBlockInterface = (props) => {
     const {data} = props;
-    const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const listingsGrid = new ListingsGrid();
-
-    function getListingService() {
-        switch (listingsContextState?.listingsData?.source) {
-            case 'api':
-                return listingsContextState?.listingsData?.api_listings_service;
-            case 'wordpress':
-                return listingsContextState?.listingsData?.listings_category;
-            default:
-                return null;
-        }
-    }
-    const loadListings = () => {
-        if (!isNotEmpty(data?.[DISPLAY_AS])) {
-            return false;
-        }
-        const layoutCompoent =  listingsGrid.getTemplateListingComponent({
-            displayAs: data[DISPLAY_AS],
-            category: getListingService(),
-            template: listingsContextState?.listingsData?.template,
-            component: 'layout',
-            props: props
-        });
-
-        if (!layoutCompoent) {
-            console.warn(`No layout component found for display as: ${data[DISPLAY_AS]} | category: ${searchContextState?.category}`);
-            return null
-        }
-        return layoutCompoent;
-    }
-
-    function getExtraListingsData() {
-        let extraData = {};
-        if (isNotEmpty(data?.grid_layout)) {
-            extraData = {
-                listingsGrid: data.grid_layout
-            }
-        }
-        return extraData;
-    }
 
     const [listingsContextState, setListingsContextState] = useState({
         ...listingsData,
@@ -77,7 +37,6 @@ const ListingsBlockInterface = (props) => {
         },
     })
 
-    console.log('listingsGrid', listingsContextState?.listingsData)
     const [searchContextState, setSearchContextState] = useState({
         ...searchData,
         updateData: ({key, value}) => {
@@ -97,6 +56,51 @@ const ListingsBlockInterface = (props) => {
         },
     })
 
+    function getListingService() {
+        switch (listingsContextState?.listingsData?.source) {
+            case 'api':
+                return data?.api_listings_service;
+            case 'wordpress':
+                return data?.listings_category;
+            default:
+                return null;
+        }
+    }
+    const loadListings = () => {
+        if (!isNotEmpty(data?.[DISPLAY_AS])) {
+            return null;
+        }
+        const service = getListingService();
+        if (!service) {
+            return null;
+        }
+        const layoutCompoent =  listingsGrid.getTemplateListingComponent({
+            displayAs: data[DISPLAY_AS],
+            category: service,
+            template: data?.template,
+            component: 'layout',
+            props: props
+        });
+
+        if (!layoutCompoent) {
+            console.log(data)
+            console.warn(`No layout component found for display as: ${data[DISPLAY_AS]} | category: ${service}`);
+            return null
+        }
+        return layoutCompoent;
+    }
+
+    function getExtraListingsData() {
+        let extraData = {};
+        if (isNotEmpty(data?.grid_layout)) {
+            extraData = {
+                listingsGrid: data.grid_layout
+            }
+        }
+        return extraData;
+    }
+
+console.log(data)
     return (
             <ListingsContext.Provider value={listingsContextState}>
                 <SearchContext.Provider value={searchContextState}>

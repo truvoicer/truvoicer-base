@@ -92,7 +92,7 @@ const ListingsFilterApiListItem = (props) => {
 
     const items = getListItems();
     let key = getKey();
-    console.log('ListingsFilterApiListItem', items, key)
+
     return (
         <>
             <ul className="list-unstyled">

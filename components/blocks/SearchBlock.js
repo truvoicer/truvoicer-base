@@ -66,7 +66,6 @@ const SearchBlock = (props) => {
 
 
     useEffect(() => {
-        console.log(searchContext?.searchEntity)
         switch (searchContext?.searchEntity) {
             case 'searchBlockCategory':
                 if (
@@ -121,7 +120,6 @@ const SearchBlock = (props) => {
         listingsManager.getSearchEngine().setSearchEntity('searchBlock');
     }
 
-    console.log(listingsContext)
     return (
         <>
             {showSearch &&
