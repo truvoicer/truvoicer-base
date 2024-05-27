@@ -16,12 +16,12 @@ function HorizontalComparisons(props) {
     const [selectedItems, setSelectedItems] = useState([]);
 
 
-    useEffect(() => {
-        if (!listingsContext.loaded) {
-            return;
-        }
-        listingsManager.runSearch('postsBlock');
-    }, [listingsContext.loaded]);
+    // useEffect(() => {
+    //     if (!listingsContext.loaded) {
+    //         return;
+    //     }
+    //     listingsManager.runSearch('postsBlock');
+    // }, [listingsContext.loaded]);
 
     function getItems() {
         return itemsContext?.items || [];

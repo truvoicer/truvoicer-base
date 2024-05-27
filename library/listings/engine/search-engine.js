@@ -61,24 +61,26 @@ export class SearchEngine {
     }
 
     setSearchListDataAction(listData) {
+        console.log('setSearchListDataAction', {listData})
         const searchState = this.searchContext;
+        let searchList = [];
+        if (Array.isArray(searchState.searchList)) {
+            searchList = [...searchState.searchList];
+        }
         if (!Array.isArray(listData) || listData.length === 0) {
             return
         }
         const searchOperation = searchState.searchOperation;
+        if (searchOperation === NEW_SEARCH_REQUEST) {
+            // this.updateContext({key: "searchOperation", value: APPEND_SEARCH_REQUEST})
+            searchList = searchList.splice(0, searchList.length + 1);
 
-        const nextState = produce(searchState.searchList, (draftState) => {
-            if ((searchOperation === NEW_SEARCH_REQUEST)) {
-                // this.updateContext({key: "searchOperation", value: APPEND_SEARCH_REQUEST})
-                draftState.splice(0, draftState.length + 1);
-
-            } else if (searchOperation === APPEND_SEARCH_REQUEST) {
-            }
-            listData.map((item) => {
-                draftState.push(item)
-            })
+        } else if (searchOperation === APPEND_SEARCH_REQUEST) {
+        }
+        listData.map((item) => {
+            searchList.push(item)
         })
-        this.updateContext({key: "searchList", value: nextState})
+        this.updateContext({key: "searchList", value: searchList})
     }
 
     setLabelsAction(labels) {

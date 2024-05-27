@@ -43,12 +43,12 @@ const SidebarDisplay = (props) => {
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
 
-    useEffect(() => {
-        if (!listingsContext.loaded) {
-            return;
-        }
-        listingsManager.runSearch('sidebarDisplay');
-    }, [listingsContext.loaded]);
+    // useEffect(() => {
+    //     if (!listingsContext.loaded) {
+    //         return;
+    //     }
+    //     listingsManager.runSearch('sidebarDisplay');
+    // }, [listingsContext.loaded]);
 
 
     return (

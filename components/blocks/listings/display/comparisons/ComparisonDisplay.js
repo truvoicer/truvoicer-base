@@ -21,12 +21,12 @@ const ComparisonDisplay = (props) => {
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const filtersPosition = props.data?.filters_position || "right";
 
-    useEffect(() => {
-        if (!listingsContext.loaded) {
-            return;
-        }
-        listingsManager.runSearch('postsBlock');
-    }, [listingsContext.loaded]);
+    // useEffect(() => {
+    //     if (!listingsContext.loaded) {
+    //         return;
+    //     }
+    //     listingsManager.runSearch('postsBlock');
+    // }, [listingsContext.loaded]);
     const getListingsBlock = () => {
         return (
             <div className="block category-listing">
