@@ -152,7 +152,7 @@ const ListingsBlockInterface = (props) => {
 
     const listingsManager = new ListingsManager(listingsContextState, searchContextState);
     const service = getListingService();
-    console.log(service, data?.[DISPLAY_AS] === [DISPLAY_AS_TILES] && service === 'news',  data)
+    console.log(service, data?.[DISPLAY_AS] === [DISPLAY_AS_TILES] && service === 'news',  data, searchContextState)
     useEffect(() => {
         if (!listingsContextState.loaded) {
             return;
