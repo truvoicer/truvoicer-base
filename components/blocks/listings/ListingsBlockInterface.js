@@ -105,40 +105,47 @@ const ListingsBlockInterface = (props) => {
         },
     })
 
-    function getListingService() {
-        switch (listingsContextState?.listingsData?.source) {
+    function getListingService(data) {
+        switch (data?.source) {
             case 'api':
                 return data?.api_listings_service;
             case 'wordpress':
-                return data?.listings_category;
+                if (Array.isArray(data?.listings_category_id)) {
+                     return data.listings_category_id[0]?.slug
+                }
+                return null;
             default:
                 return null;
         }
     }
 
-    // const loadListings = () => {
-    //     if (!isNotEmpty(data?.[DISPLAY_AS])) {
-    //         return null;
-    //     }
-    //     const service = getListingService();
-    //     if (!service) {
-    //         return null;
-    //     }
-    //     const layoutCompoent = listingsGrid.getTemplateListingComponent({
-    //         displayAs: data[DISPLAY_AS],
-    //         category: service,
-    //         template: data?.template,
-    //         component: 'layout',
-    //         props: props
-    //     });
-    //
-    //     if (!layoutCompoent) {
-    //         console.log(data)
-    //         console.warn(`No layout component found for display as: ${data[DISPLAY_AS]} | category: ${service}`);
-    //         return null
-    //     }
-    //     return layoutCompoent;
-    // }
+    const loadListings = () => {
+
+        if (!isNotEmpty(data?.[DISPLAY_AS])) {
+            return null;
+        }
+
+        const service = getListingService(data);
+
+        if (!service) {
+            return null;
+        }
+
+        const layoutCompoent = listingsGrid.getTemplateListingComponent({
+            displayAs: data[DISPLAY_AS],
+            category: service,
+            template: data?.template,
+            component: 'layout',
+            props: props
+        });
+
+        if (!layoutCompoent) {
+            console.warn(`No layout component found for display as: ${data[DISPLAY_AS]} | category: ${service}`);
+            return null
+        }
+
+        return layoutCompoent;
+    }
 
     function getExtraListingsData() {
         let extraData = {};
@@ -149,69 +156,13 @@ const ListingsBlockInterface = (props) => {
         }
         return extraData;
     }
-
-    const listingsManager = new ListingsManager(listingsContextState, searchContextState);
-    const service = getListingService();
-    console.log(service, data?.[DISPLAY_AS] === [DISPLAY_AS_TILES] && service === 'news',  data, searchContextState)
-    useEffect(() => {
-        if (!listingsContextState.loaded) {
-            return;
-        }
-        listingsManager.runSearch('');
-    }, [listingsContextState.loaded]);
+    // console.log('ListingInterface', data)
     return (
         <ListingsContext.Provider value={listingsContextState}>
             <SearchContext.Provider value={searchContextState}>
                 <ListingsBlockContainer data={data}>
                     <GridItems>
-                        {data?.[DISPLAY_AS] === DISPLAY_AS_POST_LIST && service === 'recruitment' && (
-                            <ListDisplay {...props} />
-                        )}
-                        {data?.[DISPLAY_AS] === DISPLAY_AS_POST_LIST && service === 'news' && (
-
-                            <NewsListDisplay {...props} />
-                        )}
-                        {data?.[DISPLAY_AS] === DISPLAY_AS_POST_LIST && service === 'cams' && (
-
-                            <CamsListDisplay {...props} />
-                        )}
-                        {data?.[DISPLAY_AS] === DISPLAY_AS_LIST && service === 'recruitment' && (
-                            <ListDisplay {...props} />
-                        )}
-                        {data?.[DISPLAY_AS] === DISPLAY_AS_LIST && service === 'news' && (
-                            <NewsListDisplay {...props} />
-                        )}
-                        {data?.[DISPLAY_AS] === DISPLAY_AS_LIST && service === 'cams' && (
-                            <CamsListDisplay {...props} />
-                        )}
-                        {data?.[DISPLAY_AS] === DISPLAY_AS_SIDEBAR_LIST && service === 'recruitment' && (
-                            <SidebarDisplay {...props} />
-                        )}
-                        {data?.[DISPLAY_AS] === DISPLAY_AS_SIDEBAR_LIST && service === 'news' && (
-                            <NewsSidebarDisplay {...props} />
-                        )}
-                        {data?.[DISPLAY_AS] === DISPLAY_AS_SIDEBAR_LIST && service === 'cams' && (
-                            <CamsSidebarDisplay {...props} />
-                        )}
-                        {data?.[DISPLAY_AS] === DISPLAY_AS_SIDEBAR_POST && service === 'recruitment' && (
-                            <SidebarDisplay {...props} />
-                        )}
-                        {data?.[DISPLAY_AS] === DISPLAY_AS_SIDEBAR_POST && service === 'news' && (
-                            <NewsSidebarDisplay {...props} />
-                        )}
-                        {data?.[DISPLAY_AS] === DISPLAY_AS_SIDEBAR_POST && service === 'cams' && (
-                            <CamsSidebarDisplay {...props} />
-                        )}
-                        {data?.[DISPLAY_AS] === DISPLAY_AS_TILES && service === 'recruitment' && (
-                            <TileDisplay {...props} />
-                        )}
-                        {data?.[DISPLAY_AS] === DISPLAY_AS_TILES && service === 'news' && (
-                            <NewsTileDisplay {...props} testData={searchContextState.searchList} />
-                        )}
-                        {data?.[DISPLAY_AS] === DISPLAY_AS_TILES && service === 'cams' && (
-                            <CamsTileDisplay {...props} />
-                        )}
-
+                        {loadListings()}
                     </GridItems>
                 </ListingsBlockContainer>
             </SearchContext.Provider>

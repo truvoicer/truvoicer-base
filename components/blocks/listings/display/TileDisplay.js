@@ -22,12 +22,12 @@ const TileDisplay = (props) => {
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const filtersPosition = props.data?.filters_position || "right";
 
-    // useEffect(() => {
-    //     if (!listingsContext.loaded) {
-    //         return;
-    //     }
-    //     listingsManager.runSearch('postsBlock');
-    // }, [listingsContext.loaded]);
+    useEffect(() => {
+        if (!listingsContext.loaded) {
+            return;
+        }
+        listingsManager.runSearch('postsBlock');
+    }, [listingsContext.loaded]);
 
     const defaultSettings = {
         dots: false,

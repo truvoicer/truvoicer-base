@@ -1,6 +1,5 @@
 import React from "react";
 import {blockComponentsConfig} from "../config/block-components-config";
-import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 
 function getWidget(id, data, index) {
     const Component = blockComponentsConfig.components[id].component;
