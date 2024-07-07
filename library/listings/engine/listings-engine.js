@@ -13,9 +13,12 @@ import {
 import {PostRoutes} from "@/config/post-routes";
 import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpers";
 import Image from 'next/image';
+import {EngineBase} from "@/truvoicer-base/library/listings/engine/engine-base";
+import {ListingsManagerBase} from "@/truvoicer-base/library/listings/listings-manager-base";
 
-export class ListingsEngine {
+export class ListingsEngine extends EngineBase {
     constructor(context) {
+        super();
         this.setListingsContext(context);
     }
 
@@ -24,14 +27,36 @@ export class ListingsEngine {
     }
 
 
+    getInitData() {
+        return this.listingsContext;
+    }
+
     updateContext({key, value}) {
-        // if (typeof this.listingsContext?.updateContext !== "function") {
-        //     return;
-        // }
-        this.listingsContext.updateData({key, value})
+        switch (this.dataStore) {
+            case ListingsManagerBase.DATA_STORE_CONTEXT:
+                this.listingsContext.updateData({key, value})
+                break;
+            case ListingsManagerBase.DATA_STORE_STATE:
+                console.warn("Data store state not implemented");
+                break;
+            case ListingsManagerBase.DATA_STORE_VAR:
+                this.listingsContext[key] = value;
+                break;
+        }
+
     }
     updateContextNestedObjectData({object, key, value}) {
-        this.listingsContext.updateNestedObjectData({object, key, value})
+        switch (this.dataStore) {
+            case ListingsManagerBase.DATA_STORE_CONTEXT:
+                this.listingsContext.updateNestedObjectData({object, key, value});
+                break;
+            case ListingsManagerBase.DATA_STORE_STATE:
+                console.warn("Data store state not implemented");
+                break;
+            case ListingsManagerBase.DATA_STORE_VAR:
+                // this.listingsContext[object][key] = value;
+                break;
+        }
     }
 
     updateListingsData({key, value}) {

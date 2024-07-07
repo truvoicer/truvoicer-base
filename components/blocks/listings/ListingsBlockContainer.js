@@ -10,9 +10,9 @@ import {AppContext} from "@/truvoicer-base/config/contexts/AppContext";
 import {AppManager} from "@/truvoicer-base/library/app/AppManager";
 
 const ListingsBlockContainer = ({data, session, children}) => {
-    const appContext = useContext(AppContext);
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
+    const appContext = useContext(AppContext);
     const appManager = new AppManager(appContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
 

@@ -1,4 +1,4 @@
-import {ListingsEngineBase} from "@/truvoicer-base/library/listings/engine/listings-engine-base";
+import {ListingsManagerBase} from "@/truvoicer-base/library/listings/listings-manager-base";
 import {isEmpty, isNotEmpty, isObject, isObjectEmpty, isSet} from "@/truvoicer-base/library/utils";
 import {
     LISTINGS_BLOCK_SOURCE_API,
@@ -17,13 +17,25 @@ import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-co
 import {WpDataSource} from "@/truvoicer-base/library/listings/engine/source/wp-data-source";
 import {FetcherDataSource} from "@/truvoicer-base/library/listings/engine/source/fetcher-data-source";
 
-export class ListingsManager extends ListingsEngineBase {
+export class ListingsManager extends ListingsManagerBase {
 
-    constructor(listingsContext, searchContext) {
+    constructor(listingsContext = null, searchContext = null) {
         super(listingsContext, searchContext);
         this.wpDataSource = new WpDataSource(this.listingsEngine, this.searchEngine);
         this.fetcherDataSource = new FetcherDataSource(this.listingsEngine, this.searchEngine);
     }
+    async init(data) {
+        await this.setListingsBlocksDataAction(data);
+
+        if (!this.validateInitData()) {
+            return false;
+        }
+        if (!this.validateSearchParams()) {
+            return false;
+        }
+        this.listingsEngine.updateContext({key: 'loaded', value: true})
+    }
+
     getListingsPostsPerPage() {
         const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
         const postsPerPage = this.listingsEngine?.listingsContext?.listingsQueryData?.posts_per_page;
@@ -35,19 +47,29 @@ export class ListingsManager extends ListingsEngineBase {
         }
         return siteConfig.defaultSearchLimit;
     }
-    setListingsBlocksDataAction(data) {
+    async setListingsBlocksDataAction(data) {
+        //
+        // if (!isObjectEmpty(listingsContext?.listingsData)) {
+        //     return;
+        // }
         if (!isObject(data) || isObjectEmpty(data)) {
             return false;
         }
 
-        this.initialisePageControls(data);
-        switch (data?.source) {
+        let cloneData = {...data}
+        if (Array.isArray(cloneData?.listings_category_id)) {
+            cloneData.listings_category = cloneData.listings_category_id[0]?.slug
+        }
+
+        this.initialisePageControls(cloneData);
+        console.log('setListingsBlocksDataAction', {cloneData})
+        switch (cloneData?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
-                this.wpDataSource.dataInit(data);
+                this.wpDataSource.dataInit(cloneData);
                 break;
             case LISTINGS_BLOCK_SOURCE_API:
             default:
-                this.fetcherDataSource.dataInit(data);
+                await this.fetcherDataSource.dataInit(cloneData);
                 break;
         }
 
@@ -75,16 +97,16 @@ export class ListingsManager extends ListingsEngineBase {
         this.searchEngine.setQueryItemAction(PAGINATION_PAGE_NUMBER, parseInt(pageNumber))
     }
 
-    runSearch(source = null) {
+    async runSearch(source = null) {
         console.log('runSearch', {source})
-        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
+        const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
 
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
-                this.wpDataSource.runSearch(source)
+                await this.wpDataSource.runSearch(source)
                 break;
             case LISTINGS_BLOCK_SOURCE_API:
-                this.fetcherDataSource.runSearch(source)
+                await this.fetcherDataSource.runSearch(source)
                 break;
             default:
                 console.warn('Invalid listings source...')

@@ -44,6 +44,7 @@ export class WpDataSource extends DataSourceBase {
         this.getInitialLoad(cloneData);
     }
     getInitialLoad(listingsData) {
+        console.log('getInitialLoad', listingsData)
         switch (listingsData?.wordpress_data_source) {
             case LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST:
                 this.listItemsRequestInit(listingsData)
@@ -79,6 +80,7 @@ export class WpDataSource extends DataSourceBase {
         this.getSearchEngine().setSearchEntity('listItemsRequestInit');
         this.getSearchEngine().setSearchRequestOperationMiddleware(INIT_SEARCH_REQUEST);
         const itemListId = parseInt(listingsDataState?.item_list_id);
+
         this.listingsEngine.updateContext({key: LISTINGS_REQ_OP, value: LISTINGS_REQ_OP_ITEM_LIST});
         this.listingsEngine.addListingsQueryDataString(ITEM_LIST_ID, itemListId);
         this.listingsEngine.addListingsQueryDataString(PAGE_CONTROL_REQ_PAGINATION_TYPE, PAGE_CONTROL_REQ_PAGINATION_PAGE);

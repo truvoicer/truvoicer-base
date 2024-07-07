@@ -15,17 +15,47 @@ import {produce} from "immer";
 import {isNotEmpty, isSet} from "@/truvoicer-base/library/utils";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import {siteConfig} from "@/config/site-config";
+import {EngineBase} from "@/truvoicer-base/library/listings/engine/engine-base";
+import {ListingsManagerBase} from "@/truvoicer-base/library/listings/listings-manager-base";
 
-export class SearchEngine {
+export class SearchEngine extends EngineBase {
     constructor(context) {
+        super();
         this.setSearchContext(context)
     }
 
     setSearchContext(context) {
         this.searchContext = context;
     }
+    getInitData() {
+        return this.searchContext;
+    }
     updateContext({key, value}) {
-        this.searchContext.updateData({key, value})
+        switch (this.dataStore) {
+            case ListingsManagerBase.DATA_STORE_CONTEXT:
+                this.searchContext.updateData({key, value})
+                break;
+            case ListingsManagerBase.DATA_STORE_STATE:
+                console.warn("Data store state not implemented");
+                break;
+            case ListingsManagerBase.DATA_STORE_VAR:
+                this.searchContext[key] = value;
+                break;
+        }
+    }
+
+    updateContextNestedObjectData({object, key, value}) {
+        switch (this.dataStore) {
+            case ListingsManagerBase.DATA_STORE_CONTEXT:
+                this.searchContext.updateNestedObjectData({object, key, value});
+                break;
+            case ListingsManagerBase.DATA_STORE_STATE:
+                console.warn("Data store state not implemented");
+                break;
+            case ListingsManagerBase.DATA_STORE_VAR:
+                this.searchContext[object][key] = value;
+                break;
+        }
     }
 
     updatePageControls({key, value}) {

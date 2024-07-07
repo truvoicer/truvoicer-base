@@ -1,73 +1,43 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {
     DISPLAY_AS,
-    DISPLAY_AS_COMPARISONS,
-    DISPLAY_AS_LIST,
-    DISPLAY_AS_POST_LIST,
-    DISPLAY_AS_SIDEBAR_LIST,
-    DISPLAY_AS_SIDEBAR_POST, DISPLAY_AS_TILES,
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {ListingsContext, listingsData} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext, searchData} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {updateStateNestedObjectData, updateStateObject} from "@/truvoicer-base/library/helpers/state-helpers";
-import {isNotEmpty} from "@/truvoicer-base/library/utils";
-import ListingsBlockContainer from "@/truvoicer-base/components/blocks/listings/ListingsBlockContainer";
-import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
-import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {isNotEmpty, isObject, isObjectEmpty, scrollToRef} from "@/truvoicer-base/library/utils";
 import GridItems from "@/truvoicer-base/components/blocks/listings/items/GridItems";
 import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
-import {
-    LISTINGS_GRID_COMPACT,
-    LISTINGS_GRID_DETAILED,
-    LISTINGS_GRID_LIST
-} from "@/truvoicer-base/redux/constants/listings-constants";
-import PostItemListPost from "@/views/Components/Blocks/Listings/Templates/Recruitment/Post/PostItemListPost";
-import PostInfoModal from "@/views/Components/Blocks/Listings/Templates/Recruitment/Post/PostInfoModal";
-import ListDisplay from "@/views/Components/Blocks/Listings/Templates/Recruitment/Layout/ListDisplay";
-import NewsPostItemListPost from "@/views/Components/Blocks/Listings/Templates/News/Post/PostItemListPost";
-import NewsPostInfoModal from "@/views/Components/Blocks/Listings/Templates/News/Post/PostInfoModal";
-import NewsListDisplay from "@/views/Components/Blocks/Listings/Templates/News/Layout/ListDisplay";
-import CamsPostItemListPost from "@/views/Components/Blocks/Listings/Templates/Cams/Post/PostItemListPost";
-import CamsPostInfoModal from "@/views/Components/Blocks/Listings/Templates/Cams/Post/PostInfoModal";
-import CamsListDisplay from "@/views/Components/Blocks/Listings/Templates/Cams/Layout/ListDisplay";
-import ItemList from "@/views/Components/Blocks/Listings/Templates/Recruitment/List/ItemList";
-import InfoModal from "@/views/Components/Blocks/Listings/Templates/Recruitment/List/InfoModal";
-import ItemView from "@/views/Components/Blocks/Listings/Templates/Recruitment/List/ItemView";
-import NewsItemList from "@/views/Components/Blocks/Listings/Templates/News/List/ItemList";
-import NewsInfoModal from "@/views/Components/Blocks/Listings/Templates/News/List/InfoModal";
-import CamsItemList from "@/views/Components/Blocks/Listings/Templates/Cams/List/ItemList";
-import CamsInfoModal from "@/views/Components/Blocks/Listings/Templates/Cams/List/InfoModal";
-import SidebarItemList from "@/views/Components/Blocks/Listings/Templates/Recruitment/List/SidebarItemList";
-import SidebarDisplay from "@/views/Components/Blocks/Listings/Templates/Recruitment/Layout/SidebarDisplay";
-import NewsSidebarItemList from "@/views/Components/Blocks/Listings/Templates/News/List/SidebarItemList";
-import NewsSidebarDisplay from "@/views/Components/Blocks/Listings/Templates/News/Layout/SidebarDisplay";
-import CamsSidebarItemList from "@/views/Components/Blocks/Listings/Templates/Cams/List/SidebarItemList";
-import CamsSidebarDisplay from "@/views/Components/Blocks/Listings/Templates/Cams/Layout/SidebarDisplay";
-import SidebarPostItem from "@/views/Components/Blocks/Listings/Templates/Recruitment/Post/SidebarPostItem";
-import NewsSidebarPostItem from "@/views/Components/Blocks/Listings/Templates/News/Post/SidebarPostItem";
-import CamsSidebarPostItem from "@/views/Components/Blocks/Listings/Templates/Cams/Post/SidebarPostItem";
-import ComparisonsItemList
-    from "@/views/Components/Blocks/Listings/Templates/Recruitment/Comparisons/ComparisonsItemList";
-import ComparisonDisplay
-    from "@/views/Components/Blocks/Listings/Templates/Recruitment/Layout/comparisons/ComparisonDisplay";
-import ComparisonsInfoModal
-    from "@/views/Components/Blocks/Listings/Templates/Recruitment/Comparisons/ComparisonsInfoModal";
-import ComparisonsItemView
-    from "@/views/Components/Blocks/Listings/Templates/Recruitment/Comparisons/ComparisonsItemView";
-import HorizontalComparisons
-    from "@/views/Components/Blocks/Listings/Templates/Recruitment/Layout/comparisons/HorizontalComparisons";
-import TileDisplay from "@/views/Components/Blocks/Listings/Templates/Recruitment/Layout/TileDisplay";
-import NewsTileDisplay from "@/views/Components/Blocks/Listings/Templates/News/Layout/TileDisplay";
-import CamsTileDisplay from "@/views/Components/Blocks/Listings/Templates/Cams/Layout/TileDisplay";
+import {SESSION_IS_AUTHENTICATING} from "@/truvoicer-base/redux/constants/session-constants";
+import {AppContext} from "@/truvoicer-base/config/contexts/AppContext";
+import {AppManager} from "@/truvoicer-base/library/app/AppManager";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
+import {connect} from "react-redux";
+import {ListingsManagerBase} from "@/truvoicer-base/library/listings/listings-manager-base";
+
 
 const ListingsBlockInterface = (props) => {
-    const {data} = props;
+    const {data, session} = props;
 
+    const appContext = useContext(AppContext);
+    const appManager = new AppManager(appContext);
     const listingsGrid = new ListingsGrid();
 
+
+    console.log({data, listingsData, searchData})
+    const cloneListingsData = {...listingsData};
+    const cloneSearchData = {...searchData};
+    const listingsManager = new ListingsManager(cloneListingsData, cloneSearchData);
+    listingsManager.setDataStore(ListingsManagerBase.DATA_STORE_VAR);
+    listingsManager.init(data);
+    listingsManager.runSearch('search');
+    console.log({data, listingsData, searchData, cloneListingsData, cloneSearchData})
+    const getListingsInitData = listingsManager.listingsEngine.getInitData() ?? {};
+    const getSearchInitData = listingsManager.searchEngine.getInitData() ?? {};
+    console.log('getListingsInitData', getListingsInitData)
+    console.log('getSearchInitData', getSearchInitData)
     const [listingsContextState, setListingsContextState] = useState({
-        ...listingsData,
+        ...getListingsInitData,
         ...getExtraListingsData(),
         updateData: ({key, value}) => {
             updateStateObject({
@@ -87,7 +57,7 @@ const ListingsBlockInterface = (props) => {
     })
 
     const [searchContextState, setSearchContextState] = useState({
-        ...searchData,
+        ...getSearchInitData,
         updateData: ({key, value}) => {
             updateStateObject({
                 key,
@@ -105,13 +75,71 @@ const ListingsBlockInterface = (props) => {
         },
     })
 
+
+    // useEffect(() => {
+    //     if (session[SESSION_IS_AUTHENTICATING]) {
+    //         return;
+    //     }
+    // let cloneData = {...data}
+    // if (!isObjectEmpty(listingsContext?.listingsData)) {
+    //     return;
+    // }
+    // if (Array.isArray(cloneData?.listings_category_id)) {
+    //     cloneData.listings_category = cloneData.listings_category_id[0]?.slug
+    // }
+    // listingsManager.setListingsBlocksDataAction(cloneData);
+    // }, [session])
+
+    // useEffect(() => {
+    //     if (session[SESSION_IS_AUTHENTICATING]) {
+    //         return;
+    //     }
+    //
+    //     if (!listingsManager.validateInitData()) {
+    //         return;
+    //     }
+    //     if (!listingsManager.validateSearchParams()) {
+    //         return;
+    //     }
+    //     listingsManager.listingsEngine.updateContext({key: 'loaded', value: true})
+    // }, [
+    //     session,
+    //     searchContext?.initialRequestHasRun,
+    //     searchContext?.searchOperation,
+    //     listingsContext.listingsData,
+    //     listingsContext?.listingsQueryData,
+    // ]);
+
+    // useEffect(() => {
+    //     if (!isObject(listingsContext?.listingsData) || isObjectEmpty(listingsContext?.listingsData)) {
+    //         return;
+    //     }
+    //     const listingBlockId = listingsManager.getListingBlockId();
+    //     if (!isNotEmpty(listingBlockId)) {
+    //         return;
+    //     }
+    //     appManager.updateAppContexts({
+    //         key: listingBlockId,
+    //         value: {
+    //             listingsContext: listingsContext,
+    //             searchContext: searchContext,
+    //         }
+    //     })
+    // }, [listingsContext, searchContext])
+
+    // const myRef = useRef(null)
+    // if (listingsContext?.listingsScrollTop) {
+    //     scrollToRef(myRef)
+    // }
+
+
     function getListingService(data) {
         switch (data?.source) {
             case 'api':
                 return data?.api_listings_service;
             case 'wordpress':
                 if (Array.isArray(data?.listings_category_id)) {
-                     return data.listings_category_id[0]?.slug
+                    return data.listings_category_id[0]?.slug
                 }
                 return null;
             default:
@@ -156,19 +184,28 @@ const ListingsBlockInterface = (props) => {
         }
         return extraData;
     }
+
     // console.log('ListingInterface', data)
     return (
         <ListingsContext.Provider value={listingsContextState}>
             <SearchContext.Provider value={searchContextState}>
-                <ListingsBlockContainer data={data}>
-                    <GridItems>
-                        {loadListings()}
-                    </GridItems>
-                </ListingsBlockContainer>
+                <GridItems>
+                    {loadListings()}
+                </GridItems>
             </SearchContext.Provider>
         </ListingsContext.Provider>
     );
 };
 ListingsBlockInterface.category = 'listings';
 ListingsBlockInterface.templateId = 'listingsBlockInterface';
-export default ListingsBlockInterface;
+
+function mapStateToProps(state) {
+    return {
+        session: state.session
+    };
+}
+
+export default connect(
+    mapStateToProps,
+    null
+)(ListingsBlockInterface);

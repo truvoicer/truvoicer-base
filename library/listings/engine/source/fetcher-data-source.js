@@ -69,10 +69,10 @@ export class FetcherDataSource extends DataSourceBase {
         this.getSearchEngine().setSearchRequestOperationMiddleware(INIT_SEARCH_REQUEST);
     }
 
-    runSearch(source = null) {
+    async runSearch(source = null) {
         console.log('runSearch', {source})
-        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
-        this.runFetcherApiListingsSearch(source)
+        const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
+        await this.runFetcherApiListingsSearch(source)
     }
 
     validateInitData() {
@@ -111,6 +111,7 @@ export class FetcherDataSource extends DataSourceBase {
     }
     async runFetcherApiListingsSearch(source = null) {
         console.log('runFetcherApiListingsSearch')
+        console.log(this.listingsEngine?.listingsContext)
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
         this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
         const searchQueryState = this.searchEngine.searchContext.query;
@@ -125,7 +126,6 @@ export class FetcherDataSource extends DataSourceBase {
         }
         const providers = this.getSearchProviders();
         const filterProviders = this.searchEngine.filterSearchProviders(providers);
-        console.log({filterProviders, providers})
         const response = await this.fetcherApiMiddleware.fetchData(
             "operation",
             ['search', 'list'],
