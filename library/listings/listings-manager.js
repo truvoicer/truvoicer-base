@@ -48,6 +48,7 @@ export class ListingsManager extends ListingsManagerBase {
         return siteConfig.defaultSearchLimit;
     }
     async setListingsBlocksDataAction(data) {
+        console.error('setListingsBlocksDataAction', {data})
         //
         // if (!isObjectEmpty(listingsContext?.listingsData)) {
         //     return;
@@ -140,6 +141,24 @@ export class ListingsManager extends ListingsManagerBase {
                     {api_listings_service, select_providers, providers_list},
                     endpoint = "providers",
                     callback
+                );
+            default:
+                return false;
+        }
+    }
+    async setListingsProviders({
+        api_listings_service,
+        select_providers,
+        providers_list
+    }, endpoint = "providers", callback) {
+        const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
+        console.log('setListingsProviders', {listingsDataState})
+        switch (listingsDataState?.source) {
+            case LISTINGS_BLOCK_SOURCE_WORDPRESS:
+                return true;
+            case LISTINGS_BLOCK_SOURCE_API:
+                return await this.fetcherDataSource.setListingsProviders(
+                    {api_listings_service, select_providers, providers_list},
                 );
             default:
                 return false;

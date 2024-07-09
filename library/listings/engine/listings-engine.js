@@ -15,6 +15,7 @@ import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpe
 import Image from 'next/image';
 import {EngineBase} from "@/truvoicer-base/library/listings/engine/engine-base";
 import {ListingsManagerBase} from "@/truvoicer-base/library/listings/listings-manager-base";
+import {StateHelpers} from "@/truvoicer-base/library/helpers/state-helpers";
 
 export class ListingsEngine extends EngineBase {
     constructor(context) {
@@ -37,7 +38,11 @@ export class ListingsEngine extends EngineBase {
                 this.listingsContext.updateData({key, value})
                 break;
             case ListingsManagerBase.DATA_STORE_STATE:
-                console.warn("Data store state not implemented");
+                StateHelpers.updateStateObject({
+                    key,
+                    value,
+                    setStateObj: this.setState
+                })
                 break;
             case ListingsManagerBase.DATA_STORE_VAR:
                 this.listingsContext[key] = value;
@@ -51,7 +56,12 @@ export class ListingsEngine extends EngineBase {
                 this.listingsContext.updateNestedObjectData({object, key, value});
                 break;
             case ListingsManagerBase.DATA_STORE_STATE:
-                console.warn("Data store state not implemented");
+                StateHelpers.updateStateNestedObjectData({
+                    object,
+                    key,
+                    value,
+                    setStateObj: this.setState
+                })
                 break;
             case ListingsManagerBase.DATA_STORE_VAR:
                 // this.listingsContext[object][key] = value;

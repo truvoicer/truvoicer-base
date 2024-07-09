@@ -4,7 +4,9 @@ import {
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {ListingsContext, listingsData} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext, searchData} from "@/truvoicer-base/library/listings/contexts/SearchContext";
-import {updateStateNestedObjectData, updateStateObject} from "@/truvoicer-base/library/helpers/state-helpers";
+import {
+    StateHelpers,
+} from "@/truvoicer-base/library/helpers/state-helpers";
 import {isNotEmpty, isObject, isObjectEmpty, scrollToRef} from "@/truvoicer-base/library/utils";
 import GridItems from "@/truvoicer-base/components/blocks/listings/items/GridItems";
 import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
@@ -24,71 +26,68 @@ const ListingsBlockInterface = (props) => {
     const listingsGrid = new ListingsGrid();
 
 
-    console.log({data, listingsData, searchData})
-    const cloneListingsData = {...listingsData};
-    const cloneSearchData = {...searchData};
-    const listingsManager = new ListingsManager(cloneListingsData, cloneSearchData);
+    const listingsManager = new ListingsManager(listingsData, searchData);
     listingsManager.setDataStore(ListingsManagerBase.DATA_STORE_VAR);
     listingsManager.init(data);
-    listingsManager.runSearch('search');
-    console.log({data, listingsData, searchData, cloneListingsData, cloneSearchData})
-    const getListingsInitData = listingsManager.listingsEngine.getInitData() ?? {};
-    const getSearchInitData = listingsManager.searchEngine.getInitData() ?? {};
-    console.log('getListingsInitData', getListingsInitData)
-    console.log('getSearchInitData', getSearchInitData)
-    const [listingsContextState, setListingsContextState] = useState({
-        ...getListingsInitData,
+
+    const listingsContextUseState = useState({
+        ...listingsManager.listingsEngine.getInitData() ?? {},
         ...getExtraListingsData(),
         updateData: ({key, value}) => {
-            updateStateObject({
+            StateHelpers.updateStateObject({
                 key,
                 value,
-                setStateObj: setListingsContextState
+                setStateObj: StateHelpers.getSetStateData(listingsContextUseState)
             })
         },
         updateNestedObjectData: ({object, key, value}) => {
-            updateStateNestedObjectData({
+            StateHelpers.updateStateNestedObjectData({
                 object,
                 key,
                 value,
-                setStateObj: setListingsContextState
+                setStateObj: StateHelpers.getSetStateData(listingsContextUseState)
             })
         },
     })
 
-    const [searchContextState, setSearchContextState] = useState({
-        ...getSearchInitData,
+    const searchContextUseState = useState({
+        ...listingsManager.searchEngine.getInitData() ?? {},
         updateData: ({key, value}) => {
-            updateStateObject({
+            StateHelpers.updateStateObject({
                 key,
                 value,
-                setStateObj: setSearchContextState
+                setStateObj: StateHelpers.getSetStateData(searchContextUseState)
             })
         },
         updateNestedObjectData: ({object, key, value}) => {
-            updateStateNestedObjectData({
+            StateHelpers.updateStateNestedObjectData({
                 object,
                 key,
                 value,
-                setStateObj: setSearchContextState
+                setStateObj: StateHelpers.getSetStateData(searchContextUseState)
             })
         },
     })
 
-
+    listingsManager.setListingsContext(listingsContextUseState);
+    listingsManager.setSearchContext(searchContextUseState);
+    // listingsManager.setDataStore(ListingsManagerBase.DATA_STORE_STATE);
+    // const listingsContextState = StateHelpers.getStateData(listingsContextUseState);
+    //
+    // async function setProviders() {
+    //     const setProviders = await listingsManager.setListingsProviders(data)
+    //     console.log('setProviders', setProviders)
+    // }
     // useEffect(() => {
     //     if (session[SESSION_IS_AUTHENTICATING]) {
     //         return;
     //     }
-    // let cloneData = {...data}
-    // if (!isObjectEmpty(listingsContext?.listingsData)) {
-    //     return;
-    // }
-    // if (Array.isArray(cloneData?.listings_category_id)) {
-    //     cloneData.listings_category = cloneData.listings_category_id[0]?.slug
-    // }
-    // listingsManager.setListingsBlocksDataAction(cloneData);
-    // }, [session])
+    //     if (!isNotEmpty(listingsContextState?.listingsData?.source)) {
+    //         return;
+    //     }
+    //     setProviders();
+    //
+    // }, [session, listingsContextState?.listingsData?.source])
 
     // useEffect(() => {
     //     if (session[SESSION_IS_AUTHENTICATING]) {
@@ -187,11 +186,11 @@ const ListingsBlockInterface = (props) => {
 
     // console.log('ListingInterface', data)
     return (
-        <ListingsContext.Provider value={listingsContextState}>
-            <SearchContext.Provider value={searchContextState}>
-                <GridItems>
-                    {loadListings()}
-                </GridItems>
+        <ListingsContext.Provider value={StateHelpers.getStateData(listingsContextUseState)}>
+            <SearchContext.Provider value={StateHelpers.getStateData(searchContextUseState)}>
+                {/*<GridItems>*/}
+                    {/*{loadListings()}*/}
+                {/*</GridItems>*/}
             </SearchContext.Provider>
         </ListingsContext.Provider>
     );

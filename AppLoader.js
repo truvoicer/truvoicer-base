@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {AppContext, appContextData} from "@/truvoicer-base/config/contexts/AppContext";
-import {updateStateNestedObjectData, updateStateObject} from "@/truvoicer-base/library/helpers/state-helpers";
+import {StateHelpers} from "@/truvoicer-base/library/helpers/state-helpers";
 import {TemplateContext, templateData} from "@/truvoicer-base/config/contexts/TemplateContext";
 import SessionLayout from "@/truvoicer-base/components/layout/SessionLayout";
 import GoogleAuthProvider from "@/truvoicer-base/components/providers/GoogleAuthProvider";
@@ -64,7 +64,7 @@ const AppLoader = ({templateConfig = {}, page}) => {
         ...appContextData,
         ...{
             updateAppContexts: ({key, value}) => {
-                updateStateNestedObjectData({
+                StateHelpers.updateStateNestedObjectData({
                     object: 'contexts',
                     key,
                     value,
@@ -72,7 +72,7 @@ const AppLoader = ({templateConfig = {}, page}) => {
                 })
             },
             updateData: ({key, value}) => {
-                updateStateObject({
+                StateHelpers.updateStateObject({
                     key,
                     value,
                     setStateObj: setAppContextState
@@ -85,7 +85,7 @@ const AppLoader = ({templateConfig = {}, page}) => {
         ...templateData,
         ...templateConfig,
         updateByTemplateCategory: ({category, key, value}) => {
-            updateStateNestedObjectData({
+            StateHelpers.updateStateNestedObjectData({
                 object: category,
                 key,
                 value,
@@ -93,7 +93,7 @@ const AppLoader = ({templateConfig = {}, page}) => {
             })
         },
         updateData: ({key, value}) => {
-            updateStateObject({
+            StateHelpers.updateStateObject({
                 key,
                 value,
                 setStateObj: setTemplateContextState

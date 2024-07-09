@@ -46,12 +46,18 @@ export class FetcherDataSource extends DataSourceBase {
         }
         this.listingsEngine.updateContext({key: "category", value: data.api_listings_service})
 
+        this.getSearchEngine().setSearchRequestOperationMiddleware(INIT_SEARCH_REQUEST);
+    }
+
+    async setListingsProviders(data) {
         const response = await this.getListingsProviders(
             data,
             "providers"
         );
+        console.log('setListingsProviders', response, data)
         if (!Array.isArray(response?.data)) {
             this.getListingsEngine().addError(response?.message)
+            return false;
         }
         let listingsProviders = [];
         if (Array.isArray(data?.providers_list) && Array.isArray(response?.data?.providers)) {
@@ -66,12 +72,11 @@ export class FetcherDataSource extends DataSourceBase {
             listingsProviders = response.data.providers;
         }
         this.listingsEngine.updateContext({key: "providers", value: listingsProviders})
-        this.getSearchEngine().setSearchRequestOperationMiddleware(INIT_SEARCH_REQUEST);
+        return listingsProviders
     }
 
     async runSearch(source = null) {
         console.log('runSearch', {source})
-        const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
         await this.runFetcherApiListingsSearch(source)
     }
 
@@ -124,20 +129,23 @@ export class FetcherDataSource extends DataSourceBase {
         if (!searchQueryState[PAGE_CONTROL_PAGINATION_REQUEST]) {
             this.searchEngine.setQueryItemAction(PAGINATION_PAGE_NUMBER, 1);
         }
-        const providers = this.getSearchProviders();
+        const providers = await this.getSearchProviders();
         const filterProviders = this.searchEngine.filterSearchProviders(providers);
+        const query = this.searchEngine.buildQueryData(
+            filterProviders,
+            this.listingsEngine?.listingsContext?.listingsQueryData
+        );
+        const postData = this.searchEngine.buildPostData(
+            filterProviders,
+            this.listingsEngine?.listingsContext?.listingsData?.api_listings_service,
+            this.listingsEngine?.listingsContext?.listingsQueryData
+        );
+        console.log({query, postData, filterProviders, providers})
         const response = await this.fetcherApiMiddleware.fetchData(
             "operation",
             ['search', 'list'],
-            this.searchEngine.buildQueryData(
-                filterProviders,
-                this.listingsEngine?.listingsContext?.listingsQueryData
-            ),
-            this.searchEngine.buildPostData(
-                filterProviders,
-                this.listingsEngine?.listingsContext?.listingsData?.api_listings_service,
-                this.listingsEngine?.listingsContext?.listingsQueryData
-            ),
+            query,
+            postData,
             REQUEST_POST
         );
         console.log(source, this.listingsEngine?.listingsContext?.listingsData?.api_listings_service, response)
@@ -204,11 +212,12 @@ export class FetcherDataSource extends DataSourceBase {
             return false;
         }).filter(provider => isObject(provider) && !isObjectEmpty(provider));
     }
-    getSearchProviders() {
+    async getSearchProviders() {
         const queryDataState = this.listingsEngine?.listingsContext?.listingsQueryData;
-        const listingsContext = this.listingsEngine?.listingsContext;
+        const listingsContext = await this.listingsEngine?.listingsContext;
         const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
         let providers = [];
+        console.log({queryDataState, listingsDataState, listingsContext}, this.listingsEngine?.listingsContext?.providers)
         if (!Array.isArray(queryDataState?.providers) || queryDataState.providers.length === 0) {
             if  (
                 Array.isArray(listingsContext?.providers) &&

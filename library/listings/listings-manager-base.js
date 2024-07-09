@@ -2,6 +2,7 @@
 import {SearchEngine} from "@/truvoicer-base/library/listings/engine/search-engine";
 import {ListingsEngine} from "@/truvoicer-base/library/listings/engine/listings-engine";
 import {isObject} from "@/truvoicer-base/library/utils";
+import {StateHelpers} from "@/truvoicer-base/library/helpers/state-helpers";
 
 export class ListingsManagerBase {
     static DATA_STORE_CONTEXT = 'context';
@@ -26,6 +27,14 @@ export class ListingsManagerBase {
         }
     }
 
+    setListingsContext(listingsContext) {
+        this.listingsEngine.setListingsContext(StateHelpers.getStateData(listingsContext));
+        this.listingsEngine.setSetState(StateHelpers.getSetStateData(listingsContext));
+    }
+    setSearchContext(searchContext) {
+        this.searchEngine.setSearchContext(StateHelpers.getStateData(searchContext));
+        this.listingsEngine.setSetState(StateHelpers.getSetStateData(searchContext));
+    }
     getListingsEngine() {
         return this.listingsEngine;
     }

@@ -18,7 +18,7 @@ import {ListingsEngine} from "@/truvoicer-base/library/listings/engine/listings-
 import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
 import {extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpers";
 import ListingsItemsContext, {itemsContextData} from "@/truvoicer-base/components/blocks/listings/contexts/ListingsItemsContext";
-import {updateStateObject} from "@/truvoicer-base/library/helpers/state-helpers";
+import {StateHelpers} from "@/truvoicer-base/library/helpers/state-helpers";
 
 const GridItems = ({children, ...props}) => {
     const {category} = props;
@@ -192,7 +192,7 @@ const GridItems = ({children, ...props}) => {
         ...itemsContextData,
         labels: searchContext?.labels || {},
         updateData: ({key, value}) => {
-            updateStateObject({
+            StateHelpers.updateStateObject({
                 key,
                 value,
                 setStateObj: setItemsContextState
@@ -207,7 +207,7 @@ const GridItems = ({children, ...props}) => {
         })
     }, [searchContext?.labels])
     useEffect(() => {
-        updateStateObject({
+        StateHelpers.updateStateObject({
             key: 'items',
             value: getSearchList(),
             setStateObj: setItemsContextState
