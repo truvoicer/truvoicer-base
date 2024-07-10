@@ -62,7 +62,7 @@ const MenuList = (props) => {
         const getCallback = getItemCallback(item.post_type);
         return (
             <li>
-                <Link href={item.post_url}  onClick={
+                <Link href={item?.post_url || '#'}  onClick={
                     getCallback ? getCallback : pageClickHandler.bind(this, item)
                 }>
                     {item.post_title}

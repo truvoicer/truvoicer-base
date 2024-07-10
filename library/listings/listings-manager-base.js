@@ -3,6 +3,8 @@ import {SearchEngine} from "@/truvoicer-base/library/listings/engine/search-engi
 import {ListingsEngine} from "@/truvoicer-base/library/listings/engine/listings-engine";
 import {isObject} from "@/truvoicer-base/library/utils";
 import {StateHelpers} from "@/truvoicer-base/library/helpers/state-helpers";
+import {WpDataSource} from "@/truvoicer-base/library/listings/engine/source/wp-data-source";
+import {FetcherDataSource} from "@/truvoicer-base/library/listings/engine/source/fetcher-data-source";
 
 export class ListingsManagerBase {
     static DATA_STORE_CONTEXT = 'context';
@@ -17,23 +19,46 @@ export class ListingsManagerBase {
     dataStore = ListingsManagerBase.DATA_STORE_CONTEXT;
 
     constructor(listingsContext, searchContext) {
-        if (isObject(listingsContext)) {
-            this.listingsEngine = new ListingsEngine(listingsContext);
-            this.listingsEngine.setDataStore(this.dataStore);
+        this.listingsEngine = null;
+        this.searchEngine = null;
+        this.initListingsEngine(listingsContext);
+        this.initSearchEngine(searchContext);
+        this.initDataSources();
+    }
+    initDataSources() {
+        this.wpDataSource = new WpDataSource(this.listingsEngine, this.searchEngine);
+        this.fetcherDataSource = new FetcherDataSource(this.listingsEngine, this.searchEngine);
+    }
+    initListingsEngine(listingsContext) {
+        if (!listingsContext) {
+            return;
         }
-        if (isObject(searchContext)) {
-            this.searchEngine = new SearchEngine(searchContext);
-            this.searchEngine.setDataStore(this.dataStore);
+        this.listingsEngine = new ListingsEngine(listingsContext);
+        this.listingsEngine.setDataStore(this.dataStore);
+        this.initDataSources();
+    }
+    initSearchEngine(searchContext) {
+        if (!searchContext) {
+            return;
         }
+        this.searchEngine = new SearchEngine(searchContext);
+        this.searchEngine.setDataStore(this.dataStore);
+        this.initDataSources();
     }
 
     setListingsContext(listingsContext) {
+        if (!this.listingsEngine) {
+            this.initListingsEngine(listingsContext);
+        }
         this.listingsEngine.setListingsContext(StateHelpers.getStateData(listingsContext));
         this.listingsEngine.setSetState(StateHelpers.getSetStateData(listingsContext));
     }
     setSearchContext(searchContext) {
+        if (!this.searchEngine) {
+            this.initSearchEngine(searchContext);
+        }
         this.searchEngine.setSearchContext(StateHelpers.getStateData(searchContext));
-        this.listingsEngine.setSetState(StateHelpers.getSetStateData(searchContext));
+        this.searchEngine.setSetState(StateHelpers.getSetStateData(searchContext));
     }
     getListingsEngine() {
         return this.listingsEngine;
@@ -49,5 +74,6 @@ export class ListingsManagerBase {
         this.dataStore = dataStore;
         this.listingsEngine.setDataStore(this.dataStore);
         this.searchEngine.setDataStore(this.dataStore);
+        this.initDataSources();
     }
 }

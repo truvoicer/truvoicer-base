@@ -37,7 +37,7 @@ export class FetcherDataSource extends DataSourceBase {
             this.getListingsEngine().addError(data?.message)
         }
     }
-    async dataInit(data) {
+    dataInit(data) {
         this.listingsEngine.updateContext({key: "listingsData", value: data})
 
         if (!isNotEmpty(data.api_listings_service)) {
@@ -54,8 +54,8 @@ export class FetcherDataSource extends DataSourceBase {
             data,
             "providers"
         );
-        console.log('setListingsProviders', response, data)
-        if (!Array.isArray(response?.data)) {
+
+        if (!Array.isArray(response?.data?.providers)) {
             this.getListingsEngine().addError(response?.message)
             return false;
         }
@@ -88,6 +88,12 @@ export class FetcherDataSource extends DataSourceBase {
             return false;
         }
         if (!Array.isArray(this.listingsEngine.listingsContext?.listingsData?.providers_list)) {
+            return false;
+        }
+        if (!Array.isArray(this.listingsEngine.listingsContext?.providers)) {
+            return false;
+        }
+        if (!this.listingsEngine.listingsContext?.providers.length) {
             return false;
         }
         if ( this.searchEngine.searchContext.initialRequestHasRun) {

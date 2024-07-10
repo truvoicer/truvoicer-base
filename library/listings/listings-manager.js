@@ -21,11 +21,10 @@ export class ListingsManager extends ListingsManagerBase {
 
     constructor(listingsContext = null, searchContext = null) {
         super(listingsContext, searchContext);
-        this.wpDataSource = new WpDataSource(this.listingsEngine, this.searchEngine);
-        this.fetcherDataSource = new FetcherDataSource(this.listingsEngine, this.searchEngine);
+        this.initDataSources();
     }
-    async init(data) {
-        await this.setListingsBlocksDataAction(data);
+    init(data) {
+         this.setListingsBlocksDataAction(data);
 
         if (!this.validateInitData()) {
             return false;
@@ -47,8 +46,7 @@ export class ListingsManager extends ListingsManagerBase {
         }
         return siteConfig.defaultSearchLimit;
     }
-    async setListingsBlocksDataAction(data) {
-        console.error('setListingsBlocksDataAction', {data})
+    setListingsBlocksDataAction(data) {
         //
         // if (!isObjectEmpty(listingsContext?.listingsData)) {
         //     return;
@@ -63,14 +61,14 @@ export class ListingsManager extends ListingsManagerBase {
         }
 
         this.initialisePageControls(cloneData);
-        console.log('setListingsBlocksDataAction', {cloneData})
+
         switch (cloneData?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 this.wpDataSource.dataInit(cloneData);
                 break;
             case LISTINGS_BLOCK_SOURCE_API:
             default:
-                await this.fetcherDataSource.dataInit(cloneData);
+                this.fetcherDataSource.dataInit(cloneData);
                 break;
         }
 
@@ -152,7 +150,7 @@ export class ListingsManager extends ListingsManagerBase {
         providers_list
     }, endpoint = "providers", callback) {
         const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
-        console.log('setListingsProviders', {listingsDataState})
+
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 return true;

@@ -26,12 +26,14 @@ const ListingsBlockInterface = (props) => {
     const listingsGrid = new ListingsGrid();
 
 
-    const listingsManager = new ListingsManager(listingsData, searchData);
-    listingsManager.setDataStore(ListingsManagerBase.DATA_STORE_VAR);
-    listingsManager.init(data);
+    let cloneListingsData = {...listingsData};
+    cloneListingsData.listingsData = {
+        ...cloneListingsData.listingsData,
+        ...data
 
+    };
     const listingsContextUseState = useState({
-        ...listingsManager.listingsEngine.getInitData() ?? {},
+        ...cloneListingsData,
         ...getExtraListingsData(),
         updateData: ({key, value}) => {
             StateHelpers.updateStateObject({
@@ -51,7 +53,7 @@ const ListingsBlockInterface = (props) => {
     })
 
     const searchContextUseState = useState({
-        ...listingsManager.searchEngine.getInitData() ?? {},
+        ...{...searchData},
         updateData: ({key, value}) => {
             StateHelpers.updateStateObject({
                 key,
@@ -69,26 +71,40 @@ const ListingsBlockInterface = (props) => {
         },
     })
 
+    const listingsManager = new ListingsManager();
     listingsManager.setListingsContext(listingsContextUseState);
-    listingsManager.setSearchContext(searchContextUseState);
-    // listingsManager.setDataStore(ListingsManagerBase.DATA_STORE_STATE);
-    // const listingsContextState = StateHelpers.getStateData(listingsContextUseState);
+    listingsManager.setSearchContext(searchContextUseState)
+    listingsManager.setDataStore(ListingsManagerBase.DATA_STORE_STATE);
     //
-    // async function setProviders() {
-    //     const setProviders = await listingsManager.setListingsProviders(data)
-    //     console.log('setProviders', setProviders)
-    // }
-    // useEffect(() => {
-    //     if (session[SESSION_IS_AUTHENTICATING]) {
-    //         return;
-    //     }
-    //     if (!isNotEmpty(listingsContextState?.listingsData?.source)) {
-    //         return;
-    //     }
-    //     setProviders();
-    //
-    // }, [session, listingsContextState?.listingsData?.source])
+    async function setProviders() {
+        const setProviders = await listingsManager.setListingsProviders(data)
+    }
 
+    useEffect(() => {
+        if (session[SESSION_IS_AUTHENTICATING]) {
+            return;
+        }
+        if (!isNotEmpty(data?.source)) {
+            return;
+        }
+        listingsManager.init(data);
+        setProviders();
+        listingsManager.listingsEngine.updateContext({key: 'loaded', value: true})
+    }, [session, data?.source])
+
+    useEffect(() => {
+        if (!listingsManager.listingsEngine.listingsContext.loaded) {
+            return;
+        }
+        if (!listingsManager.validateInitData()) {
+            return;
+        }
+
+        listingsManager.runSearch('listDisplay news');
+    }, [
+        listingsManager.listingsEngine.listingsContext.providers,
+        listingsManager.listingsEngine.listingsContext.loaded,
+    ]);
     // useEffect(() => {
     //     if (session[SESSION_IS_AUTHENTICATING]) {
     //         return;
@@ -184,13 +200,19 @@ const ListingsBlockInterface = (props) => {
         return extraData;
     }
 
-    // console.log('ListingInterface', data)
+    console.log('ListingInterface',
+        listingsManager.listingsEngine?.listingsContext?.listingsData?.source,
+        data,
+        {...searchData},
+        listingsManager.listingsEngine?.listingsContext,
+        listingsManager.searchEngine?.searchContext
+    )
     return (
         <ListingsContext.Provider value={StateHelpers.getStateData(listingsContextUseState)}>
             <SearchContext.Provider value={StateHelpers.getStateData(searchContextUseState)}>
-                {/*<GridItems>*/}
-                    {/*{loadListings()}*/}
-                {/*</GridItems>*/}
+                <GridItems>
+                    {loadListings()}
+                </GridItems>
             </SearchContext.Provider>
         </ListingsContext.Provider>
     );
