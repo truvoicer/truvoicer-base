@@ -102,25 +102,28 @@ export class SearchEngine extends EngineBase {
 
     setSearchListDataAction(listData) {
         console.log('setSearchListDataAction', {listData})
-        const searchState = this.searchContext;
         let searchList = [];
-        if (Array.isArray(searchState.searchList)) {
-            searchList = [...searchState.searchList];
+        if (Array.isArray(this.searchContext?.searchList)) {
+            searchList = [...this.searchContext.searchList];
         }
-        if (!Array.isArray(listData) || listData.length === 0) {
-            return
+        if (!Array.isArray(listData)) {
+            return;
         }
-        const searchOperation = searchState.searchOperation;
-        if (searchOperation === NEW_SEARCH_REQUEST) {
-            // this.updateContext({key: "searchOperation", value: APPEND_SEARCH_REQUEST})
-            searchList = searchList.splice(0, searchList.length + 1);
 
-        } else if (searchOperation === APPEND_SEARCH_REQUEST) {
+        switch (this.searchContext?.searchOperation) {
+            case APPEND_SEARCH_REQUEST:
+                this.updateContext({
+                    key: "searchList",
+                    value: [
+                        ...searchList,
+                        ...listData
+                    ]
+                })
+                break
+            default:
+                this.updateContext({key: "searchList", value: listData});
+                break;
         }
-        listData.map((item) => {
-            searchList.push(item)
-        })
-        this.updateContext({key: "searchList", value: searchList})
     }
 
     setLabelsAction(labels) {

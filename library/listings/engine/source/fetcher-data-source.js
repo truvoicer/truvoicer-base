@@ -27,16 +27,7 @@ export class FetcherDataSource extends DataSourceBase {
         super(listingsEngine, searchEngine);
         this.fetcherApiMiddleware = new FetcherApiMiddleware();
     }
-    getProvidersCallback(status, data) {
-        console.log('getProvidersCallback', {status, data})
-        if (status === 'success') {
-            this.listingsEngine.updateListingsData({key: "providers", value: data.data})
-            this.listingsEngine.updateContext({key: "providers", value: data.data})
-            // this.getListingsInitialLoad();
-        } else {
-            this.getListingsEngine().addError(data?.message)
-        }
-    }
+
     dataInit(data) {
         this.listingsEngine.updateContext({key: "listingsData", value: data})
 
@@ -122,7 +113,7 @@ export class FetcherDataSource extends DataSourceBase {
     }
     async runFetcherApiListingsSearch(source = null) {
         console.log('runFetcherApiListingsSearch')
-        console.log(this.listingsEngine?.listingsContext)
+        console.log(this.listingsEngine?.listingsContext, this.searchEngine.searchContext)
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
         this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
         const searchQueryState = this.searchEngine.searchContext.query;
