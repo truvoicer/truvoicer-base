@@ -7,7 +7,7 @@ import {useRouter} from "next/navigation";
 import {siteConfig} from "@/config/site-config";
 import {logout} from "../../redux/actions/session-actions";
 import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
-import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED} from "../../redux/constants/search-constants";
+import {SEARCH_REQUEST_NEW, SEARCH_STATUS_STARTED} from "../../redux/constants/search-constants";
 import Dropdown from "react-bootstrap/Dropdown";
 import CustomDropdownMenu from "../dropdown/CustomDropdownMenu";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
@@ -34,8 +34,8 @@ const DropdownMenuList = (props) => {
 
     const pageClickHandler = (item, e) => {
         e.preventDefault()
-        listingsManager.getSearchEngine().setSearchRequestStatusMiddleware(SEARCH_REQUEST_STARTED);
-        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+        listingsManager.getSearchEngine().setSearchRequestStatusMiddleware(SEARCH_STATUS_STARTED);
+        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
         router.push(item.post_url, item.post_url)
     }
 

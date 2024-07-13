@@ -5,7 +5,7 @@ import {siteConfig} from "@/config/site-config";
 import {SESSION_USER, SESSION_USER_ID} from "../../redux/constants/session-constants";
 import {buildWpApiUrl, protectedApiRequest} from "../../library/api/wp/middleware";
 import {wpApiConfig} from "../../config/wp-api-config";
-import {NEW_SEARCH_REQUEST} from "../../redux/constants/search-constants";
+import {SEARCH_REQUEST_NEW} from "../../redux/constants/search-constants";
 import SavedItemsVerticalTabs from "../tabs/SavedItemsVerticalTabs";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
@@ -63,7 +63,7 @@ function UserSavedItemsBlock(props) {
             {"user_id": props.session[SESSION_USER][SESSION_USER_ID]}
         )
         if (!isCancelled) {
-            listingsManager.searchEngine.setSearchRequestOperationAction(NEW_SEARCH_REQUEST);
+            listingsManager.searchEngine.setSearchRequestOperationAction(SEARCH_REQUEST_NEW);
             listingsManager.searchEngine.setSavedItemsListAction(response.data)
         }
     }

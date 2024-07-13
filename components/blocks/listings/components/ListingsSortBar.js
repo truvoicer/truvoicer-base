@@ -1,6 +1,6 @@
 import {connect} from "react-redux";
 import React, {useContext, useEffect, useState} from "react";
-import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED} from "@/truvoicer-base/redux/constants/search-constants";
+import {SEARCH_REQUEST_NEW, SEARCH_STATUS_STARTED} from "@/truvoicer-base/redux/constants/search-constants";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
@@ -67,14 +67,14 @@ const ListingsSortBar = (props) => {
             setLimit(e.target.value)
         }
         listingsManager.getSearchEngine().setSearchEntity('listingsSortBar');
-        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
         listingsManager.getListingsEngine().addListingsQueryDataString(fetcherApiConfig.searchLimitKey, e.target.value, true)
     }
 
     useEffect(() => {
         if (
             isNotEmpty(limit) &&
-            listingsManager.canRunSearch(NEW_SEARCH_REQUEST) &&
+            listingsManager.canRunSearch(SEARCH_REQUEST_NEW) &&
             searchContext?.searchEntity === 'listingsSortBar'
         ) {
             listingsManager.runSearch('ListingsSortBar');

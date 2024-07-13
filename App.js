@@ -4,18 +4,21 @@ import {
     setPasswordResetKeyAction,
     setSessionUserIdAction,
 } from "@/truvoicer-base/redux/actions/session-actions";
-import {isObjectEmpty} from "@/truvoicer-base/library/utils";
+import {isObject, isObjectEmpty} from "@/truvoicer-base/library/utils";
 import AppLoader from "@/truvoicer-base/AppLoader";
 import {templateConfig} from "@/config/template-config";
 import {loadBasePageData} from "@/truvoicer-base/redux/actions/page-actions";
+import {connect} from "react-redux";
+import {APP_LOADED, APP_STATE} from "@/truvoicer-base/redux/constants/app-constants";
+import {setAppLoadedAction} from "@/truvoicer-base/redux/actions/app-actions";
 
 const FetcherApp = ({
-    page, settings, pageOptions = {}, isResetKey = false
+    app, page, pageData, settings, pageOptions = {}, isResetKey = false
 }) => {
 
     useEffect(() => {
         let basePageData = {
-            page: page,
+            page: pageData,
             settings: settings
         }
         if (!isObjectEmpty(pageOptions)) {
@@ -29,10 +32,28 @@ const FetcherApp = ({
         // }
     }, [])
 
+    useEffect(() => {
+        if (!isObject(page?.pageData)) {
+            return;
+        }
+        if (isObjectEmpty(page.pageData)) {
+            return;
+        }
+        if (app[APP_LOADED]) {
+            return;
+        }
+        setAppLoadedAction(true);
+    }, [page.pageData])
+
     return (
         <AppLoader templateConfig={templateConfig()} page={page} />
     )
 }
 
 
-export default FetcherApp;
+export default connect(
+    (state) => ({
+        page: state.page,
+        app: state[APP_STATE],
+    })
+)(FetcherApp);

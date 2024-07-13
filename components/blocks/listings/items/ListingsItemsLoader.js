@@ -1,9 +1,9 @@
 import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {
-    NEW_SEARCH_REQUEST,
+    SEARCH_REQUEST_NEW,
     PAGINATION_PAGE_NUMBER,
-    PAGINATION_TOTAL_PAGES, SEARCH_REQUEST_COMPLETED, SEARCH_REQUEST_STARTED,
+    PAGINATION_TOTAL_PAGES, SEARCH_STATUS_COMPLETED, SEARCH_STATUS_STARTED,
 } from "@/truvoicer-base/redux/constants/search-constants";
 import GridItems from "../items/GridItems";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
@@ -39,8 +39,8 @@ const ListingsItemsLoader = ({
 
     useEffect(() => {
         if (
-            searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
-            searchContext?.searchOperation === NEW_SEARCH_REQUEST &&
+            searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
+            searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
             searchContext?.searchEntity === 'listingsItemsLoader'
         ) {
             listingsManager.runSearch('listingsItemsLoader');

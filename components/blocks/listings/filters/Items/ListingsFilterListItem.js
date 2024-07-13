@@ -2,9 +2,9 @@ import React, {useContext, useEffect} from "react";
 import Form from "react-bootstrap/Form";
 import {connect} from "react-redux";
 import {
-    APPEND_SEARCH_REQUEST,
-    NEW_SEARCH_REQUEST,
-    SEARCH_REQUEST_STARTED
+    SEARCH_REQUEST_APPEND,
+    SEARCH_REQUEST_NEW,
+    SEARCH_STATUS_STARTED
 } from "@/truvoicer-base/redux/constants/search-constants";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
@@ -23,7 +23,7 @@ const ListingsFilterListItem = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const formChangeHandler = (e) => {
         listingsManager.getSearchEngine().setSearchEntity('listingsFilterListItem');
-        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
         if (e.target.checked) {
             listingsManager.getListingsEngine().addArrayItem(props.data.name, e.target.value, true)
         } else {
@@ -34,8 +34,8 @@ const ListingsFilterListItem = (props) => {
 
     useEffect(() => {
         if (
-            searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
-            searchContext?.searchOperation === NEW_SEARCH_REQUEST &&
+            searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
+            searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
             searchContext?.searchEntity === 'listingsFilterListItem'
         ) {
             listingsManager.runSearch('listingsFilterListItem');

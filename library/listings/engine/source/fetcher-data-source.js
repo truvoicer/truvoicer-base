@@ -2,14 +2,14 @@ import {DataSourceBase} from "@/truvoicer-base/library/listings/engine/source/da
 import {isNotEmpty, isObject, isObjectEmpty, isSet} from "@/truvoicer-base/library/utils";
 import {FetcherApiMiddleware} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {
-    INIT_SEARCH_REQUEST,
-    NEW_SEARCH_REQUEST,
+    SEARCH_REQUEST_IDLE,
+    SEARCH_REQUEST_NEW,
     PAGE_CONTROL_HAS_MORE,
     PAGE_CONTROL_PAGINATION_REQUEST,
     PAGE_CONTROL_REQ_PAGINATION_TYPE,
-    PAGINATION_PAGE_NUMBER, SEARCH_REQUEST_COMPLETED,
-    SEARCH_REQUEST_ERROR,
-    SEARCH_REQUEST_STARTED
+    PAGINATION_PAGE_NUMBER, SEARCH_STATUS_COMPLETED,
+    SEARCH_REQUEST_ERROR, SEARCH_STATUS_IDLE,
+    SEARCH_STATUS_STARTED
 } from "@/truvoicer-base/redux/constants/search-constants";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import {
@@ -37,7 +37,7 @@ export class FetcherDataSource extends DataSourceBase {
         }
         this.listingsEngine.updateContext({key: "category", value: data.api_listings_service})
 
-        this.getSearchEngine().setSearchRequestOperationMiddleware(INIT_SEARCH_REQUEST);
+        this.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_IDLE);
     }
 
     async setListingsProviders(data) {
@@ -90,7 +90,7 @@ export class FetcherDataSource extends DataSourceBase {
         if ( this.searchEngine.searchContext.initialRequestHasRun) {
             return false;
         }
-        if (this.searchEngine.searchContext?.searchOperation !== INIT_SEARCH_REQUEST) {
+        if (this.searchEngine.searchContext?.searchOperation !== SEARCH_REQUEST_IDLE) {
             return false;
         }
         return true;
@@ -115,7 +115,7 @@ export class FetcherDataSource extends DataSourceBase {
         console.log('runFetcherApiListingsSearch')
         console.log(this.listingsEngine?.listingsContext, this.searchEngine.searchContext)
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
-        this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
+        this.searchEngine.setSearchRequestStatusAction(SEARCH_STATUS_STARTED);
         const searchQueryState = this.searchEngine.searchContext.query;
         const validate = this.validateSearchParams();
         if (!validate) {
@@ -194,9 +194,8 @@ export class FetcherDataSource extends DataSourceBase {
         this.searchEngine.setPageControlsAction(pageControlData)
 
         if (completed) {
-            // this.searchEngine.setHasMoreSearchPages()
-            this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_COMPLETED);
-            this.searchEngine.setSearchRequestOperationAction(null);
+            this.searchEngine.setSearchRequestStatusAction(SEARCH_STATUS_IDLE);
+            this.searchEngine.setSearchRequestOperationAction(SEARCH_REQUEST_IDLE);
         }
     }
     buildProviderPostData(providers = []) {

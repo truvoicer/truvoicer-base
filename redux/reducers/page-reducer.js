@@ -1,8 +1,10 @@
 // AUTH STATE
 import {createSlice} from "@reduxjs/toolkit";
 import {getReducers, getState} from "../../library/helpers/redux";
+import {PAGE_STATUS, PAGE_STATUS_IDLE} from "@/truvoicer-base/redux/constants/page-constants";
 
 const defaultState = {
+    [PAGE_STATUS]: PAGE_STATUS_IDLE,
     pageData: {},
     pageDataOptions: {},
     postData: {},
@@ -19,6 +21,9 @@ const defaultState = {
     error: {}
 };
 const defaultReducers = {
+    setPageStatus: (state, action) => {
+        state[PAGE_STATUS] = action.payload;
+    },
     setPageData: (state, action) => {
         state.pageData = action.payload;
     },
@@ -70,5 +75,6 @@ export const {
     setNextPostNavData, setPostListData,
     setPostNavIndex, setPostNavFromList,
     setSiteSettings, setUserAccountMenuData,
-    setPageError, setShowModal,
+    setPageError,
+    setPageStatus
 } = pageSlice.actions;

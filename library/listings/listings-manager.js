@@ -5,9 +5,18 @@ import {
     LISTINGS_BLOCK_SOURCE_WORDPRESS, LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST, LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {
-    NEW_SEARCH_REQUEST, PAGINATION_PAGE_NUMBER, PAGE_CONTROL_HAS_MORE,
-    PAGINATION_PAGE_SIZE, PAGE_CONTROL_PAGINATION_REQUEST, PAGE_CONTROL_REQ_PAGINATION_TYPE,
-    SEARCH_REQUEST_COMPLETED, SEARCH_REQUEST_ERROR, SEARCH_REQUEST_STARTED
+    SEARCH_REQUEST_NEW,
+    PAGINATION_PAGE_NUMBER,
+    PAGE_CONTROL_HAS_MORE,
+    PAGINATION_PAGE_SIZE,
+    PAGE_CONTROL_PAGINATION_REQUEST,
+    PAGE_CONTROL_REQ_PAGINATION_TYPE,
+    SEARCH_STATUS_COMPLETED,
+    SEARCH_REQUEST_ERROR,
+    SEARCH_STATUS_STARTED,
+    SEARCH_REQUEST_APPEND,
+    SEARCH_STATUS_IDLE,
+    SEARCH_REQUEST_IDLE
 } from "@/truvoicer-base/redux/constants/search-constants";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import store from "@/truvoicer-base/redux/store";
@@ -96,9 +105,30 @@ export class ListingsManager extends ListingsManagerBase {
         this.searchEngine.setQueryItemAction(PAGINATION_PAGE_NUMBER, parseInt(pageNumber))
     }
 
+    prepareSearch(source = null) {
+        console.log('prepareSearch', {source})
+        const searchOperation = this.searchEngine.searchContext.searchOperation;
+        const searchStatus = this.searchEngine.searchContext.searchStatus;
+        if (![SEARCH_REQUEST_NEW, SEARCH_REQUEST_APPEND].includes(searchOperation)) {
+            return;
+        }
+        if (searchStatus !== SEARCH_STATUS_IDLE) {
+            return;
+        }
+        this.searchEngine.setSearchRequestStatusAction(SEARCH_STATUS_STARTED);
+    }
     async runSearch(source = null) {
-        console.log('runSearch', {source})
+        console.log('runSearch', {source}, this.searchEngine.searchContext)
         const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
+
+        const searchOperation = this.searchEngine.searchContext.searchOperation;
+        const searchStatus = this.searchEngine.searchContext.searchStatus;
+        if (![SEARCH_REQUEST_NEW, SEARCH_REQUEST_APPEND].includes(searchOperation)) {
+            return;
+        }
+        if (searchStatus !== SEARCH_STATUS_STARTED) {
+            return;
+        }
 
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
@@ -187,7 +217,7 @@ export class ListingsManager extends ListingsManagerBase {
 
     canRunSearch(operation) {
         return (
-            this.searchEngine.searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
+            this.searchEngine.searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
             this.searchEngine.searchContext?.searchOperation === operation
         )
     }

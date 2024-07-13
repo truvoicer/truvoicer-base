@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED} from "../../redux/constants/search-constants";
+import {SEARCH_REQUEST_NEW, SEARCH_STATUS_STARTED} from "../../redux/constants/search-constants";
 import {connect} from "react-redux";
 import {fetcherApiConfig} from "../../config/fetcher-api-config";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
@@ -60,7 +60,7 @@ const SearchBlock = (props) => {
         getSearchData[fetcherApiConfig.queryKey] = value.replace("_", " ");
         setSearchData(getSearchData)
         listingsManager.getSearchEngine().setSearchEntity('searchBlockCategory');
-        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
         listingsManager.getListingsEngine().addQueryDataObjectMiddleware(getSearchData, true);
     }
 
@@ -70,7 +70,7 @@ const SearchBlock = (props) => {
             case 'searchBlockCategory':
                 if (
                     isNotEmpty(category) &&
-                    listingsManager.canRunSearch(NEW_SEARCH_REQUEST) &&
+                    listingsManager.canRunSearch(SEARCH_REQUEST_NEW) &&
                     searchContext?.searchEntity === 'searchBlockCategory'
                 ) {
                     //console.log('searchBlockCategoryRun')
@@ -80,7 +80,7 @@ const SearchBlock = (props) => {
                 break;
             case 'searchBlock':
                 if (
-                    listingsManager.canRunSearch(NEW_SEARCH_REQUEST) &&
+                    listingsManager.canRunSearch(SEARCH_REQUEST_NEW) &&
                     searchContext?.searchEntity === 'searchBlock'
                 ) {
                     //console.log('searchBlockRun')
@@ -115,7 +115,7 @@ const SearchBlock = (props) => {
 
     const formSubmitHandler = (e) => {
         e.preventDefault();
-        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
         listingsManager.getListingsEngine().addQueryDataObjectMiddleware(searchData, true);
         listingsManager.getSearchEngine().setSearchEntity('searchBlock');
     }

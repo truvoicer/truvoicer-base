@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import Form from "react-bootstrap/Form";
 import {connect} from "react-redux";
 import {
-    NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED
+    SEARCH_REQUEST_NEW, SEARCH_STATUS_STARTED
 } from "@/truvoicer-base/redux/constants/search-constants";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
@@ -51,7 +51,7 @@ const ListingsFilterApiListItem = (props) => {
 
     const formChangeHandler = (e) => {
         listingsManager.getSearchEngine().setSearchEntity('listingsFilterApiListItem');
-        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
         let key = getKey();
         if (!key) {
             return;
@@ -82,8 +82,8 @@ const ListingsFilterApiListItem = (props) => {
 
     useEffect(() => {
         if (
-            searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
-            searchContext?.searchOperation === NEW_SEARCH_REQUEST &&
+            searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
+            searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
             searchContext?.searchEntity === 'listingsFilterApiListItem'
         ) {
             listingsManager.runSearch('listingsFilterApiListItem');

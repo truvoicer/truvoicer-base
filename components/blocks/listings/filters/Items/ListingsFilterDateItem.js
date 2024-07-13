@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import DatePicker from "react-datepicker";
 import {connect} from "react-redux";
-import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED} from "@/truvoicer-base/redux/constants/search-constants";
+import {SEARCH_REQUEST_NEW, SEARCH_STATUS_STARTED} from "@/truvoicer-base/redux/constants/search-constants";
 
 import moment from 'moment';
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
@@ -24,14 +24,14 @@ const ListingsFilterDateItem = (props) => {
     const handleStartDateChange = (date) => {
         setStartDate(date);
         listingsManager.getSearchEngine().setSearchEntity('listingsFilterDateItem');
-        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
         listingsManager.getListingsEngine().addListingsQueryDataString("start_date", moment(date).format(dateFormatString), true)
     };
 
     useEffect(() => {
         if (
-            searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
-            searchContext?.searchOperation === NEW_SEARCH_REQUEST &&
+            searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
+            searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
             searchContext?.searchEntity === 'listingsFilterDateItem'
         ) {
             listingsManager.runSearch('listingsFilterDateItem');

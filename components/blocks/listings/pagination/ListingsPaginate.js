@@ -1,9 +1,9 @@
 import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {
-    NEW_SEARCH_REQUEST, PAGINATION_LAST_PAGE,
+    SEARCH_REQUEST_NEW, PAGINATION_LAST_PAGE,
     PAGINATION_PAGE_NUMBER, PAGINATION_PAGE_SIZE, PAGINATION_TOTAL_ITEMS,
-    PAGINATION_TOTAL_PAGES, SEARCH_REQUEST_COMPLETED, SEARCH_REQUEST_STARTED,
+    PAGINATION_TOTAL_PAGES, SEARCH_STATUS_COMPLETED, SEARCH_STATUS_STARTED,
 } from "@/truvoicer-base/redux/constants/search-constants";
 import GridItems from "../items/GridItems";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
@@ -41,7 +41,7 @@ const ListingsPaginate = (props) => {
         listingsManager.getSearchEngine().setSearchEntity('listingsPaginate');
         listingsManager.loadNextPageNumberMiddleware(pageNumber);
         listingsManager.getListingsEngine().setListingsScrollTopAction(true);
-        listingsManager.searchEngine.setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+        listingsManager.searchEngine.setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
     }
 
     function getLastPageNumber() {
@@ -195,8 +195,8 @@ const ListingsPaginate = (props) => {
 
     useEffect(() => {
         if (
-            searchContext?.searchStatus !== SEARCH_REQUEST_STARTED &&
-            searchContext?.searchOperation === NEW_SEARCH_REQUEST &&
+            searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
+            searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
             searchContext?.searchEntity === 'listingsPaginate'
         ) {
             listingsManager.runSearch('listingsPaginate');

@@ -1,6 +1,6 @@
 import {
-    APPEND_SEARCH_REQUEST,
-    NEW_SEARCH_REQUEST,
+    SEARCH_REQUEST_APPEND,
+    SEARCH_REQUEST_NEW,
     PAGINATION_PAGE_NUMBER,
     PAGE_CONTROL_HAS_MORE,
     PAGINATION_PAGE_SIZE,
@@ -111,7 +111,7 @@ export class SearchEngine extends EngineBase {
         }
 
         switch (this.searchContext?.searchOperation) {
-            case APPEND_SEARCH_REQUEST:
+            case SEARCH_REQUEST_APPEND:
                 this.updateContext({
                     key: "searchList",
                     value: [
@@ -414,7 +414,7 @@ export class SearchEngine extends EngineBase {
         const searchState = this.searchContext;
         const searchOperation = searchState.searchOperation;
         const nextState = produce(searchState.savedItemsList, (draftState) => {
-            if ((searchOperation === NEW_SEARCH_REQUEST)) {
+            if ((searchOperation === SEARCH_REQUEST_NEW)) {
                 draftState.splice(0, draftState.length + 1);
             }
             data.map((item) => {
@@ -430,7 +430,7 @@ export class SearchEngine extends EngineBase {
         const searchState = this.searchContext;
         const searchOperation = searchState.searchOperation;
         const nextState = produce(searchState.itemRatingsList, (draftState) => {
-            if ((searchOperation === NEW_SEARCH_REQUEST)) {
+            if ((searchOperation === SEARCH_REQUEST_NEW)) {
                 draftState.splice(0, draftState.length + 1);
             }
             data.map((item) => {

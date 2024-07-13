@@ -3,14 +3,14 @@ import {isSet} from "@/truvoicer-base/library/utils";
 import {siteConfig} from "@/config/site-config";
 import {LISTINGS_GRID_COMPACT} from "@/truvoicer-base/redux/constants/listings-constants";
 import {
-    NEW_SEARCH_REQUEST,
+    SEARCH_REQUEST_NEW,
     PAGINATION_PAGE_NUMBER, PAGINATION_PAGE_SIZE,
-    SEARCH_REQUEST_IDLE
+    SEARCH_STATUS_IDLE, SEARCH_REQUEST_IDLE
 } from "@/truvoicer-base/redux/constants/search-constants";
 
 export const searchData = {
-    searchStatus: SEARCH_REQUEST_IDLE,
-    searchOperation: NEW_SEARCH_REQUEST,
+    searchStatus: SEARCH_STATUS_IDLE,
+    searchOperation: SEARCH_REQUEST_IDLE,
     searchEntity: null,
     initialRequestHasRun: false,
     extraData: {},

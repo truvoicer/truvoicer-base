@@ -6,17 +6,17 @@ import {
     LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {
-    APPEND_SEARCH_REQUEST,
-    INIT_SEARCH_REQUEST,
-    NEW_SEARCH_REQUEST,
+    SEARCH_REQUEST_APPEND,
+    SEARCH_REQUEST_IDLE,
+    SEARCH_REQUEST_NEW,
     PAGE_CONTROL_HAS_MORE,
     PAGE_CONTROL_PAGINATION_REQUEST, PAGE_CONTROL_REQ_PAGINATION_OFFSET,
     PAGE_CONTROL_REQ_PAGINATION_PAGE,
     PAGE_CONTROL_REQ_PAGINATION_TYPE,
     PAGINATION_PAGE_NUMBER,
-    SEARCH_REQUEST_COMPLETED,
+    SEARCH_STATUS_COMPLETED,
     SEARCH_REQUEST_ERROR,
-    SEARCH_REQUEST_STARTED
+    SEARCH_STATUS_STARTED, SEARCH_STATUS_IDLE
 } from "@/truvoicer-base/redux/constants/search-constants";
 import {siteConfig} from "@/config/site-config";
 import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
@@ -57,10 +57,10 @@ export class WpDataSource extends DataSourceBase {
     }
 
     postRequestInit(listingsDataState) {
-        this.searchEngine.setSearchRequestOperationAction(NEW_SEARCH_REQUEST);
+        this.searchEngine.setSearchRequestOperationAction(SEARCH_REQUEST_NEW);
         const category = listingsDataState?.category_id;
         this.getSearchEngine().setSearchEntity('listItemsRequestInit');
-        this.getSearchEngine().setSearchRequestOperationMiddleware(INIT_SEARCH_REQUEST);
+        this.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_IDLE);
         this.searchEngine.setSearchCategoryAction(category)
         this.listingsEngine.updateContext({key: LISTINGS_REQ_OP, value: LISTINGS_REQ_OP_POST_LIST});
         this.listingsEngine.addListingsQueryDataString('show_all_categories', listingsDataState?.show_all_categories);
@@ -78,7 +78,7 @@ export class WpDataSource extends DataSourceBase {
         this.searchEngine.setSearchProviderAction(siteConfig.internalProviderName)
 
         this.getSearchEngine().setSearchEntity('listItemsRequestInit');
-        this.getSearchEngine().setSearchRequestOperationMiddleware(INIT_SEARCH_REQUEST);
+        this.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_IDLE);
         const itemListId = parseInt(listingsDataState?.item_list_id);
 
         this.listingsEngine.updateContext({key: LISTINGS_REQ_OP, value: LISTINGS_REQ_OP_ITEM_LIST});
@@ -99,7 +99,7 @@ export class WpDataSource extends DataSourceBase {
         if ( this.searchEngine.searchContext.initialRequestHasRun) {
             return false;
         }
-        if (this.searchEngine.searchContext?.searchOperation !== INIT_SEARCH_REQUEST) {
+        if (this.searchEngine.searchContext?.searchOperation !== SEARCH_REQUEST_IDLE) {
             return false;
         }
         return true;
@@ -132,7 +132,7 @@ export class WpDataSource extends DataSourceBase {
         const listingsReqOp = this.listingsEngine?.listingsContext?.[LISTINGS_REQ_OP];
 
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
-        this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_STARTED);
+        this.searchEngine.setSearchRequestStatusAction(SEARCH_STATUS_STARTED);
         const searchQueryState = this.searchEngine.searchContext.query;
         if (!this.validateWpPostsRequestParams()) {
             this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
@@ -219,8 +219,8 @@ export class WpDataSource extends DataSourceBase {
             // this.searchEngine.setHasMoreSearchPages()
 
             this.searchEngine.updateContext({key: 'initialRequestHasRun', value: true})
-            this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_COMPLETED);
-            this.searchEngine.setSearchRequestOperationAction(null);
+            this.searchEngine.setSearchRequestStatusAction(SEARCH_STATUS_IDLE);
+            this.searchEngine.setSearchRequestOperationAction(SEARCH_REQUEST_IDLE);
         }
     }
 

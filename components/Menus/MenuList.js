@@ -5,7 +5,7 @@ import Link from "next/link";
 import {siteConfig} from "@/config/site-config";
 import {logout} from "../../redux/actions/session-actions";
 import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
-import {NEW_SEARCH_REQUEST, SEARCH_REQUEST_STARTED} from "../../redux/constants/search-constants";
+import {SEARCH_REQUEST_NEW, SEARCH_STATUS_STARTED} from "../../redux/constants/search-constants";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
@@ -17,6 +17,7 @@ import {AppContext} from "@/truvoicer-base/config/contexts/AppContext";
 import {AppManager} from "@/truvoicer-base/library/app/AppManager";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleDown, faChevronDown} from "@fortawesome/free-solid-svg-icons";
+import {setAppLoadedAction} from "@/truvoicer-base/redux/actions/app-actions";
 
 const MenuList = (props) => {
     const appContext = useContext(AppContext);
@@ -37,10 +38,11 @@ const MenuList = (props) => {
     }
 
     const pageClickHandler = (item, e) => {
+        setAppLoadedAction(false);
         // e.preventDefault();
         // listingsManager.listingsEngine.updateContext({key: "listingsQueryData", value: {'loaded': true}})
-        // listingsManager.getSearchEngine().setSearchRequestStatusMiddleware(SEARCH_REQUEST_STARTED);
-        // listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+        // listingsManager.getSearchEngine().setSearchRequestStatusMiddleware(SEARCH_STATUS_STARTED);
+        // listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
     }
 
     const showAuthLoginModal = (e) => {

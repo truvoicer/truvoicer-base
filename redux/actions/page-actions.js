@@ -2,7 +2,7 @@ import store from "../store"
 import {
     setNextPostNavData,
     setPageData, setPageDataOptions,
-    setPageError, setPostData, setPostListData, setPostNavFromList, setPostNavIndex, setPrevPostNavData,
+    setPageError, setPageStatus, setPostData, setPostListData, setPostNavFromList, setPostNavIndex, setPrevPostNavData,
     setSiteSettings,
     setUserAccountMenuData,
 } from "../reducers/page-reducer";
@@ -12,6 +12,10 @@ import {siteConfig} from "@/config/site-config";
 import {wpApiConfig} from "../../config/wp-api-config";
 
 const sprintf = require('sprintf-js').sprintf;
+
+export function setPageStatusAction(pageStatus) {
+    store.dispatch(setPageStatus(pageStatus))
+}
 export function setPageErrorAction(error) {
     store.dispatch(setPageError(error))
 }

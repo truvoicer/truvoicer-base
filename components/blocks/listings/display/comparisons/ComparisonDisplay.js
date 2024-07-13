@@ -3,7 +3,7 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
-import {SEARCH_REQUEST_COMPLETED} from "@/truvoicer-base/redux/constants/search-constants";
+import {SEARCH_STATUS_COMPLETED} from "@/truvoicer-base/redux/constants/search-constants";
 import ListingsSortBar from "@/truvoicer-base/components/blocks/listings/components/ListingsSortBar";
 import Paginate from "@/truvoicer-base/components/blocks/listings/pagination/ListingsPaginate";
 import ListingsInfiniteScroll from "@/truvoicer-base/components/blocks/listings/pagination/ListingsInfiniteScroll";
@@ -36,7 +36,7 @@ const ComparisonDisplay = (props) => {
 
                 <div className="row">
                     <div className="col-md-12">
-                        {searchContext?.searchList?.length > 0 && searchContext?.searchStatus === SEARCH_REQUEST_COMPLETED ?
+                        {searchContext?.searchList?.length > 0 && searchContext?.searchStatus === SEARCH_STATUS_COMPLETED ?
                             <>
                                 {templateManager.render(<ListingsSortBar/>)}
                                 {listingsContext?.listingsData?.load_more_type === "pagination" &&

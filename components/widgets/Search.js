@@ -1,7 +1,7 @@
 import React, {useContext, useState} from "react";
 import {connect} from "react-redux";
 import {fetcherApiConfig} from "../../config/fetcher-api-config";
-import {NEW_SEARCH_REQUEST} from "../../redux/constants/search-constants";
+import {SEARCH_REQUEST_NEW} from "../../redux/constants/search-constants";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
@@ -18,7 +18,7 @@ const Search = (props) => {
 
     const formClickHandler = (e) => {
         e.preventDefault();
-        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(NEW_SEARCH_REQUEST);
+        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
         listingsManager.getListingsEngine().addListingsQueryDataString(fetcherApiConfig.queryKey, query, true)
         listingsManager.runSearch('Search');
     }

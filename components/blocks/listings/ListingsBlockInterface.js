@@ -16,10 +16,19 @@ import {AppManager} from "@/truvoicer-base/library/app/AppManager";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {connect} from "react-redux";
 import {ListingsManagerBase} from "@/truvoicer-base/library/listings/listings-manager-base";
+import {
+    SEARCH_REQUEST_IDLE,
+    SEARCH_REQUEST_NEW,
+    SEARCH_STATUS_IDLE
+} from "@/truvoicer-base/redux/constants/search-constants";
+import {useRouter, useParams, usePathname, useSearchParams} from "next/navigation";
+import {APP_LOADED, APP_STATE} from "@/truvoicer-base/redux/constants/app-constants";
 
 
 const ListingsBlockInterface = (props) => {
-    const {data, session} = props;
+    const router = useRouter();
+    console.log(props)
+    const {data, session, app} = props;
 
     const appContext = useContext(AppContext);
     const appManager = new AppManager(appContext);
@@ -77,70 +86,9 @@ const ListingsBlockInterface = (props) => {
     listingsManager.setDataStore(ListingsManagerBase.DATA_STORE_STATE);
     //
     async function setProviders() {
-        const setProviders = await listingsManager.setListingsProviders(data)
+        await listingsManager.setListingsProviders(data)
     }
 
-    useEffect(() => {
-        if (session[SESSION_IS_AUTHENTICATING]) {
-            return;
-        }
-        if (!isNotEmpty(data?.source)) {
-            return;
-        }
-        listingsManager.init(data);
-        setProviders();
-        listingsManager.listingsEngine.updateContext({key: 'loaded', value: true})
-    }, [session, data?.source])
-
-    useEffect(() => {
-        if (!listingsManager.listingsEngine.listingsContext.loaded) {
-            return;
-        }
-        if (!listingsManager.validateInitData()) {
-            return;
-        }
-
-        listingsManager.runSearch('listDisplay news');
-    }, [
-        listingsManager.listingsEngine.listingsContext.providers,
-        listingsManager.listingsEngine.listingsContext.loaded,
-    ]);
-    // useEffect(() => {
-    //     if (session[SESSION_IS_AUTHENTICATING]) {
-    //         return;
-    //     }
-    //
-    //     if (!listingsManager.validateInitData()) {
-    //         return;
-    //     }
-    //     if (!listingsManager.validateSearchParams()) {
-    //         return;
-    //     }
-    //     listingsManager.listingsEngine.updateContext({key: 'loaded', value: true})
-    // }, [
-    //     session,
-    //     searchContext?.initialRequestHasRun,
-    //     searchContext?.searchOperation,
-    //     listingsContext.listingsData,
-    //     listingsContext?.listingsQueryData,
-    // ]);
-
-    // useEffect(() => {
-    //     if (!isObject(listingsContext?.listingsData) || isObjectEmpty(listingsContext?.listingsData)) {
-    //         return;
-    //     }
-    //     const listingBlockId = listingsManager.getListingBlockId();
-    //     if (!isNotEmpty(listingBlockId)) {
-    //         return;
-    //     }
-    //     appManager.updateAppContexts({
-    //         key: listingBlockId,
-    //         value: {
-    //             listingsContext: listingsContext,
-    //             searchContext: searchContext,
-    //         }
-    //     })
-    // }, [listingsContext, searchContext])
 
     // const myRef = useRef(null)
     // if (listingsContext?.listingsScrollTop) {
@@ -200,6 +148,99 @@ const ListingsBlockInterface = (props) => {
         return extraData;
     }
 
+    useEffect(() => {
+        if (!app[APP_LOADED]) {
+            return;
+        }
+        if (session[SESSION_IS_AUTHENTICATING]) {
+            return;
+        }
+        if (!isNotEmpty(data?.source)) {
+            return;
+        }
+        if (listingsManager.listingsEngine.listingsContext.loaded) {
+            return;
+        }
+        listingsManager.init(data);
+        setProviders();
+        listingsManager.listingsEngine.updateContext({key: 'loaded', value: true})
+    }, [
+        app.app_loaded,
+        session.SESSION_IS_AUTHENTICATING,
+        data?.source,
+        listingsManager.listingsEngine.listingsContext.loaded
+    ])
+
+    useEffect(() => {
+        if (!app[APP_LOADED]) {
+            return;
+        }
+        if (!listingsManager.listingsEngine.listingsContext.loaded) {
+            return;
+        }
+        if (!listingsManager.validateInitData()) {
+            return;
+        }
+        listingsManager.searchEngine.updateContext({key: 'searchOperation', value: SEARCH_REQUEST_NEW})
+    }, [
+        listingsManager.listingsEngine.listingsContext.providers,
+        listingsManager.listingsEngine.listingsContext.loaded,
+    ]);
+
+    useEffect(() => {
+        if (!app[APP_LOADED]) {
+            return;
+        }
+        if (!listingsManager.listingsEngine.listingsContext.loaded) {
+            return;
+        }
+        if (!listingsManager.searchEngine.searchContext.searchStatus) {
+            return;
+        }
+
+        listingsManager.prepareSearch('listDisplay news');
+    }, [
+        listingsManager.listingsEngine.listingsContext.loaded,
+        listingsManager.searchEngine.searchContext.initialRequestHasRun,
+        listingsManager.searchEngine.searchContext.searchStatus,
+        listingsManager.searchEngine.searchContext.searchOperation,
+    ]);
+
+    useEffect(() => {
+        if (!app[APP_LOADED]) {
+            return;
+        }
+        if (!listingsManager.listingsEngine.listingsContext.loaded) {
+            return;
+        }
+        if (!listingsManager.searchEngine.searchContext.searchStatus) {
+            return;
+        }
+
+        listingsManager.runSearch('listDisplay news');
+    }, [
+        listingsManager.listingsEngine.listingsContext.loaded,
+        listingsManager.searchEngine.searchContext.initialRequestHasRun,
+        listingsManager.searchEngine.searchContext.searchStatus,
+        listingsManager.searchEngine.searchContext.searchOperation,
+    ]);
+
+    // useEffect(() => {
+    //     if (!isObject(listingsContext?.listingsData) || isObjectEmpty(listingsContext?.listingsData)) {
+    //         return;
+    //     }
+    //     const listingBlockId = listingsManager.getListingBlockId();
+    //     if (!isNotEmpty(listingBlockId)) {
+    //         return;
+    //     }
+    //     appManager.updateAppContexts({
+    //         key: listingBlockId,
+    //         value: {
+    //             listingsContext: listingsContext,
+    //             searchContext: searchContext,
+    //         }
+    //     })
+    // }, [listingsContext, searchContext])
     console.log('ListingInterface',
         listingsManager.listingsEngine?.listingsContext?.listingsData?.source,
         data,
@@ -222,7 +263,8 @@ ListingsBlockInterface.templateId = 'listingsBlockInterface';
 
 function mapStateToProps(state) {
     return {
-        session: state.session
+        session: state.session,
+        app: state[APP_STATE]
     };
 }
 
