@@ -15,16 +15,16 @@ function HtmlHead({siteSettings, pageData, page}) {
         <>
         <Script id={'google_client_script'} async={true} src="https://accounts.google.com/gsi/client" />
         <Script id={'fb_sdk_script'} async={true} src="https://connect.facebook.net/en_US/sdk.js" />
-        <Script id={'pinterest_sdk_script'}>
-            {` (function (d) {
-            var f = d.getElementsByTagName('SCRIPT')[0],
-              p = d.createElement('SCRIPT');
-            p.type = 'text/javascript';
-            p.async = true;
-            p.src = '//assets.pinterest.com/js/pinit.js';
-            f.parentNode.insertBefore(p, f);
-          })(document);`}
-        </Script>
+        {/*<Script id={'pinterest_sdk_script'}>*/}
+        {/*    {` (function (d) {*/}
+        {/*    var f = d.getElementsByTagName('SCRIPT')[0],*/}
+        {/*      p = d.createElement('SCRIPT');*/}
+        {/*    p.type = 'text/javascript';*/}
+        {/*    p.async = true;*/}
+        {/*    p.src = '//assets.pinterest.com/js/pinit.js';*/}
+        {/*    f.parentNode.insertBefore(p, f);*/}
+        {/*  })(document);`}*/}
+        {/*</Script>*/}
             <Script id={'twitter_sdk_script'}>
                 {`window.twttr = (function(d, s, id) {
                     var js, fjs = d.getElementsByTagName(s)[0],

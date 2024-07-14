@@ -14,13 +14,13 @@ function PinterestProvider({children, siteSettings}) {
         })
     }
     function pin() {
-        window.PinUtils.pinAny();
+        // window.PinUtils.pinAny();
         // pinterestContextData.pinterest.pinAny();
     }
 
     const [pinterestState, setPinterestState] = useState({
         ...pinterestContextData,
-        pin: pin,
+        // pin: pin,
         update: updateState,
     });
     return (

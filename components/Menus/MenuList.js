@@ -18,6 +18,7 @@ import {AppManager} from "@/truvoicer-base/library/app/AppManager";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleDown, faChevronDown} from "@fortawesome/free-solid-svg-icons";
 import {setAppLoadedAction} from "@/truvoicer-base/redux/actions/app-actions";
+import {setAppRequestedRoute} from "@/truvoicer-base/redux/reducers/app-reducer";
 
 const MenuList = (props) => {
     const appContext = useContext(AppContext);
@@ -39,7 +40,7 @@ const MenuList = (props) => {
 
     const pageClickHandler = (item, e) => {
         setAppLoadedAction(false);
-        // e.preventDefault();
+        setAppRequestedRoute(item?.post_url);
         // listingsManager.listingsEngine.updateContext({key: "listingsQueryData", value: {'loaded': true}})
         // listingsManager.getSearchEngine().setSearchRequestStatusMiddleware(SEARCH_STATUS_STARTED);
         // listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);

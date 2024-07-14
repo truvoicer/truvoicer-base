@@ -1,10 +1,18 @@
 // AUTH STATE
 import {createSlice} from "@reduxjs/toolkit";
 import {getReducers, getState} from "../../library/helpers/redux";
-import {APP_LOADED, APP_STATE, ERROR} from "@/truvoicer-base/redux/constants/app-constants";
+import {
+    APP_CURRENT_ROUTE,
+    APP_LOADED,
+    APP_REQUESTED_ROUTE,
+    APP_STATE,
+    ERROR
+} from "@/truvoicer-base/redux/constants/app-constants";
 
 const defaultState = {
     [APP_LOADED]: false,
+    [APP_CURRENT_ROUTE]: null,
+    [APP_REQUESTED_ROUTE]: null,
     [ERROR]: {
         show: false,
         message: "",
@@ -14,6 +22,12 @@ const defaultState = {
 const defaultReducers = {
     setAppLoaded: (state, action) => {
         state[APP_LOADED] = action.payload;
+    },
+    setAppCurrentRoute: (state, action) => {
+        state[APP_CURRENT_ROUTE] = action.payload;
+    },
+    setAppRequestedRoute: (state, action) => {
+        state[APP_REQUESTED_ROUTE] = action.payload;
     },
     setError: (state, action) => {
         state.error = action.payload;
@@ -28,4 +42,4 @@ export const appSlice = createSlice({
 });
 
 export const appReducer = appSlice.reducer;
-export const {setAppLoaded, setError} = appSlice.actions;
+export const {setAppLoaded, setAppCurrentRoute, setAppRequestedRoute, setError} = appSlice.actions;

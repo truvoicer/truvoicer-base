@@ -26,7 +26,6 @@ import {APP_LOADED, APP_STATE} from "@/truvoicer-base/redux/constants/app-consta
 
 
 const ListingsBlockInterface = (props) => {
-    const router = useRouter();
     console.log(props)
     const {data, session, app} = props;
 
@@ -86,7 +85,8 @@ const ListingsBlockInterface = (props) => {
     listingsManager.setDataStore(ListingsManagerBase.DATA_STORE_STATE);
     //
     async function setProviders() {
-        await listingsManager.setListingsProviders(data)
+        const setProviders = await listingsManager.setListingsProviders(data)
+        console.log('setProviders', setProviders)
     }
 
 
@@ -149,6 +149,13 @@ const ListingsBlockInterface = (props) => {
     }
 
     useEffect(() => {
+        console.log('InitListingsBlockInterface', {
+            source: listingsManager.listingsEngine?.listingsContext?.listingsData?.source,
+            apploaded: app[APP_LOADED],
+            isauthentivcationsds: session[SESSION_IS_AUTHENTICATING],
+            dsc: isNotEmpty(data?.source),
+            loaded: listingsManager.listingsEngine?.listingsContext?.loaded,
+        })
         if (!app[APP_LOADED]) {
             return;
         }
@@ -178,6 +185,12 @@ const ListingsBlockInterface = (props) => {
         if (!listingsManager.listingsEngine.listingsContext.loaded) {
             return;
         }
+        console.log('ValidateListingsBlockInterface', {
+            source: listingsManager.listingsEngine?.listingsContext?.listingsData?.source,
+            validated: listingsManager.validateInitData(),
+            lc: listingsManager.listingsEngine?.listingsContext,
+            sc: listingsManager.searchEngine?.searchContext
+        })
         if (!listingsManager.validateInitData()) {
             return;
         }
@@ -199,6 +212,13 @@ const ListingsBlockInterface = (props) => {
         }
 
         listingsManager.prepareSearch('listDisplay news');
+        console.log('ListingInterface', {
+            source: listingsManager.listingsEngine?.listingsContext?.listingsData?.source,
+            data: data,
+            searchData: {...searchData},
+            lc: listingsManager.listingsEngine?.listingsContext,
+            sc: listingsManager.searchEngine?.searchContext
+        })
     }, [
         listingsManager.listingsEngine.listingsContext.loaded,
         listingsManager.searchEngine.searchContext.initialRequestHasRun,
@@ -241,13 +261,13 @@ const ListingsBlockInterface = (props) => {
     //         }
     //     })
     // }, [listingsContext, searchContext])
-    console.log('ListingInterface',
-        listingsManager.listingsEngine?.listingsContext?.listingsData?.source,
-        data,
-        {...searchData},
-        listingsManager.listingsEngine?.listingsContext,
-        listingsManager.searchEngine?.searchContext
-    )
+    // console.log('ListingInterface',
+    //     listingsManager.listingsEngine?.listingsContext?.listingsData?.source,
+    //     data,
+    //     {...searchData},
+    //     listingsManager.listingsEngine?.listingsContext,
+    //     listingsManager.searchEngine?.searchContext
+    // )
     return (
         <ListingsContext.Provider value={StateHelpers.getStateData(listingsContextUseState)}>
             <SearchContext.Provider value={StateHelpers.getStateData(searchContextUseState)}>

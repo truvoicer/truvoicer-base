@@ -23,7 +23,7 @@ function SocialShareWidget({href, text}) {
     }
     function pinterestClickHandler(e) {
         e.preventDefault();
-        pinterestContext.pin();
+        // pinterestContext.pin();
     }
     function buildTwitterUrl() {
         const url = new URL('https://twitter.com/intent/tweet');

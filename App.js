@@ -11,11 +11,14 @@ import {loadBasePageData} from "@/truvoicer-base/redux/actions/page-actions";
 import {connect} from "react-redux";
 import {APP_LOADED, APP_STATE} from "@/truvoicer-base/redux/constants/app-constants";
 import {setAppLoadedAction} from "@/truvoicer-base/redux/actions/app-actions";
+import {setAppRequestedRoute} from "@/truvoicer-base/redux/reducers/app-reducer";
+import {usePathname} from "next/navigation";
 
 const FetcherApp = ({
     app, page, pageData, settings, pageOptions = {}, isResetKey = false
 }) => {
 
+    const pathname = usePathname();
     useEffect(() => {
         let basePageData = {
             page: pageData,
@@ -25,12 +28,12 @@ const FetcherApp = ({
             basePageData.options = pageOptions;
         }
         loadBasePageData(basePageData);
-        console.log('FetcherApp', page, settings, pageOptions, isResetKey)
+        console.log('FetcherApp', pageData, settings, pageOptions, isResetKey)
         // if (isResetKey) {
         //     setPasswordResetKeyAction(params.reset_key)
         //     setSessionUserIdAction(params.user_id)
         // }
-    }, [])
+    }, [pageData, settings])
 
     useEffect(() => {
         if (!isObject(page?.pageData)) {
@@ -42,8 +45,13 @@ const FetcherApp = ({
         if (app[APP_LOADED]) {
             return;
         }
-        setAppLoadedAction(true);
-    }, [page.pageData])
+        if (page?.pageData?.url === pathname) {
+            setAppLoadedAction(true);
+        }
+        console.log('FetcherApp', page.pageData, pathname)
+
+        // setAppRequestedRoute(item?.post_url);
+    }, [page.pageData, pathname])
 
     return (
         <AppLoader templateConfig={templateConfig()} page={page} />
