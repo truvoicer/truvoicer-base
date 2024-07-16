@@ -9,9 +9,10 @@ import HtmlHead from "@/truvoicer-base/components/layout/HtmlHead";
 import Loader from "@/truvoicer-base/components/loaders/Loader";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {APP_LOADED, APP_STATE} from "@/truvoicer-base/redux/constants/app-constants";
 
 const FullWidthTemplate = (props) => {
-    const {pageData, pageOptions} = props;
+    const {pageData, pageOptions, app} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const htmlParserOptions = {
         decodeEntities: true,
@@ -30,7 +31,7 @@ const FullWidthTemplate = (props) => {
                     <div id={"public_area"}>
                         {templateManager.render(<Header/>)}
                         <>
-                            {typeof pageData?.post_content === "string" && pageData
+                            {app[APP_LOADED] && typeof pageData?.post_content === "string" && pageData
                                 ?
                                 <>
                                     {templateManager.render(<HtmlHead/>)}
@@ -52,6 +53,7 @@ function mapStateToProps(state) {
         siteSettings: state.page.siteSettings,
         pageData: state.page.pageData,
         pageOptions: state.page.pageDataOptions,
+        app: state[APP_STATE]
     };
 }
 

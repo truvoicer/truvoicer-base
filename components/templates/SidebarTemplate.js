@@ -11,9 +11,10 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import Sidebar from "@/truvoicer-base/components/Sidebars/Sidebar";
 import {siteConfig} from "@/config/site-config";
+import {APP_LOADED, APP_STATE} from "@/truvoicer-base/redux/constants/app-constants";
 
 const SidebarTemplate = (props) => {
-    const {modal, pageData, pageOptions} = props;
+    const {modal, pageData, pageOptions, app} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     return (
@@ -25,7 +26,7 @@ const SidebarTemplate = (props) => {
                 <div id={"public_area"}>
                     {templateManager.render(<Header/>)}
 
-                    {pageData?.post_content && parse(pageData.post_content, {
+                    {app[APP_LOADED] && pageData?.post_content && parse(pageData.post_content, {
                         replace: (node, index) => {
                             return filterHtml(
                                 node,
@@ -47,7 +48,7 @@ const SidebarTemplate = (props) => {
                                             </div>
                                         }
                                         <div className="col-12 col-lg-8">
-                                            {pageData?.post_content && parse(pageData.post_content, {
+                                            {app[APP_LOADED] && pageData?.post_content && parse(pageData.post_content, {
                                                 replace: (node, index) => {
                                                     return filterHtml(
                                                         node,
@@ -99,7 +100,8 @@ function mapStateToProps(state) {
         siteSettings: state.page.siteSettings,
         pageData: state.page.pageData,
         pageOptions: state.page.pageDataOptions,
-        modal: state.page.modal
+        modal: state.page.modal,
+        app: state[APP_STATE]
     };
 }
 

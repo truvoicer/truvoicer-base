@@ -155,6 +155,7 @@ const ListingsBlockInterface = (props) => {
             isauthentivcationsds: session[SESSION_IS_AUTHENTICATING],
             dsc: isNotEmpty(data?.source),
             loaded: listingsManager.listingsEngine?.listingsContext?.loaded,
+            cx: listingsManager.listingsEngine?.listingsContext,
         })
         if (!app[APP_LOADED]) {
             return;
