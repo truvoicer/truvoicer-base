@@ -90,10 +90,10 @@ const ListingsBlockInterface = (props) => {
     }
 
 
-    // const myRef = useRef(null)
-    // if (listingsContext?.listingsScrollTop) {
-    //     scrollToRef(myRef)
-    // }
+    const myRef = useRef(null)
+    if (listingsContext?.listingsScrollTop) {
+        scrollToRef(myRef)
+    }
 
 
     function getListingService(data) {
@@ -262,13 +262,7 @@ const ListingsBlockInterface = (props) => {
     //         }
     //     })
     // }, [listingsContext, searchContext])
-    // console.log('ListingInterface',
-    //     listingsManager.listingsEngine?.listingsContext?.listingsData?.source,
-    //     data,
-    //     {...searchData},
-    //     listingsManager.listingsEngine?.listingsContext,
-    //     listingsManager.searchEngine?.searchContext
-    // )
+
     return (
         <ListingsContext.Provider value={StateHelpers.getStateData(listingsContextUseState)}>
             <SearchContext.Provider value={StateHelpers.getStateData(searchContextUseState)}>

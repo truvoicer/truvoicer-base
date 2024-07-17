@@ -44,7 +44,7 @@ const SidebarTemplate = (props) => {
                                         {templateManager.render(<HtmlHead/>)}
                                         {templateManager.isSidebar(pageData, 'left-sidebar') &&
                                             <div className="col-12 col-sm-9 col-md-4 col-lg-4 d-none d-lg-block">
-                                                {templateManager.render(<Sidebar name={siteConfig.leftSidebarName}/>)}
+                                                {app[APP_LOADED] && templateManager.render(<Sidebar name={siteConfig.leftSidebarName}/>)}
                                             </div>
                                         }
                                         <div className="col-12 col-lg-8">
@@ -68,7 +68,7 @@ const SidebarTemplate = (props) => {
                                         </div>
                                         {templateManager.isSidebar(pageData, 'right-sidebar') &&
                                             <div className="col-12 col-sm-9 col-md-6 col-lg-4 d-none d-lg-block">
-                                                {templateManager.render(<Sidebar name={siteConfig.rightSidebarName}/>)}
+                                                {app[APP_LOADED] && templateManager.render(<Sidebar name={siteConfig.rightSidebarName}/>)}
                                             </div>
                                         }
                                     </>
@@ -78,7 +78,7 @@ const SidebarTemplate = (props) => {
                             </div>
                         </div>
                     </section>
-                    {pageData?.post_content && parse(pageData.post_content, {
+                    {app[APP_LOADED] && pageData?.post_content && parse(pageData.post_content, {
                         replace: (node, index) => {
                             return filterHtml(
                                 node,
