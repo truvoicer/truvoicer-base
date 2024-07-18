@@ -63,14 +63,13 @@ const ListingsItemsLoader = ({
 
     const ContainerComponent = getContainerComponent();
     const ContainerItemComponent = getContainerItemComponent();
-
+    console.log('ListingsItemsLoader', listingsContext, searchContext, itemsContext)
     const gridItemsProps = {
         displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
         category: searchContext.category,
         listingsGrid: grid,
         userId: user[SESSION_USER_ID],
     }
-
     return (
         <>
             <ContainerComponent>

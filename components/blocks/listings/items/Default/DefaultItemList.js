@@ -52,6 +52,7 @@ const DefaultItemList = (props) => {
             },
         }
     })
+
     return (
         <>
             <div className="post-block-style post-float-half clearfix">

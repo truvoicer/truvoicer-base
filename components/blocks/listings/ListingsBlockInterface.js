@@ -23,16 +23,14 @@ import {
 } from "@/truvoicer-base/redux/constants/search-constants";
 import {useRouter, useParams, usePathname, useSearchParams} from "next/navigation";
 import {APP_LOADED, APP_STATE} from "@/truvoicer-base/redux/constants/app-constants";
+import ListingsBlockContainer from "@/truvoicer-base/components/blocks/listings/ListingsBlockContainer";
 
 
 const ListingsBlockInterface = (props) => {
     console.log(props)
     const {data, session, app} = props;
 
-    const appContext = useContext(AppContext);
-    const appManager = new AppManager(appContext);
     const listingsGrid = new ListingsGrid();
-
 
     let cloneListingsData = {...listingsData};
     cloneListingsData.listingsData = {
@@ -91,10 +89,9 @@ const ListingsBlockInterface = (props) => {
 
 
     const myRef = useRef(null)
-    if (listingsContext?.listingsScrollTop) {
+    if (listingsManager.listingsEngine?.listingsContext?.listingsScrollTop) {
         scrollToRef(myRef)
     }
-
 
     function getListingService(data) {
         switch (data?.source) {
@@ -122,7 +119,7 @@ const ListingsBlockInterface = (props) => {
             return null;
         }
 
-        const layoutCompoent = listingsGrid.getTemplateListingComponent({
+        const layoutComponent = listingsGrid.getTemplateListingComponent({
             displayAs: data[DISPLAY_AS],
             category: service,
             template: data?.template,
@@ -130,12 +127,12 @@ const ListingsBlockInterface = (props) => {
             props: props
         });
 
-        if (!layoutCompoent) {
+        if (!layoutComponent) {
             console.warn(`No layout component found for display as: ${data[DISPLAY_AS]} | category: ${service}`);
             return null
         }
 
-        return layoutCompoent;
+        return layoutComponent;
     }
 
     function getExtraListingsData() {
@@ -173,8 +170,8 @@ const ListingsBlockInterface = (props) => {
         setProviders();
         listingsManager.listingsEngine.updateContext({key: 'loaded', value: true})
     }, [
-        app.app_loaded,
-        session.SESSION_IS_AUTHENTICATING,
+        app[APP_LOADED],
+        session[SESSION_IS_AUTHENTICATING],
         data?.source,
         listingsManager.listingsEngine.listingsContext.loaded
     ])
@@ -246,29 +243,14 @@ const ListingsBlockInterface = (props) => {
         listingsManager.searchEngine.searchContext.searchOperation,
     ]);
 
-    // useEffect(() => {
-    //     if (!isObject(listingsContext?.listingsData) || isObjectEmpty(listingsContext?.listingsData)) {
-    //         return;
-    //     }
-    //     const listingBlockId = listingsManager.getListingBlockId();
-    //     if (!isNotEmpty(listingBlockId)) {
-    //         return;
-    //     }
-    //     appManager.updateAppContexts({
-    //         key: listingBlockId,
-    //         value: {
-    //             listingsContext: listingsContext,
-    //             searchContext: searchContext,
-    //         }
-    //     })
-    // }, [listingsContext, searchContext])
-
     return (
         <ListingsContext.Provider value={StateHelpers.getStateData(listingsContextUseState)}>
             <SearchContext.Provider value={StateHelpers.getStateData(searchContextUseState)}>
-                <GridItems>
-                    {loadListings()}
-                </GridItems>
+                <ListingsBlockContainer>
+                    <GridItems>
+                        {loadListings()}
+                    </GridItems>
+                </ListingsBlockContainer>
             </SearchContext.Provider>
         </ListingsContext.Provider>
     );
