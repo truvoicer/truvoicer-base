@@ -21,7 +21,6 @@ import {
     SEARCH_REQUEST_NEW,
     SEARCH_STATUS_IDLE
 } from "@/truvoicer-base/redux/constants/search-constants";
-import {useRouter, useParams, usePathname, useSearchParams} from "next/navigation";
 import {APP_LOADED, APP_STATE} from "@/truvoicer-base/redux/constants/app-constants";
 import ListingsBlockContainer from "@/truvoicer-base/components/blocks/listings/ListingsBlockContainer";
 
@@ -183,12 +182,6 @@ const ListingsBlockInterface = (props) => {
         if (!listingsManager.listingsEngine.listingsContext.loaded) {
             return;
         }
-        console.log('ValidateListingsBlockInterface', {
-            source: listingsManager.listingsEngine?.listingsContext?.listingsData?.source,
-            validated: listingsManager.validateInitData(),
-            lc: listingsManager.listingsEngine?.listingsContext,
-            sc: listingsManager.searchEngine?.searchContext
-        })
         if (!listingsManager.validateInitData()) {
             return;
         }

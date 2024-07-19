@@ -13,6 +13,33 @@ export function findInObject(str, obj) {
 }
 
 export const formatDate = (dateString, formatString = "Do MMMM YYYY") => {
+    return dateString;
+    let dateFormatSpec;
+    const dateRegexes = [
+        {
+            format: "MM/DD/YYYY",
+            regex: "^(1[0-2]|0?[1-9])\/(3[01]|[12][0-9]|0?[1-9])\/(?:[0-9]{2})?[0-9]{2}"
+        },
+        {
+            format: "DD/MM/YYYY",
+            regex: "^(3[01]|[12][0-9]|0?[1-9])\\/(1[0-2]|0?[1-9])\\/(?:[0-9]{2})?[0-9]{2}"
+        },
+        {
+            format: "YYYY/MM/DD",
+            regex: "^([0-9]{4})\/(1[0-2]|0?[1-9])\/(3[01]|[12][0-9]|0?[1-9])"
+        },
+        {
+            format: "YYYY/DD/MM",
+            regex: "^([0-9]{4})\/(3[01]|[12][0-9]|0?[1-9])\/(1[0-2]|0?[1-9])"
+        }
+    ];
+
+    dateRegexes.forEach((item) => {
+        if (dateString.match(item.regex)) {
+            dateFormatSpec = item.format;
+        }
+    });
+
     moment.updateLocale('en', {
         invalidDate : ""
     });

@@ -17,6 +17,7 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
 import {getSiteSettings} from "@/truvoicer-base/library/api/wp/middleware";
+import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 
 // const useStyles = makeStyles((theme) => ({
@@ -47,6 +48,7 @@ const SavedItemsVerticalTabs = (props) => {
     });
 
     const listingsGridManager = new ListingsGrid();
+    const listingsManager = new ListingsManager(listingsContext, searchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     const fetcherApiMiddleware = new FetcherApiMiddleware();
@@ -165,18 +167,20 @@ const SavedItemsVerticalTabs = (props) => {
         return (
             <Row>
                 {isSet(data) &&
-                    data.items_response.map((item, index) => (
-                        <Col key={index} {...getGridItemColumns(listingsGrid)}>
-                            {listingsGridManager.getGridItem({
-                                item,
-                                displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
-                                category: item.category,
-                                listingsGrid,
-                                userId: props.user[SESSION_USER_ID],
-                                index
-                            })}
-                        </Col>
-                    ))
+                    data.items_response.map((item, index) => {
+                        return (
+                            <Col key={index} {...getGridItemColumns(listingsGrid)}>
+                                {listingsGridManager.getGridItem({
+                                    item,
+                                    displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
+                                    category: item?.service?.name || listingsManager.getCategory(),
+                                    listingsGrid,
+                                    userId: props.user[SESSION_USER_ID],
+                                    index
+                                })}
+                            </Col>
+                        )
+                    })
                 }
             </Row>
         )

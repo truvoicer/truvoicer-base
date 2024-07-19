@@ -140,10 +140,6 @@ export class SearchEngine extends EngineBase {
         this.updateContext({key: "category", value: category})
     }
 
-    setSearchRequestServiceAction(requestService) {
-        this.updateContext({key: "requestService", value: requestService})
-    }
-
     setSearchRequestStatusAction(status) {
         this.updateContext({key: "searchStatus", value: status})
     }
@@ -153,15 +149,6 @@ export class SearchEngine extends EngineBase {
 
     setSearchRequestErrorAction(error) {
         this.addError(error)
-    }
-
-
-    getEndpointOperation() {
-        const searchState = this.searchContext;
-        if (isSet(searchState.requestService) && searchState.requestService !== "") {
-            return searchState.requestService;
-        }
-        return fetcherApiConfig.defaultOperation
     }
 
     filterSearchProviders(allProviders) {

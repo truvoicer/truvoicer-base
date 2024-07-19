@@ -28,6 +28,9 @@ export class FetcherDataSource extends DataSourceBase {
         this.fetcherApiMiddleware = new FetcherApiMiddleware();
     }
 
+    getCategory() {
+        return this.listingsEngine?.listingsContext?.listingsData?.api_listings_service;
+    }
     dataInit(data) {
         this.listingsEngine.updateContext({key: "listingsData", value: data})
 
@@ -161,24 +164,15 @@ export class FetcherDataSource extends DataSourceBase {
 
         const categoryResponseKey = fetcherApiConfig.responseKeys.category;
         const providerResponseKey = fetcherApiConfig.responseKeys.provider;
-        const serviceRequestResponseKey = fetcherApiConfig.responseKeys.serviceRequest;
+
         if (
             isNotEmpty(data?.[categoryResponseKey]) &&
             isNotEmpty(data?.[providerResponseKey])
         ) {
             this.getUserItemsListAction(results, data[providerResponseKey], data[categoryResponseKey])
         }
-        if (isNotEmpty(data?.[categoryResponseKey])) {
-            this.searchEngine.setSearchCategoryAction(data[categoryResponseKey])
-        }
-        if (isNotEmpty(data?.[providerResponseKey])) {
-            this.searchEngine.setSearchProviderAction(data.provider)
-        }
         if (isNotEmpty(data?.[providerResponseKey])) {
             this.searchEngine.setSearchExtraDataAction(data.extraData, data[providerResponseKey], results)
-        }
-        if (isNotEmpty(data?.[serviceRequestResponseKey]?.name)) {
-            this.searchEngine.setSearchRequestServiceAction(data[serviceRequestResponseKey].name)
         }
         this.searchEngine.setSearchListDataAction(results);
 

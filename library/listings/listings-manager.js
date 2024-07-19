@@ -143,6 +143,18 @@ export class ListingsManager extends ListingsManagerBase {
         }
     }
 
+    getCategory() {
+        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
+
+        switch (listingsDataState?.source) {
+            case LISTINGS_BLOCK_SOURCE_WORDPRESS:
+                return this.wpDataSource.getCategory();
+            case LISTINGS_BLOCK_SOURCE_API:
+                return this.fetcherDataSource.getCategory();
+            default:
+                return false;
+        }
+    }
     validateInitData() {
         const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
 

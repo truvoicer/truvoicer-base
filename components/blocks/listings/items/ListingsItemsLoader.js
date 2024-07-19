@@ -63,27 +63,30 @@ const ListingsItemsLoader = ({
 
     const ContainerComponent = getContainerComponent();
     const ContainerItemComponent = getContainerItemComponent();
-    console.log('ListingsItemsLoader', listingsContext, searchContext, itemsContext)
-    const gridItemsProps = {
+
+    let gridItemsProps = {
         displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
-        category: searchContext.category,
         listingsGrid: grid,
         userId: user[SESSION_USER_ID],
     }
     return (
         <>
             <ContainerComponent>
-                {itemsContext.items.map((item, index) => (
-                    <ContainerItemComponent key={index} {...getGridItemColumns(grid)}>
-                        {listingsGrid.getGridItem({
-                            ...gridItemsProps,
-                            ...{
-                                item,
-                                index
-                            }
-                        })}
-                    </ContainerItemComponent>
-                ))}
+                {itemsContext.items.map((item, index) => {
+                    let cloneGridItemObj = {...gridItemsProps};
+                    cloneGridItemObj.category = item?.service?.name || listingsManager.getCategory();
+                    return (
+                        <ContainerItemComponent key={index} {...getGridItemColumns(grid)}>
+                            {listingsGrid.getGridItem({
+                                ...cloneGridItemObj,
+                                ...{
+                                    item,
+                                    index
+                                }
+                            })}
+                        </ContainerItemComponent>
+                )
+                })}
             </ContainerComponent>
 
             {children? children : null}

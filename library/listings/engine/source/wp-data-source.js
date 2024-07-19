@@ -35,6 +35,13 @@ export class WpDataSource extends DataSourceBase {
         super(listingsEngine, searchEngine);
     }
 
+    getCategory() {
+        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
+        if (Array.isArray(listingsDataState?.listings_category_id)) {
+            return listingsDataState.listings_category_id[0]?.slug
+        }
+        return null;
+    }
     dataInit(data) {
         let cloneData = {...data};
         cloneData.providers = [];

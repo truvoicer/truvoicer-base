@@ -32,9 +32,6 @@ export const searchData = {
         current_page: 1,
         page_size: 0
     },
-    requestService: "",
-    provider: "",
-    category: "",
     error: {},
     updateData: () => {}
 };
