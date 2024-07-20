@@ -145,14 +145,6 @@ const ListingsBlockInterface = (props) => {
     }
 
     useEffect(() => {
-        console.log('InitListingsBlockInterface', {
-            source: listingsManager.listingsEngine?.listingsContext?.listingsData?.source,
-            apploaded: app[APP_LOADED],
-            isauthentivcationsds: session[SESSION_IS_AUTHENTICATING],
-            dsc: isNotEmpty(data?.source),
-            loaded: listingsManager.listingsEngine?.listingsContext?.loaded,
-            cx: listingsManager.listingsEngine?.listingsContext,
-        })
         if (!app[APP_LOADED]) {
             return;
         }
@@ -203,13 +195,6 @@ const ListingsBlockInterface = (props) => {
         }
 
         listingsManager.prepareSearch('listDisplay news');
-        console.log('ListingInterface', {
-            source: listingsManager.listingsEngine?.listingsContext?.listingsData?.source,
-            data: data,
-            searchData: {...searchData},
-            lc: listingsManager.listingsEngine?.listingsContext,
-            sc: listingsManager.searchEngine?.searchContext
-        })
     }, [
         listingsManager.listingsEngine.listingsContext.loaded,
         listingsManager.searchEngine.searchContext.initialRequestHasRun,

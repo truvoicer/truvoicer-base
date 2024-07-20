@@ -38,10 +38,8 @@ export class ListingsManager extends ListingsManagerBase {
         if (!this.validateInitData()) {
             return false;
         }
-        if (!this.validateSearchParams()) {
-            return false;
-        }
-        this.listingsEngine.updateContext({key: 'loaded', value: true})
+        return this.validateSearchParams();
+
     }
 
     getListingsPostsPerPage() {
