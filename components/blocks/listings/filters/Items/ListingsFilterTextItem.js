@@ -21,7 +21,7 @@ const ListingsFilterTextItem = (props) => {
         listingsManager.getSearchEngine().setSearchEntity('listingsFilterTextItem');
         setQuery(e.target.value)
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
-        listingsManager.getListingsEngine().addListingsQueryDataString(props.data.name, e.target.value)
+        listingsManager.getSearchEngine().addStringToQuery(props.data.name, e.target.value)
     }
 
     useEffect(() => {

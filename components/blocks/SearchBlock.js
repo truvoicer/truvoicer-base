@@ -61,7 +61,7 @@ const SearchBlock = (props) => {
         setSearchData(getSearchData)
         listingsManager.getSearchEngine().setSearchEntity('searchBlockCategory');
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
-        listingsManager.getListingsEngine().addQueryDataObjectMiddleware(getSearchData, true);
+        listingsManager.getSearchEngine().addQueryDataObjectMiddleware(getSearchData, true);
     }
 
 
@@ -116,7 +116,7 @@ const SearchBlock = (props) => {
     const formSubmitHandler = (e) => {
         e.preventDefault();
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
-        listingsManager.getListingsEngine().addQueryDataObjectMiddleware(searchData, true);
+        listingsManager.getSearchEngine().addQueryDataObjectMiddleware(searchData, true);
         listingsManager.getSearchEngine().setSearchEntity('searchBlock');
     }
 

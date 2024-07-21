@@ -25,9 +25,9 @@ const ListingsFilterListItem = (props) => {
         listingsManager.getSearchEngine().setSearchEntity('listingsFilterListItem');
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
         if (e.target.checked) {
-            listingsManager.getListingsEngine().addArrayItem(props.data.name, e.target.value, true)
+            listingsManager.getSearchEngine().addItemToQueryArray(props.data.name, e.target.value, true)
         } else {
-            listingsManager.getListingsEngine().removeArrayItem(props.data.name, e.target.value, true)
+            listingsManager.getSearchEngine().removeItemFromQueryArray(props.data.name, e.target.value, true)
         }
     }
     const filterList = buildFilterList(props?.data?.filter_list_id)

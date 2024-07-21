@@ -39,7 +39,7 @@ const ListingsSortBar = (props) => {
             if (index > 0) {
                 return item;
             }
-            let pageSize = listingsManager?.listingsEngine?.listingsContext?.listingsQueryData?.[fetcherApiConfig.searchLimitKey];
+            let pageSize = listingsManager?.searchEngine?.searchContext?.query?.[fetcherApiConfig.searchLimitKey];
             if (isNotEmpty(pageSize)) {
                 item.value = parseInt(pageSize);
                 item.label = parseInt(pageSize);
@@ -68,7 +68,7 @@ const ListingsSortBar = (props) => {
         }
         listingsManager.getSearchEngine().setSearchEntity('listingsSortBar');
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
-        listingsManager.getListingsEngine().addListingsQueryDataString(fetcherApiConfig.searchLimitKey, e.target.value, true)
+        listingsManager.getSearchEngine().addStringToQuery(fetcherApiConfig.searchLimitKey, e.target.value, true)
     }
 
     useEffect(() => {

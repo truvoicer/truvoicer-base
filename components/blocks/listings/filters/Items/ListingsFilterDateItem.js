@@ -25,7 +25,7 @@ const ListingsFilterDateItem = (props) => {
         setStartDate(date);
         listingsManager.getSearchEngine().setSearchEntity('listingsFilterDateItem');
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
-        listingsManager.getListingsEngine().addListingsQueryDataString("start_date", moment(date).format(dateFormatString), true)
+        listingsManager.getSearchEngine().addStringToQuery("start_date", moment(date).format(dateFormatString), true)
     };
 
     useEffect(() => {

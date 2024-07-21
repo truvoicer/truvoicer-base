@@ -5,7 +5,7 @@ import {LISTINGS_GRID_COMPACT} from "@/truvoicer-base/redux/constants/listings-c
 import {
     SEARCH_REQUEST_NEW,
     PAGINATION_PAGE_NUMBER, PAGINATION_PAGE_SIZE,
-    SEARCH_STATUS_IDLE, SEARCH_REQUEST_IDLE
+    SEARCH_STATUS_IDLE, SEARCH_REQUEST_IDLE, SORT_BY, SORT_ORDER, DATE_KEY
 } from "@/truvoicer-base/redux/constants/search-constants";
 
 export const searchData = {
@@ -21,6 +21,9 @@ export const searchData = {
     query: {
         [PAGINATION_PAGE_NUMBER]: 1,
         [PAGINATION_PAGE_SIZE]: null,
+        [SORT_BY]: null,
+        [SORT_ORDER]: null,
+        [DATE_KEY]: null,
         provider: null,
     },
     pageControls: {

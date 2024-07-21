@@ -10,6 +10,9 @@ export const fetcherApiConfig = {
     pageOffsetKey: "page_offset",
     defaultOperation: "list",
     searchOperation: "list",
+    sortByKey: "sort_by",
+    sortOrderKey: "sort_order",
+    dateKey: "date_key",
     responseKeys: {
         category: 'requestCategory',
         provider: 'provider',

@@ -44,7 +44,7 @@ export class ListingsManager extends ListingsManagerBase {
 
     getListingsPostsPerPage() {
         const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
-        const postsPerPage = this.listingsEngine?.listingsContext?.listingsQueryData?.posts_per_page;
+        const postsPerPage = this.searchEngine?.searchContext?.query?.posts_per_page;
         if (isNotEmpty(postsPerPage)) {
             return parseInt(postsPerPage);
         }
@@ -67,8 +67,6 @@ export class ListingsManager extends ListingsManagerBase {
             cloneData.listings_category = cloneData.listings_category_id[0]?.slug
         }
 
-        this.initialisePageControls(cloneData);
-
         switch (cloneData?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 this.wpDataSource.dataInit(cloneData);
@@ -79,23 +77,6 @@ export class ListingsManager extends ListingsManagerBase {
                 break;
         }
 
-    }
-
-
-    getSearchLimit(data) {
-        if (isNotEmpty(data?.posts_per_page) &&
-            !isNaN(data.posts_per_page)) {
-            return parseInt(data.posts_per_page)
-        }
-        return siteConfig.defaultSearchLimit;
-
-    }
-
-    initialisePageControls(data) {
-        const searchLimit = this.getSearchLimit(data);
-        this.listingsEngine.addListingsQueryDataString(fetcherApiConfig.searchLimitKey, searchLimit);
-        this.searchEngine.setPageControlItemAction(PAGINATION_PAGE_SIZE, searchLimit)
-        this.searchEngine.setQueryItemAction(PAGINATION_PAGE_SIZE, searchLimit)
     }
 
     loadNextPageNumberMiddleware(pageNumber) {

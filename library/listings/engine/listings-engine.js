@@ -69,89 +69,8 @@ export class ListingsEngine extends EngineBase {
         }
     }
 
-    updateListingsData({key, value}) {
-        this.updateContextNestedObjectData({object: "listingsData", key, value})
-    }
-
     addError(error) {
         this.updateContext({key: "error", value: error})
-    }
-
-    addArrayItem(key, value, search = false) {
-        let listingsQueryData = this.listingsContext?.listingsQueryData
-        const object = Object.assign({}, listingsQueryData, {
-            [key]: (isSet(listingsQueryData[key])) ? listingsQueryData[key].concat(value) : [value]
-        });
-        this.updateContext({key: "listingsQueryData", value: object})
-    }
-
-    removeArrayItem(key, value, search = false) {
-        let listingsQueryData = this.listingsContext?.listingsQueryData
-        let index = listingsQueryData[key].indexOf(value);
-        const newArray = [...listingsQueryData[key]]
-        newArray.splice(index, 1)
-        if (index === -1) return;
-
-        const object = Object.assign({}, listingsQueryData, {
-            [key]: newArray
-        });
-        this.updateContext({key: "listingsQueryData", value: object})
-    }
-    removeArrayObject(key, compareKey, value, search = false) {
-        let listingsQueryData = this.listingsContext?.listingsQueryData
-        let index = listingsQueryData[key].findIndex(item => item[compareKey] === value);
-        const newArray = [...listingsQueryData[key]]
-        newArray.splice(index, 1)
-        if (index === -1) return;
-
-        const object = Object.assign({}, listingsQueryData, {
-            [key]: newArray
-        });
-        this.updateContext({key: "listingsQueryData", value: object})
-    }
-
-    addListingsQueryDataString(key, value) {
-        this.updateContextNestedObjectData({key, object: "listingsQueryData", value})
-    }
-
-    addQueryDataObjectMiddleware(queryData, search = false) {
-        let listingsQueryData = this.listingsContext?.listingsQueryData
-        let newQueryData = {};
-        Object.keys(queryData).map(value => {
-            newQueryData[value] = queryData[value];
-
-        });
-        const object = Object.assign({}, listingsQueryData, newQueryData);
-        this.updateContext({key: "listingsQueryData", value: object})
-    }
-
-    setListingsGridMiddleware(listingsGrid) {
-        this.updateContext({key: "listingsGrid", value: listingsGrid})
-    }
-
-    addQueryDataString(key, value, search = false) {
-        let listingsQueryData = this.listingsContext?.listingsQueryData
-
-        const object = Object.assign({}, listingsQueryData, {
-            [key]: value
-        });
-        this.updateContext({key: "listingsQueryData", value: object})
-    }
-
-    addQueryDataObjectAction(queryData, search = false) {
-        let listingsQueryData = this.listingsContext?.listingsQueryData
-        let newQueryData = {};
-        Object.keys(queryData).map(value => {
-            newQueryData[value] = queryData[value];
-
-        });
-        const object = Object.assign({}, listingsQueryData, newQueryData);
-
-        this.updateContext({key: "listingsQueryData", value: object})
-    }
-
-    setListingsGridAction(listingsGrid) {
-        this.updateContext({key: "listingsGrid", value: listingsGrid})
     }
 
     setListingsScrollTopAction(show) {
@@ -526,7 +445,7 @@ export class ListingsEngine extends EngineBase {
                 if (isSet(listingsData?.item_view_display) && listingsData.item_view_display === "page") {
                     // e.preventDefault()
                 }
-                this.updateContext({key: "listingsQueryData", value: {}})
+                this.updateContext({key: "query", value: {}})
             }
         });
     }

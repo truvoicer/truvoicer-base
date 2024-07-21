@@ -41,7 +41,7 @@ const MenuList = (props) => {
     const pageClickHandler = (item, e) => {
         setAppLoadedAction(false);
         setAppRequestedRoute(item?.post_url);
-        // listingsManager.listingsEngine.updateContext({key: "listingsQueryData", value: {'loaded': true}})
+        // listingsManager.listingsEngine.updateContext({key: "query", value: {'loaded': true}})
         // listingsManager.getSearchEngine().setSearchRequestStatusMiddleware(SEARCH_STATUS_STARTED);
         // listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
     }

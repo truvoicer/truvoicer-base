@@ -12,7 +12,6 @@ export const listingsData = {
     listingsGrid: isSet(siteConfig.defaultGridSize)? siteConfig.defaultGridSize : LISTINGS_GRID_COMPACT,
     loaded: false,
     listingsData: {},
-    listingsQueryData: {},
     listingsSearchResults: {},
     listingsRequestStatus: "",
     [LISTINGS_REQ_OP]: null,

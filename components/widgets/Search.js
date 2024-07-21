@@ -19,7 +19,7 @@ const Search = (props) => {
     const formClickHandler = (e) => {
         e.preventDefault();
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
-        listingsManager.getListingsEngine().addListingsQueryDataString(fetcherApiConfig.queryKey, query, true)
+        listingsManager.getSearchEngine().addStringToQuery(fetcherApiConfig.queryKey, query, true)
         listingsManager.runSearch('Search');
     }
 

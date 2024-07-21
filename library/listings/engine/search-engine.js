@@ -8,7 +8,7 @@ import {
     PAGE_CONTROL_PAGINATION_REQUEST, PAGE_CONTROL_REQ_PAGINATION_TYPE,
     PAGINATION_TOTAL_ITEMS,
     PAGINATION_TOTAL_PAGES,
-    PAGINATION_OFFSET, PAGE_CONTROL_REQ_PAGINATION_PAGE
+    PAGINATION_OFFSET, PAGE_CONTROL_REQ_PAGINATION_PAGE, SORT_BY, SORT_ORDER, DATE_KEY
 } from "@/truvoicer-base/redux/constants/search-constants";
 import store from "@/truvoicer-base/redux/store";
 import {produce} from "immer";
@@ -161,19 +161,77 @@ export class SearchEngine extends EngineBase {
         return filteredProviders;
     }
 
-
-    buildQueryData(allProviders, queryData = {}) {
-        let cloneQueryData = {...queryData};
-
-        cloneQueryData[fetcherApiConfig.searchLimitKey] = this.calculateLimit(allProviders.length, cloneQueryData?.[fetcherApiConfig.searchLimitKey]);
-        cloneQueryData = this.addPaginationQueryParameters(cloneQueryData);
-        return cloneQueryData;
+    addItemToQueryArray(key, value, search = false) {
+        let query = this.searchContext?.query
+        const object = Object.assign({}, query, {
+            [key]: (isSet(query[key])) ? query[key].concat(value) : [value]
+        });
+        this.updateContext({key: "query", value: object})
     }
-    buildPostData(provider, service,  queryData = {}) {
-        let cloneQueryData = {...queryData};
 
-        cloneQueryData["provider"] = provider;
+    removeItemFromQueryArray(key, value, search = false) {
+        let query = this.searchContext?.query
+        let index = query[key].indexOf(value);
+        const newArray = [...query[key]]
+        newArray.splice(index, 1)
+        if (index === -1) return;
+
+        const object = Object.assign({}, query, {
+            [key]: newArray
+        });
+        this.updateContext({key: "query", value: object})
+    }
+    removeObjectFromQueryArray(key, compareKey, value, search = false) {
+        let query = this.searchContext?.query
+        let index = query[key].findIndex(item => item[compareKey] === value);
+        const newArray = [...query[key]]
+        newArray.splice(index, 1)
+        if (index === -1) return;
+
+        const object = Object.assign({}, query, {
+            [key]: newArray
+        });
+        this.updateContext({key: "query", value: object})
+    }
+
+    addStringToQuery(key, value) {
+        this.updateContextNestedObjectData({key, object: "query", value})
+    }
+
+    addQueryDataObjectMiddleware(queryData, search = false) {
+        let query = this.searchContext?.query
+        let newQueryData = {};
+        Object.keys(queryData).map(value => {
+            newQueryData[value] = queryData[value];
+
+        });
+        const object = Object.assign({}, query, newQueryData);
+        this.updateContext({key: "query", value: object})
+    }
+
+    buildPostData(providers, service, query) {
+        let cloneQueryData = {};
+        cloneQueryData["provider"] = providers;
         cloneQueryData["service"] = service;
+
+        cloneQueryData[SORT_BY] = null;
+        cloneQueryData[SORT_ORDER] = null;
+        cloneQueryData[DATE_KEY] = null;
+        if (isNotEmpty(query?.[SORT_BY])) {
+            cloneQueryData[SORT_BY] = query[SORT_BY];
+        }
+        if (isNotEmpty(query?.[SORT_ORDER])) {
+            cloneQueryData[SORT_ORDER] = query[SORT_ORDER];
+        }
+        if (isNotEmpty(query?.[DATE_KEY])) {
+            cloneQueryData[DATE_KEY] = query[DATE_KEY];
+        }
+
+        cloneQueryData[fetcherApiConfig.searchLimitKey] = this.calculateLimit(
+            providers.length,
+            cloneQueryData?.[fetcherApiConfig.searchLimitKey]
+        );
+        cloneQueryData = this.addPaginationQueryParameters(cloneQueryData);
         return cloneQueryData;
     }
 

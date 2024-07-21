@@ -62,9 +62,9 @@ const ListingsFilterApiListItem = (props) => {
             return;
         }
         if (e.target.checked) {
-            listingsManager.getListingsEngine().addArrayItem(key, findProvider, true)
+            listingsManager.getSearchEngine().addItemToQueryArray(key, findProvider, true)
         } else {
-            listingsManager.getListingsEngine().removeArrayObject(key, 'name',  e.target.value, true)
+            listingsManager.getSearchEngine().removeObjectFromQueryArray(key, 'name',  e.target.value, true)
         }
     }
 

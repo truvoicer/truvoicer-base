@@ -9,7 +9,7 @@ import {
     PAGE_CONTROL_REQ_PAGINATION_TYPE,
     PAGINATION_PAGE_NUMBER, SEARCH_STATUS_COMPLETED,
     SEARCH_REQUEST_ERROR, SEARCH_STATUS_IDLE,
-    SEARCH_STATUS_STARTED
+    SEARCH_STATUS_STARTED, SORT_BY, PAGINATION_OFFSET, PAGINATION_PAGE_SIZE, SORT_ORDER, DATE_KEY
 } from "@/truvoicer-base/redux/constants/search-constants";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import {
@@ -19,6 +19,7 @@ import {
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {REQUEST_POST} from "@/truvoicer-base/library/constants/request-constants";
 import {getSiteSettings} from "@/truvoicer-base/library/api/wp/middleware";
+import {siteConfig} from "@/config/site-config";
 
 export class FetcherDataSource extends DataSourceBase {
 
@@ -31,6 +32,23 @@ export class FetcherDataSource extends DataSourceBase {
     getCategory() {
         return this.listingsEngine?.listingsContext?.listingsData?.api_listings_service;
     }
+    getInitialSearchLimit(data) {
+        if (isNotEmpty(data?.posts_per_page) &&
+            !isNaN(data.posts_per_page)) {
+            return parseInt(data.posts_per_page)
+        }
+        return siteConfig.defaultSearchLimit;
+
+    }
+    getInitialSortBy(data) {
+        return data?.[fetcherApiConfig.sortByKey] || null;
+    }
+    getInitialSortOrder(data) {
+        return data?.[fetcherApiConfig.sortOrderKey] || null;
+    }
+    getInitialDateKey(data) {
+        return data?.[fetcherApiConfig.dateKey] || null;
+    }
     dataInit(data) {
         this.listingsEngine.updateContext({key: "listingsData", value: data})
 
@@ -38,7 +56,17 @@ export class FetcherDataSource extends DataSourceBase {
             console.warn('Api Listing category not set in block data')
             return false;
         }
+
         this.listingsEngine.updateContext({key: "category", value: data.api_listings_service})
+
+        this.searchEngine.setQueryItemAction(SORT_BY, this.getInitialSortBy(data));
+        this.searchEngine.setQueryItemAction(SORT_ORDER, this.getInitialSortOrder(data));
+        this.searchEngine.setQueryItemAction(DATE_KEY, this.getInitialDateKey(data));
+
+        const searchLimit = this.getInitialSearchLimit(data);
+        this.searchEngine.setQueryItemAction(fetcherApiConfig.searchLimitKey, searchLimit);
+        this.searchEngine.setPageControlItemAction(PAGINATION_PAGE_SIZE, searchLimit)
+        this.searchEngine.setQueryItemAction(PAGINATION_PAGE_SIZE, searchLimit)
 
         this.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_IDLE);
     }
@@ -116,7 +144,6 @@ export class FetcherDataSource extends DataSourceBase {
     }
     async runFetcherApiListingsSearch(source = null) {
         console.log('runFetcherApiListingsSearch')
-        console.log(this.listingsEngine?.listingsContext, this.searchEngine.searchContext)
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
         this.searchEngine.setSearchRequestStatusAction(SEARCH_STATUS_STARTED);
         const searchQueryState = this.searchEngine.searchContext.query;
@@ -131,24 +158,20 @@ export class FetcherDataSource extends DataSourceBase {
         }
         const providers = await this.getSearchProviders();
         const filterProviders = this.searchEngine.filterSearchProviders(providers);
-        const query = this.searchEngine.buildQueryData(
-            filterProviders,
-            this.listingsEngine?.listingsContext?.listingsQueryData
-        );
         const postData = this.searchEngine.buildPostData(
             filterProviders,
             this.listingsEngine?.listingsContext?.listingsData?.api_listings_service,
-            this.listingsEngine?.listingsContext?.listingsQueryData
+            this.listingsEngine?.searchContext?.query
         );
-        console.log({query, postData, filterProviders, providers})
+
         const response = await this.fetcherApiMiddleware.fetchData(
             "operation",
             ['search', 'list'],
-            query,
+            {},
             postData,
             REQUEST_POST
         );
-        console.log(source, this.listingsEngine?.listingsContext?.listingsData?.api_listings_service, response)
+
         if (response?.status === "success") {
             this.searchResponseHandler(response.data, true);
         } else {
@@ -203,7 +226,7 @@ export class FetcherDataSource extends DataSourceBase {
         }).filter(provider => isObject(provider) && !isObjectEmpty(provider));
     }
     async getSearchProviders() {
-        const queryDataState = this.listingsEngine?.listingsContext?.listingsQueryData;
+        const queryDataState = this.listingsEngine?.searchContext?.query;
         const listingsContext = await this.listingsEngine?.listingsContext;
         const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
         let providers = [];

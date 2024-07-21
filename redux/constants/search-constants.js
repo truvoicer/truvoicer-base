@@ -23,3 +23,7 @@ export const PAGINATION_OFFSET = "offset";
 export const PAGINATION_PAGE_NUMBER = "page_number";
 export const PAGINATION_TOTAL_ITEMS = "total_items";
 
+export const SORT_BY = "sort_by";
+export const SORT_ORDER = "sort_order";
+export const DATE_KEY = "date_key";
+
