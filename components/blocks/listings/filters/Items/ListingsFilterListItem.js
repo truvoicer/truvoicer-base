@@ -32,15 +32,15 @@ const ListingsFilterListItem = (props) => {
     }
     const filterList = buildFilterList(props?.data?.filter_list_id)
 
-    useEffect(() => {
-        if (
-            searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
-            searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
-            searchContext?.searchEntity === 'listingsFilterListItem'
-        ) {
-            listingsManager.runSearch('listingsFilterListItem');
-        }
-    }, [searchContext?.searchOperation]);
+    // useEffect(() => {
+    //     if (
+    //         searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
+    //         searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
+    //         searchContext?.searchEntity === 'listingsFilterListItem'
+    //     ) {
+    //         listingsManager.runSearch('listingsFilterListItem');
+    //     }
+    // }, [searchContext?.searchOperation]);
 
     return (
         <>

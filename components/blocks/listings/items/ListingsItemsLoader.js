@@ -37,15 +37,15 @@ const ListingsItemsLoader = ({
     const grid = listingsContext?.listingsGrid;
 
 
-    useEffect(() => {
-        if (
-            searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
-            searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
-            searchContext?.searchEntity === 'listingsItemsLoader'
-        ) {
-            listingsManager.runSearch('listingsItemsLoader');
-        }
-    }, [searchContext?.searchOperation]);
+    // useEffect(() => {
+    //     if (
+    //         searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
+    //         searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
+    //         searchContext?.searchEntity === 'listingsItemsLoader'
+    //     ) {
+    //         listingsManager.runSearch('listingsItemsLoader');
+    //     }
+    // }, [searchContext?.searchOperation]);
 
     function getContainerComponent() {
         if (!containerComponent) {

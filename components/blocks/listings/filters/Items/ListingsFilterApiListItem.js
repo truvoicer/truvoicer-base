@@ -80,15 +80,15 @@ const ListingsFilterApiListItem = (props) => {
         }
     }
 
-    useEffect(() => {
-        if (
-            searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
-            searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
-            searchContext?.searchEntity === 'listingsFilterApiListItem'
-        ) {
-            listingsManager.runSearch('listingsFilterApiListItem');
-        }
-    }, [searchContext?.searchOperation]);
+    // useEffect(() => {
+    //     if (
+    //         searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
+    //         searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
+    //         searchContext?.searchEntity === 'listingsFilterApiListItem'
+    //     ) {
+    //         listingsManager.runSearch('listingsFilterApiListItem');
+    //     }
+    // }, [searchContext?.searchOperation]);
 
     const items = getListItems();
     let key = getKey();

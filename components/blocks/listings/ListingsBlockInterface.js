@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
     DISPLAY_AS,
 } from "@/truvoicer-base/redux/constants/general_constants";
@@ -7,26 +7,21 @@ import {SearchContext, searchData} from "@/truvoicer-base/library/listings/conte
 import {
     StateHelpers,
 } from "@/truvoicer-base/library/helpers/state-helpers";
-import {isNotEmpty, isObject, isObjectEmpty, scrollToRef} from "@/truvoicer-base/library/utils";
+import {isNotEmpty, scrollToRef} from "@/truvoicer-base/library/utils";
 import GridItems from "@/truvoicer-base/components/blocks/listings/items/GridItems";
 import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
 import {SESSION_IS_AUTHENTICATING} from "@/truvoicer-base/redux/constants/session-constants";
-import {AppContext} from "@/truvoicer-base/config/contexts/AppContext";
-import {AppManager} from "@/truvoicer-base/library/app/AppManager";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {connect} from "react-redux";
 import {ListingsManagerBase} from "@/truvoicer-base/library/listings/listings-manager-base";
 import {
-    SEARCH_REQUEST_IDLE,
     SEARCH_REQUEST_NEW,
-    SEARCH_STATUS_IDLE
 } from "@/truvoicer-base/redux/constants/search-constants";
 import {APP_LOADED, APP_STATE} from "@/truvoicer-base/redux/constants/app-constants";
 import ListingsBlockContainer from "@/truvoicer-base/components/blocks/listings/ListingsBlockContainer";
 
 
 const ListingsBlockInterface = (props) => {
-    console.log(props)
     const {data, session, app} = props;
 
     const listingsGrid = new ListingsGrid();
@@ -213,7 +208,7 @@ const ListingsBlockInterface = (props) => {
             return;
         }
 
-        listingsManager.runSearch('listDisplay news');
+        listingsManager.runSearch();
     }, [
         listingsManager.listingsEngine.listingsContext.loaded,
         listingsManager.searchEngine.searchContext.initialRequestHasRun,

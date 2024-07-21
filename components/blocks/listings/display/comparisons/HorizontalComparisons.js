@@ -15,17 +15,10 @@ function HorizontalComparisons(props) {
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const [selectedItems, setSelectedItems] = useState([]);
 
-
-    useEffect(() => {
-        if (!listingsContext.loaded) {
-            return;
-        }
-        listingsManager.runSearch('postsBlock');
-    }, [listingsContext.loaded]);
-
     function getItems() {
         return itemsContext?.items || [];
     }
+
     function handleItemClick(item, index, e) {
         e.preventDefault();
         setSelectedItems(prevState => {

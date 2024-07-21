@@ -84,8 +84,9 @@ export class ListingsManager extends ListingsManagerBase {
         this.searchEngine.setQueryItemAction(PAGINATION_PAGE_NUMBER, parseInt(pageNumber))
     }
 
-    prepareSearch(source = null) {
+    async prepareSearch(source = null) {
         console.log('prepareSearch', {source})
+        const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
         const searchOperation = this.searchEngine.searchContext.searchOperation;
         const searchStatus = this.searchEngine.searchContext.searchStatus;
         if (![SEARCH_REQUEST_NEW, SEARCH_REQUEST_APPEND].includes(searchOperation)) {
@@ -94,14 +95,31 @@ export class ListingsManager extends ListingsManagerBase {
         if (searchStatus !== SEARCH_STATUS_IDLE) {
             return;
         }
+
+        switch (listingsDataState?.source) {
+            case LISTINGS_BLOCK_SOURCE_WORDPRESS:
+                await this.wpDataSource.prepareSearch();
+                break;
+            case LISTINGS_BLOCK_SOURCE_API:
+                await this.fetcherDataSource.prepareSearch();
+                break;
+            default:
+                console.warn('Invalid listings source...')
+                break;
+        }
         this.searchEngine.setSearchRequestStatusAction(SEARCH_STATUS_STARTED);
     }
-    async runSearch(source = null) {
-        console.log('runSearch', {source}, this.searchEngine.searchContext)
+    async runSearch() {
         const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
 
         const searchOperation = this.searchEngine.searchContext.searchOperation;
         const searchStatus = this.searchEngine.searchContext.searchStatus;
+        console.log(
+            'runSearch',
+            {searchStatus, searchOperation},
+            (![SEARCH_REQUEST_NEW, SEARCH_REQUEST_APPEND].includes(searchOperation)),
+            (searchStatus !== SEARCH_STATUS_STARTED)
+        )
         if (![SEARCH_REQUEST_NEW, SEARCH_REQUEST_APPEND].includes(searchOperation)) {
             return;
         }
@@ -109,12 +127,13 @@ export class ListingsManager extends ListingsManagerBase {
             return;
         }
 
+        console.log('1runSearch')
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
-                await this.wpDataSource.runSearch(source)
+                await this.wpDataSource.runSearch()
                 break;
             case LISTINGS_BLOCK_SOURCE_API:
-                await this.fetcherDataSource.runSearch(source)
+                await this.fetcherDataSource.runSearch()
                 break;
             default:
                 console.warn('Invalid listings source...')

@@ -28,15 +28,15 @@ const ListingsFilterDateItem = (props) => {
         listingsManager.getSearchEngine().addStringToQuery("start_date", moment(date).format(dateFormatString), true)
     };
 
-    useEffect(() => {
-        if (
-            searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
-            searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
-            searchContext?.searchEntity === 'listingsFilterDateItem'
-        ) {
-            listingsManager.runSearch('listingsFilterDateItem');
-        }
-    }, [searchContext?.searchOperation]);
+    // useEffect(() => {
+    //     if (
+    //         searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
+    //         searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
+    //         searchContext?.searchEntity === 'listingsFilterDateItem'
+    //     ) {
+    //         listingsManager.runSearch('listingsFilterDateItem');
+    //     }
+    // }, [searchContext?.searchOperation]);
 
         return (
             <>

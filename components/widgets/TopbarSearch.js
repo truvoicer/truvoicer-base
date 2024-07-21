@@ -22,7 +22,6 @@ const TopbarSearch = (props) => {
         e.preventDefault();
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
         listingsManager.getSearchEngine().addStringToQuery(fetcherApiConfig.queryKey, query, true)
-        listingsManager.runSearch('TopbarSearch');
         listingsManager.getListingsEngine().setListingsScrollTopAction(true);
     }
 

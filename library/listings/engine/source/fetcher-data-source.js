@@ -59,16 +59,61 @@ export class FetcherDataSource extends DataSourceBase {
 
         this.listingsEngine.updateContext({key: "category", value: data.api_listings_service})
 
-        this.searchEngine.setQueryItemAction(SORT_BY, this.getInitialSortBy(data));
-        this.searchEngine.setQueryItemAction(SORT_ORDER, this.getInitialSortOrder(data));
-        this.searchEngine.setQueryItemAction(DATE_KEY, this.getInitialDateKey(data));
+        this.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_IDLE);
+    }
+
+    calculateLimit(providerCount, pageSize = null) {
+        if (pageSize === null) {
+            pageSize = siteConfig.defaultSearchLimit;
+        }
+        return Math.floor(pageSize / providerCount);
+    }
+    async prepareSearch() {
+        const data = this.listingsEngine?.listingsContext?.listingsData;
+
+        let query = {};
+        if (isObject(this.searchEngine.searchContext.query)) {
+            query = {...this.searchEngine.searchContext.query};
+        }
 
         const searchLimit = this.getInitialSearchLimit(data);
-        this.searchEngine.setQueryItemAction(fetcherApiConfig.searchLimitKey, searchLimit);
-        this.searchEngine.setPageControlItemAction(PAGINATION_PAGE_SIZE, searchLimit)
-        this.searchEngine.setQueryItemAction(PAGINATION_PAGE_SIZE, searchLimit)
+        const providers = await this.getSearchProviders();
+        const filterProviders = this.searchEngine.filterSearchProviders(providers);
 
-        this.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_IDLE);
+        query["provider"] = filterProviders;
+        query["service"] = this.listingsEngine?.listingsContext?.listingsData?.api_listings_service;
+
+        query[fetcherApiConfig.searchLimitKey] = this.calculateLimit(
+            filterProviders.length,
+            query?.[fetcherApiConfig.searchLimitKey]
+        );
+
+        if (!isNotEmpty(query?.[SORT_BY])) {
+            query[SORT_BY] = this.getInitialSortBy(data);
+        }
+        if (!isNotEmpty(query?.[SORT_ORDER])) {
+            query[SORT_ORDER] = this.getInitialSortOrder(data);
+        }
+        if (!isNotEmpty(query?.[DATE_KEY])) {
+            query[DATE_KEY] = this.getInitialDateKey(data);
+        }
+
+        if (!isNotEmpty(query?.[fetcherApiConfig.searchLimitKey])) {
+            query[fetcherApiConfig.searchLimitKey] = searchLimit;
+        }
+
+
+        if (isNotEmpty(query?.[PAGINATION_PAGE_NUMBER])) {
+            query[PAGINATION_PAGE_NUMBER] = 1;
+        }
+
+
+        // const currentPage = query[PAGINATION_PAGE_NUMBER];
+        // query[PAGINATION_PAGE_NUMBER] = currentPage;
+        // query[PAGINATION_OFFSET] = query[fetcherApiConfig.searchLimitKey] * currentPage;
+
+        console.log('prepareSearch', {query})
+        this.searchEngine.updateContext({key: 'query', value: query});
     }
 
     async setListingsProviders(data) {
@@ -97,9 +142,8 @@ export class FetcherDataSource extends DataSourceBase {
         return listingsProviders
     }
 
-    async runSearch(source = null) {
-        console.log('runSearch', {source})
-        await this.runFetcherApiListingsSearch(source)
+    async runSearch() {
+        await this.runFetcherApiListingsSearch()
     }
 
     validateInitData() {
@@ -142,7 +186,7 @@ export class FetcherDataSource extends DataSourceBase {
         }
         return true;
     }
-    async runFetcherApiListingsSearch(source = null) {
+    async runFetcherApiListingsSearch() {
         console.log('runFetcherApiListingsSearch')
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
         this.searchEngine.setSearchRequestStatusAction(SEARCH_STATUS_STARTED);
@@ -156,19 +200,12 @@ export class FetcherDataSource extends DataSourceBase {
         if (!searchQueryState[PAGE_CONTROL_PAGINATION_REQUEST]) {
             this.searchEngine.setQueryItemAction(PAGINATION_PAGE_NUMBER, 1);
         }
-        const providers = await this.getSearchProviders();
-        const filterProviders = this.searchEngine.filterSearchProviders(providers);
-        const postData = this.searchEngine.buildPostData(
-            filterProviders,
-            this.listingsEngine?.listingsContext?.listingsData?.api_listings_service,
-            this.listingsEngine?.searchContext?.query
-        );
 
         const response = await this.fetcherApiMiddleware.fetchData(
             "operation",
             ['search', 'list'],
             {},
-            postData,
+            this.searchEngine.searchContext.query,
             REQUEST_POST
         );
 

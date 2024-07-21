@@ -24,15 +24,15 @@ const ListingsFilterTextItem = (props) => {
         listingsManager.getSearchEngine().addStringToQuery(props.data.name, e.target.value)
     }
 
-    useEffect(() => {
-        if (
-            searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
-            searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
-            searchContext?.searchEntity === 'listingsFilterTextItem'
-        ) {
-            listingsManager.runSearch('listingsFilterTextItem');
-        }
-    }, [searchContext?.searchOperation]);
+    // useEffect(() => {
+    //     if (
+    //         searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
+    //         searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
+    //         searchContext?.searchEntity === 'listingsFilterTextItem'
+    //     ) {
+    //         listingsManager.runSearch('listingsFilterTextItem');
+    //     }
+    // }, [searchContext?.searchOperation]);
 
     return (
         <>

@@ -71,16 +71,16 @@ const ListingsSortBar = (props) => {
         listingsManager.getSearchEngine().addStringToQuery(fetcherApiConfig.searchLimitKey, e.target.value, true)
     }
 
-    useEffect(() => {
-        if (
-            isNotEmpty(limit) &&
-            listingsManager.canRunSearch(SEARCH_REQUEST_NEW) &&
-            searchContext?.searchEntity === 'listingsSortBar'
-        ) {
-            listingsManager.runSearch('ListingsSortBar');
-            listingsManager.getListingsEngine().setListingsScrollTopAction(true);
-        }
-    }, [searchContext?.searchOperation, limit]);
+    // useEffect(() => {
+    //     if (
+    //         isNotEmpty(limit) &&
+    //         listingsManager.canRunSearch(SEARCH_REQUEST_NEW) &&
+    //         searchContext?.searchEntity === 'listingsSortBar'
+    //     ) {
+    //         listingsManager.runSearch('ListingsSortBar');
+    //         listingsManager.getListingsEngine().setListingsScrollTopAction(true);
+    //     }
+    // }, [searchContext?.searchOperation, limit]);
 
 
         return (

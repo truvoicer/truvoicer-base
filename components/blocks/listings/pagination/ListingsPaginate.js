@@ -193,15 +193,15 @@ const ListingsPaginate = (props) => {
         )
     }
 
-    useEffect(() => {
-        if (
-            searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
-            searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
-            searchContext?.searchEntity === 'listingsPaginate'
-        ) {
-            listingsManager.runSearch('listingsPaginate');
-        }
-    }, [searchContext?.searchOperation]);
+    // useEffect(() => {
+    //     if (
+    //         searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
+    //         searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
+    //         searchContext?.searchEntity === 'listingsPaginate'
+    //     ) {
+    //         listingsManager.runSearch('listingsPaginate');
+    //     }
+    // }, [searchContext?.searchOperation]);
 
 
     return templateManager.render(

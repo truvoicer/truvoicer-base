@@ -28,16 +28,16 @@ const BlogSearch = (props) => {
         setQuery(e.target.value);
     }
 
-    useEffect(() => {
-        if (
-            isNotEmpty(query) &&
-            searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
-            searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
-            searchContext?.searchEntity === 'blogSearch'
-        ) {
-            listingsManager.runSearch('blogSearch');
-        }
-    }, [searchContext?.searchOperation, query]);
+    // useEffect(() => {
+    //     if (
+    //         isNotEmpty(query) &&
+    //         searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
+    //         searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
+    //         searchContext?.searchEntity === 'blogSearch'
+    //     ) {
+    //         listingsManager.runSearch('blogSearch');
+    //     }
+    // }, [searchContext?.searchOperation, query]);
 
         return (
             <>

@@ -209,38 +209,6 @@ export class SearchEngine extends EngineBase {
         this.updateContext({key: "query", value: object})
     }
 
-    buildPostData(providers, service, query) {
-        let cloneQueryData = {};
-        cloneQueryData["provider"] = providers;
-        cloneQueryData["service"] = service;
-
-        cloneQueryData[SORT_BY] = null;
-        cloneQueryData[SORT_ORDER] = null;
-        cloneQueryData[DATE_KEY] = null;
-        if (isNotEmpty(query?.[SORT_BY])) {
-            cloneQueryData[SORT_BY] = query[SORT_BY];
-        }
-        if (isNotEmpty(query?.[SORT_ORDER])) {
-            cloneQueryData[SORT_ORDER] = query[SORT_ORDER];
-        }
-        if (isNotEmpty(query?.[DATE_KEY])) {
-            cloneQueryData[DATE_KEY] = query[DATE_KEY];
-        }
-
-        cloneQueryData[fetcherApiConfig.searchLimitKey] = this.calculateLimit(
-            providers.length,
-            cloneQueryData?.[fetcherApiConfig.searchLimitKey]
-        );
-        cloneQueryData = this.addPaginationQueryParameters(cloneQueryData);
-        return cloneQueryData;
-    }
-
-    calculateLimit(providerCount, pageSize = null) {
-        if (pageSize === null) {
-            pageSize = siteConfig.defaultSearchLimit;
-        }
-        return Math.floor(pageSize / providerCount);
-    }
 
     getInitialSearchQueryData(listingsDataState) {
         if (!Array.isArray(listingsDataState?.initial_load_search_params)) {
@@ -415,20 +383,6 @@ export class SearchEngine extends EngineBase {
         return parseInt(pageSize) * parseInt(pageNumber);
     }
 
-
-    addPaginationQueryParameters(queryData) {
-        const searchQueryState = this.searchContext.query;
-        const currentPage = searchQueryState[PAGINATION_PAGE_NUMBER];
-        let pageSize = siteConfig.defaultSearchLimit
-
-        if (isSet(queryData?.[PAGINATION_PAGE_SIZE])) {
-            pageSize = queryData[PAGINATION_PAGE_SIZE];
-        }
-
-        queryData[PAGINATION_PAGE_NUMBER] = currentPage;
-        queryData[PAGINATION_OFFSET] = pageSize * currentPage;
-        return queryData;
-    }
 
     addProviderToSearch(provider) {
         const pageControlsState = this.searchContext?.pageControls;

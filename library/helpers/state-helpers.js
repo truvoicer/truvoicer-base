@@ -1,3 +1,5 @@
+import {isObject} from "@/truvoicer-base/library/utils";
+
 export class StateHelpers {
     static getStateData(useState) {
         const [stateObj, setStateObj] = useState;

@@ -6,29 +6,29 @@ import {
     LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {
-    SEARCH_REQUEST_APPEND,
+    PAGE_CONTROL_HAS_MORE,
+    PAGE_CONTROL_PAGINATION_REQUEST,
+    PAGE_CONTROL_REQ_PAGINATION_OFFSET,
+    PAGE_CONTROL_REQ_PAGINATION_PAGE,
+    PAGE_CONTROL_REQ_PAGINATION_TYPE, PAGINATION_OFFSET,
+    PAGINATION_PAGE_NUMBER,
+    PAGINATION_PAGE_SIZE,
+    SEARCH_REQUEST_ERROR,
     SEARCH_REQUEST_IDLE,
     SEARCH_REQUEST_NEW,
-    PAGE_CONTROL_HAS_MORE,
-    PAGE_CONTROL_PAGINATION_REQUEST, PAGE_CONTROL_REQ_PAGINATION_OFFSET,
-    PAGE_CONTROL_REQ_PAGINATION_PAGE,
-    PAGE_CONTROL_REQ_PAGINATION_TYPE,
-    PAGINATION_PAGE_NUMBER,
-    SEARCH_STATUS_COMPLETED,
-    SEARCH_REQUEST_ERROR,
-    SEARCH_STATUS_STARTED, SEARCH_STATUS_IDLE, PAGINATION_PAGE_SIZE
+    SEARCH_STATUS_IDLE,
+    SEARCH_STATUS_STARTED
 } from "@/truvoicer-base/redux/constants/search-constants";
 import {siteConfig} from "@/config/site-config";
 import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
-import {extractCategoryIds, extractItemListFromPost} from "@/truvoicer-base/library/helpers/wp-helpers";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import {
     ITEM_LIST_ID,
     LISTINGS_REQ_OP,
-    LISTINGS_REQ_OP_ITEM_LIST, LISTINGS_REQ_OP_POST_LIST
+    LISTINGS_REQ_OP_ITEM_LIST,
+    LISTINGS_REQ_OP_POST_LIST
 } from "@/truvoicer-base/redux/constants/listings-constants";
-import {tr} from "date-fns/locale";
 
 export class WpDataSource extends DataSourceBase {
     constructor(listingsEngine, searchEngine) {
@@ -56,56 +56,91 @@ export class WpDataSource extends DataSourceBase {
         this.listingsEngine.updateContext({key: "listingsData", value: cloneData})
         this.setPostsBlocksDataAction(cloneData);
         this.listingsEngine.updateContext({key: "providers", value: []})
-
-        const searchLimit = this.getSearchLimit(data);
-        this.searchEngine.addStringToQuery(fetcherApiConfig.searchLimitKey, searchLimit);
-        this.searchEngine.setPageControlItemAction(PAGINATION_PAGE_SIZE, searchLimit)
-        this.searchEngine.setQueryItemAction(PAGINATION_PAGE_SIZE, searchLimit)
-
-        this.getInitialLoad(cloneData);
     }
-    getInitialLoad(listingsData) {
-        console.log('getInitialLoad', listingsData)
-        switch (listingsData?.wordpress_data_source) {
+
+    prepareSearch() {
+        switch (this.listingsEngine?.listingsContext?.listingsData?.wordpress_data_source) {
             case LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST:
-                this.listItemsRequestInit(listingsData)
+                this.listItemsRequestInit()
                 break;
             case LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS:
-                this.postRequestInit(listingsData)
+                this.postRequestInit()
                 break;
         }
-
     }
 
-    postRequestInit(listingsDataState) {
+    postRequestInit() {
         this.searchEngine.setSearchRequestOperationAction(SEARCH_REQUEST_NEW);
+        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
         const category = listingsDataState?.category_id;
+
+        const searchLimit = this.getSearchLimit(this.listingsEngine.listingsContext?.listingsData);
+
         this.getSearchEngine().setSearchEntity('listItemsRequestInit');
-        this.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_IDLE);
         this.searchEngine.setSearchCategoryAction(category)
         this.listingsEngine.updateContext({key: LISTINGS_REQ_OP, value: LISTINGS_REQ_OP_POST_LIST});
-        this.searchEngine.addStringToQuery('show_all_categories', listingsDataState?.show_all_categories);
-        this.searchEngine.addStringToQuery('categories', category);
-        this.searchEngine.addStringToQuery(PAGE_CONTROL_REQ_PAGINATION_TYPE, PAGE_CONTROL_REQ_PAGINATION_OFFSET);
+
+        let query = {};
+        if (isObject(this.searchEngine.searchContext.query)) {
+            query = {...this.searchEngine.searchContext.query};
+        }
+        query['show_all_categories'] = listingsDataState?.show_all_categories;
+        query['categories'] = category;
+        query[PAGE_CONTROL_REQ_PAGINATION_TYPE] = PAGE_CONTROL_REQ_PAGINATION_OFFSET;
+
+        if (!isNotEmpty(query?.[fetcherApiConfig.searchLimitKey])) {
+            query[fetcherApiConfig.searchLimitKey] = searchLimit;
+        }
+
+        if (!isSet(query?.[PAGINATION_PAGE_NUMBER])) {
+            query[PAGINATION_PAGE_NUMBER] = 1;
+        }
+        if (!isSet(query?.[PAGINATION_OFFSET])) {
+            query[PAGINATION_OFFSET] = 0;
+        }
+
+        console.log('prepareSearch', {query})
+        this.searchEngine.updateContext({key: 'query', value: query});
 
     }
-    listItemsRequestInit(listingsDataState) {
+    listItemsRequestInit() {
+        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
         if (!isNotEmpty(listingsDataState?.item_list_id)) {
             console.error('Invalid item list post data...')
             return;
         }
-        const category = listingsDataState.listings_category;
-        this.searchEngine.setSearchCategoryAction(category)
+
+        const searchLimit = this.getSearchLimit(this.listingsEngine.listingsContext?.listingsData);
+
+        let query = {};
+        if (isObject(this.searchEngine.searchContext.query)) {
+            query = {...this.searchEngine.searchContext.query};
+        }
+
+        this.listingsEngine.updateContext({key: LISTINGS_REQ_OP, value: LISTINGS_REQ_OP_ITEM_LIST});
+
+        this.searchEngine.setSearchCategoryAction(listingsDataState?.listings_category)
         this.searchEngine.setSearchProviderAction(siteConfig.internalProviderName)
 
         this.getSearchEngine().setSearchEntity('listItemsRequestInit');
-        this.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_IDLE);
-        const itemListId = parseInt(listingsDataState?.item_list_id);
 
-        this.listingsEngine.updateContext({key: LISTINGS_REQ_OP, value: LISTINGS_REQ_OP_ITEM_LIST});
-        this.searchEngine.addStringToQuery(ITEM_LIST_ID, itemListId);
-        this.searchEngine.addStringToQuery(PAGE_CONTROL_REQ_PAGINATION_TYPE, PAGE_CONTROL_REQ_PAGINATION_PAGE);
-        this.searchEngine.addStringToQuery(DISPLAY_AS, listingsDataState?.display_as);
+        query[ITEM_LIST_ID] = parseInt(listingsDataState?.item_list_id);
+        query[PAGE_CONTROL_REQ_PAGINATION_TYPE] = PAGE_CONTROL_REQ_PAGINATION_PAGE;
+        query[DISPLAY_AS] = listingsDataState?.display_as;
+
+        if (!isNotEmpty(query?.[fetcherApiConfig.searchLimitKey])) {
+            query[fetcherApiConfig.searchLimitKey] = searchLimit;
+        }
+
+        if (!isSet(query?.[PAGINATION_PAGE_NUMBER])) {
+            query[PAGINATION_PAGE_NUMBER] = 1;
+        }
+        if (!isSet(query?.[PAGINATION_OFFSET])) {
+            query[PAGINATION_OFFSET] = 0;
+        }
+
+        console.log('prepareSearch', {query})
+        this.searchEngine.updateContext({key: 'query', value: query});
     }
     validateInitData() {
         if (!isObject(this.listingsEngine.listingsContext?.listingsData)) {
@@ -126,13 +161,14 @@ export class WpDataSource extends DataSourceBase {
         return true;
     }
     validateWpPostsRequestParams() {
-        const listingsQueryData = this.listingsEngine?.searchContext?.query;
+        const listingsQueryData = this.searchEngine?.searchContext?.query;
+
         const listingsReqOp = this.listingsEngine?.listingsContext?.[LISTINGS_REQ_OP];
         switch (listingsReqOp) {
             case LISTINGS_REQ_OP_POST_LIST:
                 break;
             case LISTINGS_REQ_OP_ITEM_LIST:
-                if (!isNotEmpty(listingsQueryData[ITEM_LIST_ID])) {
+                if (!isNotEmpty(listingsQueryData?.[ITEM_LIST_ID])) {
                     console.warn("Item list id not set...");
                     return false;
                 }
@@ -147,8 +183,27 @@ export class WpDataSource extends DataSourceBase {
         }
         return true;
     }
-    async runSearch(source = null) {
-        console.log('runSearch', {source})
+
+    addPaginationQueryParameters(queryData) {
+        const searchQueryState = this.searchEngine.searchContext.query;
+        const currentPage = searchQueryState[PAGINATION_PAGE_NUMBER];
+        let pageSize = siteConfig.defaultSearchLimit
+
+        if (isSet(queryData?.[PAGINATION_PAGE_SIZE])) {
+            pageSize = queryData[PAGINATION_PAGE_SIZE];
+        }
+
+        if (!isSet(queryData?.[PAGINATION_PAGE_NUMBER])) {
+            queryData[PAGINATION_PAGE_NUMBER] = 1;
+        }
+        if (!isSet(queryData?.[PAGINATION_OFFSET])) {
+            queryData[PAGINATION_OFFSET] = 0;
+        }
+        // queryData[PAGINATION_PAGE_NUMBER] = currentPage;
+        // queryData[PAGINATION_OFFSET] = pageSize * currentPage;
+        return queryData;
+    }
+    async runSearch() {
 
         const listingsReqOp = this.listingsEngine?.listingsContext?.[LISTINGS_REQ_OP];
 
@@ -171,18 +226,16 @@ export class WpDataSource extends DataSourceBase {
                     endpoint: wpApiConfig.endpoints.postListRequest,
                     method: 'GET',
                     query: {
-                        ...this.listingsEngine?.searchContext?.query,
-                        ...this.searchEngine.addPaginationQueryParameters({}, siteConfig.internalProviderName)
+                        ...this.searchEngine?.searchContext?.query,
                     }
                 });
                 break;
             case LISTINGS_REQ_OP_ITEM_LIST:
                 request = await wpResourceRequest({
-                    endpoint: `${wpApiConfig.endpoints.listRequest}/${this.listingsEngine?.searchContext?.query?.[ITEM_LIST_ID]}`,
+                    endpoint: `${wpApiConfig.endpoints.listRequest}/${this.searchEngine?.searchContext?.query?.[ITEM_LIST_ID]}`,
                     method: 'GET',
                     query: {
-                        ...this.listingsEngine?.searchContext?.query,
-                        ...this.searchEngine.addPaginationQueryParameters({}, siteConfig.internalProviderName)
+                        ...this.searchEngine?.searchContext?.query,
                     }
                 });
                 break;
@@ -232,7 +285,7 @@ export class WpDataSource extends DataSourceBase {
             if (isNotEmpty(data?.pagination) && isObject(data.pagination)) {
                 pageControlData = {...pageControlData, ...data.pagination};
             }
-            console.log('postsRequestResponseHandler', {pageControlData})
+
             this.searchEngine.setPageControlsAction(pageControlData)
 
 
