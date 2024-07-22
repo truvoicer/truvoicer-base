@@ -49,23 +49,11 @@ const ComparisonDisplay = (props) => {
         );
     }
 
-    function showSidebar() {
-        if (!props.data?.show_filters) {
-            return false;
-        }
-        switch (props?.page?.pageData?.page_options?.trf_gut_pmf_page_options_page_template) {
-            case 'left-sidebar':
-            case 'right-sidebar':
-                return false;
-            default:
-                return true;
-        }
-    }
     return (
         <section className="block-wrapper">
             <div className="container">
                 <div className="row">
-                    {showSidebar()
+                    {listingsManager.listingsEngine.showSidebar()
                         ?
                         <>
                             {filtersPosition === 'left' &&

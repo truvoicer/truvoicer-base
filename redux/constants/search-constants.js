@@ -1,4 +1,6 @@
 //Search statuses
+import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
+
 export const SEARCH_STATUS_IDLE = "SEARCH_STATUS_IDLE";
 export const SEARCH_STATUS_COMPLETED = "SEARCH_STATUS_IDLE";
 export const SEARCH_STATUS_STARTED = "SEARCH_STATUS_STARTED";

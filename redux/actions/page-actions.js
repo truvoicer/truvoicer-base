@@ -1,8 +1,20 @@
 import store from "../store"
 import {
     setNextPostNavData,
-    setPageData, setPageDataOptions,
-    setPageError, setPageStatus, setPostData, setPostListData, setPostNavFromList, setPostNavIndex, setPrevPostNavData,
+    setPageData,
+    setPageDataOptions,
+    setPageError,
+    setPageStatus,
+    setPostData,
+    setPostListData,
+    setPostNavFromList,
+    setPostNavIndex,
+    setPrevPostNavData,
+    setSearchParamPage,
+    setSearchParamQuery,
+    setSearchParamSortBy,
+    setSearchParamSortOrder,
+    setSearchParamPageSize,
     setSiteSettings,
     setUserAccountMenuData,
 } from "../reducers/page-reducer";
@@ -20,6 +32,22 @@ export function setPageErrorAction(error) {
     store.dispatch(setPageError(error))
 }
 
+export function setSearchParamPageAction(query) {
+    store.dispatch(setSearchParamPage(query))
+}
+export function setSearchParamSortOrderAction(query) {
+    store.dispatch(setSearchParamSortOrder(query))
+}
+export function setSearchParamSortByAction(query) {
+    store.dispatch(setSearchParamSortBy(query))
+}
+export function setSearchParamQueryAction(query) {
+    store.dispatch(setSearchParamQuery(query))
+}
+
+export function setSearchParamPageSizeAction(query) {
+    store.dispatch(setSearchParamPageSize(query))
+}
 
 export function setSiteSettingsAction(data) {
     store.dispatch(setSiteSettings(data))

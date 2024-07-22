@@ -385,8 +385,12 @@ export class ListingsEngine extends EngineBase {
         // })
         return dataKeyList;
     }
-
-
+    showSidebar() {
+        return (this.listingsContext?.listingsData?.show_filters === true);
+    }
+    isPrimaryListing() {
+        return this.listingsContext?.listingsData?.primary_listing === true;
+    }
     globalItemLinkClick(trackData = {}) {
         tagManagerSendDataLayer(trackData)
     }

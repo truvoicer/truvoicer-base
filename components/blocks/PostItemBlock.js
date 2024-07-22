@@ -8,7 +8,6 @@ import Link from "next/link";
 import {setPostNavIndexAction} from "../../redux/actions/page-actions";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
-import ListingsLeftSidebar from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsLeftSidebar";
 import ItemViewComments from "@/truvoicer-base/components/comments/ItemViewComments";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faHeart} from "@fortawesome/free-solid-svg-icons";

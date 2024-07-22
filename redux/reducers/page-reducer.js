@@ -5,6 +5,13 @@ import {PAGE_STATUS, PAGE_STATUS_IDLE} from "@/truvoicer-base/redux/constants/pa
 
 const defaultState = {
     [PAGE_STATUS]: PAGE_STATUS_IDLE,
+    searchParams: {
+        page: null,
+        sort_by: null,
+        sort_order: null,
+        page_size: null,
+        query: null,
+    },
     pageData: {},
     pageDataOptions: {},
     postData: {},
@@ -57,6 +64,21 @@ const defaultReducers = {
     setUserAccountMenuData: (state, action) => {
         state.userAccountMenu = action.payload;
     },
+    setSearchParamPage: (state, action) => {
+        state.searchParams.page = action.payload;
+    },
+    setSearchParamSortOrder: (state, action) => {
+        state.searchParams.sort_order = action.payload;
+    },
+    setSearchParamSortBy: (state, action) => {
+        state.searchParams.sort_by = action.payload;
+    },
+    setSearchParamQuery: (state, action) => {
+        state.searchParams.query = action.payload;
+    },
+    setSearchParamPageSize: (state, action) => {
+        state.searchParams.page_size = action.payload;
+    },
     setPageError: (state, action) => {
         state.error = action.payload;
         console.error(state.error)
@@ -75,6 +97,8 @@ export const {
     setNextPostNavData, setPostListData,
     setPostNavIndex, setPostNavFromList,
     setSiteSettings, setUserAccountMenuData,
-    setPageError,
+    setPageError, setSearchParamPage,
+    setSearchParamSortOrder, setSearchParamSortBy,
+    setSearchParamQuery, setSearchParamPageSize,
     setPageStatus
 } = pageSlice.actions;

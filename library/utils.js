@@ -146,7 +146,7 @@ export const isObject = (object) => {
 }
 
 export const scrollToRef = (ref) => {
-    window.scrollTo(0, ref.current.offsetTop)
+    window.scrollTo(0, ref?.current?.offsetTop)
 }
 
 export const getFontAwesomeMenuIcon = (menuName, iconName, defaultIcon) => {

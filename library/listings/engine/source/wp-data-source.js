@@ -88,8 +88,8 @@ export class WpDataSource extends DataSourceBase {
         query['categories'] = category;
         query[PAGE_CONTROL_REQ_PAGINATION_TYPE] = PAGE_CONTROL_REQ_PAGINATION_OFFSET;
 
-        if (!isNotEmpty(query?.[fetcherApiConfig.searchLimitKey])) {
-            query[fetcherApiConfig.searchLimitKey] = searchLimit;
+        if (!isNotEmpty(query?.[fetcherApiConfig.pageSizeKey])) {
+            query[fetcherApiConfig.pageSizeKey] = searchLimit;
         }
 
         if (!isSet(query?.[PAGINATION_PAGE_NUMBER])) {
@@ -128,8 +128,8 @@ export class WpDataSource extends DataSourceBase {
         query[PAGE_CONTROL_REQ_PAGINATION_TYPE] = PAGE_CONTROL_REQ_PAGINATION_PAGE;
         query[DISPLAY_AS] = listingsDataState?.display_as;
 
-        if (!isNotEmpty(query?.[fetcherApiConfig.searchLimitKey])) {
-            query[fetcherApiConfig.searchLimitKey] = searchLimit;
+        if (!isNotEmpty(query?.[fetcherApiConfig.pageSizeKey])) {
+            query[fetcherApiConfig.pageSizeKey] = searchLimit;
         }
 
         if (!isSet(query?.[PAGINATION_PAGE_NUMBER])) {
@@ -177,7 +177,7 @@ export class WpDataSource extends DataSourceBase {
                 console.warn("Invalid request operation...")
                 return false;
         }
-        if (!isSet(listingsQueryData[fetcherApiConfig.searchLimitKey])) {
+        if (!isSet(listingsQueryData[fetcherApiConfig.pageSizeKey])) {
             console.warn("Search limit not set...");
             return false;
         }

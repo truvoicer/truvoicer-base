@@ -20,6 +20,7 @@ import {
 import {REQUEST_POST} from "@/truvoicer-base/library/constants/request-constants";
 import {getSiteSettings} from "@/truvoicer-base/library/api/wp/middleware";
 import {siteConfig} from "@/config/site-config";
+import store from "@/truvoicer-base/redux/store";
 
 export class FetcherDataSource extends DataSourceBase {
 
@@ -69,6 +70,8 @@ export class FetcherDataSource extends DataSourceBase {
         return Math.floor(pageSize / providerCount);
     }
     async prepareSearch() {
+        const searchParams = store.getState().page?.searchParams;
+
         const data = this.listingsEngine?.listingsContext?.listingsData;
 
         let query = {};
@@ -83,34 +86,38 @@ export class FetcherDataSource extends DataSourceBase {
         query["provider"] = filterProviders;
         query["service"] = this.listingsEngine?.listingsContext?.listingsData?.api_listings_service;
 
-        query[fetcherApiConfig.searchLimitKey] = this.calculateLimit(
+        query[fetcherApiConfig.pageSizeKey] = this.calculateLimit(
             filterProviders.length,
-            query?.[fetcherApiConfig.searchLimitKey]
+            query?.[fetcherApiConfig.pageSizeKey]
         );
 
-        if (!isNotEmpty(query?.[SORT_BY])) {
+        if (this.listingsEngine.isPrimaryListing() && isNotEmpty(searchParams?.sort_by)) {
+            query[SORT_BY] = searchParams?.sort_by;
+        } else if (!isNotEmpty(query?.[SORT_BY])) {
             query[SORT_BY] = this.getInitialSortBy(data);
         }
-        if (!isNotEmpty(query?.[SORT_ORDER])) {
+
+        if (this.listingsEngine.isPrimaryListing() && isNotEmpty(searchParams?.sort_order)) {
+            query[SORT_ORDER] = searchParams?.sort_order;
+        } else if (!isNotEmpty(query?.[SORT_ORDER])) {
             query[SORT_ORDER] = this.getInitialSortOrder(data);
         }
+
         if (!isNotEmpty(query?.[DATE_KEY])) {
             query[DATE_KEY] = this.getInitialDateKey(data);
         }
 
-        if (!isNotEmpty(query?.[fetcherApiConfig.searchLimitKey])) {
-            query[fetcherApiConfig.searchLimitKey] = searchLimit;
+        if (this.listingsEngine.isPrimaryListing() && isNotEmpty(searchParams?.page_size)) {
+            query[fetcherApiConfig.pageSizeKey] = parseInt(searchParams.page_size);
+        } else if (!isNotEmpty(query?.[fetcherApiConfig.pageSizeKey])) {
+            query[fetcherApiConfig.pageSizeKey] = searchLimit;
         }
 
-
-        if (isNotEmpty(query?.[PAGINATION_PAGE_NUMBER])) {
+        if (this.listingsEngine.isPrimaryListing() && isNotEmpty(searchParams?.page)) {
+            query[PAGINATION_PAGE_NUMBER] = parseInt(searchParams.page);
+        } else if (!isNotEmpty(query?.[PAGINATION_PAGE_NUMBER])) {
             query[PAGINATION_PAGE_NUMBER] = 1;
         }
-
-
-        // const currentPage = query[PAGINATION_PAGE_NUMBER];
-        // query[PAGINATION_PAGE_NUMBER] = currentPage;
-        // query[PAGINATION_OFFSET] = query[fetcherApiConfig.searchLimitKey] * currentPage;
 
         console.log('prepareSearch', {query})
         this.searchEngine.updateContext({key: 'query', value: query});
@@ -180,7 +187,7 @@ export class FetcherDataSource extends DataSourceBase {
             return false;
         }
 
-        if (!isSet(searchQueryState[fetcherApiConfig.searchLimitKey])) {
+        if (!isSet(searchQueryState[fetcherApiConfig.pageSizeKey])) {
             console.warn("No search limit found...")
             return false;
         }

@@ -44,8 +44,7 @@ const ListingsLeftSidebar = (props) => {
 
         return (
             <div className="sidebar sidebar-right">
-                    <ListingsFilterInterface/>
-                    {templateManager.render(<ListingsFilter listingsContextGroup={{fetchListingsContextGroups}}/>)}
+                    <ListingsFilterInterface />
                     {data.map((item, index) => (
                         <React.Fragment key={index.toString()}>
                             {item}

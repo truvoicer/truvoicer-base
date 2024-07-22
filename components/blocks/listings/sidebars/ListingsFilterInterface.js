@@ -5,7 +5,7 @@ import ListingsFilter from "@/truvoicer-base/components/blocks/listings/filters/
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
-const ListingsFilterInterface = () => {
+const ListingsFilterInterface = ({pageSidebar = false}) => {
     const appContext = useContext(AppContext);
     const appManager = new AppManager(appContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
@@ -14,10 +14,10 @@ const ListingsFilterInterface = () => {
     return (
         <>
             {fetchListingsContextGroups.map((listingsContextGroup, index) => {
-                if (!listingsContextGroup.listingsContext?.listingsData?.show_filters) {
-                    return null;
+                if (listingsContextGroup.listingsContext?.listingsData?.show_filters_in_sidebar === true) {
+                    return templateManager.render(<ListingsFilter key={index} listingsContextGroup={listingsContextGroup} />)
                 }
-                return templateManager.render(<ListingsFilter key={index} listingsContextGroup={listingsContextGroup} />)
+                return null;
             })}
         </>
     );

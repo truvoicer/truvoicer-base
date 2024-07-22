@@ -5,7 +5,7 @@ export const fetcherApiConfig = {
     },
     itemIdKey: "item_id",
     queryKey: "query",
-    searchLimitKey: "page_size",
+    pageSizeKey: "page_size",
     pageNumberKey: "page_number",
     pageOffsetKey: "page_offset",
     defaultOperation: "list",

@@ -19,7 +19,6 @@ import ListingsSortBar from "@/truvoicer-base/components/blocks/listings/compone
 import Paginate from "@/truvoicer-base/components/blocks/listings/pagination/ListingsPaginate";
 import ListingsInfiniteScroll from "@/truvoicer-base/components/blocks/listings/pagination/ListingsInfiniteScroll";
 import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
-import ListingsLeftSidebar from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsLeftSidebar";
 import ListingsItemsLoader from "@/truvoicer-base/components/blocks/listings/items/ListingsItemsLoader";
 
 const Container = ({children}) => {
