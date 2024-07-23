@@ -95,7 +95,7 @@ const ListingsFilterApiListItem = (props) => {
 
     return (
         <>
-            <ul className="list-unstyled">
+            <ul className="list-unstyled mb-0">
                 {Array.isArray(items) &&
                     items.map((item, index) => (
                         <li key={"api_list_control_" + index.toString()}>

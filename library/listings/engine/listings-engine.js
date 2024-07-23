@@ -97,13 +97,29 @@ export class ListingsEngine extends EngineBase {
     }
     extractServiceRequest(item) {
         let serviceRequest = null;
-        if (Array.isArray(item?.item_id)) {
-            const filterItemId = item?.item_id.filter((id) => id?.request_item?.request_operation).map((id) => id?.request_item?.request_operation);
-            if (filterItemId.length === 0) {
-                return null;
-            }
-            serviceRequest = filterItemId[0];
+        const filterRequestItems = Object.keys(item).filter((key) => {
+           if (!Array.isArray(item[key])) {
+               return false;
+           }
+              return item[key].filter((requestItem) => {
+                  return (
+                    isNotEmpty(requestItem?.request_item?.provider_name) &&
+                    requestItem?.request_item?.request_type === 'detail' &&
+                    requestItem?.request_item?.request_name &&
+                    requestItem?.request_item?.request_response_keys
+                  );
+              }).length > 0;
+        });
+        if (filterRequestItems.length === 0) {
+            return null;
         }
+        console.log(filterRequestItems)
+        const filterItemId = item[filterRequestItems[0]].filter((id) => id?.request_item?.request_operation).map((id) => id?.request_item?.request_operation);
+        if (filterItemId.length === 0) {
+            return null;
+        }
+        serviceRequest = filterItemId[0];
+
         return serviceRequest;
     }
 

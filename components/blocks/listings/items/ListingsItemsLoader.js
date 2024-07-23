@@ -74,7 +74,7 @@ const ListingsItemsLoader = ({
             <ContainerComponent>
                 {itemsContext.items.map((item, index) => {
                     let cloneGridItemObj = {...gridItemsProps};
-                    cloneGridItemObj.category = item?.service?.name || listingsManager.getCategory();
+                    cloneGridItemObj.category = listingsManager.getCategory(item);
                     return (
                         <ContainerItemComponent key={index} {...getGridItemColumns(grid)}>
                             {listingsGrid.getGridItem({

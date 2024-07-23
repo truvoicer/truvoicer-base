@@ -141,14 +141,14 @@ export class ListingsManager extends ListingsManagerBase {
         }
     }
 
-    getCategory() {
+    getCategory(item = null) {
         const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
 
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
-                return this.wpDataSource.getCategory();
+                return this.wpDataSource.getCategory(item);
             case LISTINGS_BLOCK_SOURCE_API:
-                return this.fetcherDataSource.getCategory();
+                return this.fetcherDataSource.getCategory(item);
             default:
                 return false;
         }

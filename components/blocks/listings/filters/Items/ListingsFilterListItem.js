@@ -44,7 +44,7 @@ const ListingsFilterListItem = (props) => {
 
     return (
         <>
-            <ul className="list-unstyled">
+            <ul className="list-unstyled mb-0">
                 {props.data.source === "wordpress" &&
                     filterList.map((item, index) => (
 

@@ -30,8 +30,8 @@ export class FetcherDataSource extends DataSourceBase {
         this.fetcherApiMiddleware = new FetcherApiMiddleware();
     }
 
-    getCategory() {
-        return this.listingsEngine?.listingsContext?.listingsData?.api_listings_service;
+    getCategory(item = null) {
+        return item?.service?.name || this.listingsEngine?.listingsContext?.listingsData?.api_listings_service;
     }
     getInitialSearchLimit(data) {
         if (isNotEmpty(data?.posts_per_page) &&
@@ -86,10 +86,10 @@ export class FetcherDataSource extends DataSourceBase {
         query["provider"] = filterProviders;
         query["service"] = this.listingsEngine?.listingsContext?.listingsData?.api_listings_service;
 
-        query[fetcherApiConfig.pageSizeKey] = this.calculateLimit(
-            filterProviders.length,
-            query?.[fetcherApiConfig.pageSizeKey]
-        );
+        // query[fetcherApiConfig.pageSizeKey] = this.calculateLimit(
+        //     filterProviders.length,
+        //     query?.[fetcherApiConfig.pageSizeKey]
+        // );
 
         if (this.listingsEngine.isPrimaryListing() && isNotEmpty(searchParams?.sort_by)) {
             query[SORT_BY] = searchParams?.sort_by;

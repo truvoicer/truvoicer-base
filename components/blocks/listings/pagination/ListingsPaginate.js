@@ -3,26 +3,25 @@ import {connect} from "react-redux";
 import {
     SEARCH_REQUEST_NEW, PAGINATION_LAST_PAGE,
     PAGINATION_PAGE_NUMBER, PAGINATION_PAGE_SIZE, PAGINATION_TOTAL_ITEMS,
-    PAGINATION_TOTAL_PAGES, SEARCH_STATUS_COMPLETED, SEARCH_STATUS_STARTED,
+    PAGINATION_TOTAL_PAGES,
 } from "@/truvoicer-base/redux/constants/search-constants";
-import GridItems from "../items/GridItems";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
-import ListingsItemsContext from "@/truvoicer-base/components/blocks/listings/contexts/ListingsItemsContext";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
-import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
 import {SESSION_USER, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
-import {getGridItemColumns} from "@/truvoicer-base/redux/actions/item-actions";
 import ListingsItemsLoader from "@/truvoicer-base/components/blocks/listings/items/ListingsItemsLoader";
 import Link from "next/link";
-import {useRouter, useSearchParams} from "next/navigation";
+import {useSearchParams} from "next/navigation";
 
 const ListingsPaginate = (props) => {
+    const {
+        containerComponent = null,
+        containerItemComponent = null,
+        showIndicator = true,
+    } = props;
     const [padding, setPadding] = useState(2);
     const [pageNumber, setPageNumber] = useState(1);
     const searchParams = useSearchParams();
@@ -37,7 +36,10 @@ const ListingsPaginate = (props) => {
     const grid = listingsContext?.listingsGrid;
     const lastPageNumber = getLastPageNumber();
 
-    const paginationClickHandler = (pageNumber) => {
+    const paginationClickHandler = (e, pageNumber) => {
+        if (!listingsManager.listingsEngine.isPrimaryListing()) {
+            e.preventDefault();
+        }
         listingsManager.getSearchEngine().setSearchEntity('listingsPaginate');
         listingsManager.loadNextPageNumberMiddleware(pageNumber);
         listingsManager.getListingsEngine().setListingsScrollTopAction(true);
@@ -56,7 +58,7 @@ const ListingsPaginate = (props) => {
     }
     function getCurrentPageNumber() {
         const pageQueryVal = searchParams.get('page');
-        if (pageQueryVal) {
+        if (listingsManager.listingsEngine.isPrimaryListing() && pageQueryVal) {
             return parseInt(pageQueryVal);
         }
         const pageControls = searchContext?.pageControls;
@@ -122,7 +124,9 @@ const ListingsPaginate = (props) => {
                     page: page
                 }
             },
-            onClick: paginationClickHandler.bind(this, page)
+            onClick: (e) => {
+                paginationClickHandler(e, page)
+            }
         }
     }
 
@@ -183,29 +187,22 @@ const ListingsPaginate = (props) => {
                             </Link>
                         </li>
                     }
-                    <li>
-                        <span className="page-numbers">
-                            {`Page ${pageNumber} of ${lastPageNumber}`}
-                        </span>
-                    </li>
+                    {showIndicator &&
+                        <li>
+                            <span className="page-numbers">
+                                {`Page ${pageNumber} of ${lastPageNumber}`}
+                            </span>
+                        </li>
+                    }
                 </ul>
             </div>
         )
     }
 
-    // useEffect(() => {
-    //     if (
-    //         searchContext?.searchStatus !== SEARCH_STATUS_STARTED &&
-    //         searchContext?.searchOperation === SEARCH_REQUEST_NEW &&
-    //         searchContext?.searchEntity === 'listingsPaginate'
-    //     ) {
-    //         listingsManager.runSearch('listingsPaginate');
-    //     }
-    // }, [searchContext?.searchOperation]);
-
-
     return templateManager.render(
-        <ListingsItemsLoader>
+        <ListingsItemsLoader
+            containerComponent={containerComponent}
+            containerItemComponent={containerItemComponent}>
             <GetPagination/>
         </ListingsItemsLoader>
     )

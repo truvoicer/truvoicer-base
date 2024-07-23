@@ -35,7 +35,7 @@ export class WpDataSource extends DataSourceBase {
         super(listingsEngine, searchEngine);
     }
 
-    getCategory() {
+    getCategory(item = null) {
         const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
         if (Array.isArray(listingsDataState?.listings_category_id)) {
             return listingsDataState.listings_category_id[0]?.slug

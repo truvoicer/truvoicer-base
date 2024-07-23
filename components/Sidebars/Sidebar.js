@@ -68,9 +68,18 @@ const Sidebar = ({name}) => {
             </>
         )
     }
-
+    function getSidebarContainerClasses() {
+        switch (name) {
+            case siteConfig.rightSidebarName:
+                return 'sidebar-right';
+            case siteConfig.leftSidebarName:
+                return 'sidebar-left';
+            default:
+                return '';
+        }
+    }
     return (
-        <div className="job_filter white-bg">
+        <div className={`job_filter white-bg sidebar ${getSidebarContainerClasses()}`}>
             <div className="form_inner white-bg">
                 {renderWidgets(buildWidgets(data))}
             </div>
