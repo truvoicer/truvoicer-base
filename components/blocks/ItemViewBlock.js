@@ -42,9 +42,11 @@ const ItemViewBlock = (props) => {
     }
     const getItemView = (item) => {
         if (!isNotEmpty(props?.item?.[DISPLAY_AS])) {
+            console.warn(`ItemViewBlock: Invalid display as`);
             return false;
         }
         if (!validate(item)) {
+            console.warn(`ItemViewBlock: Invalid item data`);
             return false;
         }
         const layoutComponent =  listingsGrid.getTemplateListingComponent({
@@ -67,7 +69,7 @@ const ItemViewBlock = (props) => {
         // return layoutCompoent;
         return layoutComponent;
     }
-    //console.log({props})
+    console.log({props})
     return (
         <>
             <Head>

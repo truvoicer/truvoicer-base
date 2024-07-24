@@ -17,6 +17,7 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import AppLoader from "@/truvoicer-base/AppLoader";
 import {templateConfig} from "@/config/template-config";
+import {setAppLoadedAction} from "@/truvoicer-base/redux/actions/app-actions";
 
 const ItemViewPage = (props) => {
     const {
@@ -82,9 +83,11 @@ const ItemViewPage = (props) => {
                     return;
                 }
                 setShowLoader(false)
+                setAppLoadedAction(true);
                 break;
             case 'external':
                 setShowLoader(false)
+                setAppLoadedAction(true);
                 break;
         }
     }
@@ -95,7 +98,6 @@ const ItemViewPage = (props) => {
     useEffect(() => {
         itemPageInit()
     }, [])
-
 
 
         return (

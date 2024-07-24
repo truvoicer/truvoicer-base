@@ -24,7 +24,12 @@ import {
 } from "@/truvoicer-base/redux/reducers/page-reducer";
 
 const FetcherApp = ({
-    app, page, pageData, settings, pageOptions = {}, isResetKey = false
+    app,
+    page,
+    pageData,
+    settings,
+    pageOptions = {},
+    isResetKey = false
 }) => {
     const searchParams = useSearchParams();
     const searchParamPage = searchParams.get('page');

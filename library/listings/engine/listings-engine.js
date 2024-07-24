@@ -95,32 +95,60 @@ export class ListingsEngine extends EngineBase {
         }
         return itemId;
     }
-    extractServiceRequest(item) {
-        let serviceRequest = null;
-        const filterRequestItems = Object.keys(item).filter((key) => {
-           if (!Array.isArray(item[key])) {
-               return false;
-           }
-              return item[key].filter((requestItem) => {
-                  return (
+    filterRequestItemsByType(type, item, requestResponseKeys) {
+        if (!isObject(item)) {
+            return null;
+        }
+        let cloneItem = {};
+       Object.keys(item).forEach((key) => {
+            if (!Array.isArray(item[key])) {
+                return;
+            }
+            cloneItem[key] = item[key].filter((requestItem) => {
+                const isValid = (
                     isNotEmpty(requestItem?.request_item?.provider_name) &&
-                    requestItem?.request_item?.request_type === 'detail' &&
-                    requestItem?.request_item?.request_name &&
-                    requestItem?.request_item?.request_response_keys
-                  );
-              }).length > 0;
+                    requestItem?.request_item?.request_type === type &&
+                    requestItem?.request_item?.request_name
+                );
+                if (!isValid) {
+                    return false;
+                }
+                if (Array.isArray(requestResponseKeys) && requestResponseKeys.length === 0) {
+                    return true;
+                }
+                const srResponseKeys = requestItem?.request_item?.request_response_keys;
+                if (!Array.isArray(srResponseKeys)) {
+                    return false;
+                }
+                return srResponseKeys.some((srResponseKey) => {
+                    return requestResponseKeys.includes(srResponseKey);
+                });
+            });
         });
-        if (filterRequestItems.length === 0) {
+        return cloneItem;
+    }
+    getFirstResponseKeySr(item) {
+        if (!isObject(item)) {
             return null;
         }
-        console.log(filterRequestItems)
-        const filterItemId = item[filterRequestItems[0]].filter((id) => id?.request_item?.request_operation).map((id) => id?.request_item?.request_operation);
-        if (filterItemId.length === 0) {
-            return null;
+        let cloneItem = {};
+       Object.keys(item).forEach((key) => {
+           if (!isObjectEmpty(cloneItem)) {
+               return;
+           }
+            if (!Array.isArray(item[key])) {
+                return;
+            }
+            cloneItem = item[key][0];
+        });
+        return cloneItem;
+    }
+    extractServiceRequest({type = null, item = {}, requestResponseKeys = []}) {
+        const filterDetailRequestItems = this.filterRequestItemsByType(type, item, requestResponseKeys);
+        if (!isObjectEmpty(filterDetailRequestItems) && Object.keys(filterDetailRequestItems).length > 1) {
+            console.warn("More than one key in item", item);
         }
-        serviceRequest = filterItemId[0];
-
-        return serviceRequest;
+        return this.getFirstResponseKeySr(filterDetailRequestItems);
     }
 
     buildInternalItemViewUrl({item, category}) {
@@ -145,20 +173,30 @@ export class ListingsEngine extends EngineBase {
             console.warn("Can't build item href | No item data");
             return null;
         }
-        let itemId = this.extractItemId(item);
-        let serviceRequest = this.extractServiceRequest(item);
-        let data = {
-            service: category,
-            service_request: serviceRequest,
-            item_id: itemId
-        }
 
-        if (!isNotEmpty(item?.provider)) {
-            console.warn("Can't build item href | No provider data");
+        let serviceRequest = this.extractServiceRequest({
+            type: 'detail',
+            item,
+            requestResponseKeys: ['item_id']
+        });
+        if (!isNotEmpty(serviceRequest?.data) || isObject(serviceRequest.data) || Array.isArray(serviceRequest.data)) {
+            console.warn("Can't build item href | No item item_id");
             return null;
         }
-
-        data.provider = item.provider
+        if (!isNotEmpty(serviceRequest?.request_item?.request_type)) {
+            console.warn("Can't build item href | No request type");
+            return null;
+        }
+        if (!isNotEmpty(serviceRequest?.request_item?.provider_name)) {
+            console.warn("Can't build item href | No provider name");
+            return null;
+        }
+        let data = {
+            service: category,
+            service_request: serviceRequest.request_item.request_type,
+            item_id: serviceRequest.data,
+            provider: serviceRequest.request_item.provider_name
+        }
 
         let endpoint = null;
         switch (displayAs) {
