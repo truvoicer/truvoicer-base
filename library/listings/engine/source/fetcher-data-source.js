@@ -106,6 +106,9 @@ export class FetcherDataSource extends DataSourceBase {
         if (!isNotEmpty(query?.[DATE_KEY])) {
             query[DATE_KEY] = this.getInitialDateKey(data);
         }
+        if (!isNotEmpty(query?.['api_fetch_type'])) {
+            query['api_fetch_type'] = data?.api_fetch_type || 'database';
+        }
 
         if (this.listingsEngine.isPrimaryListing() && isNotEmpty(searchParams?.page_size)) {
             query[fetcherApiConfig.pageSizeKey] = parseInt(searchParams.page_size);
