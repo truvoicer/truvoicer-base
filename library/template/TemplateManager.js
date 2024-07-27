@@ -11,6 +11,9 @@ export class TemplateManager {
         }
     }
 
+    getTemplateConfig() {
+
+    }
     getTemplateContext() {
         return this.templateContext;
     }
