@@ -12,12 +12,13 @@ const AuthGoogle = (props) => {
         //console.log({response});
     }
     useEffect(() => {
+        console.log(gAuthContext);
         gAuthContext.google.accounts.id.renderButton(document.getElementById("g-signin2"), {
             theme: 'outline',
             size: 'large',
             click_listener: onClickHandler
         });
-    }, []);
+    }, [gAuthContext.google]);
 
 
         return (

@@ -49,6 +49,7 @@ function GoogleAuthProvider({children, siteSettings, page}) {
         )
 
     }
+
     useEffect(() => {
         if (!isNotEmpty(siteSettings?.google_login_client_id)) {
             return;
@@ -56,20 +57,26 @@ function GoogleAuthProvider({children, siteSettings, page}) {
         if (typeof window === "undefined") {
             return;
         }
-        if (typeof window.google === "undefined") {
-            return;
-        }
-        window.google.accounts.id.initialize({
-            client_id: siteSettings?.google_login_client_id,
-            callback: handleCredentialResponse
-        });
-        updateState({
-            clientId: siteSettings?.google_login_client_id,
-            google: window.google
-        })
+        const script = document.createElement('script');
+        script.src = 'https://accounts.google.com/gsi/client';
+        script.async = true;
+        script.onload = () => {
+            window.google.accounts.id.initialize({
+                client_id: siteSettings?.google_login_client_id,
+                callback: handleCredentialResponse
+            });
+            updateState({
+                clientId: siteSettings?.google_login_client_id,
+                google: window.google
+            })
+        };
+        script.onerror = () => {
+            console.log('Error occurred while loading script');
+        };
+        document.body.appendChild(script);
 
-    }, [siteSettings.google_login_client_id,]);
 
+    }, [siteSettings.google_login_client_id]);
     return (
         <GoogleAuthContext.Provider value={googleAuthState}>
             {children}

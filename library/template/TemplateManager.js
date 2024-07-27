@@ -3,6 +3,7 @@ import {buildComponent} from "@/truvoicer-base/library/helpers/component-helpers
 import React from "react";
 import FullWidthTemplate from "@/truvoicer-base/components/templates/FullWidthTemplate";
 import SidebarTemplate from "@/truvoicer-base/components/templates/SidebarTemplate";
+import {TemplateConfig} from "@/truvoicer-base/library/template/config/TemplateConfig";
 
 export class TemplateManager {
     constructor(templateContext) {

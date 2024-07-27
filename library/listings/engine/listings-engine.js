@@ -198,19 +198,35 @@ export class ListingsEngine extends EngineBase {
             provider: serviceRequest.request_item.provider_name
         }
 
-        let endpoint = null;
         switch (displayAs) {
             case DISPLAY_AS_POST_LIST:
             case DISPLAY_AS_SIDEBAR_POST:
-                endpoint = PostRoutes.externalPost;
-                break;
+                return this.getExternalPostUrl(data);
             case DISPLAY_AS_SIDEBAR_LIST:
             case DISPLAY_AS_LIST:
             case DISPLAY_AS_TILES:
-                endpoint = ItemRoutes.externalItemView;
-                break;
+                return this.getExternalItemViewUrlByFetchType(data);
             default:
                 console.warn("Can't build item href | No displayAs data");
+                return null;
+        }
+    }
+
+    getExternalPostUrl(data) {
+        return sprintf( PostRoutes.externalPost, data);
+    }
+
+    getExternalItemViewUrlByFetchType(data) {
+        let endpoint = null;
+        switch (this.listingsContext?.listingsData?.api_fetch_type) {
+            case "database":
+                endpoint = ItemRoutes.externalItemView;
+                break;
+            case "api_direct":
+                endpoint = ItemRoutes.externalItemViewDirect;
+                break;
+            default:
+                console.warn("Can't build item href | No api_fetch_type data");
                 return null;
         }
         return sprintf(endpoint, data);

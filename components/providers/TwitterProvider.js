@@ -59,6 +59,28 @@ function TwitterProvider({children, siteSettings}) {
         logout: logout
     });
 
+    useEffect(() => {
+        if (!isNotEmpty(siteSettings?.google_login_client_id)) {
+            return;
+        }
+        if (typeof window === "undefined") {
+            return;
+        }
+        const script = document.createElement('script');
+        script.src = 'https://platform.twitter.com/widgets.js';
+        script.async = true;
+        script.onload = () => {
+            updateState({
+                google: window.twttr
+            })
+        };
+        script.onerror = () => {
+            console.log('Error occurred while loading x script');
+        };
+        document.body.appendChild(script);
+
+
+    }, [siteSettings.google_login_client_id]);
     return (
         <TwitterContext.Provider value={twitterState}>
             {children}

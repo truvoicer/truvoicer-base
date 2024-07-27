@@ -36,17 +36,26 @@ function FBAuthProvider({children, siteSettings}) {
         if (!isNotEmpty(siteSettings?.facebook_app_id)) {
             return;
         }
-        window.fbAsyncInit = function() {
-            window.FB.init({
-                appId            : siteSettings?.facebook_app_id,
-                xfbml            : true,
-                version          : 'v19.0'
-            });
+        const script = document.createElement('script');
+        script.src = 'https://connect.facebook.net/en_US/sdk.js';
+        script.async = true;
+        script.onload = () => {
+            window.fbAsyncInit = function() {
+                window.FB.init({
+                    appId            : siteSettings?.facebook_app_id,
+                    xfbml            : true,
+                    version          : 'v19.0'
+                });
 
-            updateState({
-                appId: siteSettings?.facebook_app_id,
-                fb: window.FB
-            })
+                updateState({
+                    appId: siteSettings?.facebook_app_id,
+                    fb: window.FB
+                })
+        };
+        script.onerror = () => {
+            console.log('Error occurred while loading fb script');
+        };
+        document.body.appendChild(script);
         }
 
     }, [siteSettings.facebook_app_id]);

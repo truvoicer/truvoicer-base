@@ -61,7 +61,6 @@ const FetcherApp = ({
             basePageData.options = pageOptions;
         }
         loadBasePageData(basePageData);
-        console.log('FetcherApp', pageData, settings, pageOptions, isResetKey)
         // if (isResetKey) {
         //     setPasswordResetKeyAction(params.reset_key)
         //     setSessionUserIdAction(params.user_id)
@@ -81,9 +80,6 @@ const FetcherApp = ({
         if (page?.pageData?.url === pathname) {
             setAppLoadedAction(true);
         }
-        console.log('FetcherApp', page.pageData, pathname)
-
-        // setAppRequestedRoute(item?.post_url);
     }, [page.pageData, pathname])
 
     return (
