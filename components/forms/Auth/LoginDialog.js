@@ -8,8 +8,10 @@ import {blockComponentsConfig} from "../../../config/block-components-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
+import Divider from "@/truvoicer-base/components/dividers/Divider";
+import {isNotEmpty} from "@/truvoicer-base/library/utils";
 
-const LoginDialog = (props) => {
+const LoginDialog = ({heading = null}) => {
     const [showLoginForm, setShowLoginForm] = useState(false);
     const [error, setError] = useState({
         show: false,
@@ -21,18 +23,19 @@ const LoginDialog = (props) => {
         e.preventDefault()
         modalContext.showModal({
             component: blockComponentsConfig.components.authentication_register.name,
-            show: true
+            show: true,
+            showFooter: false
         });
     }
     const showForgotPasswordModal = (e) => {
         e.preventDefault()
         modalContext.showModal({
             component: blockComponentsConfig.components.authentication_password_reset.name,
-            show: true
+            show: true,
+            showFooter: false
         });
     }
     const requestCallback = (error, data) => {
-        //console.log(error, data)
         if (error) {
             setError({
                 show: true,
@@ -51,7 +54,9 @@ const LoginDialog = (props) => {
             <div className={"auth-wrapper"}>
                 {!showLoginForm &&
                     <>
-                        <h2 className="text-dark text-black">Sign In</h2>
+                        {isNotEmpty(heading) &&
+                            <h2 className="mb-5 text-black">{heading || siteConfig.loginHeading || ''}</h2>
+                        }
                         {error.show &&
                             <div className={"site-form--error--block"}>
                                 {error.message}
@@ -66,32 +71,28 @@ const LoginDialog = (props) => {
                                     </a>
                                 </p>
                                 <p className={"mb-0 text-center"}>
-                                    No account yet?
-                                    <a className={"text-primary ml-1"} href={siteConfig.defaultRegisterHref}
+                                    <span>No account yet?</span>
+                                    <a className={"text-primary ms-1"} href={siteConfig.defaultRegisterHref}
                                        onClick={showAuthRegisterModal}>
                                         Register
                                     </a>
                                 </p>
                             </AuthLoginForm>)}
                         </div>
-                        <div className={"horizontal-divider"}>
+                        <Divider classes={'my-3'}>
                             <span>OR</span>
-                        </div>
+                        </Divider>
 
                         <div className={"auth-wrapper--button-group"}>
                             <div className={"auth-wrapper--google auth-wrapper--button"}>
                                 {templateManager.render(<AuthGoogle
                                     requestCallback={requestCallback}
-                                    buttonClass={"google-light-red"}
-                                    iconClass={"google"}
                                     buttonLabel={"Sign in with Google"}
                                 />)}
                             </div>
-                            <div className={"auth-wrapper--facebook auth-wrapper--button"}>
+                            <div className={"auth-wrapper--facebook auth-wrapper--button mt-4"}>
                                 {templateManager.render(<AuthFacebook
                                     requestCallback={requestCallback}
-                                    buttonClass={"facebook-light-blue"}
-                                    iconClass={"facebook"}
                                     buttonLabel={"Sign in with Facebook"}
                                 />)}
                             </div>

@@ -101,7 +101,6 @@ export class SearchEngine extends EngineBase {
     }
 
     setSearchListDataAction(listData) {
-        console.log('setSearchListDataAction', {listData})
         let searchList = [];
         if (Array.isArray(this.searchContext?.searchList)) {
             searchList = [...this.searchContext.searchList];
@@ -241,7 +240,6 @@ export class SearchEngine extends EngineBase {
     }
 
     setPageControlsAction(extraData) {
-        // console.log('setPageControlsAction', {extraData})
         let pageControlsState = this.searchContext?.pageControls;
         const hasMorePages = this.hasMore(pageControlsState, extraData);
         const totalItems = this.getTotalItems(pageControlsState, extraData);

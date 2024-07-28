@@ -57,7 +57,11 @@ const Sidebar = ({name}) => {
                         return null;
                     }
                     if (item?.hasWidgetContainer === false) {
-                        return templateManager.render(item.component);
+                        return (
+                            <React.Fragment key={index}>
+                                {templateManager.render(item.component)}
+                            </React.Fragment>
+                        );
                     }
                     return templateManager.render(
                         <WidgetContainer key={index} title={item?.title || ''}>

@@ -69,7 +69,7 @@ const ItemViewBlock = (props) => {
         // return layoutCompoent;
         return layoutComponent;
     }
-    console.log({props})
+
     return (
         <>
             <Head>

@@ -48,7 +48,6 @@ const ItemRatings = (props) => {
         return ratingStars;
     }
     function saveRatingsRequestCallback(error, data, rating) {
-        //console.log({error, data})
         if (error) {
             console.error(error);
             return;

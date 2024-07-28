@@ -45,7 +45,7 @@ function HorizontalComparisons(props) {
         return data?.override?.[field] || data?.[field] || null
     }
     const labels = getLabels();
-    console.log(labels, getItems())
+
     return (
         <section className="cd-products-comparison-table">
             <header>

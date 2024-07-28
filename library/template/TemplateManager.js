@@ -97,7 +97,6 @@ export class TemplateManager {
     }
 
     getPostTemplateLayoutComponent(pageData) {
-        console.log({pageData})
         if (!pageData?.post_type) {
             return this.render(<FullWidthTemplate />);
         }

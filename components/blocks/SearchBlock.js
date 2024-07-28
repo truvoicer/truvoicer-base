@@ -73,7 +73,6 @@ const SearchBlock = (props) => {
                     listingsManager.canRunSearch(SEARCH_REQUEST_NEW) &&
                     searchContext?.searchEntity === 'searchBlockCategory'
                 ) {
-                    //console.log('searchBlockCategoryRun')
 
                     listingsManager.getListingsEngine().setListingsScrollTopAction(true);
                 }
@@ -83,7 +82,6 @@ const SearchBlock = (props) => {
                     listingsManager.canRunSearch(SEARCH_REQUEST_NEW) &&
                     searchContext?.searchEntity === 'searchBlock'
                 ) {
-                    //console.log('searchBlockRun')
 
                     listingsManager.getListingsEngine().setListingsScrollTopAction(true);
                 }

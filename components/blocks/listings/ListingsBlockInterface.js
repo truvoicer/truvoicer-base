@@ -78,7 +78,6 @@ const ListingsBlockInterface = (props) => {
     //
     async function setProviders() {
         const setProviders = await listingsManager.setListingsProviders(data)
-        console.log('setProviders', setProviders)
     }
 
 

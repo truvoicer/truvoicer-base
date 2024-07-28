@@ -5,8 +5,8 @@ import FormFieldLabel from "./Fields/FormFieldLabel";
 import FormFieldItem from "./Fields/FormFieldItem";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {sprintf} from "sprintf-js";
 
-const sprintf = require('sprintf-js');
 const DataForm = (props) => {
 
     const templateManager = new TemplateManager(useContext(TemplateContext));
@@ -256,12 +256,11 @@ const DataForm = (props) => {
             case "top":
             default:
                 if (field?.name === 'skill') {
-                    //console.log({field})
                 }
                 return (
                     <div className="col-md-12">
                         {formFieldLabel}
-                        {formFieldItem}
+                        <div className={'mt-1'}>{formFieldItem}</div>
                     </div>
                 )
         }
@@ -339,7 +338,7 @@ const DataForm = (props) => {
 
     const buildFormRows = (data, errors, touched, handleBlur, handleChange, values, arrayFieldIndex = false) => {
         return (
-            <div className={"row"}>
+            <div className={"row gy-3"}>
                 {getFields(data.fields).map((row, rowIndex) => (
                     <React.Fragment key={rowIndex}>
                         {row.map((field, index) => (
@@ -401,7 +400,7 @@ const DataForm = (props) => {
                                     }}
                                 />
                             }
-                            <div className="row form-group">
+                            <div className="row mt-4 form-group">
                                 <div className="col-md-12">
                                     <input type="submit"
                                            value={props.submitButtonText}

@@ -72,7 +72,6 @@ const EmailOptinWidget = (props) => {
                             }
                         });
                         const responseData = await response.json();
-                        console.log({responseData})
                         formResponseHandler(responseData);
                     }}
                     enableReinitialize={true}

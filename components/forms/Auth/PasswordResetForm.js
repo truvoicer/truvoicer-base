@@ -41,7 +41,6 @@ const PasswordResetForm = (props) => {
 }
 
 function mapStateToProps(state) {
-    // console.log(state.session)
     return {
         session: state.session
     };

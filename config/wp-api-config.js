@@ -15,6 +15,8 @@ export const wpApiConfig = {
         postWithTemplate: publicEndpoint + "/posts/post/%(slug)s",
         menu: publicEndpoint + "/pages/menu/%s",
         sidebar: publicEndpoint + "/pages/sidebar/%s",
+        protectedMenu: protectedEndpoint + "/pages/menu/%s",
+        protectedSidebar: protectedEndpoint + "/pages/sidebar/%s",
         passwordReset: publicEndpoint + "/users/password-reset",
         passwordResetValidate: publicEndpoint + "/users/password-reset/validate",
         createUser: publicEndpoint + "/auth/register",

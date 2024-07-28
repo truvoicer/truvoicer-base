@@ -48,7 +48,6 @@ const PostPageView = (props) => {
             postNavigation,
             settings
         }
-        console.log('basePageData', basePageData)
         loadBasePageData(basePageData);
 
     }, [])

@@ -108,7 +108,6 @@ function ImageUploadField({
             crop.width,
             crop.height
         );
-        // console.log(ctx.toDa)
         return new Promise((resolve, reject) => {
             canvas.toBlob(blob => {
                 if (!blob) {

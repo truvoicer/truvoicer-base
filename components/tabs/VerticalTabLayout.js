@@ -3,8 +3,7 @@ import {isSet} from "../../library/utils";
 import {blockComponentsConfig} from "../../config/block-components-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
-import Tab from "react-bootstrap/Tab";
-import {Tabs} from "react-bootstrap";
+import {Tabs, Tab} from "react-bootstrap";
 
 const VerticalTabLayout = (props) => {
     const [tabValue, setTabValue] = useState(props.tabIndex);
@@ -46,9 +45,9 @@ const VerticalTabLayout = (props) => {
                 {...other}
             >
                 {value === index && (
-                    <Box p={3}>
+                    <>
                         {children}
-                    </Box>
+                    </>
                 )}
             </div>
         );
@@ -58,42 +57,36 @@ const VerticalTabLayout = (props) => {
         const tabItem = props.data[tabValue];
         if (isSet(blockComponentsConfig.components[tabItem.tab_component])) {
             const TabComponent = blockComponentsConfig.components[tabItem.tab_component].component;
-            return <TabComponent data={tabItem} />
+            return <TabComponent data={tabItem}/>
         }
         return null
     }
 
-    // const classes = useStyles();
+    console.log(props);
 
-        return (
-            <div className={''}>
-                <Tabs
-                    orientation="vertical"
-                    value={tabValue}
-                    onChange={handleTabChange}
-                    aria-label="simple tabs example"
-                    className={"vertical-tabs "}
-                >
-                    {props.data.map((tabItem, index) => (
-                        <Tab
-                            className={"vertical-tabs--tab"}
-                            key={index.toString()}
-                            label={tabItem.tab_label}
-                            {...tabProps(index)}
-                        />
-                    ))}
-                </Tabs>
+    return (
+        <div className={''}>
+            <Tabs
+                orientation="vertical"
+                defaultActiveKey={tabValue}
+                onChange={handleTabChange}
+                aria-label="simple tabs example"
+                className={"vertical-tabs "}
+            >
                 {props.data.map((tabItem, index) => (
-                    <TabPanel
-                        key={index.toString()}
-                        value={tabValue}
-                        index={index}
-                    >
+                    <Tab
+                        className={"vertical-tabs--tab"}
+                        key={index}
+                        eventKey={index.toString()}
+                        label={tabItem.tab_label}
+                        {...tabProps(index)}>
+
                         {getTabComponent(tabValue)}
-                    </TabPanel>
+                    </Tab>
                 ))}
-            </div>
-        );
+            </Tabs>
+        </div>
+    );
 }
 VerticalTabLayout.category = 'tabs';
 VerticalTabLayout.templateId = 'verticalTabLayout';

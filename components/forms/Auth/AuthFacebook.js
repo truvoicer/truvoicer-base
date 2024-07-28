@@ -12,20 +12,23 @@ import {faFacebookF} from "@fortawesome/free-brands-svg-icons";
 const AuthFacebook = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const fbContext = useContext(FbAuthContext);
-    const responseFacebook = (response) => {
-        //console.log('fb res', {response});
-        const data = {
-            auth_provider: "facebook",
-            token: response.accessToken,
-            id: response.userID
+    const responseFacebook = async (response) => {
+        const tokenResponse = await getSessionTokenMiddleware(
+            wpApiConfig.endpoints.auth.login,
+            {
+                auth_provider: "facebook",
+                token: response.accessToken,
+                id: response.userID
+            }
+        );
+        if (typeof props?.requestCallback === "function") {
+            props.requestCallback((tokenResponse === false), tokenResponse);
         }
-        getSessionTokenMiddleware(wpApiConfig.endpoints.auth.login, data, props.requestCallback)
     }
 
     function onCLick() {
-        fbContext.fb.login(function(response) {
+        fbContext.fb.login(function (response) {
             if (!response.authResponse) {
-                //console.log('User cancelled login or did not fully authorize.');
                 return;
             }
             responseFacebook(response.authResponse);
@@ -34,21 +37,26 @@ const AuthFacebook = (props) => {
     }
 
 
-        return (
-            <div>
-                {templateManager.render(<SocialButton buttonClass={props.buttonClass}
-                                                      iconClass={<FontAwesomeIcon icon={faFacebookF}/>}
-                                                      buttonLabel={props.buttonLabel}
-                                                      onClick={onCLick}
-                />)}
-            </div>
-        );
+    return (
+        <div>
+            {templateManager.render(
+                <SocialButton buttonClass={props?.buttonClass || ''}
+                              iconClass={<FontAwesomeIcon icon={faFacebookF}/>}
+                              buttonLabel={props.buttonLabel}
+                              onClick={onCLick}
+                              id={'facebook'}
+                />
+            )}
+        </div>
+    );
 }
+
 function mapStateToProps(state) {
     return {
         siteSettings: state.page.siteSettings
     };
 }
+
 AuthFacebook.category = 'auth';
 AuthFacebook.templateId = 'authFacebook';
 export default connect(

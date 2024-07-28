@@ -75,7 +75,7 @@ function TwitterProvider({children, siteSettings}) {
             })
         };
         script.onerror = () => {
-            console.log('Error occurred while loading x script');
+            console.error('Error occurred while loading x script');
         };
         document.body.appendChild(script);
 

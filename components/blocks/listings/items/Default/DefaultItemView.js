@@ -34,7 +34,7 @@ const DefaultItemView = (props) => {
     //     props.searchCategory,
     //     props.user[SESSION_USER_ID]
     // );
-    console.log({props})
+
     return (
         <section className="block-wrapper">
             <div className="container">

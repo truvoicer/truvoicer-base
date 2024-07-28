@@ -22,6 +22,7 @@ import {isNotEmpty, isSet} from "../../library/utils";
 import {buildWpApiUrl} from "../../library/api/wp/middleware";
 import {siteConfig} from "@/config/site-config";
 import {wpApiConfig} from "../../config/wp-api-config";
+import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 
 const sprintf = require('sprintf-js').sprintf;
 
@@ -146,18 +147,23 @@ export function setUserAccountMenuAction(menu) {
 }
 
 
-export function getUserAccountMenuAction() {
-    fetch(buildWpApiUrl(wpApiConfig.endpoints.menu, siteConfig.myAccountMenu))
-        .then(response => {
-            if (!response.ok) throw Error(response.statusText);
-            return response.json();
+export async function getUserAccountMenuAction() {
+    try {
+        const response = await wpResourceRequest({
+            protectedRequest: true,
+            endpoint: sprintf(wpApiConfig.endpoints.menu, siteConfig.myAccountMenu),
+            method: 'GET',
+            query: {
+                blocks: 'user_account_block'
+            }
         })
-        .then(json => {
-            setUserAccountMenuAction(json)
-        })
-        .catch(error => {
-            console.error(error)
-            store.dispatch(setPageError(error.message))
-        });
+        const responseData = await response.json();
+        if (Array.isArray(responseData)) {
+            setUserAccountMenuAction(responseData);
+        }
+    } catch (error) {
+        console.error(error)
+        store.dispatch(setPageError(error.message))
+    }
 }
 

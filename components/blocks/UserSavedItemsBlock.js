@@ -104,7 +104,6 @@ function UserSavedItemsBlock(props) {
     );
 }
 function mapStateToProps(state) {
-    // console.log(state.page)
     return {
         session: state.session,
     };

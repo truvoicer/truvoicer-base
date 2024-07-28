@@ -99,7 +99,6 @@ export class WpDataSource extends DataSourceBase {
             query[PAGINATION_OFFSET] = 0;
         }
 
-        console.log('prepareSearch', {query})
         this.searchEngine.updateContext({key: 'query', value: query});
 
     }
@@ -139,7 +138,6 @@ export class WpDataSource extends DataSourceBase {
             query[PAGINATION_OFFSET] = 0;
         }
 
-        console.log('prepareSearch', {query})
         this.searchEngine.updateContext({key: 'query', value: query});
     }
     validateInitData() {

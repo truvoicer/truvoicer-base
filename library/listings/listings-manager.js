@@ -85,7 +85,7 @@ export class ListingsManager extends ListingsManagerBase {
     }
 
     async prepareSearch(source = null) {
-        console.log('prepareSearch', {source})
+
         const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
         const searchOperation = this.searchEngine.searchContext.searchOperation;
         const searchStatus = this.searchEngine.searchContext.searchStatus;
@@ -114,12 +114,7 @@ export class ListingsManager extends ListingsManagerBase {
 
         const searchOperation = this.searchEngine.searchContext.searchOperation;
         const searchStatus = this.searchEngine.searchContext.searchStatus;
-        console.log(
-            'runSearch',
-            {searchStatus, searchOperation},
-            (![SEARCH_REQUEST_NEW, SEARCH_REQUEST_APPEND].includes(searchOperation)),
-            (searchStatus !== SEARCH_STATUS_STARTED)
-        )
+
         if (![SEARCH_REQUEST_NEW, SEARCH_REQUEST_APPEND].includes(searchOperation)) {
             return;
         }
@@ -127,7 +122,6 @@ export class ListingsManager extends ListingsManagerBase {
             return;
         }
 
-        console.log('1runSearch')
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 await this.wpDataSource.runSearch()

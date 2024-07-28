@@ -53,7 +53,6 @@ export class FetcherApiMiddleware {
      async fetchFromApi(endpoint, operation, queryData, data = {}, method = REQUEST_GET) {
         const apiToken = this.getApiKey();
         const url = this.getApiUrl(endpoint, operation, queryData);
-        console.log({url})
         let config = {
             headers: {
                 "Content-Type": "application/json",
@@ -76,7 +75,6 @@ export class FetcherApiMiddleware {
                 };
                 break;
         }
-        console.log(endpoint, operation, queryData, JSON.stringify(data))
         return await fetch(url, config)
     }
 

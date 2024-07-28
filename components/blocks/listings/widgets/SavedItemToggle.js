@@ -16,7 +16,6 @@ const SavedItemToggle = (props) => {
     const modalContext = useContext(AppModalContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     function saveItemRequestCallback(error, data) {
-        //console.log({error, data})
         if (error) {
             console.error(error);
             return;

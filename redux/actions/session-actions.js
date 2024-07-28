@@ -24,7 +24,6 @@ import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middlewa
 
 export function setSessionUserAction(data, authenticated) {
     let sessionUserState = {...store.getState().session.user};
-    //console.log('setSessionUserAction', {data})
     const nextState = produce(sessionUserState, (draftState) => {
         draftState[SESSION_AUTH_PROVIDER] = data?.auth_provider;
         draftState[SESSION_AUTH_PROVIDER_USER_ID] = data?.auth_provider_user_id;
@@ -143,6 +142,7 @@ export const getSessionObject = () => {
         }
     } catch (error) {
         console.error(error);
+        logout();
         return false;
     }
 }

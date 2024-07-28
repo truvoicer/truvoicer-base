@@ -72,7 +72,7 @@ export class DataSourceBase {
             buildWpApiUrl(wpApiConfig.endpoints.savedItemsList),
             requestData,
         )
-        console.log(response)
+
         this.searchEngine.setSavedItemsListAction(response?.savedItems || []);
         this.searchEngine.setItemRatingsListAction(response?.itemRatings || []);
     }

@@ -1,29 +1,29 @@
 import React, {useContext, useEffect} from "react";
 import {connect} from "react-redux";
-import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
-import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {GoogleAuthContext} from "@/truvoicer-base/config/contexts/GoogleAuthContext";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faGoogle} from "@fortawesome/free-brands-svg-icons";
+import SocialButton from "@/truvoicer-base/components/forms/Buttons/SocialButton";
 
 const AuthGoogle = (props) => {
-    const templateManager = new TemplateManager(useContext(TemplateContext));
     const gAuthContext = useContext(GoogleAuthContext);
 
     const onClickHandler = (response) => {
-        //console.log({response});
+        gAuthContext.google.accounts.id.prompt((notification) => {
+
+        });
     }
     useEffect(() => {
-        console.log(gAuthContext);
-        gAuthContext.google.accounts.id.renderButton(document.getElementById("g-signin2"), {
-            theme: 'outline',
-            size: 'large',
-            click_listener: onClickHandler
-        });
     }, [gAuthContext.google]);
 
-
-        return (
-            <div id="g-signin2"></div>
-        );
+    return (
+        <SocialButton buttonClass={props?.buttonClass || ''}
+                      iconClass={<FontAwesomeIcon icon={faGoogle}/>}
+                      buttonLabel={props.buttonLabel}
+                      onClick={onClickHandler}
+                      id={'google'}
+        />
+    );
 }
 
 function mapStateToProps(state) {
@@ -31,6 +31,7 @@ function mapStateToProps(state) {
         siteSettings: state.page.siteSettings
     };
 }
+
 AuthGoogle.category = 'auth';
 AuthGoogle.templateId = 'authGoogle';
 export default connect(

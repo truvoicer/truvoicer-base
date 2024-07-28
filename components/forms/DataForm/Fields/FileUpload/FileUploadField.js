@@ -21,7 +21,6 @@ function FileUploadField({
         const getFiles = acceptedFiles.map(file => Object.assign(file, {
             preview: URL.createObjectURL(file)
         }));
-        //console.log({getFiles})
         const getFile = getFiles.length > 0 ? getFiles[0] : {};
         setUploadedFile(getFile);
         callback(name, getFile, arrayFieldIndex)

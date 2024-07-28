@@ -13,13 +13,17 @@ const UserAccountBlock = (props) => {
 
     const buildTabLayoutData = (menuData) => {
         return menuData.map((item) => {
-            return {
+            let cloneItem = {
                 page_name: item.menu_item?.post_name,
                 url: item.menu_item?.post_url,
-                tab_label: item.menu_item?.blocks_data?.tru_fetcher_user_area?.tab_label,
-                panel_heading: item.menu_item?.blocks_data?.tru_fetcher_user_area?.heading,
-                tab_component: item.menu_item?.blocks_data?.tru_fetcher_user_area?.component,
+            };
+            if (Array.isArray(item?.menu_item?.blocks_data)) {
+                const findUserAccountBlock = item.menu_item.blocks_data.find(block => block.id === 'user_account_block');
+                if (findUserAccountBlock) {
+                    cloneItem.user_account_block = findUserAccountBlock;
+                }
             }
+            return cloneItem;
         });
     }
 
@@ -42,9 +46,7 @@ const UserAccountBlock = (props) => {
     }
     useEffect(() => {
         getUserAccountMenuAction()
-        // console.log(props.session[SESSION_AUTHENTICATED])
     }, [])  //TODO Login form appears on page load if user is authenticated
-    //console.log({props, tabData})
 
     return (
         <div className={"user-account-area"}>
@@ -70,7 +72,6 @@ const UserAccountBlock = (props) => {
 }
 
 function mapStateToProps(state) {
-    // console.log(state.page)
     return {
         siteSettings: state.page.siteSettings,
         blockData: state.page.blocksData,

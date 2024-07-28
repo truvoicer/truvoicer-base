@@ -8,8 +8,9 @@ import AuthFacebook from "./AuthFacebook";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
+import {isNotEmpty} from "@/truvoicer-base/library/utils";
 
-const LoginBlock = (props) => {
+const LoginBlock = ({heading = null}) => {
     const [error, setError] = useState({
         show: false,
         message: ""
@@ -17,8 +18,7 @@ const LoginBlock = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const modalContext = useContext(AppModalContext);
     const showAuthRegisterModal = (e) => {
-        e.preventDefault()
-        //console.log('dss')
+        e.preventDefault();
         modalContext.showModal({
             component: blockComponentsConfig.components.authentication_register.name,
             show: true
@@ -43,7 +43,9 @@ const LoginBlock = (props) => {
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-md-7 mt-5 mb-5" data-aos="fade">
-                            <h2 className="mb-5 text-black">Sign In</h2>
+                            {isNotEmpty(heading) &&
+                                <h2 className="mb-5 text-black">{heading || siteConfig.loginHeading || ''}</h2>
+                            }
                             {templateManager.render(<AuthLoginForm>
                                 <div className="row form-group">
                                     <div className="col-12">
@@ -58,16 +60,12 @@ const LoginBlock = (props) => {
                             <div className={"auth-wrapper--google auth-wrapper--button"}>
                                 {templateManager.render(<AuthGoogle
                                     requestCallback={requestCallback}
-                                    buttonClass={"google-light-red"}
-                                    iconClass={"fa-google"}
                                     buttonLabel={"Sign in with Google"}
                                 />)}
                             </div>
-                            <div className={"auth-wrapper--facebook auth-wrapper--button"}>
+                            <div className={"auth-wrapper--facebook auth-wrapper--button mt-4"}>
                                 {templateManager.render(<AuthFacebook
                                     requestCallback={requestCallback}
-                                    buttonClass={"facebook-light-blue"}
-                                    iconClass={"fa-facebook-f"}
                                     buttonLabel={"Sign in with Facebook"}
                                 />)}
                             </div>

@@ -87,7 +87,6 @@ const AccountArea = (props) => {
 };
 
 function mapStateToProps(state) {
-    // console.log(state.page.modal)
     return {
         pageData: state.page.pageData,
         session: state.session

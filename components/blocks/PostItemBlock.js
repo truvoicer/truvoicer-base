@@ -23,7 +23,7 @@ import {DISPLAY_AS_LIST} from "@/truvoicer-base/redux/constants/general_constant
 const PostItemBlock = (props) => {
     const {post, postList, postNav, data} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    //console.log({data, post, postNav})
+
     const getPostColumnClasses = () => {
         return (data?.show_sidebar) ? "col-12 col-md-8 col-lg-8" : "col-12";
     }

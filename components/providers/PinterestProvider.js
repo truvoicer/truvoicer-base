@@ -39,10 +39,10 @@ function PinterestProvider({children, siteSettings}) {
                 })
             };
             script.onerror = () => {
-                console.log('Error occurred while loading fb script');
+                console.error('Error occurred while loading fb script');
             };
-            document.body.appendChild(script);
         }
+        document.body.appendChild(script);
 
     }, [siteSettings.facebook_app_id]);
 

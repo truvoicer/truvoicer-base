@@ -5,18 +5,13 @@ import {faHeart} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const SocialButton = (props) => {
-    const templateManager = new TemplateManager(useContext(TemplateContext));
-
-
         return (
-            <div className="btn-group social-button--group" onClick={props.onClick}>
-                <a className={'btn disabled social-button--icon ' + props.buttonClass}>
+            <a className={`${(props?.id)? 'social-button--' + props.id : ''} btn-group social-button--group pointer`} onClick={props.onClick}>
+                <span className={'btn disabled social-button--icon ' + props.buttonClass}>
                     {props.iconClass}
-                </a>
-                <a className={'btn social-button--label ' + props.buttonClass}>
-                    {props.buttonLabel}
-                </a>
-            </div>
+                </span>
+                <span className={'social-button--label text-center'}>{props.buttonLabel}</span>
+            </a>
         );
 }
 SocialButton.category = 'social';

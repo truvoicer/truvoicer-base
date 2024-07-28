@@ -495,7 +495,6 @@ export class ListingsEngine extends EngineBase {
                 break;
         }
         props.onClick = (e) => {
-            console.log("Item Link Clicked", trackData)
             this.globalItemLinkClick(trackData);
             if (typeof onClick === "function") {
                 onClick(e);

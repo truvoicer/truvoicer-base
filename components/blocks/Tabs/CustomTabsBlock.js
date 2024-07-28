@@ -44,7 +44,7 @@ const CustomTabsBlock = (props) => {
         }
         if (props.data?.access_control === 'protected') {
             return templateManager.render(<UserAccountLoader>
-                {templateManager.render(<FormComponent data={tab}/>)}
+                    {templateManager.render(<FormComponent data={tab}/>)}
                 </UserAccountLoader>
             )
         }
@@ -80,38 +80,63 @@ const CustomTabsBlock = (props) => {
         });
         return tabIndex;
     }
-//console.log({props})
 
-        return (
-            <>
-                <Tab.Container
-                    id="left-tabs-example"
-                    defaultActiveKey={getDefaultActiveTab()}
-                >
-                    <div className="container">
-                        {isNotEmpty(props?.data?.heading) &&
-                            <div className="row">
-                                <div className="col-12">
-                                    {props?.data?.heading &&
-                                        <h2 className="section-title mb-70 wow fadeInUp" data-wow-delay="100ms">
-                                            {props?.data?.heading}
-                                        </h2>
-                                    }
-                                    {props?.data?.sub_heading &&
-                                        <p>{props?.data?.sub_heading}</p>
-                                    }
-                                </div>
+    return (
+        <>
+            <Tab.Container
+                id="left-tabs-example"
+                defaultActiveKey={getDefaultActiveTab()}
+            >
+                <div className="container">
+                    {isNotEmpty(props?.data?.heading) &&
+                        <div className="row">
+                            <div className="col-12">
+                                {props?.data?.heading &&
+                                    <h2 className="section-title mb-70 wow fadeInUp" data-wow-delay="100ms">
+                                        {props?.data?.heading}
+                                    </h2>
+                                }
+                                {props?.data?.sub_heading &&
+                                    <p>{props?.data?.sub_heading}</p>
+                                }
                             </div>
-                        }
-                        {Array.isArray(props.data.tabs) &&
-                            <>
-                                {props?.data?.tabs_orientation === "vertical"
-                                    ?
+                        </div>
+                    }
+                    {Array.isArray(props.data.tabs) &&
+                        <>
+                            {props?.data?.tabs_orientation === "vertical"
+                                ?
+                                <div className="row">
+                                    <div className="col-2">
+                                        <Nav
+                                            variant="pills"
+                                            className="flex-column"
+                                        >
+                                            {props.data.tabs.map((tab, index) => (
+                                                <Nav.Item key={index}>
+                                                    <Nav.Link
+                                                        eventKey={index}>{tab?.tab_heading || `Tab ${index}`}</Nav.Link>
+                                                </Nav.Item>
+                                            ))}
+                                        </Nav>
+                                    </div>
+                                    <div className="col-10">
+                                        <Tab.Content className={"wow fadeInUp"}>
+                                            {props.data.tabs.map((tab, index) => (
+                                                <Tab.Pane eventKey={index} key={index}>
+                                                    {getTabContent(tab)}
+                                                </Tab.Pane>
+                                            ))}
+                                        </Tab.Content>
+                                    </div>
+                                </div>
+                                :
+                                <>
                                     <div className="row">
-                                        <div className="col-2">
+                                        <div className="col-12">
                                             <Nav
-                                                variant="pills"
-                                                className="flex-column"
+                                                variant="tabs"
+                                                className="wow fadeInUp"
                                             >
                                                 {props.data.tabs.map((tab, index) => (
                                                     <Nav.Item key={index}>
@@ -121,48 +146,22 @@ const CustomTabsBlock = (props) => {
                                                 ))}
                                             </Nav>
                                         </div>
-                                        <div className="col-10">
-                                            <Tab.Content className={"wow fadeInUp"}>
-                                                {props.data.tabs.map((tab, index) => (
-                                                    <Tab.Pane eventKey={index} key={index}>
-                                                        {getTabContent(tab)}
-                                                    </Tab.Pane>
-                                                ))}
-                                            </Tab.Content>
-                                        </div>
                                     </div>
-                                    :
-                                    <>
-                                        <div className="row">
-                                            <div className="col-12">
-                                                <Nav
-                                                    variant="tabs"
-                                                    className="wow fadeInUp"
-                                                >
-                                                    {props.data.tabs.map((tab, index) => (
-                                                        <Nav.Item key={index}>
-                                                            <Nav.Link
-                                                                eventKey={index}>{tab?.tab_heading || `Tab ${index}`}</Nav.Link>
-                                                        </Nav.Item>
-                                                    ))}
-                                                </Nav>
-                                            </div>
-                                        </div>
-                                        <Tab.Content className={"wow fadeInUp"}>
-                                            {props.data.tabs.map((tab, index) => (
-                                                <Tab.Pane eventKey={index} key={index}>
-                                                    {getTabContent(tab)}
-                                                </Tab.Pane>
-                                            ))}
-                                        </Tab.Content>
-                                    </>
-                                }
-                            </>
-                        }
-                    </div>
-                </Tab.Container>
-            </>
-        );
+                                    <Tab.Content className={"wow fadeInUp"}>
+                                        {props.data.tabs.map((tab, index) => (
+                                            <Tab.Pane eventKey={index} key={index}>
+                                                {getTabContent(tab)}
+                                            </Tab.Pane>
+                                        ))}
+                                    </Tab.Content>
+                                </>
+                            }
+                        </>
+                    }
+                </div>
+            </Tab.Container>
+        </>
+    );
 }
 
 function mapStateToProps(state) {
@@ -170,6 +169,7 @@ function mapStateToProps(state) {
         tabsData: state.page.blocksData?.tru_fetcher_tabs
     };
 }
+
 CustomTabsBlock.category = 'public';
 CustomTabsBlock.templateId = 'customTabsBlock';
 export default connect(

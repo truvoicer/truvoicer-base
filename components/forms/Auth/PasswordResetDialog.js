@@ -6,8 +6,9 @@ import PasswordResetForm from "./PasswordResetForm";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
+import {isNotEmpty} from "@/truvoicer-base/library/utils";
 
-const PasswordResetDialog = (props) => {
+const PasswordResetDialog = ({heading = null}) => {
     const [showForm, setShowForm] = useState(false);
     const [response, setResponse] = useState({
         error: false,
@@ -20,14 +21,16 @@ const PasswordResetDialog = (props) => {
         e.preventDefault()
         modalContext.showModal({
             component: blockComponentsConfig.components.authentication_register.name,
-            show: true
+            show: true,
+            showFooter: false
         });
     }
     const showAuthLoginModal = (e) => {
         e.preventDefault();
         modalContext.showModal({
             component: blockComponentsConfig.components.authentication_login.name,
-            show: true
+            show: true,
+            showFooter: false
         });
     }
     const requestCallback = (error, data) => {
@@ -52,7 +55,9 @@ const PasswordResetDialog = (props) => {
             <div className={"auth-wrapper"}>
                 {!showForm &&
                     <>
-                        <h2 className="text-dark text-black">Password Reset</h2>
+                        {isNotEmpty(heading) &&
+                            <h2 className="text-dark text-black">{heading || siteConfig.passwordResetHeading || ''}</h2>
+                        }
                         {response.success &&
                             <div className="bg-white">
                                 <p className={"text-success"}>{response.message}</p>

@@ -8,8 +8,9 @@ import {blockComponentsConfig} from "../../../config/block-components-config";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
+import {isNotEmpty} from "@/truvoicer-base/library/utils";
 
-const RegisterDialog = (props) => {
+const RegisterDialog = ({heading = null}) => {
     const [showRegisterForm, setShowRegisterForm] = useState(true);
     const [response, setResponse] = useState({
         error: false,
@@ -19,7 +20,6 @@ const RegisterDialog = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const modalContext = useContext(AppModalContext);
     const requestCallback = (error, data) => {
-        //console.log({error, data})
         if (error) {
             setResponse({
                 error: true,
@@ -37,14 +37,15 @@ const RegisterDialog = (props) => {
         e.preventDefault();
         modalContext.showModal({
             component: blockComponentsConfig.components.authentication_login.name,
-            show: true
+            show: true,
+            showFooter: false
         });
     }
 
         return (
             <div className={"auth-wrapper"}>
-                {!response.success &&
-                    <h2 className="text-dark text-black">Register</h2>
+                {!response.success && isNotEmpty(heading) &&
+                    <h2 className="text-dark text-black">{heading || siteConfig.registerHeading || ''}</h2>
                 }
                 {response.success &&
                     <div className="bg-white p-3">
@@ -75,16 +76,12 @@ const RegisterDialog = (props) => {
                         <div className={"auth-wrapper--google auth-wrapper--button"}>
                             {templateManager.render(<AuthGoogle
                                 requestCallback={requestCallback}
-                                buttonClass={"google-light-red"}
-                                iconClass={"fa-google"}
                                 buttonLabel={"Sign up with Google"}
                             />)}
                         </div>
-                        <div className={"auth-wrapper--facebook auth-wrapper--button"}>
+                        <div className={"auth-wrapper--facebook auth-wrapper--button mt-4"}>
                             {templateManager.render(<AuthFacebook
                                 requestCallback={requestCallback}
-                                buttonClass={"facebook-light-blue"}
-                                iconClass={"fa-facebook-f"}
                                 buttonLabel={"Sign up with Facebook"}
                             />)}
                         </div>

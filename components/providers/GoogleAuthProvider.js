@@ -21,7 +21,7 @@ function GoogleAuthProvider({children, siteSettings, page}) {
     }
     function logout(id) {
         google.accounts.id.revoke(id, done => {
-            console.log('revoke done:', done);
+
         });
     }
     const [googleAuthState, setGoogleAuthState] = useState({
@@ -29,25 +29,21 @@ function GoogleAuthProvider({children, siteSettings, page}) {
         update: updateState,
         logout: logout
     });
-    function handleCredentialResponse(response) {
-        const data = {
-            auth_provider: "google",
-            token: response.credential
-        }
-        getSessionTokenMiddleware(wpApiConfig.endpoints.auth.login,
-            data,
-            (error, data) => {
-                if (error) {
-                    console.log({error})
-                    updateState({
-                        errors: [data?.message]
-                    })
-                    return;
-                }
-                modalContext.showModal({show: false})
+    async function handleCredentialResponse(response) {
+        const tokenResponse = await getSessionTokenMiddleware(
+            wpApiConfig.endpoints.auth.login,
+            {
+                auth_provider: "google",
+                token: response.credential
             }
-        )
-
+        );
+        if (!tokenResponse) {
+            updateState({
+                errors: ['Error']
+            })
+            return;
+        }
+        modalContext.showModal({show: false})
     }
 
     useEffect(() => {
@@ -71,7 +67,7 @@ function GoogleAuthProvider({children, siteSettings, page}) {
             })
         };
         script.onerror = () => {
-            console.log('Error occurred while loading script');
+            console.error('Error occurred while loading script');
         };
         document.body.appendChild(script);
 

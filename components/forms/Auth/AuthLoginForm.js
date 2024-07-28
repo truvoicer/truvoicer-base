@@ -13,10 +13,13 @@ const AuthLoginForm = (props) => {
     const [submitButtonText, setSubmitButtonText] = useState("Login");
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    const submitHandler = (values) => {
+    const submitHandler = async (values) => {
         let requestData = {...values};
         requestData.auth_provider = "wordpress";
-        getSessionTokenMiddleware(wpApiConfig.endpoints.auth.login, requestData, props.requestCallback)
+        const tokenResponse = await getSessionTokenMiddleware(wpApiConfig.endpoints.auth.login, requestData);
+        if (typeof props.requestCallback === "function") {
+            props.requestCallback((tokenResponse === false), tokenResponse);
+        }
     }
 
 
@@ -39,7 +42,6 @@ const AuthLoginForm = (props) => {
 }
 
 function mapStateToProps(state) {
-    // console.log(state.session)
     return {
         session: state.session
     };

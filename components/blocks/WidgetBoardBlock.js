@@ -30,7 +30,6 @@ function WidgetBoardBlock(props) {
                return null;
         }
     }
-    //console.log({data})
 
     return (
         <div className="container-fluid">

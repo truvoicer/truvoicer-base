@@ -63,7 +63,7 @@ function getAuthHeader(protectedReq = false) {
     } else {
         token = getPublicSessionToken();
     }
-    //console.log('token', token);
+
     if (!token) {
         return false;
     }
@@ -154,7 +154,6 @@ export async function runRequest({
     protectedReq = false,
 }) {
     const requestUrl = buildRequestUrl(`${config.apiBaseUrl}${endpoint}`, query);
-    console.log({requestUrl})
     const buildHeadersData = buildHeaders({
         protectedReq,
         upload,

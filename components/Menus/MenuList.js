@@ -19,6 +19,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleDown, faChevronDown} from "@fortawesome/free-solid-svg-icons";
 import {setAppLoadedAction} from "@/truvoicer-base/redux/actions/app-actions";
 import {setAppRequestedRoute} from "@/truvoicer-base/redux/reducers/app-reducer";
+import Nav from "react-bootstrap/Nav";
+import {NavDropdown} from "react-bootstrap";
 
 const MenuList = (props) => {
     const appContext = useContext(AppContext);
@@ -31,7 +33,6 @@ const MenuList = (props) => {
     const sessionContext = useContext(SessionContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    // console.log({listingsContext})
     const logoutHandler = (e) => {
         e.preventDefault();
         sessionContext.logout(props?.session?.user);
@@ -50,42 +51,50 @@ const MenuList = (props) => {
         e.preventDefault();
         modalContext.showModal({
             component: blockComponentsConfig.components.authentication_login.name,
-            show: true
+            componentProps: {
+                heading: null,
+            },
+            title: siteConfig.loginHeading,
+            show: true,
+            showFooter: false
         });
     }
     const showAuthRegisterModal = (e) => {
         e.preventDefault();
         modalContext.showModal({
             component: blockComponentsConfig.components.authentication_register.name,
-            show: true
+            componentProps: {
+              heading: null,
+            },
+            title: siteConfig.registerHeading,
+            show: true,
+            showFooter: false
         });
     }
 
     const getListItem = (item) => {
         const getCallback = getItemCallback(item.post_type);
         return (
-            <li>
+
+            <Nav.Item as={'li'}>
                 <Link href={item?.post_url || '#'}  onClick={
                     getCallback ? getCallback : pageClickHandler.bind(this, item)
                 }>
                     {item.post_title}
                 </Link>
-            </li>
+            </Nav.Item>
         )
 
     }
     const getCollapseListItem = (item, subItems) => {
         return (
-            <li className="nav-item">
-                <a className="nav-link" data-toggle="dropdown">{item.menu_title} <FontAwesomeIcon icon={faAngleDown} /></a>
-                <ul className="dropdown-menu" role="menu">
-                    {subItems.map((subItem, subIndex) => (
-                        <React.Fragment key={subIndex}>
-                            {getListItem(subItem)}
-                        </React.Fragment>
-                    ))}
-                </ul>
-            </li>
+            <NavDropdown title={item.menu_title} className="" as={'li'}>
+                {subItems.map((subItem, subIndex) => (
+                    <React.Fragment key={subIndex}>
+                        {getListItem(subItem)}
+                    </React.Fragment>
+                ))}
+            </NavDropdown>
         );
     }
 
@@ -122,7 +131,7 @@ const MenuList = (props) => {
 
 
         return (
-            <ul  className="nav navbar-nav">
+            <Nav className="navbar-nav" as={'ul'}>
                 {/*<ul className="site-menu js-clone-nav mr-auto d-none d-lg-block">*/}
                 {Array.isArray(props?.data?.menu_items) && props.data.menu_items.map((item, index) => (
                     <React.Fragment key={index}>
@@ -150,7 +159,7 @@ const MenuList = (props) => {
                         }
                     </React.Fragment>
                 ))}
-            </ul>
+            </Nav>
         )
 }
 

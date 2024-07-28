@@ -12,7 +12,6 @@ function SocialShareWidget({href, text}) {
     const pinterestContext = useContext(PinterestContext);
     function fbClickHandler(e) {
         e.preventDefault();
-        console.log('fbContext', fbContext)
         fbContext.fb.ui({
             method: 'share',
             href: href,

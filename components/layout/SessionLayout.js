@@ -9,7 +9,6 @@ function SessionLayout({session, children}) {
     const fbContext = useContext(FbAuthContext);
 
     function logout(sessionUser) {
-        console.log('logout', {sessionUser})
         switch (sessionUser?.auth_provider) {
             case 'google':
                 gAuthContext.logout(sessionUser?.auth_provider_user_id);

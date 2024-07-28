@@ -37,8 +37,7 @@ const PostItemListPost = (props) => {
         displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
         category: category?.slug,
         item: props.data,
-    })
-    console.log({props})
+    });
 
     return (
             <div className="post-block-style post-grid clearfix">

@@ -24,7 +24,7 @@ function FormsProgressWidget(props) {
             false
         )
         if (response.status === "success" && Array.isArray(response.groups)) {
-            setProgressData(response.data)
+            setProgressData(response)
         }
     }
 

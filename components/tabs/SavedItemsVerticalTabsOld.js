@@ -49,7 +49,6 @@ const SavedItemsVerticalTabsOld = (props) => {
                 provider: item.provider_name,
                 category: item.category
             }
-            //console.log(data)
             const response = await fetcherApiMiddleware.fetchData("operation", ["single"], data);
             if (response.status === 200) {
                 getItemsResponseHandler(response.data, new_request);
@@ -59,7 +58,6 @@ const SavedItemsVerticalTabsOld = (props) => {
     }
 
     const handleTabChange = (e, value) => {
-        //console.log(value)
         setTabValue(value)
         getItemsRequest(value, true);
     }
@@ -109,7 +107,6 @@ const SavedItemsVerticalTabsOld = (props) => {
     }
 
     const saveItemRequestCallback = (error, data) => {
-        //console.log(error, data)
     }
 
     const showInfo = (item, category, e) => {
@@ -146,7 +143,6 @@ const SavedItemsVerticalTabsOld = (props) => {
     }
     const getGridItem = (item, category) => {
         let gridItem = {...item};
-        // console.log(item, category)
         if (isSet(gridItem.image_list)) {
             gridItem.image_list = convertImageObjectsToArray(gridItem.image_list);
         }

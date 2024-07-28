@@ -122,7 +122,6 @@ export class FetcherDataSource extends DataSourceBase {
             query[PAGINATION_PAGE_NUMBER] = 1;
         }
 
-        console.log('prepareSearch', {query})
         this.searchEngine.updateContext({key: 'query', value: query});
     }
 
@@ -197,7 +196,6 @@ export class FetcherDataSource extends DataSourceBase {
         return true;
     }
     async runFetcherApiListingsSearch() {
-        console.log('runFetcherApiListingsSearch')
         this.searchEngine.setPageControlItemAction(PAGE_CONTROL_HAS_MORE, false)
         this.searchEngine.setSearchRequestStatusAction(SEARCH_STATUS_STARTED);
         const searchQueryState = this.searchEngine.searchContext.query;
@@ -277,7 +275,7 @@ export class FetcherDataSource extends DataSourceBase {
         const listingsContext = await this.listingsEngine?.listingsContext;
         const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
         let providers = [];
-        console.log({queryDataState, listingsDataState, listingsContext}, this.listingsEngine?.listingsContext?.providers)
+
         if (!Array.isArray(queryDataState?.providers) || queryDataState.providers.length === 0) {
             if  (
                 Array.isArray(listingsContext?.providers) &&
