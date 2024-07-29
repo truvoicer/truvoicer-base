@@ -24,7 +24,7 @@ const FullWidthTemplate = (props) => {
 
         return (
             <div className={'body-inner'}>
-                {pageOptions?.pageType === "user_account"
+                {pageOptions?.trf_gut_pmf_page_options_page_type === "user_account"
                     ?
                     templateManager.render(<AccountArea data={pageData}/>)
                     :

@@ -30,9 +30,19 @@ function WidgetBoardBlock(props) {
                return null;
         }
     }
-
+    function getBlockContainerClasses() {
+        switch (data?.block_style) {
+            case 'full-width':
+                return 'container-fluid';
+            default:
+                return 'container';
+        }
+    }
+    const hasSidebarWidgets = (Array.isArray(sidebarWidgets) && sidebarWidgets.length > 0);
     return (
-        <div className="container-fluid">
+        <div className={`${getBlockContainerClasses()}`}>
+            {hasSidebarWidgets
+            ? (
             <div className="row">
                 <div className="col-12 col-md-12 col-lg-4 col-xl-3">
                     {Array.isArray(sidebarWidgets) && sidebarWidgets.map((widget, index) => (
@@ -52,6 +62,20 @@ function WidgetBoardBlock(props) {
                     ))}
                 </div>
             </div>
+                )
+                : (
+                    <div className="">
+                        <h1>
+                            <UserTextReplacerWidget text={data?.heading}/>
+                        </h1>
+                        {Array.isArray(contentWidgets) && contentWidgets.map((widget, index) => (
+                            <React.Fragment key={index}>
+                                {getWidget(widget)}
+                            </React.Fragment>
+                        ))}
+                    </div>
+                )
+            }
         </div>
     );
 }

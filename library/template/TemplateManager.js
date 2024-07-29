@@ -120,6 +120,9 @@ export class TemplateManager {
         }
     }
 
+    hasSidebar(pageData, templateLayout) {
+        return (pageData?.page_options?.trf_gut_pmf_page_options_layout === 'sidebar');
+    }
     isSidebar(pageData, templateLayout) {
         return (pageData?.page_options?.trf_gut_pmf_page_options_sidebar === templateLayout);
     }
