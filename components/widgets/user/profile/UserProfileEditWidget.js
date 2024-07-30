@@ -38,7 +38,7 @@ function UserProfileEditWidget(props) {
                 fields={fields}
                 dataCallback={setUserData}
             >
-                <h1>Edit profile</h1>
+                {/*<h1>Edit profile</h1>*/}
             </UserAccountLoader>
         );
 }

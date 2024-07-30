@@ -19,10 +19,8 @@ function UserProfileWidget({data}) {
 
         return templateManager.render(
             <UserAccountLoader>
-                <div className="card card-primary">
-                    <div className="card-header">
-                        <h3 className="card-title text-white">{data?.heading}</h3>
-                    </div>
+                <div className="featured-tab color-blue">
+                    <h3 className="block-title"><span>{data?.heading || 'Profile'}</span></h3>
                     <div className="card-body">
                         {getProfileComponent()}
                     </div>
@@ -30,6 +28,7 @@ function UserProfileWidget({data}) {
             </UserAccountLoader>
         );
 }
+
 UserProfileWidget.category = 'account';
 UserProfileWidget.templateId = 'userProfileWidget';
 export default UserProfileWidget;

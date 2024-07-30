@@ -34,64 +34,60 @@ function FormsProgressWidget(props) {
     const overallPercentage = progressData?.overallProgressPercentage;
 
 
-        return (
-            <div className="row">
-                <div className="col-lg-12 col-12">
-                    <div className="small-box bg-info forms-progress">
-                        <div className="inner">
-                            <div className={"row align-items-center"}>
-                                <div className={"col-12 col-md-4 col-lg-3"}>
-                                    {templateManager.render(<CircleProgressBar
-                                        percent={overallPercentage ? overallPercentage : 0}
-                                        ringColor={"#0C89F0"}
-                                        textColor={"#f40000"}
-                                    />)}
-                                </div>
-                                <div className={"col-12 col-md-8 col-lg-9"}>
-                                    <h3 className={"text-white"}>
-                                        {parseInt(overallPercentage) < 100 ? data?.not_complete_text : data?.complete_text}
-                                    </h3>
-                                    <ul className={"forms-progress--list"}>
-                                        {Array.isArray(progressData?.groups) && progressData.groups.map((group, index) => (
-                                            <React.Fragment key={index}>
-                                                {Array.isArray(group?.empty_fields) && group.empty_fields.length > 0 &&
-                                                    <li key={index}>
-
-                                                        <Link href={siteConfig.defaultUserAccountHref + "/profile"}
-                                                              className={"text-white forms-progress--list--heading"}>{uCaseFirst(group?.name)}
-                                                        </Link>
-                                                        <ul>
-                                                            {group.empty_fields.map((field, fieldIndex) => (
-                                                                <li key={fieldIndex}>
-                                                                    <Link
-                                                                        href={siteConfig.defaultUserAccountHref + "/profile"}
-                                                                        className={"text-white"}>{field?.incomplete_text}
-                                                                    </Link>
-                                                                </li>
-                                                            ))}
-                                                        </ul>
-                                                    </li>
-                                                }
-                                            </React.Fragment>
-                                        ))}
-                                    </ul>
-                                    <p>{data?.bottom_text}</p>
-                                </div>
+    return (
+        <div className="row">
+            <div className="col-lg-12 col-12">
+                <div className="featured-tab color-blue">
+                    <h3 className="block-title"><span>Progress</span></h3>
+                    <div className="inner">
+                        <div className={"d-flex align-items-center justify-content-start"}>
+                            <div className={""}>
+                                {templateManager.render(<CircleProgressBar
+                                    percent={overallPercentage ? overallPercentage : 0}
+                                    ringColor={"#0C89F0"}
+                                    textColor={"#f40000"}
+                                />)}
+                            </div>
+                            <div className={""}>
+                                <h3 className={""}>
+                                    {parseInt(overallPercentage) < 100 ? data?.not_complete_text : data?.complete_text}
+                                </h3>
+                                <ul className={"forms-progress--list"}>
+                                    {Array.isArray(progressData?.groups) && progressData.groups.map((group, index) => (
+                                        <React.Fragment key={index}>
+                                            {Array.isArray(group?.empty_fields) && group.empty_fields.length > 0 &&
+                                                <>
+                                                    {group.empty_fields.map((field, fieldIndex) => (
+                                                        <li key={fieldIndex}>
+                                                            <Link
+                                                                href={siteConfig.defaultUserAccountHref + "/profile"}
+                                                                className={""}>{field?.incomplete_text}
+                                                            </Link>
+                                                        </li>
+                                                    ))}
+                                                </>
+                                            }
+                                        </React.Fragment>
+                                    ))}
+                                </ul>
+                                <p>{data?.bottom_text}</p>
                             </div>
                         </div>
-                        <div className="icon">
-                            <FontAwesomeIcon icon={faTasks} />
-                        </div>
-
-                        <Link href={siteConfig.defaultUserAccountHref + "/profile"}
-                              className="small-box-footer">
-                            Edit Profile <FontAwesomeIcon icon={faArrowCircleRight} />
-                        </Link>
                     </div>
+                    <div className="icon">
+                        <FontAwesomeIcon icon={faTasks}/>
+                    </div>
+
+                    <Link href={siteConfig.defaultUserAccountHref + "/profile"}
+                          className="small-box-footer">
+                        Edit Profile <FontAwesomeIcon icon={faArrowCircleRight}/>
+                    </Link>
                 </div>
             </div>
-        );
+        </div>
+    );
 }
+
 FormsProgressWidget.category = 'widgets';
 FormsProgressWidget.templateId = 'formsProgressWidget';
 export default FormsProgressWidget;

@@ -17,19 +17,20 @@ function WidgetBoardBlock(props) {
     const getWidget = (widgetData) => {
         switch (widgetData?.id) {
             case "user-social":
-                return templateManager.render(<UserSocialWidget data={widgetData} />);
+                return templateManager.render(<UserSocialWidget data={widgetData}/>);
             case "user-profile":
-                return templateManager.render(<UserProfileWidget data={widgetData} />);
+                return templateManager.render(<UserProfileWidget data={widgetData}/>);
             case 'tab-block':
-                return templateManager.render(<TabsBlock data={widgetData} />);
+                return templateManager.render(<TabsBlock data={widgetData}/>);
             case "user-stats":
-                return templateManager.render(<UserStatsWidget data={widgetData} />);
+                return templateManager.render(<UserStatsWidget data={widgetData}/>);
             case "form-progress":
-                return templateManager.render(<FormsProgressWidget data={widgetData} />);
+                return templateManager.render(<FormsProgressWidget data={widgetData}/>);
             default:
-               return null;
+                return null;
         }
     }
+
     function getBlockContainerClasses() {
         switch (data?.block_style) {
             case 'full-width':
@@ -38,33 +39,39 @@ function WidgetBoardBlock(props) {
                 return 'container';
         }
     }
+
     const hasSidebarWidgets = (Array.isArray(sidebarWidgets) && sidebarWidgets.length > 0);
     return (
         <div className={`${getBlockContainerClasses()}`}>
             {hasSidebarWidgets
-            ? (
-            <div className="row">
-                <div className="col-12 col-md-12 col-lg-4 col-xl-3">
-                    {Array.isArray(sidebarWidgets) && sidebarWidgets.map((widget, index) => (
-                        <React.Fragment key={index}>
-                            {getWidget(widget)}
-                        </React.Fragment>
-                    ))}
-                </div>
-                <div className="col-12 col-md-12 col-lg-8 col-xl-9">
-                    <h1>
-                        <UserTextReplacerWidget text={data?.heading}/>
-                    </h1>
-                    {Array.isArray(contentWidgets) && contentWidgets.map((widget, index) => (
-                        <React.Fragment key={index}>
-                            {getWidget(widget)}
-                        </React.Fragment>
-                    ))}
-                </div>
-            </div>
+                ? (
+                    <div className="row mt-5">
+                        <div className="col-12 col-md-12 col-lg-4 col-xl-3">
+                            <div className={'d-flex flex-column gap-5'}>
+                                {Array.isArray(sidebarWidgets) && sidebarWidgets.map((widget, index) => (
+                                    <React.Fragment key={index}>
+                                        {getWidget(widget)}
+                                    </React.Fragment>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="col-12 col-md-12 col-lg-8 col-xl-9">
+                            <h1>
+                                <UserTextReplacerWidget text={data?.heading}/>
+                            </h1>
+                            {Array.isArray(contentWidgets) && contentWidgets.map((widget, index) => {
+                                console.log(widget)
+                                return (
+                                    <React.Fragment key={index}>
+                                        {getWidget(widget)}
+                                    </React.Fragment>
+                                )
+                            })}
+                        </div>
+                    </div>
                 )
                 : (
-                    <div className="">
+                    <div className="mt-5">
                         <h1>
                             <UserTextReplacerWidget text={data?.heading}/>
                         </h1>

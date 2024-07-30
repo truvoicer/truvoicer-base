@@ -91,14 +91,17 @@ const CustomTabsBlock = (props) => {
                     {isNotEmpty(props?.data?.heading) &&
                         <div className="row">
                             <div className="col-12">
-                                {props?.data?.heading &&
-                                    <h2 className="section-title mb-70 wow fadeInUp" data-wow-delay="100ms">
-                                        {props?.data?.heading}
-                                    </h2>
-                                }
+                                <div className="featured-tab color-blue">
+                                    <h3 className="block-title"><span>{props?.data?.heading || 'Edit profile'}</span></h3>
+                                {/*{props?.data?.heading &&*/}
+                                {/*    <h2 className="section-title mb-70 wow fadeInUp" data-wow-delay="100ms">*/}
+                                {/*        {props?.data?.heading}*/}
+                                {/*    </h2>*/}
+                                {/*}*/}
                                 {props?.data?.sub_heading &&
                                     <p>{props?.data?.sub_heading}</p>
                                 }
+                            </div>
                             </div>
                         </div>
                     }
