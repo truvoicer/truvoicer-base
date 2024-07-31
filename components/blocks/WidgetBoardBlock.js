@@ -16,16 +16,16 @@ function WidgetBoardBlock(props) {
 
     const getWidget = (widgetData) => {
         switch (widgetData?.id) {
-            case "user-social":
-                return templateManager.render(<UserSocialWidget data={widgetData}/>);
-            case "user-profile":
-                return templateManager.render(<UserProfileWidget data={widgetData}/>);
-            case 'tab-block':
-                return templateManager.render(<TabsBlock data={widgetData}/>);
-            case "user-stats":
+            case 'user_stats_widget_block':
                 return templateManager.render(<UserStatsWidget data={widgetData}/>);
-            case "form-progress":
+            case 'user_social_widget_block':
+                return templateManager.render(<UserSocialWidget data={widgetData}/>);
+            case 'user_profile_widget_block':
+                return templateManager.render(<UserProfileWidget data={widgetData}/>);
+            case 'form_progress_widget_block':
                 return templateManager.render(<FormsProgressWidget data={widgetData}/>);
+            case 'tabs_block':
+                return templateManager.render(<TabsBlock data={widgetData}/>);
             default:
                 return null;
         }
@@ -40,6 +40,9 @@ function WidgetBoardBlock(props) {
         }
     }
 
+    function getWidgetWidthClasses(widget) {
+        return `col-${widget?.block_width || 12}`;
+    }
     const hasSidebarWidgets = (Array.isArray(sidebarWidgets) && sidebarWidgets.length > 0);
     return (
         <div className={`${getBlockContainerClasses()}`}>
@@ -47,11 +50,11 @@ function WidgetBoardBlock(props) {
                 ? (
                     <div className="row mt-5">
                         <div className="col-12 col-md-12 col-lg-4 col-xl-3">
-                            <div className={'d-flex flex-column gap-5'}>
+                            <div className={'row gap-5'}>
                                 {Array.isArray(sidebarWidgets) && sidebarWidgets.map((widget, index) => (
-                                    <React.Fragment key={index}>
+                                    <div key={index} className={`${getWidgetWidthClasses(widget)}`}>
                                         {getWidget(widget)}
-                                    </React.Fragment>
+                                    </div>
                                 ))}
                             </div>
                         </div>
@@ -59,14 +62,15 @@ function WidgetBoardBlock(props) {
                             <h1>
                                 <UserTextReplacerWidget text={data?.heading}/>
                             </h1>
+                            <div className={'row gap-5'}>
                             {Array.isArray(contentWidgets) && contentWidgets.map((widget, index) => {
-                                console.log(widget)
                                 return (
-                                    <React.Fragment key={index}>
+                                    <div key={index} className={`${getWidgetWidthClasses(widget)}`}>
                                         {getWidget(widget)}
-                                    </React.Fragment>
+                                    </div>
                                 )
                             })}
+                            </div>
                         </div>
                     </div>
                 )

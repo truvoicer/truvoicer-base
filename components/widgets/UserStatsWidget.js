@@ -10,6 +10,8 @@ function UserStatsWidget(props) {
 
 
         return (
+            <div className="featured-tab color-blue">
+                <h3 className="block-title"><span>{data?.heading || 'Stats'}</span></h3>
             <div className="row">
                 <div className="col-lg-4 col-6">
                     <div className="small-box bg-info">
@@ -58,6 +60,7 @@ function UserStatsWidget(props) {
                         </a>
                     </div>
                 </div>
+            </div>
             </div>
         );
 }

@@ -38,7 +38,7 @@ function FormsProgressWidget(props) {
         <div className="row">
             <div className="col-lg-12 col-12">
                 <div className="featured-tab color-blue">
-                    <h3 className="block-title"><span>Progress</span></h3>
+                    <h3 className="block-title"><span>{data?.heading || 'Progress'}</span></h3>
                     <div className="inner">
                         <div className={"d-flex align-items-center justify-content-start"}>
                             <div className={""}>
