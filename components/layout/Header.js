@@ -1,11 +1,15 @@
 import React, {useContext, useEffect, useRef, useState} from "react";
-import NavBar from "@/truvoicer-base/components/Sidebars/NavBar";
+import HorizontalSidebar from "@/truvoicer-base/components/Sidebars/HorizontalSidebar";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {connect} from "react-redux";
 import TopSidebar from "@/views/sidebars/TopSidebar";
 
-const Header = ({siteSettings}) => {
+const Header = ({
+    siteSettings,
+    showSidebar = false,
+    sidebarName
+}) => {
     const [isSticky, setSticky] = useState(false);
     const ref = useRef(null);
 
@@ -44,7 +48,7 @@ const Header = ({siteSettings}) => {
                     </div>
                 </div>
             </header>
-            {templateManager.render(<NavBar/>)}
+            {showSidebar && templateManager.render(<HorizontalSidebar sidebarName={sidebarName}/>)}
         </>
     )
 }

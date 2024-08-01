@@ -7,20 +7,21 @@ import {siteConfig} from "@/config/site-config";
 import MobileDrawerMenu from "@/truvoicer-base/components/Menus/MobileDrawerMenu";
 import ButtonWidget from "../widgets/ButtonWidget";
 import ProfileMenu from "@/truvoicer-base/components/Menus/ProfileMenu";
-import {getSidebarMenuItem} from "@/truvoicer-base/library/helpers/pages";
+import {getSidebarMenuItem, getSidebarMobileMenuItem} from "@/truvoicer-base/library/helpers/pages";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {fetchSidebarRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
+import {isNotEmpty} from "@/truvoicer-base/library/utils";
 
-const NavBar = (props) => {
+const HorizontalSidebar = ({sidebarName}) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const [data, setData] = React.useState([]);
 
-    const mobileMenu = getSidebarMenuItem(siteConfig.mobileMenu, data);
+    const mobileMenu = getSidebarMobileMenuItem(data);
 
     async function sidebarRequest() {
         try {
-            const fetchSidebar = await fetch(`/api/wp/sidebar/nav-bar`);
+            const fetchSidebar = await fetch(`/api/wp/sidebar/${sidebarName}`);
             const sidebar = await fetchSidebar.json();
             if (Array.isArray(sidebar?.data?.sidebar)) {
                 setData(sidebar?.data?.sidebar);
@@ -31,11 +32,11 @@ const NavBar = (props) => {
     }
 
     useEffect(() => {
-        if (templateManager.hasTemplateComponent('sidebars', 'navBar')) {
+        if (!isNotEmpty(sidebarName)) {
             return;
         }
         sidebarRequest();
-    }, []);
+    }, [sidebarName]);
 
     return (
         <div className="main-nav clearfix">
@@ -55,7 +56,7 @@ const NavBar = (props) => {
                                                 {parse(item.custom_html.content)}
                                             </div>
                                         }
-                                        {item.nav_menu && item.nav_menu.menu_slug === siteConfig.navMenu &&
+                                        {item?.nav_menu && item.nav_menu?.menu_slug && !item.nav_menu.menu_slug.endsWith('mobile') &&
                                             <div className="col-lg-6 col-xl-7">
                                                 {templateManager.render(<HeaderMenu data={item.nav_menu}/>)}
                                             </div>
@@ -70,11 +71,6 @@ const NavBar = (props) => {
                                             <></>
                                             // <p>Saved Items</p>
                                             // <UserSavedItemsBlock data={item.button_widget} />
-                                        }
-                                        {item.nav_menu && item.nav_menu.menu_slug === siteConfig.profileMenu &&
-                                            <div className="col-lg-2 col-xl-2 d-none d-lg-block text-right">
-                                                {templateManager.render(<ProfileMenu data={item.nav_menu}/>)}
-                                            </div>
                                         }
                                     </React.Fragment>
 
@@ -95,9 +91,9 @@ function mapStateToProps(state) {
         siteData: state.page.siteSettings
     };
 }
-NavBar.category = 'sidebars';
-NavBar.templateId = 'navBar';
+HorizontalSidebar.category = 'sidebars';
+HorizontalSidebar.templateId = 'navBar';
 export default connect(
     mapStateToProps,
     null
-)(NavBar);
+)(HorizontalSidebar);

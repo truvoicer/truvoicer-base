@@ -22,7 +22,7 @@ export const getItemViewPageTitle = () => {
     const pageState = {...store.getState().page};
 
     if (isNotEmpty(pageState?.siteSettings?.blog_name) && isNotEmpty(pageState?.pageData?.title)) {
-        return  sprintf("%s | %s", pageState.siteSettings.blog_name, itemDataTextFilter(pageState?.pageData?.title));
+        return sprintf("%s | %s", pageState.siteSettings.blog_name, itemDataTextFilter(pageState?.pageData?.title));
     }
 
     if (isNotEmpty(pageState?.siteSettings?.blog_name)) {
@@ -42,6 +42,19 @@ export const getExtraDataValue = (name, data) => {
     return null;
 }
 
+export const getSidebarMobileMenuItem = (sidebarData) => {
+    const getItem = sidebarData.filter(item => {
+        return (
+            isSet(item.nav_menu) &&
+            item.nav_menu.menu_slug &&
+            item.nav_menu.menu_slug.endsWith('mobile')
+        )
+    });
+    if (getItem.length > 0) {
+        return getItem[0];
+    }
+    return false;
+}
 export const getSidebarMenuItem = (menuName, sidebarData) => {
     const getItem = sidebarData.filter(item => isSet(item.nav_menu) && item.nav_menu.menu_slug === menuName);
     if (getItem.length > 0) {

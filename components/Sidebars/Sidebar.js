@@ -1,15 +1,11 @@
 import React, {useContext, useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {siteConfig} from "@/config/site-config";
-import {buildSidebar} from "/truvoicer-base/redux/actions/sidebar-actions";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {fetchSidebarRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 import WidgetGroup from "@/truvoicer-base/components/Sidebars/partials/WidgetGroup";
 import WidgetContainer from "@/truvoicer-base/components/Sidebars/partials/WidgetContainer";
-import {da} from "date-fns/locale";
-import parse from "html-react-parser";
-import HeadingWidget from "@/truvoicer-base/components/widgets/HeadingWidget";
 import {getSidebarWidget} from "@/truvoicer-base/components/Sidebars/partials/SidebarWidgets";
 
 const Sidebar = ({name}) => {

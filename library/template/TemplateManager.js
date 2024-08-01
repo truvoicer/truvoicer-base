@@ -1,4 +1,4 @@
-import {isComponentFunction} from "@/truvoicer-base/library/utils";
+import {isComponentFunction, isNotEmpty} from "@/truvoicer-base/library/utils";
 import {buildComponent} from "@/truvoicer-base/library/helpers/component-helpers";
 import React from "react";
 import FullWidthTemplate from "@/truvoicer-base/components/templates/FullWidthTemplate";
@@ -120,10 +120,25 @@ export class TemplateManager {
         }
     }
 
-    hasSidebar(pageData, templateLayout) {
-        return (pageData?.page_options?.trf_gut_pmf_page_options_layout === 'sidebar');
+    isSidebar(pageData, sidebar) {
+        return (pageData?.page_options?.trf_gut_pmf_page_options_sidebar === sidebar);
     }
-    isSidebar(pageData, templateLayout) {
-        return (pageData?.page_options?.trf_gut_pmf_page_options_sidebar === templateLayout);
+
+     showSidebar(pageData, layout, sidebar) {
+        if (isNotEmpty(sidebar)) {
+            return false;
+        }
+        return pageData?.page_options?.trf_gut_pmf_page_options_sidebar_position === layout
+    }
+
+    getHorizontalSidebarName(pageData, sidebar) {
+        switch (pageData?.page_options?.trf_gut_pmf_page_options_sidebar_position) {
+            case 'top':
+                return pageData?.page_options?.trf_gut_pmf_page_options_sidebar;
+            case 'bottom':
+                return pageData?.page_options?.trf_gut_pmf_page_options_sidebar;
+            default:
+                return sidebar
+        }
     }
 }

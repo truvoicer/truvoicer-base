@@ -4,12 +4,12 @@ import Footer from "@/truvoicer-base/components/layout/Footer";
 import {connect} from "react-redux";
 import {filterHtml} from "@/truvoicer-base/library/html-parser";
 import parse from 'html-react-parser';
-import AccountArea from "@/truvoicer-base/components/layout/AccountArea";
 import HtmlHead from "@/truvoicer-base/components/layout/HtmlHead";
 import Loader from "@/truvoicer-base/components/loaders/Loader";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {APP_LOADED, APP_STATE} from "@/truvoicer-base/redux/constants/app-constants";
+import {siteConfig} from "@/config/site-config";
 
 const FullWidthTemplate = (props) => {
     const {pageData, pageOptions, app} = props;
@@ -22,30 +22,25 @@ const FullWidthTemplate = (props) => {
     }
 
 
-        return (
-            <div className={'body-inner'}>
-                {pageOptions?.trf_gut_pmf_page_options_page_type === "user_account"
-                    ?
-                    templateManager.render(<AccountArea data={pageData}/>)
-                    :
-                    <div id={"public_area"}>
-                        {templateManager.render(<Header/>)}
+    return (
+        <div className={'body-inner'}>
+            <div id={"public_area"}>
+                {app[APP_LOADED] && templateManager.render(<Header showSidebar={true} sidebarName={siteConfig.navBarName}/>)}
+                <>
+                    {app[APP_LOADED] && typeof pageData?.post_content === "string" && pageData
+                        ?
                         <>
-                            {app[APP_LOADED] && typeof pageData?.post_content === "string" && pageData
-                                ?
-                                <>
-                                    {templateManager.render(<HtmlHead/>)}
-                                    {pageData?.post_content && parse(pageData.post_content, htmlParserOptions)}
-                                </>
-                                :
-                                templateManager.render(<Loader></Loader>)
-                            }
+                            {templateManager.render(<HtmlHead/>)}
+                            {pageData?.post_content && parse(pageData.post_content, htmlParserOptions)}
                         </>
-                        {templateManager.render(<Footer/>)}
-                    </div>
-                }
+                        :
+                        templateManager.render(<Loader></Loader>)
+                    }
+                </>
+                {templateManager.render(<Footer/>)}
             </div>
-        )
+        </div>
+    )
 }
 
 function mapStateToProps(state) {
