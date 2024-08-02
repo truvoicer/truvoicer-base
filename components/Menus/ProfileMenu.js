@@ -50,46 +50,46 @@ const ProfileMenu = (props) => {
                         </div>
                     </div>
                 }
-                {templateManager.render(
-                <UserAccountLoader
-                    dataCallback={setUserData}
-                    fields={[
-                        {
-                            form_control: "image_upload",
-                            name: "profile_picture"
-                        },
-                        {
-                            form_control: "text",
-                            name: "first_name"
-                        },
-                        {
-                            form_control: "text",
-                            name: "surname"
-                        },
-                        {
-                            form_control: "text",
-                            name: "user_email"
-                        },
-                    ]}
-                >
-                    <div className="profile-menu">
-                        <Dropdown drop={"down"} alignRight={true}>
-                            <Dropdown.Toggle as={templateManager.render(CustomDropdownToggle)} id="dropdown-custom-components">
-                                <div className={"d-flex align-items-center justify-content-end"}>
-                                    <span
-                                        className="mr-2 d-none d-lg-inline text-gray-600 small">{userData?.user_email}</span>
-                                    <img 
-                                        className="profile-user-img img-fluid img-circle"
-                                        src={isNotEmpty(userData?.profile_picture) ? userData.profile_picture : "https://via.placeholder.com/150"}
-                                        alt="User profile picture"
-                                    />
-                                </div>
-                            </Dropdown.Toggle>
-                            {templateManager.render(<DropdownMenuList data={data} sessionLinks={true}/>)}
-                        </Dropdown>
-                    </div>
-                </UserAccountLoader>
-                )}
+                {/*{templateManager.render(*/}
+                {/*<UserAccountLoader*/}
+                {/*    dataCallback={setUserData}*/}
+                {/*    fields={[*/}
+                {/*        {*/}
+                {/*            form_control: "image_upload",*/}
+                {/*            name: "profile_picture"*/}
+                {/*        },*/}
+                {/*        {*/}
+                {/*            form_control: "text",*/}
+                {/*            name: "first_name"*/}
+                {/*        },*/}
+                {/*        {*/}
+                {/*            form_control: "text",*/}
+                {/*            name: "surname"*/}
+                {/*        },*/}
+                {/*        {*/}
+                {/*            form_control: "text",*/}
+                {/*            name: "user_email"*/}
+                {/*        },*/}
+                {/*    ]}*/}
+                {/*>*/}
+                {/*    <div className="profile-menu">*/}
+                {/*        <Dropdown drop={"down"} alignRight={true}>*/}
+                {/*            <Dropdown.Toggle as={templateManager.render(CustomDropdownToggle)} id="dropdown-custom-components">*/}
+                {/*                <div className={"d-flex align-items-center justify-content-end"}>*/}
+                {/*                    <span*/}
+                {/*                        className="mr-2 d-none d-lg-inline text-gray-600 small">{userData?.user_email}</span>*/}
+                {/*                    <img */}
+                {/*                        className="profile-user-img img-fluid img-circle"*/}
+                {/*                        src={isNotEmpty(userData?.profile_picture) ? userData.profile_picture : "https://via.placeholder.com/150"}*/}
+                {/*                        alt="User profile picture"*/}
+                {/*                    />*/}
+                {/*                </div>*/}
+                {/*            </Dropdown.Toggle>*/}
+                {/*            {templateManager.render(<DropdownMenuList data={data} sessionLinks={true}/>)}*/}
+                {/*        </Dropdown>*/}
+                {/*    </div>*/}
+                {/*</UserAccountLoader>*/}
+                {/*)}*/}
             </>
         )
 }

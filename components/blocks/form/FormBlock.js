@@ -45,11 +45,8 @@ const FormBlock = (props) => {
     }, [userData])
 
     const setFormConfigData = () => {
-        if (formData?.fetch_user_data) {
-            getUserDataRequest(getSavedData(), formData?.endpoint)
-        } else {
-            setFormDataConfig(buildFormData(formData?.form_type))
-        }
+        setFormDataConfig(buildFormData(formData?.form_type))
+        // getUserDataRequest(getSavedData(), formData?.endpoint)
     }
 
     const updateFieldConfig = (configArray, fieldName, key, value) => {
@@ -79,24 +76,24 @@ const FormBlock = (props) => {
         }
     }
 
-    const getUserDataRequest = async (savedData, endpoint) => {
-        let apiEndpoint = wpApiConfig.endpoints.formsUserMetaDataRequest;
-        if (endpoint === "account_details") {
-            apiEndpoint = wpApiConfig.endpoints.userAccountDataRequest;
-        }
-        const response = await protectedApiRequest(
-            buildWpApiUrl(apiEndpoint),
-            savedData,
-            false
-        )
-        if (response?.data?.status !== "success") {
-            return;
-        }
-        if (!response?.data?.metaData || !isObject(response.data.metaData)) {
-            return;
-        }
-        setUserData(response.data.metaData)
-    }
+    // const getUserDataRequest = async (savedData, endpoint) => {
+    //     let apiEndpoint = wpApiConfig.endpoints.formsUserMetaDataRequest;
+    //     if (endpoint === "account_details") {
+    //         apiEndpoint = wpApiConfig.endpoints.userAccountDataRequest;
+    //     }
+    //     const response = await protectedApiRequest(
+    //         buildWpApiUrl(apiEndpoint),
+    //         savedData,
+    //         false
+    //     )
+    //     if (response?.data?.status !== "success") {
+    //         return;
+    //     }
+    //     if (!response?.data?.metaData || !isObject(response.data.metaData)) {
+    //         return;
+    //     }
+    //     setUserData(response.data.metaData)
+    // }
 
     const getSavedData = () => {
         let form = {

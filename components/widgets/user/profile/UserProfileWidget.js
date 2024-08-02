@@ -8,25 +8,24 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 function UserProfileWidget({data}) {
 
     const templateManager = new TemplateManager(useContext(TemplateContext));
+
     function getProfileComponent() {
         switch (data?.view) {
             case 'edit':
-                return templateManager.render(<UserProfileEditWidget data={data} />);
+                return templateManager.render(<UserProfileEditWidget data={data}/>);
             default:
-                return templateManager.render(<UserProfileDisplayWidget data={data} />);
+                return templateManager.render(<UserProfileDisplayWidget data={data}/>);
         }
     }
 
-        return templateManager.render(
-            <UserAccountLoader>
-                <div className="featured-tab color-blue">
-                    <h3 className="block-title"><span>{data?.heading || 'Profile'}</span></h3>
-                    <div className="card-body">
-                        {getProfileComponent()}
-                    </div>
-                </div>
-            </UserAccountLoader>
-        );
+    return templateManager.render(
+        <div className="featured-tab color-blue">
+            <h3 className="block-title"><span>{data?.heading || 'Profile'}</span></h3>
+            <div className="card-body">
+                {getProfileComponent()}
+            </div>
+        </div>
+    );
 }
 
 UserProfileWidget.category = 'account';

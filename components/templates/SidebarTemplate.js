@@ -18,14 +18,19 @@ const SidebarTemplate = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const sidebar = pageData?.page_options?.trf_gut_pmf_page_options_sidebar;
     console.log('pageData', pageData);
+    const topSidebar = templateManager.getHorizontalSidebarName(pageData, 'top');
+    const bottomSidebar = templateManager.getHorizontalSidebarName(pageData, 'bottom');
+    const leftSidebar = templateManager.getHorizontalSidebarName(pageData, 'left');
+    const rightSidebar = templateManager.getHorizontalSidebarName(pageData, 'right');
 
+    console.log({topSidebar, bottomSidebar, leftSidebar, rightSidebar});
     return (
         <div className={'body-inner'}>
             <div id={"public_area"}>
                 {templateManager.render(
                     <Header
                         showSidebar={true}
-                        sidebarName={templateManager.getHorizontalSidebarName(pageData, siteConfig.navBarName)}
+                        sidebarName={(isNotEmpty(topSidebar))? topSidebar : siteConfig.navBarName}
                     />
                 )}
 
@@ -45,10 +50,10 @@ const SidebarTemplate = (props) => {
                                 ?
                                 <>
                                     {templateManager.render(<HtmlHead/>)}
-                                    {templateManager.showSidebar(pageData, 'left', sidebar) &&
+                                    {(isNotEmpty(leftSidebar)) &&
                                         <div className="col-12 col-sm-9 col-md-4 col-lg-4 d-none d-lg-block">
                                             {app[APP_LOADED] && templateManager.render(
-                                                <Sidebar name={sidebar}/>
+                                                <Sidebar name={leftSidebar}/>
                                             )}
                                         </div>
                                     }
@@ -71,10 +76,10 @@ const SidebarTemplate = (props) => {
                                             }
                                         })}
                                     </div>
-                                    {templateManager.showSidebar(pageData, 'right', sidebar) &&
+                                    {(isNotEmpty(rightSidebar)) &&
                                         <div className="col-12 col-sm-9 col-md-6 col-lg-4 d-none d-lg-block">
                                             {app[APP_LOADED] && templateManager.render(
-                                                <Sidebar name={sidebar}/>
+                                                <Sidebar name={rightSidebar}/>
                                             )}
                                         </div>
                                     }
@@ -94,6 +99,13 @@ const SidebarTemplate = (props) => {
                         )
                     }
                 })}
+                {(isNotEmpty(bottomSidebar)) &&
+                    <div className="col-12 col-sm-9 col-md-4 col-lg-4 d-none d-lg-block">
+                        {app[APP_LOADED] && templateManager.render(
+                            <Sidebar name={bottomSidebar}/>
+                        )}
+                    </div>
+                }
                 {templateManager.render(<Footer/>)}
             </div>
         </div>

@@ -8,70 +8,14 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {StateHelpers} from "@/truvoicer-base/library/helpers/state-helpers";
 import UserAccountDataContext, {userAccountData} from "@/truvoicer-base/components/loaders/contexts/UserAccountDataContext";
+import UserAccountLoaderProvider from "@/truvoicer-base/components/loaders/UserAccountProvider";
 
 const UserAccountLoader = (props) => {
-    const {session, fields = [], children, dataCallback} = props;
-
-    const [userAccountContextState, setUserAccountContextState] = useState({
-        ...userAccountData,
-        updateData: ({key, value}) => {
-            StateHelpers.updateStateObject({
-                key,
-                value,
-                setStateObj: setUserAccountContextState
-            })
-        },
-        updateNestedObjectData: ({object, key, value}) => {
-            StateHelpers.updateStateNestedObjectData({
-                object,
-                key,
-                value,
-                setStateObj: setUserAccountContextState
-            })
-        },
-    });
-    const userDataRequest = {
-        form: {
-            type: "single",
-            fields: fields
-        }
-    };
-    async function userMetaDataFetchRequest(reqData) {
-        const response = await protectedApiRequest(
-            buildWpApiUrl(wpApiConfig.endpoints.formsUserMetaDataRequest),
-            reqData,
-            false
-        )
-        if (response?.status !== "success") {
-            console.error('Error fetching user meta data')
-            return;
-        }
-        if (!isObject(response?.metaData)) {
-            console.error('Invalid user meta data')
-            return;
-        }
-        setUserAccountContextState(prevState => {
-            Object.keys(response.metaData).forEach((key) => {
-                let cloneState = {...prevState}
-                if (userAccountData.hasOwnProperty(key)) {
-                    cloneState[key] = response.metaData[key]
-                }
-                return cloneState
-            });
-        })
-    }
-    useEffect(() => {
-        if (session[SESSION_AUTHENTICATED] && fields.length && typeof dataCallback === 'function') {
-            userMetaDataFetchRequest(userDataRequest)
-        }
-    }, [session[SESSION_AUTHENTICATED]]);
-
+    const {fields = [], children} = props;
         return (
-            <UserAccountDataContext.Provider value={userAccountContextState}>
-                {session[SESSION_AUTHENTICATED] &&
-                    children
-                }
-            </UserAccountDataContext.Provider>
+            <UserAccountLoaderProvider fields={fields}>
+                {children}
+            </UserAccountLoaderProvider>
         );
 };
 function mapStateToProps(state) {

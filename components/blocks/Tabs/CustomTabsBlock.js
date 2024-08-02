@@ -42,12 +42,13 @@ const CustomTabsBlock = (props) => {
         if (!FormComponent) {
             return null
         }
-        if (props.data?.access_control === 'protected') {
-            return templateManager.render(<UserAccountLoader>
-                    {templateManager.render(<FormComponent data={tab}/>)}
-                </UserAccountLoader>
-            )
-        }
+        // if (props.data?.access_control === 'protected') {
+        //     return templateManager.render(
+        //         <UserAccountLoader>
+        //             {templateManager.render(<FormComponent data={tab}/>)}
+        //         </UserAccountLoader>
+        //     )
+        // }
         return templateManager.render(<FormComponent data={tab}/>)
     }
 

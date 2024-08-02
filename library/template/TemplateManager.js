@@ -131,14 +131,11 @@ export class TemplateManager {
         return pageData?.page_options?.trf_gut_pmf_page_options_sidebar_position === layout
     }
 
-    getHorizontalSidebarName(pageData, sidebar) {
-        switch (pageData?.page_options?.trf_gut_pmf_page_options_sidebar_position) {
-            case 'top':
-                return pageData?.page_options?.trf_gut_pmf_page_options_sidebar;
-            case 'bottom':
-                return pageData?.page_options?.trf_gut_pmf_page_options_sidebar;
-            default:
-                return sidebar
+    getHorizontalSidebarName(pageData, position) {
+        if (!Array.isArray(pageData?.page_options?.trf_gut_pmf_page_options_sidebars)) {
+            return null;
         }
+        const sidebars = pageData?.page_options?.trf_gut_pmf_page_options_sidebars;
+        return sidebars.find(sidebar => sidebar.position === position)?.name;
     }
 }

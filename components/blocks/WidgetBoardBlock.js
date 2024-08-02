@@ -7,6 +7,8 @@ import FormsProgressWidget from "../widgets/FormsProgressWidget";
 import TabsBlock from "@/truvoicer-base/components/blocks/Tabs/TabsBlock";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import UserAccountLoader from "@/truvoicer-base/components/loaders/UserAccountLoader";
+import {UserAccountHelpers} from "@/truvoicer-base/library/user-account/UserAccountHelpers";
 
 function WidgetBoardBlock(props) {
     const {data} = props;
@@ -43,51 +45,68 @@ function WidgetBoardBlock(props) {
     function getWidgetWidthClasses(widget) {
         return `col-${widget?.block_width || 12}`;
     }
-    const hasSidebarWidgets = (Array.isArray(sidebarWidgets) && sidebarWidgets.length > 0);
-    return (
-        <div className={`${getBlockContainerClasses()}`}>
-            {hasSidebarWidgets
-                ? (
-                    <div className="row mt-5">
-                        <div className="col-12 col-md-12 col-lg-4 col-xl-3">
-                            <div className={'row gap-5'}>
-                                {Array.isArray(sidebarWidgets) && sidebarWidgets.map((widget, index) => (
-                                    <div key={index} className={`${getWidgetWidthClasses(widget)}`}>
-                                        {getWidget(widget)}
-                                    </div>
-                                ))}
+    function renderContentWidgets() {
+        return (
+            <div className={`${getBlockContainerClasses()}`}>
+                {hasSidebarWidgets
+                    ? (
+                        <div className="row mt-5">
+                            <div className="col-12 col-md-12 col-lg-4 col-xl-3">
+                                <div className={'row gap-5'}>
+                                    {Array.isArray(sidebarWidgets) && sidebarWidgets.map((widget, index) => (
+                                        <div key={index} className={`${getWidgetWidthClasses(widget)}`}>
+                                            {getWidget(widget)}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="col-12 col-md-12 col-lg-8 col-xl-9">
+                                <h1>
+                                    {/*<UserTextReplacerWidget text={data?.heading}/>*/}
+                                </h1>
+                                <div className={'row gap-5'}>
+                                    {Array.isArray(contentWidgets) && contentWidgets.map((widget, index) => {
+                                        return (
+                                            <div key={index} className={`${getWidgetWidthClasses(widget)}`}>
+                                                {getWidget(widget)}
+                                            </div>
+                                        )
+                                    })}
+                                </div>
                             </div>
                         </div>
-                        <div className="col-12 col-md-12 col-lg-8 col-xl-9">
+                    )
+                    : (
+                        <div className="mt-5">
                             <h1>
                                 <UserTextReplacerWidget text={data?.heading}/>
                             </h1>
-                            <div className={'row gap-5'}>
-                            {Array.isArray(contentWidgets) && contentWidgets.map((widget, index) => {
-                                return (
-                                    <div key={index} className={`${getWidgetWidthClasses(widget)}`}>
-                                        {getWidget(widget)}
-                                    </div>
-                                )
-                            })}
-                            </div>
+                            {Array.isArray(contentWidgets) && contentWidgets.map((widget, index) => (
+                                <React.Fragment key={index}>
+                                    {getWidget(widget)}
+                                </React.Fragment>
+                            ))}
                         </div>
-                    </div>
+                    )
+                }
+            </div>
+        );
+    }
+    const hasSidebarWidgets = (Array.isArray(sidebarWidgets) && sidebarWidgets.length > 0);
+
+    return (
+        <>
+            {data?.access_control === 'protected'
+                ? (
+                    <UserAccountLoader
+                        fields={UserAccountHelpers.getFields()}
+                    >
+                        {renderContentWidgets()}
+                    </UserAccountLoader>
                 )
-                : (
-                    <div className="mt-5">
-                        <h1>
-                            <UserTextReplacerWidget text={data?.heading}/>
-                        </h1>
-                        {Array.isArray(contentWidgets) && contentWidgets.map((widget, index) => (
-                            <React.Fragment key={index}>
-                                {getWidget(widget)}
-                            </React.Fragment>
-                        ))}
-                    </div>
-                )
+                : renderContentWidgets()
             }
-        </div>
+        </>
     );
 }
 

@@ -6,6 +6,7 @@ import RequestVideoTabsBlock from "./RequestVideoTabsBlock";
 import UserAccountLoader from "@/truvoicer-base/components/loaders/UserAccountLoader";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {UserAccountHelpers} from "@/truvoicer-base/library/user-account/UserAccountHelpers";
 
 const TabsBlock = (props) => {
 
@@ -23,21 +24,20 @@ const TabsBlock = (props) => {
     }
 
 
-        return (
-            <>
-                {props.data?.access_control === 'protected'
-                    ? (
-
-                        templateManager.render(
-                            <UserAccountLoader>
-                            {getTabBlock()}
-                        </UserAccountLoader>
-                        )
-                    )
-                    : getTabBlock()
-                }
-            </>
-        );
+    return (
+        <>
+            {props.data?.access_control === 'protected'
+                ? (
+                    <UserAccountLoader
+                        fields={UserAccountHelpers.getFields()}
+                    >
+                        {getTabBlock()}
+                    </UserAccountLoader>
+                )
+                : getTabBlock()
+            }
+        </>
+    );
 }
 
 function mapStateToProps(state) {

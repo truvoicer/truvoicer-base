@@ -2,6 +2,7 @@ import React, {useContext, useState} from 'react';
 import UserAccountLoader from "../../../loaders/UserAccountLoader";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {UserAccountHelpers} from "@/truvoicer-base/library/user-account/UserAccountHelpers";
 
 function UserProfileEditWidget(props) {
     const {data} = props;
@@ -33,15 +34,26 @@ function UserProfileEditWidget(props) {
         return `Not yet filled.`
     }
 
-        return templateManager.render(
-            <UserAccountLoader
-                fields={fields}
-                dataCallback={setUserData}
-            >
-                {/*<h1>Edit profile</h1>*/}
-            </UserAccountLoader>
-        );
+    function renderWidget() {
+        return templateManager.render(<h1>Edit profile</h1>);
+    }
+
+    return (
+        <>
+            {data?.access_control === 'protected'
+                ? (
+                    <UserAccountLoader
+                        fields={UserAccountHelpers.getFields()}
+                    >
+                        {renderWidget()}
+                    </UserAccountLoader>
+                )
+                : renderWidget()
+            }
+        </>
+    );
 }
+
 UserProfileEditWidget.category = 'account';
 UserProfileEditWidget.templateId = 'userProfileEditWidget';
 export default UserProfileEditWidget;

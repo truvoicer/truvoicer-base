@@ -4,6 +4,7 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {faArrowCircleRight, faFile, faMapMarkedAlt, faPencil} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {UserAccountHelpers} from "@/truvoicer-base/library/user-account/UserAccountHelpers";
 
 function UserProfileDisplayWidget(props) {
     const {data} = props;
@@ -36,12 +37,10 @@ function UserProfileDisplayWidget(props) {
     }
 
 
+    function renderWidget() {
         return templateManager.render(
-            <UserAccountLoader
-                fields={fields}
-                dataCallback={setUserData}
-            >
-                <strong><FontAwesomeIcon icon={faMapMarkedAlt} className="mr-1" /> Location</strong>
+            <>
+                <strong><FontAwesomeIcon icon={faMapMarkedAlt} className="mr-1"/> Location</strong>
                 <p className="text-muted">
                     {!userData?.country?.label && !userData?.town
                         ?
@@ -55,7 +54,7 @@ function UserProfileDisplayWidget(props) {
 
                 </p>
                 <hr/>
-                <strong><FontAwesomeIcon icon={faPencil} className="mr-1" /> Skills</strong>
+                <strong><FontAwesomeIcon icon={faPencil} className="mr-1"/> Skills</strong>
                 <p className="text-muted">
                     {!Array.isArray(userData?.skills) || userData?.skills.length === 0
                         ?
@@ -69,7 +68,7 @@ function UserProfileDisplayWidget(props) {
                     }
                 </p>
                 <hr/>
-                <strong><FontAwesomeIcon icon={faPencil} className="mr-1" /> About Me</strong>
+                <strong><FontAwesomeIcon icon={faPencil} className="mr-1"/> About Me</strong>
                 <p className="text-muted">
                     {!userData?.short_description
                         ?
@@ -79,7 +78,7 @@ function UserProfileDisplayWidget(props) {
                     }
                 </p>
                 <hr/>
-                <strong><FontAwesomeIcon icon={faFile} className="mr-1" /> Personal Statement</strong>
+                <strong><FontAwesomeIcon icon={faFile} className="mr-1"/> Personal Statement</strong>
                 <p className="text-muted">
                     {!userData?.personal_statement
                         ?
@@ -88,8 +87,23 @@ function UserProfileDisplayWidget(props) {
                         <>{userData?.personal_statement}</>
                     }
                 </p>
-            </UserAccountLoader>
+            </>
         );
+    }
+    return (
+        <>
+            {data?.access_control === 'protected'
+                ? (
+                    <UserAccountLoader
+                        fields={UserAccountHelpers.getFields()}
+                    >
+                        {renderWidget()}
+                    </UserAccountLoader>
+                )
+                : renderWidget()
+            }
+        </>
+    );
 }
 UserProfileDisplayWidget.category = 'account';
 UserProfileDisplayWidget.templateId = 'userProfileDisplayWidget';

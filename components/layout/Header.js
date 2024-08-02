@@ -3,7 +3,6 @@ import HorizontalSidebar from "@/truvoicer-base/components/Sidebars/HorizontalSi
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {connect} from "react-redux";
-import TopSidebar from "@/views/sidebars/TopSidebar";
 
 const Header = ({
     siteSettings,
