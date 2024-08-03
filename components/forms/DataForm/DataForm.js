@@ -227,9 +227,9 @@ const DataForm = (props) => {
                         <div className="col-md-9">
                             {formFieldItem}
                             {isNotEmpty(field?.description) &&
-                            <p className={"field-description"}>
-                                {field.description}
-                            </p>
+                                <p className={"field-description"}>
+                                    {field.description}
+                                </p>
                             }
                         </div>
                         <div className="col-md-3">
@@ -246,9 +246,9 @@ const DataForm = (props) => {
                         <div className="col-md-9 text-left">
                             {formFieldItem}
                             {isNotEmpty(field?.description) &&
-                            <p className={"field-description"}>
-                                {field.description}
-                            </p>
+                                <p className={"field-description"}>
+                                    {field.description}
+                                </p>
                             }
                         </div>
                     </>
@@ -270,20 +270,20 @@ const DataForm = (props) => {
         return (
             <>
                 {dependsOnCheck(field, values) &&
-                <div className={"select-wrapper"}>
-                    <div className="row form-group form-group-text">
-                        {getFieldItemLabelPair(field, errors, touched, handleBlur, handleChange, values, arrayFieldIndex)}
+                    <div className={"select-wrapper"}>
+                        <div className="row form-group form-group-text">
+                            {getFieldItemLabelPair(field, errors, touched, handleBlur, handleChange, values, arrayFieldIndex)}
+                        </div>
+                        {field.subFields && values[field.name] &&
+                            <div className={"form-subfields"}>
+                                {field.subFields.map((subField, subFieldIndex) => (
+                                    <React.Fragment key={subFieldIndex}>
+                                        {getFieldRow(subField, errors, touched, handleBlur, handleChange, values)}
+                                    </React.Fragment>
+                                ))}
+                            </div>
+                        }
                     </div>
-                    {field.subFields && values[field.name] &&
-                    <div className={"form-subfields"}>
-                        {field.subFields.map((subField, subFieldIndex) => (
-                            <React.Fragment key={subFieldIndex}>
-                                {getFieldRow(subField, errors, touched, handleBlur, handleChange, values)}
-                            </React.Fragment>
-                        ))}
-                    </div>
-                    }
-                </div>
                 }
             </>
         )
@@ -352,70 +352,69 @@ const DataForm = (props) => {
         )
     }
 
-
-        return (
-            <Formik
-                initialValues={initialValues}
-                validate={values => validateForm(values)}
-                onSubmit={values => formSubmitHandler(values)}
-                enableReinitialize={true}
-            >
-                {({
-                    values,
-                    errors,
-                    touched,
-                    handleChange,
-                    handleBlur,
-                    handleSubmit,
-                }) => (
-                    <>
-                        <form
-                            className={`site-form ${isNotEmpty(props.classes) ? props.classes : ""}`}
-                            onSubmit={handleSubmit}
-                        >
-                            {props.formType === "single"
-                                ?
-                                buildFormRows(props.data, errors, touched, handleBlur, handleChange, values)
-                                :
-                                <FieldArray
-                                    name={formId}
-                                    render={arrayHelpers => {
-                                        return (
-                                            <div>
-                                                {Array.isArray(values[formId]) && values[formId].map((item, index) => {
-                                                    return (
-                                                        <React.Fragment key={index}>
-                                                            {buildFormRows(props.data, errors, touched, handleBlur, handleChange, values, index)}
-                                                        </React.Fragment>
-                                                    )
-                                                })}
-                                                <button
-                                                    type="button"
-                                                    onClick={() => arrayHelpers.push(initialValues.dataObject)}
-                                                >
-                                                    {props.addListItemButtonText}
-                                                </button>
-                                            </div>
-                                        )
-                                    }}
+    return (
+        <Formik
+            initialValues={initialValues}
+            validate={values => validateForm(values)}
+            onSubmit={values => formSubmitHandler(values)}
+            enableReinitialize={true}
+        >
+            {({
+                values,
+                errors,
+                touched,
+                handleChange,
+                handleBlur,
+                handleSubmit,
+            }) => (
+                <>
+                    <form
+                        className={`site-form ${isNotEmpty(props.classes) ? props.classes : ""}`}
+                        onSubmit={handleSubmit}
+                    >
+                        {props.formType === "single"
+                            ?
+                            buildFormRows(props.data, errors, touched, handleBlur, handleChange, values)
+                            :
+                            <FieldArray
+                                name={formId}
+                                render={arrayHelpers => {
+                                    return (
+                                        <div>
+                                            {Array.isArray(values[formId]) && values[formId].map((item, index) => {
+                                                return (
+                                                    <React.Fragment key={index}>
+                                                        {buildFormRows(props.data, errors, touched, handleBlur, handleChange, values, index)}
+                                                    </React.Fragment>
+                                                )
+                                            })}
+                                            <button
+                                                type="button"
+                                                onClick={() => arrayHelpers.push(initialValues.dataObject)}
+                                            >
+                                                {props.addListItemButtonText}
+                                            </button>
+                                        </div>
+                                    )
+                                }}
+                            />
+                        }
+                        <div className="row mt-4 form-group">
+                            <div className="col-md-12">
+                                <input type="submit"
+                                       value={props.submitButtonText}
+                                       className="btn btn-primary py-2 px-4 text-white"
                                 />
-                            }
-                            <div className="row mt-4 form-group">
-                                <div className="col-md-12">
-                                    <input type="submit"
-                                           value={props.submitButtonText}
-                                           className="btn btn-primary py-2 px-4 text-white"
-                                    />
-                                </div>
                             </div>
+                        </div>
 
-                            {props.children}
+                        {props.children}
 
-                        </form>
-                    </>
-                )}
-            </Formik>
-        );
+                    </form>
+                </>
+            )}
+        </Formik>
+    );
 }
 DataForm.category = 'public';
 DataForm.templateId = 'dataForm';

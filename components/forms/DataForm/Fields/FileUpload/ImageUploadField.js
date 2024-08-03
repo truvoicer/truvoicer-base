@@ -157,7 +157,7 @@ function ImageUploadField({
                 <Col sm={12} md={3} lg={3}>
                     <div {...getRootProps({className: 'dropzone'})}>
                         <input {...getInputProps()} />
-                        <img  src={imageSrc} roundedCircle/>
+                        <img  src={imageSrc} />
                     </div>
                 </Col>
                 <Col sm={12} md={9} lg={9}>

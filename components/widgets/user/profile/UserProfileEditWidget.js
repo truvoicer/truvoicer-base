@@ -1,11 +1,12 @@
 import React, {useContext, useState} from 'react';
-import UserAccountLoader from "../../../loaders/UserAccountLoader";
+import WpDataLoader from "../../../loaders/WpDataLoader";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {UserAccountHelpers} from "@/truvoicer-base/library/user-account/UserAccountHelpers";
+import ComponentLoader from "@/truvoicer-base/components/loaders/ComponentLoader";
 
 function UserProfileEditWidget(props) {
-    const {data} = props;
+    const {data, parentAccessControl} = props;
     const [userData, setUserData] = useState({});
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const fields = [
@@ -34,23 +35,12 @@ function UserProfileEditWidget(props) {
         return `Not yet filled.`
     }
 
-    function renderWidget() {
-        return templateManager.render(<h1>Edit profile</h1>);
-    }
-
     return (
-        <>
-            {data?.access_control === 'protected'
-                ? (
-                    <UserAccountLoader
-                        fields={UserAccountHelpers.getFields()}
-                    >
-                        {renderWidget()}
-                    </UserAccountLoader>
-                )
-                : renderWidget()
-            }
-        </>
+        <ComponentLoader
+            selfAccessControl={data?.access_control}
+            parentAccessControl={parentAccessControl}>
+            {templateManager.render(<h1>Edit profile</h1>)}
+        </ComponentLoader>
     );
 }
 

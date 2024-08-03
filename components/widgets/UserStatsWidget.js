@@ -3,15 +3,17 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowCircleRight, faSearch, faShoppingCart, faUserPlus} from "@fortawesome/free-solid-svg-icons";
-import UserAccountLoader from "@/truvoicer-base/components/loaders/UserAccountLoader";
+import WpDataLoader from "@/truvoicer-base/components/loaders/WpDataLoader";
 import {UserAccountHelpers} from "@/truvoicer-base/library/user-account/UserAccountHelpers";
+import ComponentLoader from "@/truvoicer-base/components/loaders/ComponentLoader";
 
 function UserStatsWidget(props) {
-    const {data} = props;
-    const templateManager = new TemplateManager(useContext(TemplateContext));
+    const {data, parentAccessControl} = props;
 
-    function renderWidget() {
-        return (
+    return (
+        <ComponentLoader
+            selfAccessControl={data?.access_control}
+            parentAccessControl={parentAccessControl}>
             <div className="featured-tab color-blue">
                 <h3 className="block-title"><span>{data?.heading || 'Stats'}</span></h3>
                 <div className="row">
@@ -64,24 +66,11 @@ function UserStatsWidget(props) {
                     </div>
                 </div>
             </div>
-        );
-    }
-
-    return (
-        <>
-            {data?.access_control === 'protected'
-                ? (
-                    <UserAccountLoader
-                        fields={UserAccountHelpers.getFields()}
-                    >
-                        {renderWidget()}
-                    </UserAccountLoader>
-                )
-                : renderWidget()
-            }
-        </>
+        </ComponentLoader>
     );
+
 }
+
 UserStatsWidget.category = 'widgets';
 UserStatsWidget.templateId = 'userStatsWidget';
 export default UserStatsWidget;

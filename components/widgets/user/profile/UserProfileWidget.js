@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import UserAccountLoader from "../../../loaders/UserAccountLoader";
+import WpDataLoader from "../../../loaders/WpDataLoader";
 import UserProfileEditWidget from "@/truvoicer-base/components/widgets/user/profile/UserProfileEditWidget";
 import UserProfileDisplayWidget from "@/truvoicer-base/components/widgets/user/profile/UserProfileDisplayWidget";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";

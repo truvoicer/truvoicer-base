@@ -14,17 +14,21 @@ import {SESSION_AUTH_PROVIDER, SESSION_USER} from "../../../redux/constants/sess
 import WPErrorDisplay from "@/truvoicer-base/components/errors/WPErrorDisplay";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
-
-const sprintf = require('sprintf-js').sprintf;
+import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
+import {sprintf} from "sprintf-js";
+import WpDataLoaderDataContext, {
+    wpDataLoaderData
+} from "@/truvoicer-base/components/loaders/contexts/WpDataLoaderDataContext";
+import {FormHelpers} from "@/truvoicer-base/library/helpers/FormHelpers";
 
 const FormBlock = (props) => {
 
+    const wpDataLoaderContext = useContext(WpDataLoaderDataContext)
+    const formHelpers = new FormHelpers();
+    formHelpers.setValues(wpDataLoaderContext.data);
+
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    const formData = props?.data;
-    if (!formData || !isObject(formData) || isObjectEmpty(formData)) {
-        return null;
-    }
     const [response, setResponse] = useState({
         showAlert: false,
         error: false,
@@ -32,20 +36,14 @@ const FormBlock = (props) => {
         message: ""
     })
     const [formDataConfig, setFormDataConfig] = useState({});
-    const [userData, setUserData] = useState({});
     const submitButtonText = "Update";
     const addListItemButtonText = "Add new item";
 
-    useEffect(() => {
-        setFormConfigData()
-    }, [formData])
+    const formData = props?.data;
 
-    useEffect(() => {
-        setFormDataConfig(buildFormData(formData.form_type))
-    }, [userData])
 
     const setFormConfigData = () => {
-        setFormDataConfig(buildFormData(formData?.form_type))
+        // setFormDataConfig(buildFormData(formData?.form_type))
         // getUserDataRequest(getSavedData(), formData?.endpoint)
     }
 
@@ -59,69 +57,20 @@ const FormBlock = (props) => {
 
     const getSelectEndpointData = async (name, key, endpoint) => {
         if (!endpoint) {
-            console.warn("No endpoint set for select data source")
             return;
         }
-        const request = await publicApiRequest(
-            'GET',
-            buildWpApiUrl(sprintf(wpApiConfig.endpoints.generalData, endpoint)),
-            {}
-        );
-        if (request.data.status === "success") {
-            setFormDataConfig(formDataConfig => {
-                let configData = {...formDataConfig};
-                configData.fields = updateFieldConfig(configData.fields, name, key, response.data.data)
-                return configData;
-            })
-        }
-    }
-
-    // const getUserDataRequest = async (savedData, endpoint) => {
-    //     let apiEndpoint = wpApiConfig.endpoints.formsUserMetaDataRequest;
-    //     if (endpoint === "account_details") {
-    //         apiEndpoint = wpApiConfig.endpoints.userAccountDataRequest;
-    //     }
-    //     const response = await protectedApiRequest(
-    //         buildWpApiUrl(apiEndpoint),
-    //         savedData,
-    //         false
-    //     )
-    //     if (response?.data?.status !== "success") {
-    //         return;
-    //     }
-    //     if (!response?.data?.metaData || !isObject(response.data.metaData)) {
-    //         return;
-    //     }
-    //     setUserData(response.data.metaData)
-    // }
-
-    const getSavedData = () => {
-        let form = {
-            type: formData.form_type,
-            id: formData.form_id,
-            fields: []
-        };
-        formRowsIterator({
-            rows: formData.form_rows,
-            callback: (item, itemIndex, rowIndex) => {
-                form.fields.push({
-                    form_control: item.form_control,
-                    name: item.name
-                })
-            }
-        });
-        return {form: form};
-    }
-
-    const formRowsIterator = ({rows, callback}) => {
-        rows.map((row, rowIndex) => {
-            if (!Array.isArray(row?.form_items)) {
-                return;
-            }
-            row.form_items.map((item, itemIndex) => {
-                callback(item, itemIndex, rowIndex)
-            })
-        })
+        // const request = await publicApiRequest(
+        //     'GET',
+        //     buildWpApiUrl(sprintf(wpApiConfig.endpoints.generalData, endpoint)),
+        //     {}
+        // );
+        // if (request.status === "success") {
+        //     setFormDataConfig(formDataConfig => {
+        //         let configData = {...formDataConfig};
+        //         configData.fields = updateFieldConfig(configData.fields, name, key, response.data)
+        //         return configData;
+        //     })
+        // }
     }
 
     const buildFormData = (formType) => {
@@ -131,42 +80,79 @@ const FormBlock = (props) => {
         };
         switch (formType) {
             case "single":
-                configData.fields = buildSingleFormTypeData(userData);
+                configData.fields = buildSingleFormTypeData();
                 break;
             case "list":
-                const dataObject = buildSingleFormTypeData(userData);
+                const dataObject = buildSingleFormTypeData();
                 configData.fields = dataObject;
-                configData[formData.form_id] = userData[formData.form_id]
+            // configData[formData.form_id] = formData.form_id
         }
         return configData;
     }
 
-    const buildSingleFormTypeData = (userDataValues) => {
+    const buildSingleFormTypeData = () => {
         let configData = [];
-        formRowsIterator({
-            rows: formData.form_rows,
-            callback: (item, itemIndex, rowIndex) => {
-                let fieldConfig = getFormFieldConfig(item);
-                if (fieldConfig) {
-                    fieldConfig.rowIndex = rowIndex;
-                    fieldConfig.columnIndex = itemIndex;
-                    if (isSet(userDataValues[fieldConfig.name])) {
-                        const value = userDataValues[fieldConfig.name];
-                        fieldConfig.value = value;
-                        fieldConfig.origValue = value;
-                    }
-                    configData.push(fieldConfig);
-                }
+        if (!Array.isArray(formData?.form_rows)) {
+            return;
+        }
+
+        formData.form_rows.forEach((row, rowIndex) => {
+            if (!Array.isArray(row?.form_items)) {
+                return;
             }
-        });
+            row.form_items.forEach((item, itemIndex) => {
+                let cloneItem = {...item};
+                let fieldConfig = getFormFieldConfig(cloneItem);
+                if (!fieldConfig) {
+                    return;
+                }
+                fieldConfig.rowIndex = rowIndex;
+                fieldConfig.columnIndex = itemIndex;
+                configData.push(fieldConfig);
+            })
+        })
         if (formData.endpoint === "account_details") {
             return [...configData, ...ChangePasswordFormFields()]
         }
         return configData;
     }
 
+    function getFormFieldValue(option, defaultValue) {
+        if (wpDataLoaderContext.data.hasOwnProperty(option.name)) {
+            return wpDataLoaderContext.data[option.name];
+        }
+        if (option.hasOwnProperty('value')) {
+            return option.value;
+        }
+        return defaultValue;
+    }
+
+    function buildFormFieldValue(option) {
+        let fieldConfig = {...option};
+        switch (fieldConfig.form_control) {
+            case "text":
+            case "email":
+            case "password":
+            case "tel":
+            case "textarea":
+                fieldConfig.value = getFormFieldValue(option, "");
+                break;
+            case "select":
+            case "select_countries":
+            case "select_data_source":
+                fieldConfig.data = getFormFieldValue(option, []);
+                break;
+            case "date":
+            case "radio":
+            case "checkbox":
+                fieldConfig.value = getFormFieldValue(option, option.value);
+                break;
+        }
+        return fieldConfig;
+    }
     const getFormFieldConfig = (options) => {
-        let fieldConfig = {};
+        let fieldConfig = {...options};
+
         switch (options.form_control) {
             case "text":
                 fieldConfig.fieldType = "text";
@@ -245,12 +231,12 @@ const FormBlock = (props) => {
         fieldConfig.placeHolder = options.placeholder;
         fieldConfig.label = options.label;
         fieldConfig.labelPosition = options.label_position;
-        return fieldConfig;
+        return buildFormFieldValue(fieldConfig);
     }
 
     function getEndpointUrlByType(endpoint) {
-        const buildPublicEndpointUrl =  `${publicEndpoint}/${endpoint}`;
-        const buildProtectedEndpointUrl =  `${protectedEndpoint}/${endpoint}`;
+        const buildPublicEndpointUrl = `${publicEndpoint}/${endpoint}`;
+        const buildProtectedEndpointUrl = `${protectedEndpoint}/${endpoint}`;
         switch (formData?.endpoint_type) {
             case "protected":
                 return buildProtectedEndpointUrl;
@@ -259,9 +245,10 @@ const FormBlock = (props) => {
                 return buildPublicEndpointUrl;
         }
     }
+
     const getEndpointData = (endpoint) => {
-        const buildPublicEndpointUrl =  `${publicEndpoint}${formData?.endpoint_url}`;
-        const buildProtectedEndpointUrl =  `${protectedEndpoint}${formData?.endpoint_url}`;
+        const buildPublicEndpointUrl = `${publicEndpoint}${formData?.endpoint_url}`;
+        const buildProtectedEndpointUrl = `${protectedEndpoint}${formData?.endpoint_url}`;
         let configData = {
             endpoint: buildPublicEndpointUrl,
         };
@@ -420,7 +407,7 @@ const FormBlock = (props) => {
     const getDataFormProps = () => {
         return {
             classes: formData?.classes,
-            data: formDataConfig,
+            data: buildFormData(formData?.form_type),
             formType: formData?.form_type === "list" ? "list" : "single",
             formId: isNotEmpty(formData.form_id) ? formData.form_id : "wp_form",
             submitCallback: formSubmitCallback,
@@ -428,51 +415,49 @@ const FormBlock = (props) => {
             addListItemButtonText: (isNotEmpty(formData?.add_item_button_label) ? formData.add_item_button_label : addListItemButtonText)
         };
     }
-        return (
-            <div className={formData.layout_style === "full-width" ? "container-fluid" : "container"}>
-                <div className={"row justify-content-" + (isNotEmpty(formData.align) ? formData.align : "start")}>
-                    <div className={isNotEmpty(formData.column_size) ? "col-" + formData.column_size : "col-12"}>
-                        {isNotEmpty(formData?.heading) &&
-                            <h1>{formData.heading}</h1>
-                        }
-                        {isNotEmpty(formData?.sub_heading) &&
-                            <p>{formData.sub_heading}</p>
-                        }
-                        {response.success &&
-                            <div className="bg-white p-3">
-                                <p className={"text-center text-success"}>{response.message}</p>
+
+    return (
+        <>
+            {(!formData || !isObject(formData) || isObjectEmpty(formData))
+                ? templateManager.render(<LoaderComponent/>)
+                : (
+                    <div className={formData.layout_style === "full-width" ? "container-fluid" : "container"}>
+                        <div
+                            className={"row justify-content-" + (isNotEmpty(formData.align) ? formData.align : "start")}>
+                            <div
+                                className={isNotEmpty(formData.column_size) ? "col-" + formData.column_size : "col-12"}>
+                                {isNotEmpty(formData?.heading) &&
+                                    <h1>{formData.heading}</h1>
+                                }
+                                {isNotEmpty(formData?.sub_heading) &&
+                                    <p>{formData.sub_heading}</p>
+                                }
+                                {response.success &&
+                                    <div className="bg-white p-3">
+                                        <p className={"text-center text-success"}>{response.message}</p>
+                                    </div>
+                                }
+                                {Array.isArray(response.errors) && response.errors.length > 0 && (
+                                    templateManager.render(<WPErrorDisplay errorData={response.errors}/>)
+                                )}
+                                {response.error &&
+                                    <div className="bg-white">
+                                        <p className={"text-danger text-danger"}>{response.message}</p>
+                                    </div>
+                                }
+                                {
+                                    templateManager.render(
+                                        <DataForm
+                                            {...getDataFormProps()}
+                                        />
+                                    )
+                                }
                             </div>
-                        }
-                        {Array.isArray(response.errors) && response.errors.length > 0 && (
-                            templateManager.render(<WPErrorDisplay errorData={response.errors} />)
-                        )}
-                        {response.error &&
-                            <div className="bg-white">
-                                <p className={"text-danger text-danger"}>{response.message}</p>
-                            </div>
-                        }
-                        {!isObjectEmpty(formDataConfig) &&
-                            templateManager.render(<DataForm
-                                {...getDataFormProps()}
-                            />)
-                        }
+                        </div>
                     </div>
-                </div>
-                {/*<Snackbar open={response.showAlert}*/}
-                {/*          autoHideDuration={6000}*/}
-                {/*          onClose={() => {*/}
-                {/*              setResponse(response => {*/}
-                {/*                  return {...response, ...{showAlert: false}}*/}
-                {/*              })*/}
-                {/*          }}*/}
-                {/*>*/}
-                {/*    <SnackbarContent*/}
-                {/*        message={response.message}*/}
-                {/*        // role={response.success ? "success" : "error"}*/}
-                {/*    />*/}
-                {/*</Snackbar>*/}
-            </div>
-        );
+                )}
+        </>
+    );
 }
 
 FormBlock.category = 'public';

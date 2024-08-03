@@ -7,7 +7,7 @@ import FormsProgressWidget from "../widgets/FormsProgressWidget";
 import TabsBlock from "@/truvoicer-base/components/blocks/Tabs/TabsBlock";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
-import UserAccountLoader from "@/truvoicer-base/components/loaders/UserAccountLoader";
+import WpDataLoader from "@/truvoicer-base/components/loaders/WpDataLoader";
 import {UserAccountHelpers} from "@/truvoicer-base/library/user-account/UserAccountHelpers";
 
 function WidgetBoardBlock(props) {
@@ -17,17 +17,21 @@ function WidgetBoardBlock(props) {
     const sidebarWidgets = data?.sidebar_widgets;
 
     const getWidget = (widgetData) => {
+        const widgetProps = {
+            parentAccessControl: data?.access_control,
+            data: widgetData
+        }
         switch (widgetData?.id) {
             case 'user_stats_widget_block':
-                return templateManager.render(<UserStatsWidget data={widgetData}/>);
+                return templateManager.render(<UserStatsWidget {...widgetProps} />);
             case 'user_social_widget_block':
-                return templateManager.render(<UserSocialWidget data={widgetData}/>);
+                return templateManager.render(<UserSocialWidget {...widgetProps} />);
             case 'user_profile_widget_block':
-                return templateManager.render(<UserProfileWidget data={widgetData}/>);
+                return templateManager.render(<UserProfileWidget {...widgetProps} />);
             case 'form_progress_widget_block':
-                return templateManager.render(<FormsProgressWidget data={widgetData}/>);
+                return templateManager.render(<FormsProgressWidget {...widgetProps} />);
             case 'tabs_block':
-                return templateManager.render(<TabsBlock data={widgetData}/>);
+                return templateManager.render(<TabsBlock {...widgetProps} />);
             default:
                 return null;
         }
@@ -98,11 +102,9 @@ function WidgetBoardBlock(props) {
         <>
             {data?.access_control === 'protected'
                 ? (
-                    <UserAccountLoader
-                        fields={UserAccountHelpers.getFields()}
-                    >
+                    <WpDataLoader>
                         {renderContentWidgets()}
-                    </UserAccountLoader>
+                    </WpDataLoader>
                 )
                 : renderContentWidgets()
             }

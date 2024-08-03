@@ -7,15 +7,15 @@ import {isObject} from "@/truvoicer-base/library/utils";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {StateHelpers} from "@/truvoicer-base/library/helpers/state-helpers";
-import UserAccountDataContext, {userAccountData} from "@/truvoicer-base/components/loaders/contexts/UserAccountDataContext";
-import UserAccountLoaderProvider from "@/truvoicer-base/components/loaders/UserAccountProvider";
+import WpDataLoaderDataContext, {wpDataLoaderData} from "@/truvoicer-base/components/loaders/contexts/WpDataLoaderDataContext";
+import WpDataLoaderProvider from "@/truvoicer-base/components/loaders/WpDataLoaderProvider";
 
-const UserAccountLoader = (props) => {
+const WpDataLoader = (props) => {
     const {fields = [], children} = props;
         return (
-            <UserAccountLoaderProvider fields={fields}>
+            <WpDataLoaderProvider fields={fields}>
                 {children}
-            </UserAccountLoaderProvider>
+            </WpDataLoaderProvider>
         );
 };
 function mapStateToProps(state) {
@@ -24,9 +24,9 @@ function mapStateToProps(state) {
         session: state.session
     };
 }
-UserAccountLoader.category = 'account';
-UserAccountLoader.templateId = 'userAccountLoader';
+WpDataLoader.category = 'account';
+WpDataLoader.templateId = 'userAccountLoader';
 export default connect(
     mapStateToProps,
     null
-)(UserAccountLoader);
+)(WpDataLoader);

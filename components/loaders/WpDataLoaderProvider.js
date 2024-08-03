@@ -7,13 +7,66 @@ import {isObject} from "@/truvoicer-base/library/utils";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {StateHelpers} from "@/truvoicer-base/library/helpers/state-helpers";
-import UserAccountDataContext, {userAccountData} from "@/truvoicer-base/components/loaders/contexts/UserAccountDataContext";
+import WpDataLoaderDataContext, {wpDataLoaderData} from "@/truvoicer-base/components/loaders/contexts/WpDataLoaderDataContext";
 
-const UserAccountLoaderProvider = (props) => {
+const WpDataLoaderProvider = (props) => {
     const {session, fields = [], children, dataCallback} = props;
 
+    const userDataRequest = {
+        form: {
+            type: "single",
+            fields: fields
+        }
+    };
+
+    function getEndpoint(endpoint) {
+        switch (endpoint) {
+            case 'email':
+                return '/forms/email';
+            case 'user_meta':
+                return '/forms/user/metadata/save';
+            case 'account_details':
+                return '/users/update';
+            case 'user_profile':
+                return '/user/profile/update';
+            case 'redirect':
+                return '/forms/redirect';
+            default:
+                return null;
+        }
+    }
+    async function userMetaDataFetchRequest(reqData) {
+        const endpoint = getEndpoint(reqData?.endpoint);
+        if (!endpoint) {
+            return;
+        }
+        const response = await protectedApiRequest(
+            buildWpApiUrl(wpApiConfig.endpoints.formsUserMetaDataRequest),
+            reqData,
+            false
+        )
+        if (response?.status !== "success") {
+            console.error('Error fetching user meta data')
+            return;
+        }
+        if (!isObject(response?.metaData)) {
+            console.error('Invalid user meta data')
+            return;
+        }
+        setUserAccountContextState(prevState => {
+            let cloneState = {...prevState}
+            let cloneData = {...cloneState.data}
+            Object.keys(response.metaData).forEach((key) => {
+                if (wpDataLoaderData.data.hasOwnProperty(key)) {
+                    cloneData[key] = response.metaData[key];
+                }
+            });
+            return {...cloneState, data: cloneData}
+        })
+    }
+
     const [userAccountContextState, setUserAccountContextState] = useState({
-        ...userAccountData,
+        ...wpDataLoaderData,
         updateData: ({key, value}) => {
             StateHelpers.updateStateObject({
                 key,
@@ -29,37 +82,8 @@ const UserAccountLoaderProvider = (props) => {
                 setStateObj: setUserAccountContextState
             })
         },
+        requestFields: userMetaDataFetchRequest
     });
-    const userDataRequest = {
-        form: {
-            type: "single",
-            fields: fields
-        }
-    };
-    async function userMetaDataFetchRequest(reqData) {
-        const response = await protectedApiRequest(
-            buildWpApiUrl(wpApiConfig.endpoints.formsUserMetaDataRequest),
-            reqData,
-            false
-        )
-        if (response?.status !== "success") {
-            console.error('Error fetching user meta data')
-            return;
-        }
-        if (!isObject(response?.metaData)) {
-            console.error('Invalid user meta data')
-            return;
-        }
-        setUserAccountContextState(prevState => {
-            Object.keys(response.metaData).forEach((key) => {
-                let cloneState = {...prevState}
-                if (userAccountData.hasOwnProperty(key)) {
-                    cloneState[key] = response.metaData[key]
-                }
-                return cloneState
-            });
-        })
-    }
     useEffect(() => {
         if (session[SESSION_AUTHENTICATED] && fields.length) {
             userMetaDataFetchRequest(userDataRequest)
@@ -67,11 +91,11 @@ const UserAccountLoaderProvider = (props) => {
     }, [session[SESSION_AUTHENTICATED]]);
 
         return (
-            <UserAccountDataContext.Provider value={userAccountContextState}>
+            <WpDataLoaderDataContext.Provider value={userAccountContextState}>
                 {session[SESSION_AUTHENTICATED] &&
                     children
                 }
-            </UserAccountDataContext.Provider>
+            </WpDataLoaderDataContext.Provider>
         );
 };
 function mapStateToProps(state) {
@@ -80,9 +104,9 @@ function mapStateToProps(state) {
         session: state.session
     };
 }
-UserAccountLoaderProvider.category = 'account';
-UserAccountLoaderProvider.templateId = 'userAccountLoaderProvider';
+WpDataLoaderProvider.category = 'account';
+WpDataLoaderProvider.templateId = 'userAccountLoaderProvider';
 export default connect(
     mapStateToProps,
     null
-)(UserAccountLoaderProvider);
+)(WpDataLoaderProvider);

@@ -5,8 +5,9 @@ import {formatDate, isNotEmpty} from "../../library/utils";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import Image from "next/image";
-import UserAccountLoader from "@/truvoicer-base/components/loaders/UserAccountLoader";
+import WpDataLoader from "@/truvoicer-base/components/loaders/WpDataLoader";
 import {UserAccountHelpers} from "@/truvoicer-base/library/user-account/UserAccountHelpers";
+import ComponentLoader from "@/truvoicer-base/components/loaders/ComponentLoader";
 
 /**
  *
@@ -15,7 +16,7 @@ import {UserAccountHelpers} from "@/truvoicer-base/library/user-account/UserAcco
  * @constructor
  */
 function UserSocialWidget(props) {
-    const {data} = props;
+    const {data, parentAccessControl} = props;
     const [userData, setUserData] = useState({});
     const fields = [
         {
@@ -53,8 +54,10 @@ function UserSocialWidget(props) {
     ];
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    function renderWidget() {
-        return templateManager.render(
+    return templateManager.render(
+        <ComponentLoader
+            selfAccessControl={data?.access_control}
+            parentAccessControl={parentAccessControl}>
             <div className="featured-tab color-blue">
                 {/*<h3 className="block-title"><span>Progress</span></h3>*/}
                 {/*<div className="card card-primary card-outline">*/}
@@ -89,30 +92,7 @@ function UserSocialWidget(props) {
                 {/*    </div>*/}
                 {/*</div>*/}
             </div>
-        );
-    }
-    return (
-        <>
-            {data?.access_control === 'protected'
-                ? (
-                    <UserAccountLoader
-                        fields={UserAccountHelpers.getFields([
-                            "profile_picture",
-                            "user_email",
-                            "display_name",
-                            "first_name",
-                            "surname",
-                            "telephone",
-                            "user_registered",
-                            "saved_jobs_count",
-                        ])}
-                    >
-                        {renderWidget()}
-                    </UserAccountLoader>
-                )
-                : renderWidget()
-            }
-        </>
+        </ComponentLoader>
     );
 }
 

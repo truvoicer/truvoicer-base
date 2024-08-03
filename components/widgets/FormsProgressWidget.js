@@ -9,11 +9,10 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleRight, faArrowCircleRight, faTasks} from "@fortawesome/free-solid-svg-icons";
-import UserAccountLoader from "@/truvoicer-base/components/loaders/UserAccountLoader";
-import {UserAccountHelpers} from "@/truvoicer-base/library/user-account/UserAccountHelpers";
+import ComponentLoader from "@/truvoicer-base/components/loaders/ComponentLoader";
 
 function FormsProgressWidget(props) {
-    const {data} = props;
+    const {data, parentAccessControl} = props;
     const [progressData, setProgressData] = useState({});
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
@@ -36,8 +35,10 @@ function FormsProgressWidget(props) {
     const overallPercentage = progressData?.overallProgressPercentage;
 
 
-    function renderWidget() {
-        return (
+    return (
+        <ComponentLoader
+            selfAccessControl={data?.access_control}
+            parentAccessControl={parentAccessControl}>
             <div className="row">
                 <div className="col-lg-12 col-12">
                     <div className="featured-tab color-blue">
@@ -88,21 +89,7 @@ function FormsProgressWidget(props) {
                     </div>
                 </div>
             </div>
-        );
-    }
-    return (
-        <>
-            {data?.access_control === 'protected'
-                ? (
-                    <UserAccountLoader
-                        fields={UserAccountHelpers.getFields()}
-                    >
-                        {renderWidget()}
-                    </UserAccountLoader>
-                )
-                : renderWidget()
-            }
-        </>
+        </ComponentLoader>
     );
 }
 

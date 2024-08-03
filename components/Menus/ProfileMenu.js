@@ -2,7 +2,7 @@ import React, {useContext, useState} from 'react';
 import Dropdown from "react-bootstrap/Dropdown";
 import CustomDropdownToggle from "../dropdown/CustomDropdownToggle";
 import DropdownMenuList from "./DropdownMenuList";
-import UserAccountLoader from "../loaders/UserAccountLoader";
+import WpDataLoader from "../loaders/WpDataLoader";
 import {connect} from "react-redux";
 import {isNotEmpty, isObjectEmpty} from "../../library/utils";
 import {blockComponentsConfig} from "../../config/block-components-config";
@@ -51,7 +51,7 @@ const ProfileMenu = (props) => {
                     </div>
                 }
                 {/*{templateManager.render(*/}
-                {/*<UserAccountLoader*/}
+                {/*<WpDataLoader*/}
                 {/*    dataCallback={setUserData}*/}
                 {/*    fields={[*/}
                 {/*        {*/}
@@ -88,7 +88,7 @@ const ProfileMenu = (props) => {
                 {/*            {templateManager.render(<DropdownMenuList data={data} sessionLinks={true}/>)}*/}
                 {/*        </Dropdown>*/}
                 {/*    </div>*/}
-                {/*</UserAccountLoader>*/}
+                {/*</WpDataLoader>*/}
                 {/*)}*/}
             </>
         )

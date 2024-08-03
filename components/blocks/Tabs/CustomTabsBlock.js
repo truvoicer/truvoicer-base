@@ -9,55 +9,26 @@ import ExperiencesForm from "../../User/Profile/Forms/ExperiencesForm";
 import SkillsForm from "../../User/Profile/Forms/SkillsForm";
 import CvForm from "../../User/Profile/Forms/CVForm";
 import EducationForm from "../../User/Profile/Forms/EducationForm";
-import UserAccountLoader from "@/truvoicer-base/components/loaders/UserAccountLoader";
-import {isNotEmpty} from "@/truvoicer-base/library/utils";
+import WpDataLoader from "@/truvoicer-base/components/loaders/WpDataLoader";
+import {isNotEmpty, isObject} from "@/truvoicer-base/library/utils";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import CarouselInterface from "@/truvoicer-base/components/blocks/carousel/CarouselInterface";
+import FormBlock from "@/truvoicer-base/components/blocks/form/FormBlock";
 
 const CustomTabsBlock = (props) => {
+    const {data, defaultActiveKey, onSelect = () => {}} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
-
-    const getForm = (tab) => {
-        let FormComponent = null;
-        switch (tab.form_block?.form_id) {
-            case "user_personal":
-                FormComponent = PersonalForm;
-                break
-            case "experiences":
-                FormComponent = ExperiencesForm;
-                break;
-            case "skills":
-                FormComponent = SkillsForm;
-                break;
-            case "cv":
-                FormComponent = CvForm;
-                break;
-            case "education":
-                FormComponent = EducationForm;
-                break;
-            default:
-                return null
-        }
-        if (!FormComponent) {
-            return null
-        }
-        // if (props.data?.access_control === 'protected') {
-        //     return templateManager.render(
-        //         <UserAccountLoader>
-        //             {templateManager.render(<FormComponent data={tab}/>)}
-        //         </UserAccountLoader>
-        //     )
-        // }
-        return templateManager.render(<FormComponent data={tab}/>)
-    }
 
     const getTabContent = (tab) => {
         switch (tab.custom_tabs_type) {
             case "custom_carousel":
                 return templateManager.render(<CarouselInterface data={tab?.carousel_block}/>);
             case "form":
-                return getForm(tab)
+                if (!isObject(tab?.form_block)) {
+                    return null;
+                }
+                return templateManager.render(<FormBlock data={tab.form_block}/>)
             case "custom_content":
                 return (
                     <div className={"container"}>
@@ -69,24 +40,12 @@ const CustomTabsBlock = (props) => {
         }
     }
 
-    const getDefaultActiveTab = () => {
-        let tabIndex = 0;
-        if (!Array.isArray(props.data.tabs)) {
-            return tabIndex;
-        }
-        props.data.tabs.map((tab, index) => {
-            if (tab?.default_active_tab) {
-                tabIndex = index
-            }
-        });
-        return tabIndex;
-    }
-
     return (
         <>
             <Tab.Container
                 id="left-tabs-example"
-                defaultActiveKey={getDefaultActiveTab()}
+                defaultActiveKey={defaultActiveKey}
+                onSelect={onSelect}
             >
                 <div className="container">
                     {isNotEmpty(props?.data?.heading) &&
