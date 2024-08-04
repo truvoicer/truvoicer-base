@@ -12,8 +12,8 @@ import {FormHelpers} from "@/truvoicer-base/library/helpers/FormHelpers";
 
 const TabsBlock = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    const wpDataLoaderContext = useContext(WpDataLoaderDataContext)
-    console.log({wpDataLoaderContext})
+    const wpDataLoaderContext = useContext(WpDataLoaderDataContext);
+
     const formHelpers = new FormHelpers();
     formHelpers.setValues(wpDataLoaderContext.data);
 

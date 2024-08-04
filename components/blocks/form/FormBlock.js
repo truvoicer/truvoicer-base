@@ -20,6 +20,8 @@ import WpDataLoaderDataContext, {
     wpDataLoaderData
 } from "@/truvoicer-base/components/loaders/contexts/WpDataLoaderDataContext";
 import {FormHelpers} from "@/truvoicer-base/library/helpers/FormHelpers";
+import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
+import {REQUEST_GET, REQUEST_POST} from "@/truvoicer-base/library/constants/request-constants";
 
 const FormBlock = (props) => {
 
@@ -35,42 +37,28 @@ const FormBlock = (props) => {
         success: false,
         message: ""
     })
-    const [formDataConfig, setFormDataConfig] = useState({});
+    const [externalRequestData, setExternalRequestData] = useState({});
     const submitButtonText = "Update";
     const addListItemButtonText = "Add new item";
 
     const formData = props?.data;
 
-
-    const setFormConfigData = () => {
-        // setFormDataConfig(buildFormData(formData?.form_type))
-        // getUserDataRequest(getSavedData(), formData?.endpoint)
-    }
-
-    const updateFieldConfig = (configArray, fieldName, key, value) => {
-        const fieldIndex = configArray.findIndex(item => {
-            return item.name === fieldName;
-        })
-        configArray[fieldIndex][key] = value
-        return configArray;
-    }
-
-    const getSelectEndpointData = async (name, key, endpoint) => {
+    const getSelectEndpointData = async (endpoint) => {
         if (!endpoint) {
             return;
         }
-        // const request = await publicApiRequest(
-        //     'GET',
-        //     buildWpApiUrl(sprintf(wpApiConfig.endpoints.generalData, endpoint)),
-        //     {}
-        // );
-        // if (request.status === "success") {
-        //     setFormDataConfig(formDataConfig => {
-        //         let configData = {...formDataConfig};
-        //         configData.fields = updateFieldConfig(configData.fields, name, key, response.data)
-        //         return configData;
-        //     })
-        // }
+        const request = await publicApiRequest(
+            'GET',
+            buildWpApiUrl(sprintf(wpApiConfig.endpoints.generalData, endpoint)),
+            {}
+        );
+        if (request.status !== "success") {
+            return [];
+        }
+        if (!Array.isArray(request?.data)) {
+            return [];
+        }
+        return request.data
     }
 
     const buildFormData = (formType) => {
@@ -90,27 +78,45 @@ const FormBlock = (props) => {
         return configData;
     }
 
-    const buildSingleFormTypeData = () => {
-        let configData = [];
-        if (!Array.isArray(formData?.form_rows)) {
-            return;
-        }
+    function buildExternalRequestData() {
+        let externalRequestDataObj = {};
+        formRowsIterator({
+            rows: formData?.form_rows,
+            callback: async (item, itemIndex, rowIndex) => {
+                const response = await getExternalRequestFormFieldValue(item);
+                if (!response) {
+                    return;
+                }
+                externalRequestDataObj[item.name] = response;
+            }
+        });
+        setExternalRequestData(externalRequestDataObj);
+    }
 
-        formData.form_rows.forEach((row, rowIndex) => {
+    function formRowsIterator({rows, callback}) {
+        rows.map((row, rowIndex) => {
             if (!Array.isArray(row?.form_items)) {
                 return;
             }
-            row.form_items.forEach((item, itemIndex) => {
-                let cloneItem = {...item};
-                let fieldConfig = getFormFieldConfig(cloneItem);
-                if (!fieldConfig) {
-                    return;
-                }
-                fieldConfig.rowIndex = rowIndex;
-                fieldConfig.columnIndex = itemIndex;
-                configData.push(fieldConfig);
+            row.form_items.map((item, itemIndex) => {
+                callback(item, itemIndex, rowIndex)
             })
         })
+    }
+
+    const buildSingleFormTypeData = () => {
+        let configData = [];
+        formRowsIterator({
+            rows: formData?.form_rows,
+            callback: (item, itemIndex, rowIndex) => {
+                let fieldConfig = getFormFieldConfig(item);
+                if (fieldConfig) {
+                    fieldConfig.rowIndex = rowIndex;
+                    fieldConfig.columnIndex = itemIndex;
+                    configData.push(fieldConfig);
+                }
+            }
+        });
         if (formData.endpoint === "account_details") {
             return [...configData, ...ChangePasswordFormFields()]
         }
@@ -125,6 +131,17 @@ const FormBlock = (props) => {
             return option.value;
         }
         return defaultValue;
+    }
+
+    async function getExternalRequestFormFieldValue(option) {
+        switch (option.form_control) {
+            case "select":
+            case "select_countries":
+            case "select_data_source":
+                return await getSelectEndpointData(option?.endpoint);
+            default:
+                return false;
+        }
     }
 
     function buildFormFieldValue(option) {
@@ -150,6 +167,7 @@ const FormBlock = (props) => {
         }
         return fieldConfig;
     }
+
     const getFormFieldConfig = (options) => {
         let fieldConfig = {...options};
 
@@ -176,20 +194,32 @@ const FormBlock = (props) => {
             case "select":
                 fieldConfig.fieldType = "select";
                 fieldConfig.multi = options?.multiple || false;
-                fieldConfig.options = options?.options || []
+                if (externalRequestData.hasOwnProperty(options.name)) {
+                    fieldConfig.options = externalRequestData[options.name];
+                } else {
+                    fieldConfig.options = options?.options || [];
+                }
                 fieldConfig.data = [];
                 break;
             case "select_countries":
                 fieldConfig.fieldType = "select";
                 fieldConfig.multi = false;
-                fieldConfig.options = options?.countries_list || [];
+                if (externalRequestData.hasOwnProperty(options.name)) {
+                    fieldConfig.options = externalRequestData[options.name];
+                } else {
+                    fieldConfig.options = options?.options || [];
+                }
                 fieldConfig.data = [];
                 break;
             case "select_data_source":
                 fieldConfig.fieldType = "select_data_source";
                 fieldConfig.multi = options?.multiple || false;
+                if (externalRequestData.hasOwnProperty(options.name)) {
+                    fieldConfig.options = externalRequestData[options.name];
+                } else {
+                    fieldConfig.options = options?.options || [];
+                }
                 fieldConfig.data = [];
-                getSelectEndpointData(options.name, "options", options?.endpoint)
                 break;
             case "checkbox":
                 fieldConfig.fieldType = "checkbox";
@@ -360,18 +390,19 @@ const FormBlock = (props) => {
         let request = null;
         switch (formData?.endpoint_type) {
             case "public":
-                request = await publicApiRequest(
-                    "POST",
-                    buildWpApiUrl(endpointData.endpoint),
-                    requestData
-                );
+                request = await wpResourceRequest({
+                    method: REQUEST_GET,
+                    endpoint: endpointData.endpoint,
+                    query: requestData,
+                });
                 break;
             case "protected":
-                request = await publicApiRequest(
-                    "GET",
-                    buildWpApiUrl(endpointData.endpoint),
-                    requestData
-                )
+                request = await wpResourceRequest({
+                    method: REQUEST_POST,
+                    endpoint: endpointData.endpoint,
+                    data: requestData,
+                    protectedReq: true
+                })
                 break;
             default:
                 console.warn("Invalid endpoint type")
@@ -415,6 +446,10 @@ const FormBlock = (props) => {
             addListItemButtonText: (isNotEmpty(formData?.add_item_button_label) ? formData.add_item_button_label : addListItemButtonText)
         };
     }
+
+    useEffect(() => {
+        buildExternalRequestData();
+    }, [props?.data]);
 
     return (
         <>

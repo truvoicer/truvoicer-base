@@ -57,9 +57,7 @@ const WpDataLoaderProvider = (props) => {
             let cloneState = {...prevState}
             let cloneData = {...cloneState.data}
             Object.keys(response.metaData).forEach((key) => {
-                if (wpDataLoaderData.data.hasOwnProperty(key)) {
-                    cloneData[key] = response.metaData[key];
-                }
+                cloneData[key] = response.metaData[key];
             });
             return {...cloneState, data: cloneData}
         })
