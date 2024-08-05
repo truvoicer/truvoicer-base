@@ -133,6 +133,35 @@ const FormBlock = (props) => {
         return defaultValue;
     }
 
+    function getFormFieldSelectValue(option, defaultValue) {
+        let value;
+        if (wpDataLoaderContext.data.hasOwnProperty(option.name)) {
+            value = wpDataLoaderContext.data[option.name];
+        } else if (option.hasOwnProperty('value')) {
+            value = option.value;
+        }
+
+        switch (option.form_control) {
+            case "select_data_source":
+                if (Array.isArray(value)) {
+                    return value.map((item) => {
+                        let cloneItem = {...item};
+                        cloneItem.label = item?.label;
+                        cloneItem.value = item?.value;
+                        return cloneItem;
+                    }).filter((item) => isNotEmpty(item?.label))
+                }
+                if (isObject(value) && isNotEmpty(value?.label)) {
+                    let cloneItem = {...value};
+                    cloneItem.label = value?.label;
+                    cloneItem.value = value?.value;
+                    return cloneItem;
+                }
+                break;
+        }
+        return defaultValue;
+    }
+
     async function getExternalRequestFormFieldValue(option) {
         switch (option.form_control) {
             case "select":
@@ -157,7 +186,7 @@ const FormBlock = (props) => {
             case "select":
             case "select_countries":
             case "select_data_source":
-                fieldConfig.data = getFormFieldValue(option, []);
+                fieldConfig.value = getFormFieldSelectValue(option, []);
                 break;
             case "date":
             case "radio":
