@@ -145,31 +145,6 @@ export async function getPageTemplate(postType, category) {
     })
 }
 
-export async function protectedFileUploadApiRequest(endpoint, requestData, callback = false, headers = {}) {
-    const userId = store.getState().session[SESSION_USER][SESSION_USER_ID];
-    requestData.append("action", "wp_handle_upload");
-    requestData.append("user_id", userId);
-    requestData.append("internal_category", siteConfig.internalCategory);
-    requestData.append("internal_provider_name", siteConfig.internalProviderName);
-    const defaultHeaders = {
-        'Authorization': 'Bearer ' + getSessionObject().token,
-        'Content-type': 'multipart/form-data'
-    };
-    let config = {
-        method: "POST",
-        body: JSON.stringify(requestData),
-        headers: {...defaultHeaders, ...headers}
-    }
-
-    try {
-        const response = await fetch(endpoint, config);
-        return await response.json();
-    } catch (e) {
-        console.error(e)
-        return false;
-    }
-}
-
 export async function protectedApiRequest(endpoint, requestData, headers = {}) {
     const userId = store.getState().session[SESSION_USER][SESSION_USER_ID];
     const extraData = {

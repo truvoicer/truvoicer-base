@@ -1,12 +1,6 @@
 import {isNotEmpty, isObject, isObjectEmpty, isSet} from "../../../library/utils";
 import DataForm from "../../forms/DataForm/DataForm";
 import React, {useContext, useEffect, useState} from "react";
-import {
-    buildWpApiUrl,
-    protectedApiRequest,
-    protectedFileUploadApiRequest,
-    publicApiRequest
-} from "../../../library/api/wp/middleware";
 import {protectedEndpoint, publicEndpoint, wpApiConfig} from "../../../config/wp-api-config";
 import {connect} from "react-redux";
 import {ChangePasswordFormFields} from "../../../config/forms/change-password-form-fields";
@@ -47,18 +41,23 @@ const FormBlock = (props) => {
         if (!endpoint) {
             return;
         }
-        const request = await publicApiRequest(
-            'GET',
-            buildWpApiUrl(sprintf(wpApiConfig.endpoints.generalData, endpoint)),
-            {}
-        );
-        if (request.status !== "success") {
+        //if endpoint starts with forward slash
+        if (!endpoint.startsWith("/")) {
+            endpoint = `/${endpoint}`;
+        }
+        const response = await wpResourceRequest({
+            method: REQUEST_GET,
+            endpoint: `${protectedEndpoint}${endpoint}`,
+            protectedReq: true
+        });
+        const responseData = await response.json();
+        if (responseData.status !== "success") {
             return [];
         }
-        if (!Array.isArray(request?.data)) {
+        if (!Array.isArray(responseData?.data)) {
             return [];
         }
-        return request.data
+        return responseData.data
     }
 
     const buildFormData = (formType) => {
@@ -68,12 +67,12 @@ const FormBlock = (props) => {
         };
         switch (formType) {
             case "single":
-                configData.fields = buildSingleFormTypeData();
+                configData.fields = buildSingleFormTypeData(formData?.form_rows);
                 break;
             case "list":
-                const dataObject = buildSingleFormTypeData();
+                const dataObject = buildSingleFormTypeData(formData?.form_rows);
                 configData.fields = dataObject;
-            // configData[formData.form_id] = formData.form_id
+                configData.dataObject[formData.form_id] = wpDataLoaderContext?.data?.[formData?.form_id] || [];
         }
         return configData;
     }
@@ -104,10 +103,10 @@ const FormBlock = (props) => {
         })
     }
 
-    const buildSingleFormTypeData = () => {
+    const buildSingleFormTypeData = (formRows) => {
         let configData = [];
         formRowsIterator({
-            rows: formData?.form_rows,
+            rows: formRows,
             callback: (item, itemIndex, rowIndex) => {
                 let fieldConfig = getFormFieldConfig(item);
                 if (fieldConfig) {
@@ -334,7 +333,6 @@ const FormBlock = (props) => {
                 configData.endpoint = customEndpoint;
                 configData.data = {};
                 break;
-            case "user_profile":
             case "user_meta":
                 configData.endpoint = buildProtectedEndpointUrl;
                 configData.data = {};
@@ -363,20 +361,17 @@ const FormBlock = (props) => {
 
     const getFileUploadRequest = async (data, endpointData) => {
         let formValues = data;
-        const headers = {
-            'Content-Type': 'multipart/form-data'
-        };
-
         formValues = new FormData();
         Object.keys(data).forEach(key => formValues.append(key, data[key]));
         Object.keys(endpointData.data).forEach(key => formValues.append(key, endpointData.data[key]));
-        const response = await protectedFileUploadApiRequest(
-            buildWpApiUrl(endpointData.endpoint),
-            formValues,
-            false,
-            headers,
-        );
-        responseHandler(response);
+        const response = await wpResourceRequest({
+            method: REQUEST_POST,
+            endpoint: endpointData.endpoint,
+            data: formValues,
+            upload: true,
+            protectedReq: (formData?.endpoint_type === 'protected')
+        });
+        await responseHandler(response);
     }
 
     const formSubmitCallback = (data) => {
@@ -441,20 +436,25 @@ const FormBlock = (props) => {
             console.error("Invalid request")
             return;
         }
-        responseHandler(request)
+        await responseHandler(request)
     }
 
-    const responseHandler = (response) => {
+    const responseHandler = async (response) => {
+        if (!isSet(response)) {
+            return;
+        }
+        const responseData = await response.json();
+        const errors = Array.isArray(responseData?.errors) ? responseData.errors : [];
         setResponse({
             showAlert: true,
-            error: false,
-            errors: response?.errors || [],
+            error: (errors.length),
+            errors: errors,
             success: true,
-            message: response?.message
+            message: responseData?.message || ''
         })
-        if (isNotEmpty(response?.data?.redirect_url)) {
-            window.location.href = response.data.redirect_url
-        }
+        // if (isNotEmpty(response?.data?.redirect_url)) {
+        //     window.location.href = response.data.redirect_url
+        // }
         // setResponse({
         //     showAlert: true,
         //     error: true,
@@ -496,19 +496,21 @@ const FormBlock = (props) => {
                                 {isNotEmpty(formData?.sub_heading) &&
                                     <p>{formData.sub_heading}</p>
                                 }
-                                {response.success &&
-                                    <div className="bg-white p-3">
-                                        <p className={"text-center text-success"}>{response.message}</p>
-                                    </div>
+                                {response.success
+                                    ? (
+                                        <div className="bg-white p-3">
+                                            <p className={"text-center text-success"}>{response.message}</p>
+                                        </div>
+                                    )
+                                    : (
+                                        <div className="bg-white">
+                                            <p className={"text-danger text-danger"}>{response.message}</p>
+                                        </div>
+                                    )
                                 }
                                 {Array.isArray(response.errors) && response.errors.length > 0 && (
                                     templateManager.render(<WPErrorDisplay errorData={response.errors}/>)
                                 )}
-                                {response.error &&
-                                    <div className="bg-white">
-                                        <p className={"text-danger text-danger"}>{response.message}</p>
-                                    </div>
-                                }
                                 {
                                     templateManager.render(
                                         <DataForm

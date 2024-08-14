@@ -19,34 +19,42 @@ const TabsBlock = (props) => {
 
     async function formBlockInit(formBlockData) {
         const formType = formBlockData?.form_type;
-
         let formFields = [];
-        formBlockData?.form_rows.forEach(row => {
-            if (!Array.isArray(row?.form_items)) {
-                return;
-            }
-            row?.form_items.forEach(item => {
-                if (!isNotEmpty(item?.form_control)) {
+        let form = {
+            type: formType,
+        };
+
+        switch (formType) {
+            case 'single':
+                formBlockData?.form_rows.forEach(row => {
+                    if (!Array.isArray(row?.form_items)) {
+                        return;
+                    }
+                    row?.form_items.forEach(item => {
+                        if (!isNotEmpty(item?.form_control)) {
+                            return;
+                        }
+                        if (!isNotEmpty(item?.name)) {
+                            return;
+                        }
+                        formFields.push({
+                            form_control: item.form_control,
+                            name: item.name
+                        })
+                    });
+                });
+                if (formFields.length === 0) {
                     return;
                 }
-                if (!isNotEmpty(item?.name)) {
-                    return;
-                }
-                formFields.push({
-                    form_control: item.form_control,
-                    name: item.name
-                })
-            });
-        });
-        if (formFields.length === 0) {
-            return;
+                form.fields = formFields;
+                break;
+            case 'list':
+                form.id = formBlockData?.form_id;
+                break;
         }
         await wpDataLoaderContext.requestFields({
             endpoint: formBlockData?.endpoint,
-            form: {
-                type: formType,
-                fields: formFields
-            }
+            form
         })
     }
     function tabInit(activeKey) {

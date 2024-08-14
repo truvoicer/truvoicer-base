@@ -1,10 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {FieldArray, Formik, isObject} from "formik";
+import {FieldArray, Formik} from "formik";
 import {isNotEmpty, isSet} from "../../../library/utils";
 import FormFieldLabel from "./Fields/FormFieldLabel";
 import FormFieldItem from "./Fields/FormFieldItem";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {isObject} from "../../../library/utils";
 import {sprintf} from "sprintf-js";
 
 const DataForm = (props) => {
@@ -12,9 +13,12 @@ const DataForm = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const formId = props?.formId ?? "fields";
 
-    const getInitialDataObject = () => {
+    const getInitialDataObject = (fields) => {
         let initialValues = {};
-        props.data.fields.map((item) => {
+        if (!Array.isArray(fields)) {
+            return initialValues;
+        }
+        fields.map((item) => {
             const value = getInitialValue(item);
             if (value !== null) {
                 initialValues[item.name] = value;
@@ -39,6 +43,7 @@ const DataForm = (props) => {
             case "date":
             case "image_upload":
             case "file_upload":
+            case "tel":
                 value = isSet(item.value) ? item.value : "";
                 break;
             case "select":
@@ -326,16 +331,33 @@ const DataForm = (props) => {
 
     useEffect(() => {
         setInitialValues(initialValues => {
+
             switch (props.formType) {
                 case "list":
-                    return {...props.data, ...{dataObject: getInitialDataObject()}};
+                    if (!isObject(props?.data?.dataObject)) {
+                        return {};
+                    }
+                    let listData = {};
+                    Object.keys(props.data.dataObject).forEach((key) => {
+                        if (!Array.isArray(props.data.dataObject[key])) {
+                            return;
+                        }
+                        listData[key] = props.data.dataObject[key].map((item) => {
+                            return getInitialDataObject(
+                                Object.keys(item).map((subKey) => {
+                                    return getFieldByName(subKey);
+                                })
+                            );
+                        });
+                    });
+                    return {fields: props.data.fields, ...listData};
                 case "single":
                 default:
-                    return getInitialDataObject()
+                    return getInitialDataObject(props.data.fields)
             }
         })
     }, [props.data, props.formType])
-
+    console.log(initialValues)
     const buildFormRows = (data, errors, touched, handleBlur, handleChange, values, arrayFieldIndex = false) => {
         return (
             <div className={"row gy-3"}>
