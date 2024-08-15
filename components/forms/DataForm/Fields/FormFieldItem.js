@@ -29,7 +29,7 @@ function FormFieldItem({
         if (arrayFieldIndex === false) {
             return values[fieldName];
         }
-        return values[formId][arrayFieldIndex][fieldName];
+        return values[formId][arrayFieldIndex]?.[fieldName];
     }
 
 

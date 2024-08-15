@@ -7,6 +7,7 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {isObject} from "../../../library/utils";
 import {sprintf} from "sprintf-js";
+import {DataFormHelpers} from "@/truvoicer-base/components/forms/DataForm/Helpers/DataFormHelpers";
 
 const DataForm = (props) => {
 
@@ -65,7 +66,7 @@ const DataForm = (props) => {
     const validationRules = (rule, values, key) => {
         switch (rule.type) {
             case "required":
-                const field = getFieldByName(key);
+                const field = DataFormHelpers.getFieldByName(key, props.data.fields);
                 if (!values[key]) {
                     return 'Required';
                 }
@@ -109,33 +110,17 @@ const DataForm = (props) => {
                 break;
             case "match":
                 if (values[key] !== values[rule.matchField]) {
-                    return sprintf('Does not match with %s', getFieldByName(rule.matchField).label);
+                    return sprintf('Does not match with %s', DataFormHelpers.getFieldByName(rule.matchField, props.data.fields).label);
                 }
                 break;
         }
         return true;
     }
 
-    const getFieldByName = (name) => {
-        let fieldObject = {};
-        props.data.fields.map(field => {
-            if (isSet(field.subFields)) {
-                field.subFields.map((subField) => {
-                    if (subField.name === name) {
-                        fieldObject = subField
-                    }
-                })
-            }
-            if (field.name === name) {
-                fieldObject = field
-            }
-        })
-        return fieldObject
-    }
     const getIgnoredFields = (values) => {
         let ignoredFields = [];
         Object.keys(values).map((key) => {
-            const field = getFieldByName(key);
+            const field = DataFormHelpers.getFieldByName(key, props.data.fields);
             field.subFields?.map((subField) => {
                 if ((field.fieldType === "checkbox" && !values[field.name]) ||
                     (field.fieldType === "checkbox" && values[field.name] === "")) {
@@ -150,7 +135,7 @@ const DataForm = (props) => {
 
         const ignoredFields = getIgnoredFields(values);
         Object.keys(values).map((key) => {
-            const field = getFieldByName(key);
+            const field = DataFormHelpers.getFieldByName(key, props.data.fields);
             if (!ignoredFields.includes(field.name)) {
                 const isAllowEmpty = field.validation?.rules?.filter(rule => rule.type === "allow_empty");
                 if (!isSet(isAllowEmpty) ||
@@ -173,7 +158,7 @@ const DataForm = (props) => {
         let data = {...values};
         const ignoredFields = getIgnoredFields(values);
         Object.keys(data).map((key) => {
-            const field = getFieldByName(key);
+            const field = DataFormHelpers.getFieldByName(key, props.data.fields);
             if (field.fieldType === "checkbox" && data[field.name] === "") {
                 data[field.name] = false;
             }
@@ -337,17 +322,15 @@ const DataForm = (props) => {
                     if (!isObject(props?.data?.dataObject)) {
                         return {};
                     }
-                    let listData = {};
+                    let listData = {
+                        dataObject: getInitialDataObject(props.data.fields),
+                    };
                     Object.keys(props.data.dataObject).forEach((key) => {
                         if (!Array.isArray(props.data.dataObject[key])) {
                             return;
                         }
                         listData[key] = props.data.dataObject[key].map((item) => {
-                            return getInitialDataObject(
-                                Object.keys(item).map((subKey) => {
-                                    return getFieldByName(subKey);
-                                })
-                            );
+                            return getInitialDataObject(item)
                         });
                     });
                     return {fields: props.data.fields, ...listData};
@@ -357,7 +340,7 @@ const DataForm = (props) => {
             }
         })
     }, [props.data, props.formType])
-    console.log(initialValues)
+
     const buildFormRows = (data, errors, touched, handleBlur, handleChange, values, arrayFieldIndex = false) => {
         return (
             <div className={"row gy-3"}>

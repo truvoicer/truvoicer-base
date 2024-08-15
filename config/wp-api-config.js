@@ -69,8 +69,11 @@ export const wpApiConfig = {
         listingsCategory: 'trf_listings_category'
     },
     headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        default: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        upload: {}
     },
 
     appSecret: process.env.NEXT_PUBLIC_APP_SECRET,

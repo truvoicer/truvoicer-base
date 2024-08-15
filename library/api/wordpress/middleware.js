@@ -1,7 +1,7 @@
 import {isNotEmpty, isObjectEmpty} from '../../utils';
 import {wpApiConfig} from '../../../config/wp-api-config';
 import {isObject} from 'underscore';
-import {REQUEST_GET} from '../../constants/request-constants';
+import {REQUEST_GET, REQUEST_POST} from '../../constants/request-constants';
 import {getSignedJwt} from "@/truvoicer-base/library/api/auth/jwt-helpers";
 import {getSessionObject} from "@/truvoicer-base/redux/actions/session-actions";
 import {getSiteSettings} from "@/truvoicer-base/library/api/wp/middleware";
@@ -42,8 +42,11 @@ export async function getGlobalMeta() {
     };
 }
 
-function getHeaders(config) {
-    return config.headers;
+function getHeaders(config, upload = false) {
+    if (upload) {
+        return config.headers.upload;
+    }
+    return config.headers.default;
 }
 
 export function buildPublicBearerToken() {
@@ -94,6 +97,7 @@ export async function wpResourceRequest({
     method,
     upload = false,
     protectedReq = false,
+    headers = null
 }) {
     if (!method) {
         throw new Error('Method not set');
@@ -106,6 +110,7 @@ export async function wpResourceRequest({
         data,
         upload,
         protectedReq,
+        headers
     });
 }
 
@@ -125,9 +130,9 @@ function buildHeaders({
     protectedReq = false,
     upload = false,
     config,
-    headers = {},
+    headers = null,
 }) {
-    let buildHeadersData = getHeaders(config);
+    let buildHeadersData = isObject(headers)? headers : getHeaders(config, upload);
     const authHeader = getAuthHeader(protectedReq);
     if (!authHeader) {
         return false;
@@ -137,10 +142,10 @@ function buildHeaders({
     if (upload) {
         buildHeadersData = {
             ...buildHeadersData,
-            'Content-Type': 'multipart/form-data',
         };
     }
-    return {...buildHeadersData, ...headers};
+
+    return buildHeadersData;
 }
 
 export async function runRequest({
@@ -149,7 +154,7 @@ export async function runRequest({
     endpoint,
     query = {},
     data = {},
-    headers = {},
+    headers = null,
     upload = false,
     protectedReq = false,
 }) {
@@ -167,21 +172,32 @@ export async function runRequest({
         method,
         headers: buildHeadersData,
     };
+    let body;
+    if (upload) {
+        body = data;
+    } else {
+        body = JSON.stringify(data);
+    }
     switch (method) {
         case REQUEST_GET:
+        case 'get':
             request = {
                 ...request,
                 method: 'GET',
             };
             break;
-        default:
+        case REQUEST_POST:
+        case 'post':
             request = {
                 ...request,
                 method: 'POST',
-                body: JSON.stringify(data),
+                body,
             };
             break;
+        default:
+            throw new Error(`Method not supported ${method}`);
     }
+    console.log(request)
     return await fetch(
         requestUrl,
         request,

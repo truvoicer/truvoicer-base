@@ -16,12 +16,12 @@ import WpDataLoaderDataContext, {
 import {FormHelpers} from "@/truvoicer-base/library/helpers/FormHelpers";
 import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 import {REQUEST_GET, REQUEST_POST} from "@/truvoicer-base/library/constants/request-constants";
+import {DataFormHelpers} from "@/truvoicer-base/components/forms/DataForm/Helpers/DataFormHelpers";
 
 const FormBlock = (props) => {
 
     const wpDataLoaderContext = useContext(WpDataLoaderDataContext)
     const formHelpers = new FormHelpers();
-    formHelpers.setValues(wpDataLoaderContext.data);
 
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
@@ -36,29 +36,13 @@ const FormBlock = (props) => {
     const addListItemButtonText = "Add new item";
 
     const formData = props?.data;
+    formHelpers.setValues(wpDataLoaderContext.data);
 
-    const getSelectEndpointData = async (endpoint) => {
-        if (!endpoint) {
-            return;
-        }
-        //if endpoint starts with forward slash
-        if (!endpoint.startsWith("/")) {
-            endpoint = `/${endpoint}`;
-        }
-        const response = await wpResourceRequest({
-            method: REQUEST_GET,
-            endpoint: `${protectedEndpoint}${endpoint}`,
-            protectedReq: true
-        });
-        const responseData = await response.json();
-        if (responseData.status !== "success") {
-            return [];
-        }
-        if (!Array.isArray(responseData?.data)) {
-            return [];
-        }
-        return responseData.data
-    }
+    const dataFormHelpers = new DataFormHelpers();
+    dataFormHelpers.setContextData(wpDataLoaderContext?.data || {});
+    dataFormHelpers.setExternalRequestData(externalRequestData);
+    dataFormHelpers.setFormData(formData);
+
 
     const buildFormData = (formType) => {
         let configData = {
@@ -72,7 +56,10 @@ const FormBlock = (props) => {
             case "list":
                 const dataObject = buildSingleFormTypeData(formData?.form_rows);
                 configData.fields = dataObject;
-                configData.dataObject[formData.form_id] = wpDataLoaderContext?.data?.[formData?.form_id] || [];
+                configData.dataObject = dataFormHelpers.buildListFields(
+                    configData.fields || [],
+                    {[formData.form_id]: wpDataLoaderContext?.data?.[formData?.form_id]}
+                );
         }
         return configData;
     }
@@ -82,7 +69,7 @@ const FormBlock = (props) => {
         formRowsIterator({
             rows: formData?.form_rows,
             callback: async (item, itemIndex, rowIndex) => {
-                const response = await getExternalRequestFormFieldValue(item);
+                const response = await dataFormHelpers.getExternalRequestFormFieldValue(item);
                 if (!response) {
                     return;
                 }
@@ -108,7 +95,7 @@ const FormBlock = (props) => {
         formRowsIterator({
             rows: formRows,
             callback: (item, itemIndex, rowIndex) => {
-                let fieldConfig = getFormFieldConfig(item);
+                let fieldConfig = dataFormHelpers.getFormFieldConfig(item);
                 if (fieldConfig) {
                     fieldConfig.rowIndex = rowIndex;
                     fieldConfig.columnIndex = itemIndex;
@@ -120,176 +107,6 @@ const FormBlock = (props) => {
             return [...configData, ...ChangePasswordFormFields()]
         }
         return configData;
-    }
-
-    function getFormFieldValue(option, defaultValue) {
-        if (wpDataLoaderContext.data.hasOwnProperty(option.name)) {
-            return wpDataLoaderContext.data[option.name];
-        }
-        if (option.hasOwnProperty('value')) {
-            return option.value;
-        }
-        return defaultValue;
-    }
-
-    function getFormFieldSelectValue(option, defaultValue) {
-        let value;
-        if (wpDataLoaderContext.data.hasOwnProperty(option.name)) {
-            value = wpDataLoaderContext.data[option.name];
-        } else if (option.hasOwnProperty('value')) {
-            value = option.value;
-        }
-
-        switch (option.form_control) {
-            case "select_data_source":
-                if (Array.isArray(value)) {
-                    return value.map((item) => {
-                        let cloneItem = {...item};
-                        cloneItem.label = item?.label;
-                        cloneItem.value = item?.value;
-                        return cloneItem;
-                    }).filter((item) => isNotEmpty(item?.label))
-                }
-                if (isObject(value) && isNotEmpty(value?.label)) {
-                    let cloneItem = {...value};
-                    cloneItem.label = value?.label;
-                    cloneItem.value = value?.value;
-                    return cloneItem;
-                }
-                break;
-        }
-        return defaultValue;
-    }
-
-    async function getExternalRequestFormFieldValue(option) {
-        switch (option.form_control) {
-            case "select":
-            case "select_countries":
-            case "select_data_source":
-                return await getSelectEndpointData(option?.endpoint);
-            default:
-                return false;
-        }
-    }
-
-    function buildFormFieldValue(option) {
-        let fieldConfig = {...option};
-        switch (fieldConfig.form_control) {
-            case "text":
-            case "email":
-            case "password":
-            case "tel":
-            case "textarea":
-                fieldConfig.value = getFormFieldValue(option, "");
-                break;
-            case "select":
-            case "select_countries":
-            case "select_data_source":
-                fieldConfig.value = getFormFieldSelectValue(option, []);
-                break;
-            case "date":
-            case "radio":
-            case "checkbox":
-                fieldConfig.value = getFormFieldValue(option, option.value);
-                break;
-        }
-        return fieldConfig;
-    }
-
-    const getFormFieldConfig = (options) => {
-        let fieldConfig = {...options};
-
-        switch (options.form_control) {
-            case "text":
-                fieldConfig.fieldType = "text";
-                fieldConfig.type = "text";
-                break;
-            case "email":
-                fieldConfig.fieldType = "text";
-                fieldConfig.type = "email";
-                break;
-            case "password":
-                fieldConfig.fieldType = "text";
-                fieldConfig.type = "password";
-                break;
-            case "tel":
-                fieldConfig.fieldType = "tel";
-                break;
-            case "textarea":
-                fieldConfig.fieldType = "textarea";
-                fieldConfig.rows = 4;
-                break;
-            case "select":
-                fieldConfig.fieldType = "select";
-                fieldConfig.multi = options?.multiple || false;
-                if (externalRequestData.hasOwnProperty(options.name)) {
-                    fieldConfig.options = externalRequestData[options.name];
-                } else {
-                    fieldConfig.options = options?.options || [];
-                }
-                fieldConfig.data = [];
-                break;
-            case "select_countries":
-                fieldConfig.fieldType = "select";
-                fieldConfig.multi = false;
-                if (externalRequestData.hasOwnProperty(options.name)) {
-                    fieldConfig.options = externalRequestData[options.name];
-                } else {
-                    fieldConfig.options = options?.options || [];
-                }
-                fieldConfig.data = [];
-                break;
-            case "select_data_source":
-                fieldConfig.fieldType = "select_data_source";
-                fieldConfig.multi = options?.multiple || false;
-                if (externalRequestData.hasOwnProperty(options.name)) {
-                    fieldConfig.options = externalRequestData[options.name];
-                } else {
-                    fieldConfig.options = options?.options || [];
-                }
-                fieldConfig.data = [];
-                break;
-            case "checkbox":
-                fieldConfig.fieldType = "checkbox";
-                fieldConfig.value = options?.value || false;
-                fieldConfig.checked = options?.checked || false;
-                fieldConfig.options = options?.options || [];
-                fieldConfig.data = [];
-                break;
-            case "radio":
-                fieldConfig.fieldType = "radio";
-                fieldConfig.value = options?.value || false;
-                fieldConfig.checked = options?.checked || false;
-                fieldConfig.options = options?.options || [];
-                fieldConfig.data = [];
-                break;
-            case "date":
-                fieldConfig.fieldType = "date";
-                fieldConfig.format = "dd MMMM yyyy";
-                fieldConfig.value = options?.date_value || '';
-                break;
-            case "image_upload":
-                fieldConfig.fieldType = "image_upload";
-                fieldConfig.showDropzone = options?.show_dropzone;
-                fieldConfig.dropzoneMessage = options?.dropzone_message
-                fieldConfig.acceptedFileTypesMessage = options?.accepted_file_types_message
-                break;
-            case "file_upload":
-                fieldConfig.fieldType = "file_upload";
-                fieldConfig.showDropzone = options?.show_dropzone || false;
-                fieldConfig.allowedFileTypes = options?.allowed_file_types || [];
-                fieldConfig.dropzoneMessage = options?.dropzone_message || "";
-                fieldConfig.acceptedFileTypesMessage = options?.accepted_file_types_message || "";
-                break;
-            default:
-                return false;
-        }
-        fieldConfig.name = options.name;
-        fieldConfig.description = options?.description;
-        fieldConfig.placeHolder = options.placeholder;
-        fieldConfig.label = options.label;
-        fieldConfig.labelPosition = options.label_position;
-        return buildFormFieldValue(fieldConfig);
     }
 
     function getEndpointUrlByType(endpoint) {
@@ -359,21 +176,6 @@ const FormBlock = (props) => {
         }
     }
 
-    const getFileUploadRequest = async (data, endpointData) => {
-        let formValues = data;
-        formValues = new FormData();
-        Object.keys(data).forEach(key => formValues.append(key, data[key]));
-        Object.keys(endpointData.data).forEach(key => formValues.append(key, endpointData.data[key]));
-        const response = await wpResourceRequest({
-            method: REQUEST_POST,
-            endpoint: endpointData.endpoint,
-            data: formValues,
-            upload: true,
-            protectedReq: (formData?.endpoint_type === 'protected')
-        });
-        await responseHandler(response);
-    }
-
     const formSubmitCallback = (data) => {
         const requestData = {...data};
         const endpointData = getEndpointData(formData.endpoint);
@@ -381,7 +183,7 @@ const FormBlock = (props) => {
             console.error("Invalid endpoint")
             return;
         }
-
+        console.log("Endpoint data", requestData)
         let files = {};
         let fileKeys = [];
         Object.keys(requestData).forEach(key => {
@@ -394,9 +196,6 @@ const FormBlock = (props) => {
             delete requestData[key];
         })
 
-        if (!isObjectEmpty(files)) {
-            getFileUploadRequest(files, endpointData);
-        }
         processRequest(
             endpointData,
             {
@@ -405,33 +204,45 @@ const FormBlock = (props) => {
                 ...{
                     external_providers: formData?.external_providers,
                     redirect_url: formData?.redirect_url
-                }
-            }
+                },
+            },
+            files
         )
     }
 
-    const processRequest = async (endpointData, requestData) => {
-        let request = null;
-        switch (formData?.endpoint_type) {
-            case "public":
-                request = await wpResourceRequest({
-                    method: REQUEST_GET,
-                    endpoint: endpointData.endpoint,
-                    query: requestData,
-                });
-                break;
-            case "protected":
-                request = await wpResourceRequest({
-                    method: REQUEST_POST,
-                    endpoint: endpointData.endpoint,
-                    data: requestData,
-                    protectedReq: true
-                })
-                break;
-            default:
-                console.warn("Invalid endpoint type")
-                return;
+    const processRequest = async (endpointData, requestData = {}, files = {}) => {
+        let hasFiles = false;
+        let formValues = new FormData();
+        if (!isObjectEmpty(files)) {
+            hasFiles = true;
+            requestData = {...requestData, ...files};
+            Object.keys(requestData).forEach(key => formValues.append(key, requestData[key]));
+            // Object.keys(endpointData.data).forEach(key => formValues.append(key, endpointData.data[key]))
         }
+        let request = null;
+        if (!['public', 'protected'].includes(formData?.endpoint_type)) {
+            console.error("Invalid endpoint type")
+            return;
+        }
+        if (!isNotEmpty(formData?.method)) {
+            console.error("Invalid request method")
+            return;
+        }
+        console.log({
+            method: formData.method,
+            endpoint: endpointData.endpoint,
+            data: (hasFiles)? formValues : requestData,
+            requestData,
+            protectedReq: (formData?.endpoint_type === 'protected'),
+            upload: hasFiles,
+        })
+        request = await wpResourceRequest({
+            method: formData.method,
+            endpoint: endpointData.endpoint,
+            data: (hasFiles)? formValues : requestData,
+            protectedReq: (formData?.endpoint_type === 'protected'),
+            upload: hasFiles,
+        })
         if (!request) {
             console.error("Invalid request")
             return;

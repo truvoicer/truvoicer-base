@@ -212,7 +212,7 @@ function ImageUploadField({
                                         // }}
                                     >
 
-                                        <NextImage ref={imageRef} src={image.preview} onLoad={onImageLoaded} alt="Preview" style={{maxWidth: "100%"}}/>
+                                        <NextImage ref={imageRef} width={200} height={200} src={image.preview} onLoad={onImageLoaded} alt="Preview" style={{maxWidth: "100%"}}/>
                                     </ReactCrop>
                                 </Col>
                                 <Col sm={12} md={6} lg={6}>
