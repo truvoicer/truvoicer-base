@@ -197,7 +197,7 @@ export async function runRequest({
         default:
             throw new Error(`Method not supported ${method}`);
     }
-    console.log(request)
+
     return await fetch(
         requestUrl,
         request,
