@@ -6,7 +6,8 @@ import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manage
 import {buildWpApiUrl, protectedApiRequest} from "@/truvoicer-base/library/api/wp/middleware";
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
 import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
-import {faHeart, faHeartBroken, faPencil, faStar} from "@fortawesome/free-solid-svg-icons";
+import {faHeart as fullHeart} from "@fortawesome/free-solid-svg-icons";
+import {faHeart} from "@fortawesome/free-regular-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const SavedItemToggle = (props) => {
@@ -27,11 +28,11 @@ const SavedItemToggle = (props) => {
     function getIconProps() {
         if (savedItem) {
             return {
-                icon: faHeart,
+                icon: fullHeart,
             }
         }
         return {
-            icon: faHeartBroken,
+            icon: faHeart,
         }
     }
 

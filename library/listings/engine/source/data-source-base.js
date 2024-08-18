@@ -105,13 +105,8 @@ export class DataSourceBase {
         const responseData = await response.json();
         console.log('response', responseData)
 
-        // this.searchEngine.setSavedItemsListAction(response?.savedItems || []);
-        // this.searchEngine.setItemRatingsListAction(response?.itemRatings || []);
+        this.searchEngine.setSavedItemsListAction(responseData?.savedItems || []);
+        this.searchEngine.setItemRatingsListAction(responseData?.itemRatings || []);
     }
 
-    getUserItemsListCallback(error, data) {
-        if (error) {
-            return false;
-        }
-    }
 }
