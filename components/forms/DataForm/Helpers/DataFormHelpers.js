@@ -188,6 +188,9 @@ export class DataFormHelpers {
             case "checkbox":
                 fieldConfig.value = this.getFormFieldValue(option, option.value, index);
                 break;
+            default:
+                fieldConfig.value = this.getFormFieldValue(option, null, index);
+                break;
         }
         return fieldConfig;
     }
@@ -267,8 +270,13 @@ export class DataFormHelpers {
             case "image_upload":
                 fieldConfig.fieldType = "image_upload";
                 fieldConfig.showDropzone = options?.show_dropzone;
+                fieldConfig.imageCropper = options?.image_cropper;
+                fieldConfig.imageCropperWidth = options?.crop_width;
+                fieldConfig.imageCropperHeight = options?.crop_height;
+                fieldConfig.circularCrop = options?.circular_crop;
                 fieldConfig.dropzoneMessage = options?.dropzone_message
                 fieldConfig.acceptedFileTypesMessage = options?.accepted_file_types_message
+                fieldConfig.allowedFileTypes = options?.allowed_file_types || [];
                 break;
             case "file_upload":
                 fieldConfig.fieldType = "file_upload";

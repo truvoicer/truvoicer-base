@@ -10,6 +10,11 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {APP_LOADED, APP_STATE} from "@/truvoicer-base/redux/constants/app-constants";
 import {siteConfig} from "@/config/site-config";
+import NotificationLoader from "@/truvoicer-base/components/loaders/NotificationLoader";
+import {
+    NOTIFICATION_POSITION_TOP_CENTER,
+    NOTIFICATION_TYPE_CONTENT, NOTIFICATION_TYPE_TOAST
+} from "@/truvoicer-base/config/contexts/AppNotificationContext";
 
 const FullWidthTemplate = (props) => {
     const {pageData, pageOptions, app} = props;
@@ -25,6 +30,10 @@ const FullWidthTemplate = (props) => {
     return (
         <div className={'body-inner'}>
             <div id={"public_area"}>
+                <NotificationLoader
+                    type={NOTIFICATION_TYPE_CONTENT}
+                    position={NOTIFICATION_POSITION_TOP_CENTER}
+                />
                 {app[APP_LOADED] && templateManager.render(<Header showSidebar={true} sidebarName={siteConfig.navBarName}/>)}
                 <>
                     {app[APP_LOADED] && typeof pageData?.post_content === "string" && pageData
@@ -39,6 +48,10 @@ const FullWidthTemplate = (props) => {
                 </>
                 {templateManager.render(<Footer/>)}
             </div>
+            <NotificationLoader
+                type={NOTIFICATION_TYPE_TOAST}
+            />
+
         </div>
     )
 }

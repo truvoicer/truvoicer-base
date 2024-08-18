@@ -17,9 +17,15 @@ import {FormHelpers} from "@/truvoicer-base/library/helpers/FormHelpers";
 import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 import {REQUEST_GET, REQUEST_POST} from "@/truvoicer-base/library/constants/request-constants";
 import {DataFormHelpers} from "@/truvoicer-base/components/forms/DataForm/Helpers/DataFormHelpers";
+import {
+    addNotificationItem,
+    AppNotificationContext,
+    NOTIFICATION_POSITION_BOTTOM_CENTER
+} from "@/truvoicer-base/config/contexts/AppNotificationContext";
 
 const FormBlock = (props) => {
 
+    const appNotificationContext = useContext(AppNotificationContext);
     const wpDataLoaderContext = useContext(WpDataLoaderDataContext)
     const formHelpers = new FormHelpers();
 
@@ -255,24 +261,36 @@ const FormBlock = (props) => {
             return;
         }
         const responseData = await response.json();
+
         const errors = Array.isArray(responseData?.errors) ? responseData.errors : [];
         setResponse({
-            showAlert: true,
-            error: (errors.length),
             errors: errors,
-            success: true,
-            message: responseData?.message || ''
         })
+
+        addNotificationItem({
+            position: NOTIFICATION_POSITION_BOTTOM_CENTER,
+            body: responseData?.message || '',
+            variant: (errors.length) ? 'danger' : 'success',
+            title: (errors.length) ? 'Error' : 'Success',
+            notificationContext: appNotificationContext,
+            showFooter: false
+        })
+
+        switch (formData?.endpoint) {
+            // case "email":
+            // case "account_details":
+            // case "custom":
+            // case "external_provider":
+            case "user_meta":
+                if (isNotEmpty(responseData?.data) && isObject(responseData.data)) {
+                    wpDataLoaderContext.updateData(responseData.data);
+                }
+                break;
+        }
         // if (isNotEmpty(response?.data?.redirect_url)) {
         //     window.location.href = response.data.redirect_url
         // }
-        // setResponse({
-        //     showAlert: true,
-        //     error: true,
-        //     errors: error?.response?.data?.errors || [],
-        //     success: false,
-        //     message: error?.response?.data?.message
-        // })
+
     }
 
     const getDataFormProps = () => {
@@ -306,18 +324,6 @@ const FormBlock = (props) => {
                                 }
                                 {isNotEmpty(formData?.sub_heading) &&
                                     <p>{formData.sub_heading}</p>
-                                }
-                                {response.success
-                                    ? (
-                                        <div className="bg-white p-3">
-                                            <p className={"text-center text-success"}>{response.message}</p>
-                                        </div>
-                                    )
-                                    : (
-                                        <div className="bg-white">
-                                            <p className={"text-danger text-danger"}>{response.message}</p>
-                                        </div>
-                                    )
                                 }
                                 {Array.isArray(response.errors) && response.errors.length > 0 && (
                                     templateManager.render(<WPErrorDisplay errorData={response.errors}/>)

@@ -12,6 +12,11 @@ import Sidebar from "@/truvoicer-base/components/Sidebars/Sidebar";
 import {siteConfig} from "@/config/site-config";
 import {APP_LOADED, APP_STATE} from "@/truvoicer-base/redux/constants/app-constants";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
+import NotificationLoader from "@/truvoicer-base/components/loaders/NotificationLoader";
+import {
+    NOTIFICATION_POSITION_TOP_CENTER,
+    NOTIFICATION_TYPE_CONTENT, NOTIFICATION_TYPE_TOAST
+} from "@/truvoicer-base/config/contexts/AppNotificationContext";
 
 const SidebarTemplate = (props) => {
     const {modal, pageData, pageOptions, app} = props;
@@ -58,6 +63,10 @@ const SidebarTemplate = (props) => {
                                         </div>
                                     }
                                     <div className="col-12 col-lg-8">
+                                        <NotificationLoader
+                                            type={NOTIFICATION_TYPE_CONTENT}
+                                            position={NOTIFICATION_POSITION_TOP_CENTER}
+                                        />
                                         {app[APP_LOADED] && pageData?.post_content && parse(pageData.post_content, {
                                             replace: (node, index) => {
                                                 return filterHtml(
@@ -108,6 +117,9 @@ const SidebarTemplate = (props) => {
                 }
                 {templateManager.render(<Footer/>)}
             </div>
+            <NotificationLoader
+                type={NOTIFICATION_TYPE_TOAST}
+            />
         </div>
     );
 }

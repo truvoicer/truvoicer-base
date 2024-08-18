@@ -233,15 +233,15 @@ export class FetcherDataSource extends DataSourceBase {
         const categoryResponseKey = fetcherApiConfig.responseKeys.category;
         const providerResponseKey = fetcherApiConfig.responseKeys.provider;
 
-        if (
-            isNotEmpty(data?.[categoryResponseKey]) &&
-            isNotEmpty(data?.[providerResponseKey])
-        ) {
-            this.getUserItemsListAction(results, data[providerResponseKey], data[categoryResponseKey])
-        }
-        if (isNotEmpty(data?.[providerResponseKey])) {
-            this.searchEngine.setSearchExtraDataAction(data.extraData, data[providerResponseKey], results)
-        }
+        this.getUserItemsListAction(results, data[providerResponseKey], data[categoryResponseKey])
+        // if (
+        //     isNotEmpty(data?.[categoryResponseKey]) &&
+        //     isNotEmpty(data?.[providerResponseKey])
+        // ) {
+        // }
+        // if (isNotEmpty(data?.[providerResponseKey])) {
+        //     this.searchEngine.setSearchExtraDataAction(data.extraData, data[providerResponseKey], results)
+        // }
         this.searchEngine.setSearchListDataAction(results);
 
         let pageControlData = {

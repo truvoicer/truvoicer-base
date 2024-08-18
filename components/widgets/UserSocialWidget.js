@@ -8,6 +8,7 @@ import Image from "next/image";
 import WpDataLoader from "@/truvoicer-base/components/loaders/WpDataLoader";
 import {UserAccountHelpers} from "@/truvoicer-base/library/user-account/UserAccountHelpers";
 import ComponentLoader from "@/truvoicer-base/components/loaders/ComponentLoader";
+import WpDataLoaderDataContext from "@/truvoicer-base/components/loaders/contexts/WpDataLoaderDataContext";
 
 /**
  *
@@ -17,7 +18,9 @@ import ComponentLoader from "@/truvoicer-base/components/loaders/ComponentLoader
  */
 function UserSocialWidget(props) {
     const {data, parentAccessControl} = props;
-    const [userData, setUserData] = useState({});
+
+    const wpDataLoaderContext = useContext(WpDataLoaderDataContext);
+    const userData = wpDataLoaderContext?.data || {};
     const fields = [
         {
             form_control: "image_upload",

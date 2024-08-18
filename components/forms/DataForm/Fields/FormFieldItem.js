@@ -224,7 +224,48 @@ function FormFieldItem({
         }
         return null;
     }
-
+    function getUploadFieldProps() {
+        let uploadFieldProps = {
+            name: field.name,
+            description: field?.description,
+            showDropzone: field?.showDropzone || false,
+            callback: imageUploadCallback,
+            arrayFieldIndex: arrayFieldIndex,
+            value: getFieldValue(field.name),
+        };
+        if (isNotEmpty(field?.dropzoneMessage)) {
+            uploadFieldProps.dropzoneMessage = field.dropzoneMessage;
+        }
+        if (isNotEmpty(field?.dropzoneMessage)) {
+            uploadFieldProps.dropzoneMessage = field.dropzoneMessage;
+        }
+        if (isNotEmpty(field?.acceptedFileTypesMessage)) {
+            uploadFieldProps.acceptedFileTypesMessage = field.acceptedFileTypesMessage;
+        }
+        if (Array.isArray(field?.allowedFileTypes)) {
+            uploadFieldProps.allowedFileTypes = field.allowedFileTypes;
+        }
+        return uploadFieldProps;
+    }
+    function buildImageUploadFieldProps() {
+        let fieldProps = {}
+        if (field.hasOwnProperty('imageCropper')) {
+            fieldProps.imageCropper = field.imageCropper;
+        }
+        if (field.hasOwnProperty('imageCropperWidth')) {
+            fieldProps.imageCropperWidth = field.imageCropperWidth;
+        }
+        if (field.hasOwnProperty('imageCropperHeight')) {
+            fieldProps.imageCropperHeight = field.imageCropperHeight;
+        }
+        if (field.hasOwnProperty('circularCrop')) {
+            fieldProps.circularCrop = field.circularCrop;
+        }
+        return {
+            ...getUploadFieldProps(),
+            ...fieldProps
+        };
+    }
     const buildFormField = ({fieldType, name}) => {
         switch (fieldType) {
             case "text":
@@ -253,28 +294,13 @@ function FormFieldItem({
             case "file_upload":
                 return (
                     <FileUploadField
-                        name={name}
-                        description={field?.description}
-                        showDropzone={field?.showDropzone}
-                        dropzoneMessage={field?.dropzoneMessage}
-                        acceptedFilesMessage={field?.acceptedFileTypesMessage}
-                        callback={fileUploadCallback}
-                        arrayFieldIndex={arrayFieldIndex}
-                        allowedFileTypes={field.allowedFileTypes}
-                        value={getFieldValue(field.name)}
+                        {...getUploadFieldProps()}
                     />
                 );
             case "image_upload":
                 return (
                     <ImageUploadField
-                        name={name}
-                        description={field?.description}
-                        showDropzone={field?.showDropzone}
-                        dropzoneMessage={field?.dropzoneMessage}
-                        acceptedFilesMessage={field?.acceptedFileTypesMessage}
-                        callback={imageUploadCallback}
-                        arrayFieldIndex={arrayFieldIndex}
-                        value={getFieldValue(field.name)}
+                        {...buildImageUploadFieldProps()}
                     />
                 );
             default:

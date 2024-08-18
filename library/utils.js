@@ -191,7 +191,7 @@ export const getAcceptedFileExtString = (allowedExtArray = null, allowedMessage)
         return '';
     }
     const joinAcceptedFiles = allowedExtArray.map(type => type.extension).join(", ");
-    return allowedMessage.replace("[accepted]", joinAcceptedFiles)
+    return allowedMessage.replace("[accepted_file_types]", joinAcceptedFiles)
 }
 
 export function isComponentFunction(component) {
@@ -207,4 +207,19 @@ export function isValidImageSrc(src) {
             src.startsWith("/")
         )
     );
+}
+export function getNextArrayIndex(array) {
+    if (!Array.isArray(array)) {
+        return 0;
+    }
+    let found = false;
+    let index = array.length;
+    while(!found) {
+        if (typeof array[index] === "undefined") {
+            found = true;
+            continue;
+        }
+        index++;
+    }
+    return index;
 }

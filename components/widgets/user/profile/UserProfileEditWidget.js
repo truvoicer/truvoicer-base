@@ -35,6 +35,7 @@ function UserProfileEditWidget(props) {
         return `Not yet filled.`
     }
 
+    console.log(props)
     return (
         <ComponentLoader
             selfAccessControl={data?.access_control}

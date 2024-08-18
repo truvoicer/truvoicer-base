@@ -10,12 +10,17 @@ import {Button} from "react-bootstrap";
 import {AppModalContext, appModalContextData} from "@/truvoicer-base/config/contexts/AppModalContext";
 import {useRouter} from "next/navigation";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
-import {isNotEmpty, isSet} from "@/truvoicer-base/library/utils";
+import {getNextArrayIndex, isNotEmpty, isSet} from "@/truvoicer-base/library/utils";
 import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
 import {LoadEnvironment} from "@/truvoicer-base/library/api/global-scripts";
 import {validateToken} from "@/truvoicer-base/redux/actions/session-actions";
 import TwitterProvider from "@/truvoicer-base/components/providers/TwitterProvider";
 import PinterestProvider from "@/truvoicer-base/components/providers/PinterestProvider";
+import {
+    AppNotificationContext,
+    appNotificationContextData,
+    notificationContextItem
+} from "@/truvoicer-base/config/contexts/AppNotificationContext";
 
 const AppLoader = ({templateConfig = {}, page}) => {
 
@@ -48,6 +53,35 @@ const AppLoader = ({templateConfig = {}, page}) => {
         })
     }
 
+    function addNotificationItem(data) {
+        let notificationItem = {};
+        Object.keys(data).forEach((key) => {
+            if (Object.keys(notificationContextItem).includes(key)) {
+                notificationItem[key] = data[key];
+            }
+        });
+        setNotificationState(prevState => {
+            let cloneState = {...prevState};
+            let cloneNotifications = [...cloneState.notifications];
+            notificationItem.id = getNextArrayIndex(cloneNotifications);
+            cloneNotifications.push(notificationItem);
+            cloneState.notifications = cloneNotifications;
+            return cloneState;
+        })
+    }
+    function removeNotificationItemById(id) {
+        if (typeof id === "undefined" || id === null) {
+            console.warn('Notification ID is required to remove notification item');
+            return;
+        }
+        setNotificationState(prevState => {
+            let cloneState = {...prevState};
+            let cloneNotifications = [...cloneState.notifications];
+            cloneNotifications = cloneNotifications.filter(notification => notification.id !== id);
+            cloneState.notifications = cloneNotifications;
+            return cloneState;
+        })
+    }
     function handleModalCancel() {
         if (typeof modalState?.onCancel === "function") {
             modalState.onCancel();
@@ -58,6 +92,12 @@ const AppLoader = ({templateConfig = {}, page}) => {
     const [modalState, setModalState] = useState({
         ...appModalContextData,
         showModal: updateModalState,
+    });
+
+    const [notificationState, setNotificationState] = useState({
+        ...appNotificationContextData,
+        add: addNotificationItem,
+        remove: removeNotificationItemById
     });
 
     const [appContextState, setAppContextState] = useState({
@@ -108,37 +148,39 @@ const AppLoader = ({templateConfig = {}, page}) => {
     return (
         <AppContext.Provider value={appContextState}>
             <TemplateContext.Provider value={templateContextState}>
-                <AppModalContext.Provider value={modalState}>
-                    <GoogleAuthProvider>
-                        <FBAuthProvider>
-                            <TwitterProvider>
-                                <PinterestProvider>
-                                    <SessionLayout>
-                                        {templateManager.getPostTemplateLayoutComponent(page)}
-                                        <Modal show={modalState.show} onHide={handleModalCancel}>
-                                            <Modal.Header closeButton>
-                                                <Modal.Title>{modalState?.title || ''}</Modal.Title>
-                                            </Modal.Header>
-                                            <Modal.Body>
-                                                {modalState?.component || ''}
-                                            </Modal.Body>
-                                            {modalState?.showFooter &&
-                                                <Modal.Footer>
-                                                    <Button variant="secondary" onClick={handleModalCancel}>
-                                                        Close
-                                                    </Button>
-                                                    <Button variant="primary" onClick={handleModalCancel}>
-                                                        Save Changes
-                                                    </Button>
-                                                </Modal.Footer>
-                                            }
-                                        </Modal>
-                                    </SessionLayout>
-                                </PinterestProvider>
-                            </TwitterProvider>
-                        </FBAuthProvider>
-                    </GoogleAuthProvider>
-                </AppModalContext.Provider>
+                <AppNotificationContext.Provider value={notificationState}>
+                    <AppModalContext.Provider value={modalState}>
+                        <GoogleAuthProvider>
+                            <FBAuthProvider>
+                                <TwitterProvider>
+                                    <PinterestProvider>
+                                        <SessionLayout>
+                                            {templateManager.getPostTemplateLayoutComponent(page)}
+                                            <Modal show={modalState.show} onHide={handleModalCancel}>
+                                                <Modal.Header closeButton>
+                                                    <Modal.Title>{modalState?.title || ''}</Modal.Title>
+                                                </Modal.Header>
+                                                <Modal.Body>
+                                                    {modalState?.component || ''}
+                                                </Modal.Body>
+                                                {modalState?.showFooter &&
+                                                    <Modal.Footer>
+                                                        <Button variant="secondary" onClick={handleModalCancel}>
+                                                            Close
+                                                        </Button>
+                                                        <Button variant="primary" onClick={handleModalCancel}>
+                                                            Save Changes
+                                                        </Button>
+                                                    </Modal.Footer>
+                                                }
+                                            </Modal>
+                                        </SessionLayout>
+                                    </PinterestProvider>
+                                </TwitterProvider>
+                            </FBAuthProvider>
+                        </GoogleAuthProvider>
+                    </AppModalContext.Provider>
+                </AppNotificationContext.Provider>
             </TemplateContext.Provider>
         </AppContext.Provider>
     );

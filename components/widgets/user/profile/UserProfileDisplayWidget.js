@@ -6,11 +6,13 @@ import {faArrowCircleRight, faFile, faMapMarkedAlt, faPencil} from "@fortawesome
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {UserAccountHelpers} from "@/truvoicer-base/library/user-account/UserAccountHelpers";
 import ComponentLoader from "@/truvoicer-base/components/loaders/ComponentLoader";
+import WpDataLoaderDataContext from "@/truvoicer-base/components/loaders/contexts/WpDataLoaderDataContext";
 
 function UserProfileDisplayWidget(props) {
     const {data, parentAccessControl} = props;
-    const [userData, setUserData] = useState({});
     const templateManager = new TemplateManager(useContext(TemplateContext));
+    const wpDataLoaderContext = useContext(WpDataLoaderDataContext);
+    const userData = wpDataLoaderContext?.data || {};
     const fields = [
         {
             form_control: "select_data_source",

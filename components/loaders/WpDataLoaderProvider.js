@@ -35,6 +35,16 @@ const WpDataLoaderProvider = (props) => {
                 return null;
         }
     }
+    function updateData(data) {
+        setUserAccountContextState(prevState => {
+            let cloneState = {...prevState}
+            let cloneData = {...cloneState.data}
+            Object.keys(data).forEach((key) => {
+                cloneData[key] = data[key];
+            });
+            return {...cloneState, data: cloneData}
+        })
+    }
     async function userMetaDataFetchRequest(reqData) {
         const endpoint = getEndpoint(reqData?.endpoint);
         if (!endpoint) {
@@ -53,25 +63,12 @@ const WpDataLoaderProvider = (props) => {
             console.error('Invalid user meta data')
             return;
         }
-        setUserAccountContextState(prevState => {
-            let cloneState = {...prevState}
-            let cloneData = {...cloneState.data}
-            Object.keys(response.metaData).forEach((key) => {
-                cloneData[key] = response.metaData[key];
-            });
-            return {...cloneState, data: cloneData}
-        })
+        updateData(response.metaData);
     }
 
     const [userAccountContextState, setUserAccountContextState] = useState({
         ...wpDataLoaderData,
-        updateData: ({key, value}) => {
-            StateHelpers.updateStateObject({
-                key,
-                value,
-                setStateObj: setUserAccountContextState
-            })
-        },
+        updateData: updateData,
         updateNestedObjectData: ({object, key, value}) => {
             StateHelpers.updateStateNestedObjectData({
                 object,

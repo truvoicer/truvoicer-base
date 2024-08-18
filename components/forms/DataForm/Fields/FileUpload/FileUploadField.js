@@ -9,7 +9,7 @@ function FileUploadField({
     description = null,
     showDropzone = true,
     dropzoneMessage = null,
-    acceptedFilesMessage = null,
+    acceptedFileTypesMessage = null,
     callback,
     arrayFieldIndex = false,
     value = null,
@@ -51,7 +51,7 @@ function FileUploadField({
     }
 
     return (
-        <section>
+        <section className={'form--file-upload'}>
             <Row className={"align-items-center"}>
                 <Col sm={12} md={12} lg={12}>
                     <>
@@ -71,8 +71,8 @@ function FileUploadField({
                                         {dropzoneMessage &&
                                             <p>{dropzoneMessage}</p>
                                         }
-                                        {acceptedFilesMessage &&
-                                            <em>{`(${getAcceptedFileExtString(allowedFileTypes, acceptedFilesMessage)})`}</em>
+                                        {acceptedFileTypesMessage &&
+                                            <em>{`(${getAcceptedFileExtString(allowedFileTypes, acceptedFileTypesMessage)})`}</em>
                                         }
                                     </div>
                                 </>

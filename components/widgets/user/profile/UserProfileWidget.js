@@ -5,20 +5,20 @@ import UserProfileDisplayWidget from "@/truvoicer-base/components/widgets/user/p
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 
-function UserProfileWidget({data}) {
-
+function UserProfileWidget(props) {
+    const {data, parentAccessControl} = props;
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
     function getProfileComponent() {
         switch (data?.view) {
             case 'edit':
-                return templateManager.render(<UserProfileEditWidget data={data}/>);
+                return templateManager.render(<UserProfileEditWidget {...props}/>);
             default:
-                return templateManager.render(<UserProfileDisplayWidget data={data}/>);
+                return templateManager.render(<UserProfileDisplayWidget {...props}/>);
         }
     }
 
-    return templateManager.render(
+    return (
         <div className="featured-tab color-blue">
             <h3 className="block-title"><span>{data?.heading || 'Profile'}</span></h3>
             <div className="card-body">

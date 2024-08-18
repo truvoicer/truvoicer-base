@@ -10,16 +10,21 @@ import {Button} from "react-bootstrap";
 import {getAcceptedFileExtString, getAcceptedMimeTypesObject, isNotEmpty} from "../../../../../library/utils";
 
 function ImageUploadField({
-                              dataImageSrc,
-                              name,
-                              description = null,
-                              showDropzone = true,
-                              dropzoneMessage = null,
-                              acceptedFilesMessage = null,
-                              callback,
-                              arrayFieldIndex = false,
-                              value = null
-                          }) {
+    dataImageSrc,
+    name,
+    description = null,
+    showDropzone = true,
+    imageCropper = false,
+    imageCropperWidth = 150,
+    imageCropperHeight = 150,
+    circularCrop= false,
+    dropzoneMessage = 'Drop image here',
+    acceptedFileTypesMessage = '(Only image files are accepted)',
+    callback,
+    arrayFieldIndex = false,
+    allowedFileTypes = [],
+    value = null
+}) {
     const [model, setModal] = useState(false);
     const [imageSrc, setImageSrc] = useState(dataImageSrc || value || "https://via.placeholder.com/150");
     const imageRef = createRef();
@@ -27,17 +32,16 @@ function ImageUploadField({
     const [image, setImage] = useState({});
     const defaultImageCrop = {
         unit: 'px',
-        width: 150,
-        height: 150,
+        width: imageCropperWidth,
+        height: imageCropperHeight,
     }
-    const [imageCrop, setImageCrop] = useState(defaultImageCrop);
-    const allowedFileTypes = [
+    const defaultAllowedFileTypes = [
         {
-            mime_type: "'image/jpg",
+            mime_type: "image/jpg",
             extension: "jpg"
         },
         {
-            mime_type: "'image/jpeg",
+            mime_type: "image/jpeg",
             extension: "jpeg"
         },
         {
@@ -45,6 +49,13 @@ function ImageUploadField({
             extension: "png"
         },
     ]
+    const [imageCrop, setImageCrop] = useState(defaultImageCrop);
+    function getAllowedFileTypes() {
+        if (allowedFileTypes.length === 0) {
+            return defaultAllowedFileTypes;
+        }
+        return allowedFileTypes;
+    }
     const handleModalClose = () => {
         setModal(false);
     }
@@ -54,7 +65,12 @@ function ImageUploadField({
             preview: URL.createObjectURL(file)
         }));
         setImage(getFiles.length > 0 ? getFiles[0] : {});
-        setModal(true)
+        if (imageCropper) {
+            setModal(true)
+            return;
+        }
+        setImageSrc(getFiles[0]?.preview);
+        callback(name, getFiles[0], arrayFieldIndex)
     };
 
     // If you setState the crop in here you should return false.
@@ -138,7 +154,7 @@ function ImageUploadField({
     }
 
     const {getRootProps, getInputProps, open} = useDropzone({
-        accept: getAcceptedMimeTypesObject(allowedFileTypes),
+        accept: getAcceptedMimeTypesObject(getAllowedFileTypes()),
         maxFiles: 1,
         onDrop: onSelectFile
     });
@@ -147,17 +163,15 @@ function ImageUploadField({
             setImageSrc(value);
         }
     }, [value]);
-    useEffect(() => {
 
-    }, [image]);
 
     return (
-        <section>
+        <section className={'form--file-upload form--file-upload--image'}>
             <Row className={"align-items-center"}>
-                <Col sm={12} md={3} lg={3}>
+                <Col sm={12} md={3} lg={3} >
                     <div {...getRootProps({className: 'dropzone'})}>
                         <input {...getInputProps()} />
-                        <img  src={imageSrc} />
+                        <img src={imageSrc} />
                     </div>
                 </Col>
                 <Col sm={12} md={9} lg={9}>
@@ -165,10 +179,10 @@ function ImageUploadField({
                         ?
                         <div className={"dropzone-area"}>
                             {dropzoneMessage &&
-                            <p>{dropzoneMessage}</p>
+                                <p>{dropzoneMessage}</p>
                             }
-                            {acceptedFilesMessage &&
-                            <em>{`(${getAcceptedFileExtString(allowedFileTypes, acceptedFilesMessage)})`}</em>
+                            {acceptedFileTypesMessage &&
+                                <em>{`${getAcceptedFileExtString(getAllowedFileTypes(), acceptedFileTypesMessage)}`}</em>
                             }
                         </div>
                         :
@@ -206,13 +220,14 @@ function ImageUploadField({
                                         onChange={onCropChange}
                                         maxWidth={150}
                                         maxHeight={150}
-                                        circularCrop={true}
+                                        circularCrop={circularCrop}
                                         // imageStyle={{
                                         //     height: "300px"
                                         // }}
                                     >
 
-                                        <NextImage ref={imageRef} width={200} height={200} src={image.preview} onLoad={onImageLoaded} alt="Preview" style={{maxWidth: "100%"}}/>
+                                        <NextImage ref={imageRef} width={200} height={200} src={image.preview}
+                                                   onLoad={onImageLoaded} alt="Preview" style={{maxWidth: "100%"}}/>
                                     </ReactCrop>
                                 </Col>
                                 <Col sm={12} md={6} lg={6}>
