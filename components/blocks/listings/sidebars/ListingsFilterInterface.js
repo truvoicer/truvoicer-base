@@ -14,10 +14,13 @@ const ListingsFilterInterface = ({pageSidebar = false}) => {
     return (
         <>
             {fetchListingsContextGroups.map((listingsContextGroup, index) => {
-                if (listingsContextGroup.listingsContext?.listingsData?.show_filters_in_sidebar === true) {
-                    return templateManager.render(<ListingsFilter key={index} listingsContextGroup={listingsContextGroup} />)
+                if (
+                    !listingsContextGroup.listingsContext?.listingsData?.show_filters &&
+                    !listingsContextGroup.listingsContext?.listingsData?.show_filters_in_sidebar
+                ) {
+                    return null;
                 }
-                return null;
+                return templateManager.render(<ListingsFilter key={index} listingsContextGroup={listingsContextGroup} />)
             })}
         </>
     );
