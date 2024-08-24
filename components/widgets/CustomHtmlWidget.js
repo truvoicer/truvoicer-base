@@ -7,17 +7,18 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 const CustomHtmlWidget = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-
         return (
-            <div className="col-xl-3 col-md-6 col-lg-3">
-                <div className="footer_widget wow fadeInUp" data-wow-duration="1.3s" data-wow-delay=".6s">
-                    {props?.data?.title &&
-                        <h3 className="footer_title">
-                            {props.data.title}
-                        </h3>
-                    }
-                    {isNotEmpty(props?.data?.content) ? parse(props.data.content) : ""}
-                </div>
+            <div className="">
+                {props?.data?.title &&
+                    <h3 className="footer_title">
+                        {props.data.title}
+                    </h3>
+                }
+                {Array.isArray(props?.data) && props?.data.map((item, index) => (
+                    <React.Fragment key={index}>
+                        {isNotEmpty(item?.attrs?.content) ? parse(item.attrs.content) : ""}
+                    </React.Fragment>
+                ))}
             </div>
         );
 }

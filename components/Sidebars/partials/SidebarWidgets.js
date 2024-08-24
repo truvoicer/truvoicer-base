@@ -8,6 +8,7 @@ import RecentPostsWidget from "@/truvoicer-base/components/widgets/RecentPostsWi
 import EmailOptinWidget from "@/truvoicer-base/components/widgets/EmailOptinWidget";
 import ListingsFilterInterface from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsFilterInterface";
 import ListingsBlockInterface from "@/truvoicer-base/components/blocks/listings/ListingsBlockInterface";
+import CustomHtmlWidget from "@/truvoicer-base/components/widgets/CustomHtmlWidget";
 
 function buildGroupBlock({groupData}) {
     let widgets = [];
@@ -75,6 +76,11 @@ export function getSidebarWidget({item}) {
             return {
                 title: 'Latest Posts',
                 component: <RecentPostsWidget data={item["core/latest-posts"]}/>
+            };
+        }
+        if (isSet(item["tru-fetcher/html-block"]) || item?.blockName === 'tru-fetcher/html-block') {
+            return {
+                component: <CustomHtmlWidget data={item["tru-fetcher/html-block"]}/>
             };
         }
         if (isSet(item.tru_fetcher_email_optin) || item?.blockName === 'tru_fetcher_email_optin') {
