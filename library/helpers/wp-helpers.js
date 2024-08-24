@@ -109,12 +109,22 @@ export function mapDataToKeymap({keymap, item}) {
     return {...item, ...data};
 }
 
-export function replaceItemDataPlaceholders(pageTitle, item) {
+export function replaceItemDataPlaceholders(content, item, options = {
+    capitalize: false,
+    nullText: '',
+    loadingText: 'loading...',
+}) {
     const test = new RegExp("\\\[+(.*?)\\]", "g");
-    return pageTitle.replace(test, (match, value) => {
-        if (isSet(item[value])) {
+    return content.replace(test, (match, value) => {
+        if (!isSet(item[value])) {
+            return options.loadingText;
+        }
+        if (item[value] === null) {
+            return options.nullText;
+        }
+        if (options?.capitalize) {
             return uCaseFirst(item[value]);
         }
-        return "loading..."
+        return item[value];
     });
 }

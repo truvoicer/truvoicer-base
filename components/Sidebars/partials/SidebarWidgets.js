@@ -80,13 +80,14 @@ export function getSidebarWidget({item}) {
         }
         if (isSet(item["tru-fetcher/html-block"]) || item?.blockName === 'tru-fetcher/html-block') {
             return {
+                title: item["tru-fetcher/html-block"].attrs?.title || null,
                 component: <CustomHtmlWidget data={item["tru-fetcher/html-block"]}/>
             };
         }
-        if (isSet(item.tru_fetcher_email_optin) || item?.blockName === 'tru_fetcher_email_optin') {
+        if (isSet(item["tru-fetcher/opt-in-block"]) || item?.blockName === 'tru-fetcher/opt-in-block') {
             return {
-                title: item?.tru_fetcher_email_optin?.title || '',
-                component: <EmailOptinWidget data={item.tru_fetcher_email_optin}/>
+                title: item["tru-fetcher/opt-in-block"].attrs?.title || null,
+                component: <EmailOptinWidget data={item["tru-fetcher/opt-in-block"]}/>
             };
         }
         if (item.hasOwnProperty('tru_fetcher_listings_filter') || item?.blockName === 'tru_fetcher_listings_filter') {

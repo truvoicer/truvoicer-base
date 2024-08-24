@@ -4,9 +4,7 @@ import {formatDate, isNotEmpty, isObjectEmpty, isSet} from "../utils";
 import ImageLoader from "../../components/loaders/ImageLoader";
 import ListLoader from "../../components/loaders/ListLoader";
 import store from "../../redux/store";
-import {getItemViewUrl} from "../../redux/actions/item-actions";
-import {tagManagerSendDataLayer} from "../api/global-scripts";
-import {extractItemListFromPost, replaceItemDataPlaceholders} from "@/truvoicer-base/library/helpers/wp-helpers";
+import {replaceItemDataPlaceholders} from "@/truvoicer-base/library/helpers/wp-helpers";
 
 export const itemDataTextFilter = (text) => {
     const itemState = {...store.getState().item};
@@ -25,7 +23,7 @@ export const itemDataTextFilter = (text) => {
     }
     if (isNotEmpty(itemState.itemId)) {
         if (!isObjectEmpty(itemState.data)) {
-            return replaceItemDataPlaceholders(text, itemState.data)
+            return replaceItemDataPlaceholders(text, itemState.data, {capitalize: true})
         }
         return "Loading...";
     }
@@ -194,49 +192,4 @@ export const getDataKeyValue = (dataItem) => {
         default:
             return null;
     }
-}
-
-export const convertDataKeysDataArrayObject = (dataKeyList) => {
-    let dataKeyObject = {};
-    dataKeyList.map((item) => {
-        dataKeyObject[item.data_item_key] = getDataKeyValue(item)
-    })
-    return dataKeyObject;
-}
-
-
-
-export const globalItemLinkClick = (trackData = {}) => {
-    tagManagerSendDataLayer(trackData)
-}
-
-export const getItemLinkProps = (category, item, showInfoCallback, e, trackData = {}) => {
-    const listingsData = store.getState().listings?.listingsData;
-    if (isSet(listingsData?.item_view_display) && listingsData.item_view_display === "page") {
-        return {
-            onClick: (e) => {
-                // e.preventDefault()
-                globalItemLinkClick(trackData)
-            }
-        };
-    }
-    return {
-        href: getItemViewUrl(item, category),
-        onClick: showInfoCallback.bind(e, item, category)
-    }
-}
-export function extractItemListFromPostArray({posts = []}) {
-    if (!Array.isArray(posts)) {
-        return [];
-    }
-    let listData = [];
-    posts.forEach(post => {
-        listData.push({
-            ID: post?.ID,
-            post_title: post?.post_title,
-            post_type: post?.post_type,
-            item_list: extractItemListFromPost({post})
-        })
-    })
-    return listData;
 }

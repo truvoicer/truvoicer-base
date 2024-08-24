@@ -1,27 +1,34 @@
 import React, {useContext} from 'react';
 import parse from 'html-react-parser';
-import {isNotEmpty} from "../../library/utils";
+import {isNotEmpty, isObject} from "../../library/utils";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
+import {connect} from "react-redux";
+import {replaceItemDataPlaceholders} from "@/truvoicer-base/library/helpers/wp-helpers";
 
-const CustomHtmlWidget = (props) => {
+const CustomHtmlWidget = ({data, item}) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
-
-        return (
-            <div className="">
-                {props?.data?.title &&
-                    <h3 className="footer_title">
-                        {props.data.title}
-                    </h3>
-                }
-                {Array.isArray(props?.data) && props?.data.map((item, index) => (
-                    <React.Fragment key={index}>
-                        {isNotEmpty(item?.attrs?.content) ? parse(item.attrs.content) : ""}
-                    </React.Fragment>
-                ))}
-            </div>
-        );
+    const widgetData = data?.attrs || {};
+    let content = widgetData?.content || '';
+    if (isObject(item?.data)) {
+        content = replaceItemDataPlaceholders(content, item.data);
+    }
+    return (
+        <div className="">
+            {isNotEmpty(content) ? parse(content) : ""}
+        </div>
+    );
 }
 CustomHtmlWidget.category = 'widgets';
 CustomHtmlWidget.templateId = 'customHtmlWidget';
-export default CustomHtmlWidget;
+
+function mapStateToProps(state) {
+    return {
+        item: state.item,
+    };
+}
+
+export default connect(
+    mapStateToProps,
+    null
+)(CustomHtmlWidget);
