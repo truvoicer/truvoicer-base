@@ -127,20 +127,20 @@ const FormBlock = (props) => {
         }
     }
 
-    const getEndpointData = (endpoint) => {
-        const buildPublicEndpointUrl = `${publicEndpoint}${formData?.endpoint_url}`;
-        const buildProtectedEndpointUrl = `${protectedEndpoint}${formData?.endpoint_url}`;
+    const getEndpointData = (data) => {
+        const buildPublicEndpointUrl = `${publicEndpoint}${data?.endpoint_url}`;
+        const buildProtectedEndpointUrl = `${protectedEndpoint}${data?.endpoint_url}`;
         let configData = {
             endpoint: buildPublicEndpointUrl,
         };
 
-        switch (endpoint) {
+        switch (data?.endpoint) {
             case "email":
-                configData.endpoint = getEndpointUrlByType(formData?.endpoint_url);
+                configData.endpoint = getEndpointUrlByType(data?.endpoint_url);
                 configData.data = {
-                    recipient: formData.email.recipient,
-                    subject: formData.email.subject,
-                    ["from"]: formData.email["from"],
+                    recipient: data.email.recipient,
+                    subject: data.email.subject,
+                    ["from"]: data.email["from"],
                 };
                 break;
             case "account_details":
@@ -162,7 +162,9 @@ const FormBlock = (props) => {
                 break;
             case "external_provider":
                 configData.endpoint = getEndpointUrlByType('forms/external-providers');
-                configData.data = {};
+                configData.data = {
+                    external_providers: data?.external_providers
+                };
                 break;
             default:
                 configData = null;
@@ -184,12 +186,12 @@ const FormBlock = (props) => {
 
     const formSubmitCallback = (data) => {
         const requestData = {...data};
-        const endpointData = getEndpointData(formData.endpoint);
+        const endpointData = getEndpointData(formData);
         if (endpointData === null) {
             console.error("Invalid endpoint")
             return;
         }
-        console.log("Endpoint data", requestData)
+
         let files = {};
         let fileKeys = [];
         Object.keys(requestData).forEach(key => {
@@ -208,7 +210,6 @@ const FormBlock = (props) => {
                 ...requestData,
                 ...endpointData.data,
                 ...{
-                    external_providers: formData?.external_providers,
                     redirect_url: formData?.redirect_url
                 },
             },

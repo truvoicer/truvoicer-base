@@ -1,7 +1,7 @@
 import React from 'react';
 import BlogSearch from "@/truvoicer-base/components/widgets/BlogSearch";
 import HeadingWidget from "@/truvoicer-base/components/widgets/HeadingWidget";
-import {isSet} from "@/truvoicer-base/library/utils";
+import {isNotEmpty, isSet} from "@/truvoicer-base/library/utils";
 import SidebarMenu from "@/truvoicer-base/components/Menus/SidebarMenu";
 import CategoryListWidget from "@/truvoicer-base/components/widgets/CategoryListWidget";
 import RecentPostsWidget from "@/truvoicer-base/components/widgets/RecentPostsWidget";
@@ -9,6 +9,7 @@ import EmailOptinWidget from "@/truvoicer-base/components/widgets/EmailOptinWidg
 import ListingsFilterInterface from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsFilterInterface";
 import ListingsBlockInterface from "@/truvoicer-base/components/blocks/listings/ListingsBlockInterface";
 import CustomHtmlWidget from "@/truvoicer-base/components/widgets/CustomHtmlWidget";
+import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
 
 function buildGroupBlock({groupData}) {
     let widgets = [];
@@ -38,7 +39,18 @@ function buildGroupWidgets({groupData}) {
     return widgets;
 }
 export function getSidebarWidget({item}) {
-
+        for (let key in item) {
+            if (isNotEmpty(item[key]?.config?.id)) {
+                const findComponentConfig = blockComponentsConfig.components[item[key].config.id];
+                if (findComponentConfig?.component) {
+                    const Component = findComponentConfig.component;
+                    return {
+                        title: item[key]?.attrs?.title || '',
+                        component: <Component data={item[key]?.attrs || {}}/>
+                    };
+                }
+            }
+        }
         if (item?.['core/search'] || item?.blockName === 'core/search') {
             return {
                 title: 'Search',
@@ -76,31 +88,6 @@ export function getSidebarWidget({item}) {
             return {
                 title: 'Latest Posts',
                 component: <RecentPostsWidget data={item["core/latest-posts"]}/>
-            };
-        }
-        if (isSet(item["tru-fetcher/html-block"]) || item?.blockName === 'tru-fetcher/html-block') {
-            return {
-                title: item["tru-fetcher/html-block"].attrs?.title || null,
-                component: <CustomHtmlWidget data={item["tru-fetcher/html-block"]}/>
-            };
-        }
-        if (isSet(item["tru-fetcher/opt-in-block"]) || item?.blockName === 'tru-fetcher/opt-in-block') {
-            return {
-                title: item["tru-fetcher/opt-in-block"].attrs?.title || null,
-                component: <EmailOptinWidget data={item["tru-fetcher/opt-in-block"]}/>
-            };
-        }
-        if (item.hasOwnProperty('tru_fetcher_listings_filter') || item?.blockName === 'tru_fetcher_listings_filter') {
-            return {
-                hasWidgetContainer: false,
-                title: item?.tru_fetcher_listings_filter?.title || item?.tru_fetcher_listings_filter?.data?.heading || '',
-                component: <ListingsFilterInterface />
-            };
-        }
-        if (item.hasOwnProperty('tru_fetcher_listings') || item?.blockName === 'tru_fetcher_listings') {
-            return {
-                title: item?.tru_fetcher_listings?.title || item?.tru_fetcher_listings?.data?.heading || '',
-                component: <ListingsBlockInterface data={item?.tru_fetcher_listings?.data || {}} />
             };
         }
 

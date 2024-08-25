@@ -8,7 +8,7 @@ import {replaceItemDataPlaceholders} from "@/truvoicer-base/library/helpers/wp-h
 
 const CustomHtmlWidget = ({data, item}) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    const widgetData = data?.attrs || {};
+    const widgetData = data || {};
     let content = widgetData?.content || '';
     if (isObject(item?.data)) {
         content = replaceItemDataPlaceholders(content, item.data);

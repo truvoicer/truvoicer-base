@@ -1,5 +1,4 @@
 import React, {useContext} from 'react';
-import {getSidebarWidget} from "@/truvoicer-base/components/Sidebars/partials/SidebarWidgets";
 import WidgetContainer from "@/truvoicer-base/components/Sidebars/partials/WidgetContainer";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
