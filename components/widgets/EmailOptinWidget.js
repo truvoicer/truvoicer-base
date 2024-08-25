@@ -1,42 +1,12 @@
-import React, {useContext, useState} from 'react';
-import {buildWpApiUrl, publicApiRequest} from "../../library/api/wp/middleware";
-import {Formik} from "formik";
-import {wpApiConfig} from "../../config/wp-api-config";
+import React, {useContext} from 'react';
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
-import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
+import FormBlock from "@/truvoicer-base/components/blocks/form/FormBlock";
+import {isNotEmpty} from "@/truvoicer-base/library/utils";
 
 const EmailOptinWidget = (props) => {
     const {data} = props;
-    const [response, setResponse] = useState({
-        status: "",
-        message: ""
-    });
     const templateManager = new TemplateManager(useContext(TemplateContext));
-
-    const formResponseHandler = (responseData) => {
-        if (responseData?.status !== "success") {
-            setResponse({
-                status: "error",
-                message: data?.error_message || "There was an error, please try again."
-            });
-            return;
-        }
-        switch (data?.response_type) {
-            case "redirect":
-                window.location.href = data?.redirect_url;
-                break;
-            case "message":
-                setResponse({
-                    status: "success",
-                    message: data?.success_message || "Thank you for subscribing!"
-                });
-                break;
-            default:
-                break;
-        }
-    }
-
 
     return (
 
@@ -47,63 +17,9 @@ const EmailOptinWidget = (props) => {
             </div>
 
             <div className="newsletter-form">
-                {response.status === "success" &&
-                    <p className={"text-success"}>{response.message}</p>
-                }
-
-                <Formik
-                    initialValues={{email: ""}}
-                    validate={values => {
-                        const errors = {};
-                        if (!values.email) {
-                            errors.email = "Email is required";
-                        }
-                        return errors;
-                    }}
-                    onSubmit={async (values, {resetForm, setSubmitting}) => {
-                        const response = await wpResourceRequest({
-                            endpoint: wpApiConfig.endpoints.formsRedirectPublic,
-                            method: 'POST',
-                            data: {
-                                ...values,
-                                ...{
-                                    endpoint_providers: data?.endpoint_providers,
-                                }
-                            }
-                        });
-                        const responseData = await response.json();
-                        formResponseHandler(responseData);
-                    }}
-                    enableReinitialize={true}
-                >
-                    {({
-                        values,
-                        errors,
-                        handleChange,
-                        handleBlur,
-                        handleSubmit,
-                    }) => (
-                        <form onSubmit={handleSubmit}>
-                            <div className="form-group">
-                                {errors.email &&
-                                    <label className={"text-danger"}>{errors.email}</label>
-                                }
-                                <input
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    type="email"
-                                    name="email"
-                                    id="newsletter-form-email"
-                                    className="form-control form-control-lg"
-                                    placeholder={data?.placeholder || "E-mail"}
-                                    autoComplete="off"/>
-                                <button className="btn btn-primary" type={"submit"}>
-                                    {data?.button_text || "Subscribe"}
-                                </button>
-                            </div>
-                        </form>
-                    )}
-                </Formik>
+                {isNotEmpty(data?.attrs?.form_block) && (
+                    templateManager.render(<FormBlock data={data.attrs.form_block}/>)
+                )}
             </div>
         </div>
     );
