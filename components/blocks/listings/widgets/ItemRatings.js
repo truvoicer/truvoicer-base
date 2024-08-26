@@ -7,7 +7,8 @@ import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext"
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
-import {faPencil, faStar} from "@fortawesome/free-solid-svg-icons";
+import {faStar as fullStar} from "@fortawesome/free-solid-svg-icons";
+import {faStar} from "@fortawesome/free-regular-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 const sprintf = require('sprintf-js').sprintf;
 
@@ -24,11 +25,11 @@ const ItemRatings = (props) => {
     function getStarIconProps(index) {
         if (index <= rating) {
             return {
-                icon: faStar,
+                icon: fullStar,
             }
         }
         return {
-            icon: faPencil,
+            icon: faStar,
         }
     }
     const getRatingStars = () => {

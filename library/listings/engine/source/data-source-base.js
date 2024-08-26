@@ -65,7 +65,7 @@ export class DataSourceBase {
         const session = {...store.getState().session};
 
         if (!session[SESSION_AUTHENTICATED]) {
-            return;
+            return false;
         }
         const userId = session[SESSION_USER][SESSION_USER_ID]
 

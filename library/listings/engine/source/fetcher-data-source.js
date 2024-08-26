@@ -38,8 +38,9 @@ export class FetcherDataSource extends DataSourceBase {
         if (!Array.isArray(data) || data.length === 0) {
             return false;
         }
-        console.log(data)
-        return  await this.getUserItemDataRequest(this.buildGroupedItemsListByProviderService(data, true))
+        const buildGroups = this.buildGroupedItemsListByProviderService(data, true);
+        console.log(buildGroups)
+        return  await this.getUserItemDataRequest(buildGroups)
     }
     async getUserItemsListAction(data) {
         if (!Array.isArray(data) || data.length === 0) {
