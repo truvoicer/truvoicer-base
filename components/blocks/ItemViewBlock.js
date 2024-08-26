@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {isNotEmpty, isObjectEmpty, isSet} from "@/truvoicer-base/library/utils";
 import LoaderComponent from "../loaders/Loader";
 import {connect} from "react-redux";
@@ -9,10 +9,15 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 import {DISPLAY_AS, DISPLAY_AS_LIST, DISPLAY_AS_POST_LIST} from "@/truvoicer-base/redux/constants/general_constants";
 import DefaultItemView from "@/truvoicer-base/components/blocks/listings/items/Default/DefaultItemView";
 import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
+import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
+import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
+import {REQUEST_POST} from "@/truvoicer-base/library/constants/request-constants";
+import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 
 const ItemViewBlock = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const listingsGrid = new ListingsGrid();
+    const listingsManager = new ListingsManager({}, {});
     function validate(item) {
         switch (props.item.type) {
             case 'internal':
@@ -39,6 +44,13 @@ const ItemViewBlock = (props) => {
             default:
                 return null;
         }
+    }
+    async function itemUserDataRequest() {
+        const getData = await listingsManager.itemUserDataRequest(
+            listingsManager.getSourceByType(props.item.type),
+            [props.item.data]
+        )
+        console.log(getData)
     }
     const getItemView = (item) => {
         if (!isNotEmpty(props?.item?.[DISPLAY_AS])) {
@@ -69,7 +81,9 @@ const ItemViewBlock = (props) => {
         // return layoutCompoent;
         return layoutComponent;
     }
-
+    useEffect(() => {
+        itemUserDataRequest();
+    }, []);
     return (
         <>
             <Head>

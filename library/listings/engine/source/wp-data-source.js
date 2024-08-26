@@ -29,12 +29,54 @@ import {
     LISTINGS_REQ_OP_ITEM_LIST,
     LISTINGS_REQ_OP_POST_LIST
 } from "@/truvoicer-base/redux/constants/listings-constants";
+import {ListingsEngine} from "@/truvoicer-base/library/listings/engine/listings-engine";
 
 export class WpDataSource extends DataSourceBase {
     constructor(listingsEngine, searchEngine) {
         super(listingsEngine, searchEngine);
     }
 
+    async getItemUserData(data) {
+        if (!Array.isArray(data) || data.length === 0) {
+            return false;
+        }
+        return  await this.getUserItemDataRequest(this.buildGroupedItemsListByProviderService(data))
+    }
+    async getUserItemsListAction(data) {
+        if (!Array.isArray(data) || data.length === 0) {
+            return false;
+        }
+
+        let {providers, listPositions} = this.getListingsDataForInternalUserItemDataRequest();
+        const response = await this.getUserItemDataRequest([
+            ...providers,
+            ...this.buildGroupedItemsListByProviderService(data),
+            ...this.buildGroupedItemsListByProviderService(ListingsEngine.getCustomItemsData(listPositions))
+        ])
+
+        this.userItemsDataListResponseHandler(response);
+    }
+    buildGroupedItemsListByProviderService(data) {
+        let providers = [];
+        data.forEach((item) => {
+            let findProviderIndex = providers.findIndex((provider) => {
+                return (
+                    provider.provider === item.provider &&
+                    provider.service === item?.service?.name
+                );
+            });
+            if (findProviderIndex === -1) {
+                providers.push({
+                    provider: item.provider,
+                    service: item?.service?.name,
+                    ids: [this.listingsEngine.extractItemId(item)]
+                });
+                return;
+            }
+            providers[findProviderIndex].ids.push(this.listingsEngine.extractItemId(item));
+        })
+        return providers;
+    }
     getCategory(item = null) {
         const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
         if (Array.isArray(listingsDataState?.listings_category_id)) {

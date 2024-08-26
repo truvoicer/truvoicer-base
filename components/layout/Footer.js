@@ -2,7 +2,7 @@ import {connect} from "react-redux";
 import React, {useContext, useEffect, useState} from "react";
 import FooterMenu from "@/truvoicer-base/components/Menus/FooterMenu";
 import TextWidget from "@/truvoicer-base/components/widgets/TextWidget";
-import SocialIconsWidget from "@/truvoicer-base/components/widgets/SocialIconsWidget";
+import SocialIconsWidget from "@/truvoicer-base/components/widgets/Social/SocialIconsWidget";
 import {siteConfig} from "@/config/site-config";
 import CustomHtmlWidget from "@/truvoicer-base/components/widgets/CustomHtmlWidget";
 import {SESSION_AUTHENTICATED} from "@/truvoicer-base/redux/constants/session-constants";

@@ -20,7 +20,7 @@ import TabsBlock from "@/truvoicer-base/components/blocks/Tabs/TabsBlock";
 import CarouselInterface from "@/truvoicer-base/components/blocks/carousel/CarouselInterface";
 import CustomHtmlWidget from "@/truvoicer-base/components/widgets/CustomHtmlWidget";
 import ListingsFilterInterface from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsFilterInterface";
-import React from "react";
+import SocialWidgetInterface from "@/truvoicer-base/components/widgets/Social/SocialWidgetInterface";
 
 export const blockComponentsConfig = {
     components: {
@@ -104,13 +104,13 @@ export const blockComponentsConfig = {
             name: "listings_filters_block",
             component: ListingsFilterInterface
         },
-        social_block: {
-            name: "social_block",
-            component: ListingsFilterInterface
-        },
         saved_items_block: {
             name: "saved_items_block",
-            component: ListingsFilterInterface
+            component: UserSavedItemsBlock
+        },
+        social_block: {
+            name: "social_block",
+            component: SocialWidgetInterface
         },
     //     dashboard: {
     //         name: "dashboard",

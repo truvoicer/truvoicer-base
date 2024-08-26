@@ -41,7 +41,28 @@ export class ListingsManager extends ListingsManagerBase {
         return this.validateSearchParams();
 
     }
+    getSourceByType(type) {
+        switch (type) {
+            case 'internal':
+                return LISTINGS_BLOCK_SOURCE_WORDPRESS;
+            case 'external':
+                return LISTINGS_BLOCK_SOURCE_API;
+            default:
+                return false;
+        }
+    }
+    itemUserDataRequest(source, providers) {
+        switch (source) {
+            case LISTINGS_BLOCK_SOURCE_WORDPRESS:
+                return this.wpDataSource.getItemUserData(providers);
+            case LISTINGS_BLOCK_SOURCE_API:
+                return this.fetcherDataSource.getItemUserData(providers);
+            default:
+                console.warn('Invalid source...');
+                return false;
+        }
 
+    }
     getListingsPostsPerPage() {
         const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
         const postsPerPage = this.searchEngine?.searchContext?.query?.posts_per_page;

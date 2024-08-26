@@ -14,9 +14,8 @@ import {faHeart} from "@fortawesome/free-solid-svg-icons";
 import {faBehance, faDribbble, faFacebookF, faTwitter} from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import {getExtraDataValue} from "@/truvoicer-base/library/helpers/pages";
-import SocialShareWidget from "@/truvoicer-base/components/widgets/SocialShareWidget";
+import SocialShareWidget from "@/truvoicer-base/components/widgets/Social/SocialShareWidget";
 import PostNavigation from "@/truvoicer-base/components/widgets/post/PostNavigation";
-import SocialFollowWidget from "@/truvoicer-base/components/widgets/SocialFollowWidget";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {DISPLAY_AS_LIST} from "@/truvoicer-base/redux/constants/general_constants";
 

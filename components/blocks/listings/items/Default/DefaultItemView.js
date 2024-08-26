@@ -13,8 +13,7 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import BlogCategoryList from "@/truvoicer-base/components/widgets/BlogCategoryList";
 import PostNavigation from "@/truvoicer-base/components/widgets/post/PostNavigation";
-import SocialShareWidget from "@/truvoicer-base/components/widgets/SocialShareWidget";
-import SocialFollowWidget from "@/truvoicer-base/components/widgets/SocialFollowWidget";
+import SocialShareWidget from "@/truvoicer-base/components/widgets/Social/SocialShareWidget";
 
 const DefaultItemView = (props) => {
     const extraData = props.data?.extra_data;

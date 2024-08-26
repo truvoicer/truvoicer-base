@@ -21,41 +21,9 @@ export class DataSourceBase {
         return this.searchEngine;
     }
 
-    buildGroupedItemsListByProviderService(data) {
-        let providers = [];
-        data.forEach((item) => {
-            let findProviderIndex = providers.findIndex((provider) => {
-                return (
-                    provider.provider === item.provider &&
-                    provider.service === item?.service?.name
-                );
-            });
-            if (findProviderIndex === -1) {
-                providers.push({
-                    provider: item.provider,
-                    service: item?.service?.name,
-                    ids: [this.listingsEngine.extractItemId(item)]
-                });
-                return;
-            }
-            providers[findProviderIndex].ids.push(this.listingsEngine.extractItemId(item));
-        })
-        return providers;
-    }
-
-    async getUserItemsListAction(data) {
-        if (!Array.isArray(data) || data.length === 0) {
-            return false;
-        }
-        const session = {...store.getState().session};
-
-        if (!session[SESSION_AUTHENTICATED]) {
-            return;
-        }
-        const userId = session[SESSION_USER][SESSION_USER_ID]
+    getListingsDataForInternalUserItemDataRequest() {
 
         const listingsData = this.listingsEngine?.listingsContext?.listingsData;
-
         let providers = [];
         let listPositions = [];
         if (listingsData?.list_start) {
@@ -85,11 +53,22 @@ export class DataSourceBase {
                 });
             }
         }
-        providers = [
-            ...providers,
-            ...this.buildGroupedItemsListByProviderService(data),
-            ...this.buildGroupedItemsListByProviderService(ListingsEngine.getCustomItemsData(listPositions))
-        ];
+        return {
+            providers,
+            listPositions
+        };
+    }
+    async getUserItemDataRequest(providers) {
+        if (!Array.isArray(providers) || providers.length === 0) {
+            return false;
+        }
+        const session = {...store.getState().session};
+
+        if (!session[SESSION_AUTHENTICATED]) {
+            return;
+        }
+        const userId = session[SESSION_USER][SESSION_USER_ID]
+
 
         const requestData = {
             providers,
@@ -102,11 +81,13 @@ export class DataSourceBase {
             method: REQUEST_POST,
             protectedReq: true
         })
-        const responseData = await response.json();
-        console.log('response', responseData)
+        return await response.json();
 
+    }
+
+    userItemsDataListResponseHandler(responseData) {
+        console.log('response', responseData)
         this.searchEngine.setSavedItemsListAction(responseData?.savedItems || []);
         this.searchEngine.setItemRatingsListAction(responseData?.itemRatings || []);
     }
-
 }

@@ -21,6 +21,10 @@ import {REQUEST_POST} from "@/truvoicer-base/library/constants/request-constants
 import {getSiteSettings} from "@/truvoicer-base/library/api/wp/middleware";
 import {siteConfig} from "@/config/site-config";
 import store from "@/truvoicer-base/redux/store";
+import {SESSION_AUTHENTICATED, SESSION_USER, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
+import {ListingsEngine} from "@/truvoicer-base/library/listings/engine/listings-engine";
+import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
+import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
 
 export class FetcherDataSource extends DataSourceBase {
 
@@ -30,6 +34,51 @@ export class FetcherDataSource extends DataSourceBase {
         this.fetcherApiMiddleware = new FetcherApiMiddleware();
     }
 
+    async getItemUserData(data) {
+        if (!Array.isArray(data) || data.length === 0) {
+            return false;
+        }
+        console.log(data)
+        return  await this.getUserItemDataRequest(this.buildGroupedItemsListByProviderService(data, true))
+    }
+    async getUserItemsListAction(data) {
+        if (!Array.isArray(data) || data.length === 0) {
+            return false;
+        }
+
+        let {providers, listPositions} = this.getListingsDataForInternalUserItemDataRequest();
+        const response = await this.getUserItemDataRequest([
+            ...providers,
+            ...this.buildGroupedItemsListByProviderService(data),
+            ...this.buildGroupedItemsListByProviderService(ListingsEngine.getCustomItemsData(listPositions))
+        ])
+        this.userItemsDataListResponseHandler(response);
+    }
+    buildGroupedItemsListByProviderService(data, single = false) {
+        let providers = [];
+        data.forEach((item) => {
+            let findProviderIndex = providers.findIndex((provider) => {
+                return (
+                    provider.provider === item.provider &&
+                    provider.service === item?.service?.name
+                );
+            });
+            if (typeof this?.listingsEngine?.extractItemId !== "function") {
+                return;
+            }
+            const extractId = this.listingsEngine.extractItemId(item);
+            if (findProviderIndex === -1) {
+                providers.push({
+                    provider: item.provider,
+                    service: item?.service?.name,
+                    ids: [extractId]
+                });
+                return;
+            }
+            providers[findProviderIndex].ids.push(extractId);
+        })
+        return providers;
+    }
     getCategory(item = null) {
         return item?.service?.name || this.listingsEngine?.listingsContext?.listingsData?.api_listings_service;
     }

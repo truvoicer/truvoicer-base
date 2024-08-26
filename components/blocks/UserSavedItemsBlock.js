@@ -15,6 +15,8 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 import {buildDataKeyObject} from "@/truvoicer-base/library/helpers/wp-helpers";
 
 function UserSavedItemsBlock(props) {
+
+    console.log(props)
     const [tabData, setTabData] = useState({});
     const searchContext = useContext(SearchContext);
     const listingsContext = useContext(ListingsContext);
