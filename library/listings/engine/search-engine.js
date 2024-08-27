@@ -408,19 +408,37 @@ export class SearchEngine extends EngineBase {
     }
 
     setSavedItemsListAction(data) {
-        const searchState = this.searchContext;
-        const searchOperation = searchState.searchOperation;
-        const nextState = produce(searchState.savedItemsList, (draftState) => {
-            if ((searchOperation === SEARCH_REQUEST_NEW)) {
-                draftState.splice(0, draftState.length + 1);
+        if (!Array.isArray(data)) {
+            return;
+        }
+        if (!Array.isArray(this.searchContext.searchList)) {
+            return;
+        }
+        if (!this.searchContext.searchList.length) {
+            return;
+        }
+        const searchList = [...this.searchContext.searchList];
+
+
+        for (const item in data) {
+            if (!isNotEmpty(item?.item_id)) {
+                continue;
             }
-            data.map((item) => {
-                if (!this.isSavedItemAction(item.item_id, item.provider_name, item.category, item.user_id)) {
-                    draftState.push(item)
+            if (!isNotEmpty(item?.item_id)) {
+                continue;
+            }
+            const findItem = searchList.findIndex(searchItem => {
+                if (parseInt(searchItem.item_id) === parseInt(item.item_id)) {
+                    return searchItem;
                 }
-            })
-        })
-        this.updateContext({key: "savedItemsList", value: nextState})
+            });
+            if (findItem === -1) {
+                continue;
+            }
+            searchList[findItem].is_saved = true;
+        }
+
+        this.updateContext({key: "searchList", value: searchList})
     }
 
     setItemRatingsListAction(data) {

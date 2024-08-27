@@ -90,4 +90,5 @@ export class DataSourceBase {
         this.searchEngine.setSavedItemsListAction(responseData?.savedItems || []);
         this.searchEngine.setItemRatingsListAction(responseData?.itemRatings || []);
     }
+
 }
