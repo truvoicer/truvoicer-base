@@ -18,6 +18,7 @@ import {siteConfig} from "@/config/site-config";
 import {EngineBase} from "@/truvoicer-base/library/listings/engine/engine-base";
 import {ListingsManagerBase} from "@/truvoicer-base/library/listings/listings-manager-base";
 import {StateHelpers} from "@/truvoicer-base/library/helpers/state-helpers";
+import {tr} from "date-fns/locale";
 
 export class SearchEngine extends EngineBase {
     constructor(context) {
@@ -141,6 +142,9 @@ export class SearchEngine extends EngineBase {
 
     setSearchRequestStatusAction(status) {
         this.updateContext({key: "searchStatus", value: status})
+    }
+    setUserDataFetchStatusAction(status) {
+        this.updateContext({key: "userDataFetchStatus", value: status})
     }
     setSearchRequestOperationAction(operation) {
         this.updateContext({key: "searchOperation", value: operation})
@@ -407,54 +411,45 @@ export class SearchEngine extends EngineBase {
         return (currentPage * pageSize) < parseInt(providerTotalItems);
     }
 
-    setSavedItemsListAction(data) {
+    setSavedItemsListAction(data, searchList = []) {
         if (!Array.isArray(data)) {
             return;
         }
-        if (!Array.isArray(this.searchContext.searchList)) {
-            return;
-        }
-        if (!this.searchContext.searchList.length) {
-            return;
-        }
-        const searchList = [...this.searchContext.searchList];
-
-
-        for (const item in data) {
+        let cloneSearchList = [...searchList];
+        data.forEach(item => {
             if (!isNotEmpty(item?.item_id)) {
-                continue;
-            }
-            if (!isNotEmpty(item?.item_id)) {
-                continue;
+                return;
             }
             const findItem = searchList.findIndex(searchItem => {
-                if (parseInt(searchItem.item_id) === parseInt(item.item_id)) {
-                    return searchItem;
-                }
+                return searchItem.item_id == item.item_id;
             });
             if (findItem === -1) {
-                continue;
+                return;
             }
-            searchList[findItem].is_saved = true;
-        }
-
-        this.updateContext({key: "searchList", value: searchList})
+            cloneSearchList[findItem].is_saved = true;
+        });
+        return cloneSearchList;
     }
 
-    setItemRatingsListAction(data) {
-        const searchState = this.searchContext;
-        const searchOperation = searchState.searchOperation;
-        const nextState = produce(searchState.itemRatingsList, (draftState) => {
-            if ((searchOperation === SEARCH_REQUEST_NEW)) {
-                draftState.splice(0, draftState.length + 1);
+    setItemRatingsListAction(data, searchList = []) {
+        if (!Array.isArray(data)) {
+            return;
+        }
+
+        let cloneSearchList = [...searchList];
+        data.forEach(item => {
+            if (!isNotEmpty(item?.item_id)) {
+                return;
             }
-            data.map((item) => {
-                if (!this.getItemRatingDataAction(item.item_id, item.provider_name, item.category, item.user_id)) {
-                    draftState.push(item)
-                }
-            })
-        })
-        this.updateContext({key: "itemRatingsList", value: nextState})
+            const findItem = searchList.findIndex(searchItem => {
+                return searchItem.item_id == item.item_id;
+            });
+            if (findItem === -1) {
+                return;
+            }
+            cloneSearchList[findItem].rating = item || {}
+        });
+        return cloneSearchList;
     }
 
     isSavedItemAction(item_id, provider, category, user_id) {

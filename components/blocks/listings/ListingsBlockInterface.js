@@ -215,6 +215,25 @@ const ListingsBlockInterface = (props) => {
         listingsManager.searchEngine.searchContext.searchOperation,
     ]);
 
+    useEffect(() => {
+        if (!app[APP_LOADED]) {
+            return;
+        }
+        if (!listingsManager.listingsEngine.listingsContext.loaded) {
+            return;
+        }
+        if (!listingsManager.searchEngine.searchContext.userDataFetchStatus) {
+            return;
+        }
+        listingsManager.userDataRequestForList();
+
+    }, [
+        listingsManager.listingsEngine.listingsContext.loaded,
+        listingsManager.searchEngine.searchContext.initialRequestHasRun,
+        listingsManager.searchEngine.searchContext.searchStatus,
+        listingsManager.searchEngine.searchContext.searchOperation,
+    ]);
+
     return (
         <ListingsContext.Provider value={StateHelpers.getStateData(listingsContextUseState)}>
             <SearchContext.Provider value={StateHelpers.getStateData(searchContextUseState)}>

@@ -11,6 +11,7 @@ import {
 export const searchData = {
     searchStatus: SEARCH_STATUS_IDLE,
     searchOperation: SEARCH_REQUEST_IDLE,
+    userDataFetchStatus: SEARCH_STATUS_IDLE,
     searchEntity: null,
     initialRequestHasRun: false,
     extraData: {},

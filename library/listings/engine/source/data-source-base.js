@@ -6,6 +6,7 @@ import {buildWpApiUrl, protectedApiRequest} from "@/truvoicer-base/library/api/w
 import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
 import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 import {REQUEST_POST} from "@/truvoicer-base/library/constants/request-constants";
+import {SEARCH_STATUS_IDLE} from "@/truvoicer-base/redux/constants/search-constants";
 
 export class DataSourceBase {
 
@@ -74,7 +75,7 @@ export class DataSourceBase {
             providers,
             user_id: userId
         }
-        console.log('requestData', requestData)
+
         const response = await wpResourceRequest({
             endpoint: wpApiConfig.endpoints.savedItemsList,
             data: requestData,
@@ -86,9 +87,19 @@ export class DataSourceBase {
     }
 
     userItemsDataListResponseHandler(responseData) {
-        console.log('response', responseData)
-        this.searchEngine.setSavedItemsListAction(responseData?.savedItems || []);
-        this.searchEngine.setItemRatingsListAction(responseData?.itemRatings || []);
+
+        if (!Array.isArray(this.searchEngine.searchContext.searchList)) {
+            return;
+        }
+        if (!this.searchEngine.searchContext.searchList.length) {
+            return;
+        }
+        let searchList = [...this.searchEngine.searchContext.searchList];
+        searchList = this.searchEngine.setSavedItemsListAction(responseData?.savedItems || [], searchList);
+        searchList = this.searchEngine.setItemRatingsListAction(responseData?.itemRatings || [], searchList);
+
+        this.searchEngine.updateContext({key: "searchList", value: searchList})
+        this.searchEngine.setUserDataFetchStatusAction(SEARCH_STATUS_IDLE);
     }
 
 }

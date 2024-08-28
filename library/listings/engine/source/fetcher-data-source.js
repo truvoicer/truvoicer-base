@@ -42,15 +42,19 @@ export class FetcherDataSource extends DataSourceBase {
         console.log(buildGroups)
         return  await this.getUserItemDataRequest(buildGroups)
     }
-    async getUserItemsListAction(data) {
-        if (!Array.isArray(data) || data.length === 0) {
-            return false;
+    async getUserItemsListAction() {
+        if (!Array.isArray(this.searchEngine.searchContext.searchList)) {
+            return;
         }
+        if (!this.searchEngine.searchContext.searchList.length) {
+            return;
+        }
+        const searchList = [...this.searchEngine.searchContext.searchList];
 
         let {providers, listPositions} = this.getListingsDataForInternalUserItemDataRequest();
         const response = await this.getUserItemDataRequest([
             ...providers,
-            ...this.buildGroupedItemsListByProviderService(data),
+            ...this.buildGroupedItemsListByProviderService(searchList),
             ...this.buildGroupedItemsListByProviderService(ListingsEngine.getCustomItemsData(listPositions))
         ])
         this.userItemsDataListResponseHandler(response);
@@ -283,7 +287,7 @@ export class FetcherDataSource extends DataSourceBase {
         const categoryResponseKey = fetcherApiConfig.responseKeys.category;
         const providerResponseKey = fetcherApiConfig.responseKeys.provider;
 
-        this.getUserItemsListAction(results, data[providerResponseKey], data[categoryResponseKey])
+        // this.getUserItemsListAction(results, data[providerResponseKey], data[categoryResponseKey])
         // if (
         //     isNotEmpty(data?.[categoryResponseKey]) &&
         //     isNotEmpty(data?.[providerResponseKey])
@@ -308,6 +312,8 @@ export class FetcherDataSource extends DataSourceBase {
         if (completed) {
             this.searchEngine.setSearchRequestStatusAction(SEARCH_STATUS_IDLE);
             this.searchEngine.setSearchRequestOperationAction(SEARCH_REQUEST_IDLE);
+
+            this.searchEngine.setUserDataFetchStatusAction(SEARCH_STATUS_STARTED);
         }
     }
     buildProviderPostData(providers = []) {

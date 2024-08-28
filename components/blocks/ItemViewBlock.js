@@ -17,8 +17,11 @@ import {SESSION_AUTHENTICATED, SESSION_IS_AUTHENTICATING} from "@/truvoicer-base
 
 const ItemViewBlock = (props) => {
     const {session} = props;
-    const [savedItems, setSavedItems] = useState([]);
-    const [itemRatings, setItemRatings] = useState([]);
+    const [userItemData, setUserItemData] = useState({
+        is_saved: false,
+        rating: {},
+    });
+
 
     const templateManager = new TemplateManager(useContext(TemplateContext));
     const listingsGrid = new ListingsGrid();
@@ -58,12 +61,34 @@ const ItemViewBlock = (props) => {
             listingsManager.getSourceByType(props.item.type),
             [props.item.data]
         )
+        let userData = {};
         if (Array.isArray(responseData?.savedItems) && responseData?.savedItems.length > 0) {
-            setSavedItems(responseData.savedItems);
+            const findSavedItem = responseData.savedItems.find((savedItem) => {
+                return (
+                    isNotEmpty(savedItem?.item_id) &&
+                    isNotEmpty(props.item.data?.item_id) &&
+                    savedItem.item_id == props.item.data.item_id
+                );
+            })
+            if (findSavedItem) {
+                userData.is_saved = true;
+            }
         }
         if (Array.isArray(responseData?.itemRatings) && responseData?.itemRatings.length > 0) {
-            setItemRatings(responseData.itemRatings);
+            const findRating = responseData.itemRatings.find((savedItem) => {
+                return (
+                    isNotEmpty(savedItem?.item_id) &&
+                    isNotEmpty(props.item.data?.item_id) &&
+                    savedItem.item_id == props.item.data.item_id
+                );
+            })
+
+            if (findRating) {
+                userData.rating = findRating;
+            }
         }
+        console.log(userData);
+        setUserItemData(userData);
     }
 
     const getItemView = (item) => {
@@ -85,14 +110,7 @@ const ItemViewBlock = (props) => {
                 data: props.data,
                 category: props.item.category,
                 postNav: props.postNavData,
-                isSaved: !!savedItems.find((savedItem) => {
-                    return (
-                        isNotEmpty(savedItem?.item_id) &&
-                        isNotEmpty(item?.item_id) &&
-                        parseInt(savedItem.item_id) === parseInt(item.item_id)
-                    )
-                }),
-                itemRating: itemRatings.find((itemRating) => itemRating.item_id === item.item_id)?.rating || 0,
+                userItemData: userItemData,
             }
         });
 

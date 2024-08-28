@@ -42,15 +42,20 @@ export class WpDataSource extends DataSourceBase {
         }
         return  await this.getUserItemDataRequest(this.buildGroupedItemsListByProviderService(data))
     }
-    async getUserItemsListAction(data) {
-        if (!Array.isArray(data) || data.length === 0) {
-            return false;
+
+    async getUserItemsListAction() {
+        if (!Array.isArray(this.searchContext.searchList)) {
+            return;
         }
+        if (!this.searchContext.searchList.length) {
+            return;
+        }
+        const searchList = [...this.searchContext.searchList];
 
         let {providers, listPositions} = this.getListingsDataForInternalUserItemDataRequest();
         const response = await this.getUserItemDataRequest([
             ...providers,
-            ...this.buildGroupedItemsListByProviderService(data),
+            ...this.buildGroupedItemsListByProviderService(searchList),
             ...this.buildGroupedItemsListByProviderService(ListingsEngine.getCustomItemsData(listPositions))
         ])
 

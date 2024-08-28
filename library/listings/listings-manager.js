@@ -61,7 +61,22 @@ export class ListingsManager extends ListingsManagerBase {
                 console.warn('Invalid source...');
                 return false;
         }
-
+    }
+    userDataRequestForList() {
+        const userDataFetchStatus = this.searchEngine.searchContext.userDataFetchStatus;
+        if (userDataFetchStatus !== SEARCH_STATUS_STARTED) {
+            return;
+        }
+        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
+        switch (listingsDataState?.source) {
+            case LISTINGS_BLOCK_SOURCE_WORDPRESS:
+                return this.wpDataSource.getUserItemsListAction();
+            case LISTINGS_BLOCK_SOURCE_API:
+                return this.fetcherDataSource.getUserItemsListAction();
+            default:
+                console.warn('Invalid source...');
+                return false;
+        }
     }
     getListingsPostsPerPage() {
         const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
@@ -110,6 +125,7 @@ export class ListingsManager extends ListingsManagerBase {
         const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
         const searchOperation = this.searchEngine.searchContext.searchOperation;
         const searchStatus = this.searchEngine.searchContext.searchStatus;
+
         if (![SEARCH_REQUEST_NEW, SEARCH_REQUEST_APPEND].includes(searchOperation)) {
             return;
         }
@@ -136,6 +152,7 @@ export class ListingsManager extends ListingsManagerBase {
         const searchOperation = this.searchEngine.searchContext.searchOperation;
         const searchStatus = this.searchEngine.searchContext.searchStatus;
 
+        const userDataFetchStatus = this.searchEngine.searchContext.userDataFetchStatus;
         if (![SEARCH_REQUEST_NEW, SEARCH_REQUEST_APPEND].includes(searchOperation)) {
             return;
         }
@@ -143,6 +160,9 @@ export class ListingsManager extends ListingsManagerBase {
             return;
         }
 
+        if ( userDataFetchStatus !== SEARCH_STATUS_IDLE) {
+            return;
+        }
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 await this.wpDataSource.runSearch()
