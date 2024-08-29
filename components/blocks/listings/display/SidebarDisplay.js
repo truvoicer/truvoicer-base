@@ -1,25 +1,14 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
-import {formatDate, isNotEmpty, isObjectEmpty} from "@/truvoicer-base/library/utils";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
-import {
-    DISPLAY_AS,
-} from "@/truvoicer-base/redux/constants/general_constants";
-import Slider from "react-slick";
-import ListingsItemsContext from "@/truvoicer-base/components/blocks/listings/contexts/ListingsItemsContext";
-import {SESSION_USER, SESSION_USER_EMAIL, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
-import Link from "next/link";
+import {SESSION_USER} from "@/truvoicer-base/redux/constants/session-constants";
 import {connect} from "react-redux";
-import {getPostCategoryUrl, getPostItemUrl} from "@/truvoicer-base/library/helpers/posts";
-import {SEARCH_STATUS_COMPLETED} from "@/truvoicer-base/redux/constants/search-constants";
-import ListingsSortBar from "@/truvoicer-base/components/blocks/listings/components/ListingsSortBar";
 import Paginate from "@/truvoicer-base/components/blocks/listings/pagination/ListingsPaginate";
 import ListingsInfiniteScroll from "@/truvoicer-base/components/blocks/listings/pagination/ListingsInfiniteScroll";
 import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
-import ListingsItemsLoader from "@/truvoicer-base/components/blocks/listings/items/ListingsItemsLoader";
 
 const Container = ({children}) => {
 
@@ -44,14 +33,22 @@ const SidebarDisplay = (props) => {
 
     return (
         <>
-            {searchContext?.searchList?.length > 0 && searchContext?.searchStatus === SEARCH_STATUS_COMPLETED ?
+            {searchContext?.searchList?.length > 0 ?
                 <div className="list-post-block sidebar">
-                    {templateManager.render(
-                        <ListingsItemsLoader
-                            containerComponent={Container}
-                            containerItemComponent={ContainerItem}
-                        />
-                    )}
+                    <>
+                        {listingsContext?.listingsData?.load_more_type === "pagination" &&
+                            templateManager.render(
+                                <Paginate
+                                    containerComponent={Container}
+                                    containerItemComponent={ContainerItem}
+                                    showIndicator={false}
+                                />
+                            )
+                        }
+                        {listingsContext?.listingsData?.load_more_type === "infinite_scroll" &&
+                            templateManager.render(<ListingsInfiniteScroll/>)
+                        }
+                    </>
                 </div>
                 :
                 templateManager.render(<LoaderComponent key={"loader"}/>)

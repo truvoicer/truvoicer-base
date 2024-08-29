@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {formatDate, isNotEmpty, isSet} from "@/truvoicer-base/library/utils";
+import {formatDate, isNotEmpty} from "@/truvoicer-base/library/utils";
 import {
     SESSION_USER,
     SESSION_USER_EMAIL,
@@ -10,32 +10,16 @@ import Link from "next/link";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
-import {faClock, faMapMarker} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
 import SavedItemToggle from "@/truvoicer-base/components/blocks/listings/widgets/SavedItemToggle";
-import Image from "next/image";
-import {getPostCategoryUrl, getPostItemUrl} from "@/truvoicer-base/library/helpers/posts";
+import ItemRatings from "@/truvoicer-base/components/blocks/listings/widgets/ItemRatings";
 
 const DefaultItemList = (props) => {
+    const {data} = props;
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const itemId = listingsManager.listingsEngine.extractItemId(props.data);
-
-    const savedItem = listingsManager.searchEngine.isSavedItemAction(
-        itemId,
-        props?.data?.provider,
-        props.searchCategory,
-        props.user[SESSION_USER_ID]
-    );
-
-    // const ratingsData = listingsManager.searchEngine.getItemRatingDataAction(
-    //     itemId,
-    //     props?.data?.provider,
-    //     props.searchCategory,
-    //     props.user[SESSION_USER_ID]
-    // );
 
     const linkProps = listingsManager.getListingsEngine().getListingsItemLinkProps({
         displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
@@ -55,17 +39,17 @@ const DefaultItemList = (props) => {
     })
 
     return (
-        <div className="post-block-style post-float clearfix">
+        <div className="post-block-style clearfix d-flex gap-3 justify-content-start align-items-center">
             <div className="post-thumb">
                 <Link {...linkProps}>
                     <img
                         className="img-fluid"
-                        src={props.data.item_image ? props.data.item_image : "/img/pticon.png"}
+                        src={data.item_image ? data.item_image : "/img/pticon.png"}
                         alt=""
                     />
                 </Link>
                 {props.data.provider && (
-                    <Link className="post-cat" {...linkProps}>{props.data.provider}</Link>
+                    <Link className="post-cat" {...linkProps}>{data.provider}</Link>
                 )}
             </div>
 
@@ -74,13 +58,34 @@ const DefaultItemList = (props) => {
                 <h2 className="post-title title-small">
 
                     <Link {...linkProps}>
-                        {props?.data?.item_title || ""}
+                        {data?.item_title || ""}
                     </Link>
                 </h2>
-                <div className="post-meta">
+                <div className="post-meta d-flex align-items-center gap-1">
                         <span
-                            className="post-date">{isNotEmpty(props?.data?.item_date) ? formatDate(props.data.item_date) : ""}</span>
+                            className="me-0 pe-0 post-date">{isNotEmpty(data?.item_date) ? formatDate(data.item_date) : ""}</span>
                 </div>
+                <div className="d-flex align-items-center gap-1">
+                    <SavedItemToggle
+                        provider={props.data.provider}
+                        category={props.searchCategory}
+                        item_id={itemId}
+                        user_id={props.user[SESSION_USER_ID]}
+                        savedItem={data?.is_saved || false}
+                    />
+                    <ItemRatings
+                        provider={props.data.provider}
+                        category={props.searchCategory}
+                        item_id={itemId}
+                        user_id={props.user[SESSION_USER_ID]}
+                        ratingsData={{
+                            rating: data?.rating?.overall_rating || 0,
+                            total_users_rated: data?.rating?.total_users_rated || 0
+                        }}
+                        showUserCount={false}
+                    />
+                </div>
+
             </div>
         </div>
     );

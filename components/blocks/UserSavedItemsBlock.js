@@ -14,51 +14,16 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {buildDataKeyObject} from "@/truvoicer-base/library/helpers/wp-helpers";
 
-function UserSavedItemsBlock(props) {
+function UserSavedItemsBlock({session, data, ...otherProps}) {
 
-    console.log(props)
     const [tabData, setTabData] = useState({});
     const searchContext = useContext(SearchContext);
     const listingsContext = useContext(ListingsContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
-    const buildSavedItemsList = (data) => {
-        let tabDataObject = {};
-        data.map((savedItem) => {
-            if (!isSet(tabDataObject[savedItem.provider_name])) {
-                tabDataObject[savedItem.provider_name] = {}
-                tabDataObject[savedItem.provider_name].items = [];
-            }
-            tabDataObject[savedItem.provider_name].category = savedItem.category;
-            tabDataObject[savedItem.provider_name].name = savedItem.provider_name;
-            tabDataObject[savedItem.provider_name].label = uCaseFirst(savedItem.provider_name);
-            tabDataObject[savedItem.provider_name].items.push(savedItem);
-            if (!Array.isArray(tabDataObject[savedItem.provider_name].items_response)) {
-                tabDataObject[savedItem.provider_name].items_response = [];
-            }
-            const internalItemsData = getInternalItemsData(savedItem);
-            if (internalItemsData) {
-                tabDataObject[savedItem.provider_name].items_response.push(internalItemsData)
-            }
 
-        })
-        return tabDataObject;
-    }
+    console.log('UserSavedItemsBlock', data);
 
-    const getInternalItemsData = (item) => {
-        if (item?.provider_name !== siteConfig.internalProviderName) {
-            return false;
-        }
-        if (Array.isArray(item?.data?.api_data_keys_list) &&
-            item.data.api_data_keys_list.length > 0
-        ) {
-            return buildDataKeyObject(
-                item.data.api_data_keys_list,
-                parseInt(item.item_id)
-            );
-        }
-        return false;
-    }
     async function getUserSavedItems(isCancelled = false) {
         const response = await protectedApiRequest(
             buildWpApiUrl(wpApiConfig.endpoints.savedItemsListByUser),
@@ -70,11 +35,6 @@ function UserSavedItemsBlock(props) {
         }
     }
 
-    useEffect(() => {
-        setTabData(tabData => {
-            return buildSavedItemsList(searchContext?.savedItemsList);
-        });
-    }, [searchContext?.savedItemsList])
 
     useEffect(() => {
         let isCancelled = false;
@@ -86,22 +46,8 @@ function UserSavedItemsBlock(props) {
             isCancelled = true;
         }
     }, [props.session[SESSION_USER][SESSION_USER_ID]])
-
-
     return (
         <div className="job_listing_area pt-5">
-            <div className={"listings-block job_lists mt-0"}>
-                <div className="container">
-                    <div className="row justify-content-center">
-                        <div className="col-md-12 mb-5" data-aos="fade">
-                            <h2>My Saved Items</h2>
-                            {!isObjectEmpty(tabData) &&
-                                templateManager.render(<SavedItemsVerticalTabs data={tabData}/>)
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 }

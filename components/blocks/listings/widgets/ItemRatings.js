@@ -11,6 +11,7 @@ import {faStar as fullStar} from "@fortawesome/free-solid-svg-icons";
 import {faStar} from "@fortawesome/free-regular-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
+import {tr} from "date-fns/locale";
 
 const sprintf = require('sprintf-js').sprintf;
 
@@ -20,6 +21,7 @@ const ItemRatings = ({
     item_id,
     user_id,
     ratingsData = {},
+    showUserCount = true
 }) => {
     const [rating, setRating] = useState(0);
     const [ratingCount, setRatingCount] = useState(0);
@@ -107,7 +109,9 @@ const ItemRatings = ({
                     {item}
                 </React.Fragment>
             ))}
-            <span className="review item-ratings--reviews">{sprintf(" (%d users rated)", ratingCount)}</span>
+            {showUserCount &&
+                <span className="review item-ratings--reviews">{sprintf(" (%d users rated)", ratingCount)}</span>
+            }
         </div>
     );
 }

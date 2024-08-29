@@ -9,6 +9,7 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import WpDataLoader from "@/truvoicer-base/components/loaders/WpDataLoader";
 import {UserAccountHelpers} from "@/truvoicer-base/library/user-account/UserAccountHelpers";
+import UserSavedItemsBlock from "@/truvoicer-base/components/blocks/UserSavedItemsBlock";
 
 function WidgetBoardBlock(props) {
     const {data} = props;
@@ -30,6 +31,8 @@ function WidgetBoardBlock(props) {
                 return templateManager.render(<UserProfileWidget {...widgetProps} />);
             case 'form_progress_widget_block':
                 return templateManager.render(<FormsProgressWidget {...widgetProps} />);
+            case 'saved_items_widget_block':
+                return templateManager.render(<UserSavedItemsBlock {...widgetProps} />);
             case 'tabs_block':
                 return templateManager.render(<TabsBlock {...widgetProps} />);
             default:
