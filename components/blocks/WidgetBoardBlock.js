@@ -10,6 +10,7 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 import WpDataLoader from "@/truvoicer-base/components/loaders/WpDataLoader";
 import {UserAccountHelpers} from "@/truvoicer-base/library/user-account/UserAccountHelpers";
 import UserSavedItemsBlock from "@/truvoicer-base/components/blocks/UserSavedItemsBlock";
+import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
 
 function WidgetBoardBlock(props) {
     const {data} = props;
@@ -22,22 +23,16 @@ function WidgetBoardBlock(props) {
             parentAccessControl: data?.access_control,
             data: widgetData
         }
-        switch (widgetData?.id) {
-            case 'user_stats_widget_block':
-                return templateManager.render(<UserStatsWidget {...widgetProps} />);
-            case 'user_social_widget_block':
-                return templateManager.render(<UserSocialWidget {...widgetProps} />);
-            case 'user_profile_widget_block':
-                return templateManager.render(<UserProfileWidget {...widgetProps} />);
-            case 'form_progress_widget_block':
-                return templateManager.render(<FormsProgressWidget {...widgetProps} />);
-            case 'saved_items_widget_block':
-                return templateManager.render(<UserSavedItemsBlock {...widgetProps} />);
-            case 'tabs_block':
-                return templateManager.render(<TabsBlock {...widgetProps} />);
-            default:
-                return null;
+        if (!widgetData?.id) {
+            console.warn('Widget data is missing id', widgetData);
+            return null;
         }
+        const findComponentConfig = blockComponentsConfig.components[widgetData.id];
+        if (findComponentConfig?.component) {
+            const Component = findComponentConfig.component;
+            return templateManager.render(<Component {...widgetProps} />);
+        }
+        return null;
     }
 
     function getBlockContainerClasses() {

@@ -21,6 +21,11 @@ import CarouselInterface from "@/truvoicer-base/components/blocks/carousel/Carou
 import CustomHtmlWidget from "@/truvoicer-base/components/widgets/CustomHtmlWidget";
 import ListingsFilterInterface from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsFilterInterface";
 import SocialWidgetInterface from "@/truvoicer-base/components/widgets/Social/SocialWidgetInterface";
+import UserStatsWidget from "@/truvoicer-base/components/widgets/UserStatsWidget";
+import UserSocialWidget from "@/truvoicer-base/components/widgets/UserSocialWidget";
+import UserProfileWidget from "@/truvoicer-base/components/widgets/user/profile/UserProfileWidget";
+import FormsProgressWidget from "@/truvoicer-base/components/widgets/FormsProgressWidget";
+import React from "react";
 
 export const blockComponentsConfig = {
     components: {
@@ -104,14 +109,27 @@ export const blockComponentsConfig = {
             name: "listings_filters_block",
             component: ListingsFilterInterface
         },
-        saved_items_block: {
-            name: "saved_items_block",
-            component: UserSavedItemsBlock
-        },
         social_block: {
             name: "social_block",
             component: SocialWidgetInterface
         },
+        user_stats_widget_block: {
+            component: UserStatsWidget,
+            name: "user_stats_widget_block"
+        },
+        user_social_widget_block: {
+            component: UserSocialWidget,
+            name: "user_social_widget_block"
+        },
+        user_profile_widget_block: {
+            component: UserProfileWidget,
+            name: "user_profile_widget_block"
+        },
+        form_progress_widget_block: {
+            component: FormsProgressWidget,
+            name: "form_progress_widget_block"
+        },
+
     //     dashboard: {
     //         name: "dashboard",
     //         component: UserDashboard

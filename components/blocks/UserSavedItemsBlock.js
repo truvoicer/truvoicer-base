@@ -27,7 +27,7 @@ function UserSavedItemsBlock({session, data, ...otherProps}) {
     async function getUserSavedItems(isCancelled = false) {
         const response = await protectedApiRequest(
             buildWpApiUrl(wpApiConfig.endpoints.savedItemsListByUser),
-            {"user_id": props.session[SESSION_USER][SESSION_USER_ID]}
+            {"user_id": session[SESSION_USER][SESSION_USER_ID]}
         )
         if (!isCancelled) {
             listingsManager.searchEngine.setSearchRequestOperationAction(SEARCH_REQUEST_NEW);
@@ -38,14 +38,14 @@ function UserSavedItemsBlock({session, data, ...otherProps}) {
 
     useEffect(() => {
         let isCancelled = false;
-        if (!isNotEmpty(props.session[SESSION_USER][SESSION_USER_ID])) {
+        if (!isNotEmpty(session[SESSION_USER][SESSION_USER_ID])) {
             return;
         }
         getUserSavedItems(isCancelled);
         return () => {
             isCancelled = true;
         }
-    }, [props.session[SESSION_USER][SESSION_USER_ID]])
+    }, [session[SESSION_USER][SESSION_USER_ID]])
     return (
         <div className="job_listing_area pt-5">
         </div>
