@@ -30,6 +30,7 @@ import {
     LISTINGS_REQ_OP_POST_LIST
 } from "@/truvoicer-base/redux/constants/listings-constants";
 import {ListingsEngine} from "@/truvoicer-base/library/listings/engine/listings-engine";
+import {REQUEST_POST} from "@/truvoicer-base/library/constants/request-constants";
 
 export class WpDataSource extends DataSourceBase {
     constructor(listingsEngine, searchEngine) {
@@ -342,7 +343,13 @@ export class WpDataSource extends DataSourceBase {
             this.searchEngine.setSearchRequestOperationAction(SEARCH_REQUEST_IDLE);
         }
     }
-
+    async savedItemsRequest() {
+        return await wpResourceRequest({
+            endpoint: `${wpApiConfig.endpoints.savedItemsList}`,
+            method: REQUEST_POST,
+            protectedRequest: true
+        });
+    }
     setPostsBlocksDataAction(data) {
         switch (data?.wordpress_data_source) {
             case LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST:

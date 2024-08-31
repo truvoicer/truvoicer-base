@@ -1,7 +1,7 @@
 import {ListingsManagerBase} from "@/truvoicer-base/library/listings/listings-manager-base";
 import {isEmpty, isNotEmpty, isObject, isObjectEmpty, isSet} from "@/truvoicer-base/library/utils";
 import {
-    LISTINGS_BLOCK_SOURCE_API,
+    LISTINGS_BLOCK_SOURCE_API, LISTINGS_BLOCK_SOURCE_SAVED_ITEMS,
     LISTINGS_BLOCK_SOURCE_WORDPRESS, LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST, LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {
@@ -25,6 +25,7 @@ import {SESSION_AUTHENTICATED, SESSION_USER, SESSION_USER_ID} from "@/truvoicer-
 import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
 import {WpDataSource} from "@/truvoicer-base/library/listings/engine/source/wp-data-source";
 import {FetcherDataSource} from "@/truvoicer-base/library/listings/engine/source/fetcher-data-source";
+import {da} from "date-fns/locale";
 
 export class ListingsManager extends ListingsManagerBase {
 
@@ -89,7 +90,7 @@ export class ListingsManager extends ListingsManagerBase {
         }
         return siteConfig.defaultSearchLimit;
     }
-    setListingsBlocksDataAction(data) {
+    async setListingsBlocksDataAction(data) {
         //
         // if (!isObjectEmpty(listingsContext?.listingsData)) {
         //     return;
@@ -104,6 +105,11 @@ export class ListingsManager extends ListingsManagerBase {
         }
 
         switch (cloneData?.source) {
+            case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
+                const response = await this.wpDataSource.savedItemsRequest()
+                const data = await response.json();
+                console.log('savedItemsRequest', data)
+                break;
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 this.wpDataSource.dataInit(cloneData);
                 break;
@@ -134,6 +140,8 @@ export class ListingsManager extends ListingsManagerBase {
         }
 
         switch (listingsDataState?.source) {
+            case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
+                break;
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 await this.wpDataSource.prepareSearch();
                 break;
@@ -164,6 +172,12 @@ export class ListingsManager extends ListingsManagerBase {
             return;
         }
         switch (listingsDataState?.source) {
+            case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
+                // await this.fetcherDataSource.fet(
+                //     data?.savedItems
+                // )
+                console.log('runSearchsaveditems')
+                break;
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 await this.wpDataSource.runSearch()
                 break;
@@ -196,6 +210,8 @@ export class ListingsManager extends ListingsManagerBase {
                 return this.wpDataSource.validateInitData();
             case LISTINGS_BLOCK_SOURCE_API:
                 return this.fetcherDataSource.validateInitData();
+            case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
+                return true;
             default:
                 return false;
         }
@@ -228,6 +244,7 @@ export class ListingsManager extends ListingsManagerBase {
 
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
+            case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
                 return true;
             case LISTINGS_BLOCK_SOURCE_API:
                 return await this.fetcherDataSource.setListingsProviders(
@@ -245,6 +262,8 @@ export class ListingsManager extends ListingsManagerBase {
                 return this.wpDataSource.validateWpPostsRequestParams();
             case LISTINGS_BLOCK_SOURCE_API:
                 return this.fetcherDataSource.validateSearchParams();
+            case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
+                return true;
             default:
                 console.warn('Invalid listings source...')
                 return false;

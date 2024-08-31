@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
-    DISPLAY_AS,
+    DISPLAY_AS, LISTINGS_BLOCK_SOURCE_API, LISTINGS_BLOCK_SOURCE_SAVED_ITEMS, LISTINGS_BLOCK_SOURCE_WORDPRESS,
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {ListingsContext, listingsData} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext, searchData} from "@/truvoicer-base/library/listings/contexts/SearchContext";
@@ -10,7 +10,7 @@ import {
 import {isNotEmpty, scrollToRef} from "@/truvoicer-base/library/utils";
 import GridItems from "@/truvoicer-base/components/blocks/listings/items/GridItems";
 import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
-import {SESSION_IS_AUTHENTICATING} from "@/truvoicer-base/redux/constants/session-constants";
+import {SESSION_AUTHENTICATED, SESSION_IS_AUTHENTICATING} from "@/truvoicer-base/redux/constants/session-constants";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {connect} from "react-redux";
 import {ListingsManagerBase} from "@/truvoicer-base/library/listings/listings-manager-base";
@@ -88,9 +88,9 @@ const ListingsBlockInterface = (props) => {
 
     function getListingService(data) {
         switch (data?.source) {
-            case 'api':
+            case LISTINGS_BLOCK_SOURCE_API:
                 return data?.api_listings_service;
-            case 'wordpress':
+            case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 if (Array.isArray(data?.listings_category_id)) {
                     return data.listings_category_id[0]?.slug
                 }
@@ -137,9 +137,52 @@ const ListingsBlockInterface = (props) => {
         }
         return extraData;
     }
+    function getAccessControl() {
+        switch (data?.source) {
+            case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
+                return 'protected';
+            default:
+                return data?.access_control || 'public';
+        }
+    }
+    const accessControl = getAccessControl();
 
     useEffect(() => {
         if (!app[APP_LOADED]) {
+            return;
+        }
+        if (accessControl !== 'protected') {
+            return;
+        }
+        if (session[SESSION_IS_AUTHENTICATING]) {
+            return;
+        }
+        if (!session[SESSION_AUTHENTICATED]) {
+            return;
+        }
+        if (!isNotEmpty(data?.source)) {
+            return;
+        }
+        if (listingsManager.listingsEngine.listingsContext.loaded) {
+            return;
+        }
+        console.log(data, accessControl, session[SESSION_AUTHENTICATED], session)
+        listingsManager.init(data);
+        setProviders();
+        listingsManager.listingsEngine.updateContext({key: 'loaded', value: true})
+    }, [
+        app[APP_LOADED],
+        session[SESSION_IS_AUTHENTICATING],
+        session[SESSION_AUTHENTICATED],
+        data?.source,
+        listingsManager.listingsEngine.listingsContext.loaded
+    ])
+
+    useEffect(() => {
+        if (!app[APP_LOADED]) {
+            return;
+        }
+        if (accessControl !== 'public') {
             return;
         }
         if (session[SESSION_IS_AUTHENTICATING]) {

@@ -27,7 +27,6 @@ export const wpApiConfig = {
         saveItem: protectedEndpoint + "/users/item/save",
         saveItemRating: protectedEndpoint + "/users/item/rating/save",
         savedItemsList: protectedEndpoint + "/users/item/list",
-        savedItemsListByUser: protectedEndpoint + "/users/item/list-by-user",
         commentsByItemId: publicEndpoint + "/comments/list/%(category)s/%(provider)s/%(item_id)s",
         commentsByUserId: publicEndpoint + "/comments/user/%(data.user_id)d/list",
         createComment: protectedEndpoint + "/comments/create",

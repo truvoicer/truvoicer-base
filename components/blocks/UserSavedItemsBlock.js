@@ -25,14 +25,14 @@ function UserSavedItemsBlock({session, data, ...otherProps}) {
     console.log('UserSavedItemsBlock', data);
 
     async function getUserSavedItems(isCancelled = false) {
-        const response = await protectedApiRequest(
-            buildWpApiUrl(wpApiConfig.endpoints.savedItemsListByUser),
-            {"user_id": session[SESSION_USER][SESSION_USER_ID]}
-        )
-        if (!isCancelled) {
-            listingsManager.searchEngine.setSearchRequestOperationAction(SEARCH_REQUEST_NEW);
-            listingsManager.searchEngine.setSavedItemsListAction(response.data)
-        }
+        // const response = await protectedApiRequest(
+        //     buildWpApiUrl(wpApiConfig.endpoints.savedItemsListByUser),
+        //     {"user_id": session[SESSION_USER][SESSION_USER_ID]}
+        // )
+        // if (!isCancelled) {
+        //     listingsManager.searchEngine.setSearchRequestOperationAction(SEARCH_REQUEST_NEW);
+        //     listingsManager.searchEngine.setSavedItemsListAction(response.data)
+        // }
     }
 
 

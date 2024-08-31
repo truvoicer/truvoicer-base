@@ -205,6 +205,9 @@ export class FetcherDataSource extends DataSourceBase {
         return listingsProviders
     }
 
+    async fet(itemList  = []) {
+        console.log(itemList)
+    }
     async runSearch() {
         await this.runFetcherApiListingsSearch()
     }
