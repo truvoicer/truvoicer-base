@@ -33,6 +33,9 @@ export class ListingsManager extends ListingsManagerBase {
         super(listingsContext, searchContext);
         this.initDataSources();
     }
+    canInitialise() {
+
+    }
     init(data) {
          this.setListingsBlocksDataAction(data);
 
@@ -105,16 +108,10 @@ export class ListingsManager extends ListingsManagerBase {
         }
 
         switch (cloneData?.source) {
-            case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
-                const response = await this.wpDataSource.savedItemsRequest()
-                const data = await response.json();
-                console.log('savedItemsRequest', data)
-                break;
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 this.wpDataSource.dataInit(cloneData);
                 break;
             case LISTINGS_BLOCK_SOURCE_API:
-            default:
                 this.fetcherDataSource.dataInit(cloneData);
                 break;
         }
@@ -141,6 +138,9 @@ export class ListingsManager extends ListingsManagerBase {
 
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
+                const response = await this.wpDataSource.savedItemsRequest()
+                const data = await response.json();
+                console.log('savedItemsRequests', data)
                 break;
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 await this.wpDataSource.prepareSearch();

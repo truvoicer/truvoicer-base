@@ -347,7 +347,7 @@ export class WpDataSource extends DataSourceBase {
         return await wpResourceRequest({
             endpoint: `${wpApiConfig.endpoints.savedItemsList}`,
             method: REQUEST_POST,
-            protectedRequest: true
+            protectedReq: true
         });
     }
     setPostsBlocksDataAction(data) {

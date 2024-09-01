@@ -63,8 +63,14 @@ function getAuthHeader(protectedReq = false) {
     let token;
     if (protectedReq) {
         token = getProtectedSessionToken();
+        if (!token) {
+            return false;
+        }
     } else {
         token = getPublicSessionToken();
+        if (!token) {
+            return false;
+        }
     }
 
     if (!token) {
