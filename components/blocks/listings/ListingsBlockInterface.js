@@ -150,7 +150,7 @@ const ListingsBlockInterface = (props) => {
     function validateAccessControl(accessControlReq) {
         switch (accessControlReq) {
             case 'protected':
-                if (accessControl !== 'protected') {
+                if (accessControl === 'protected') {
                     return true;
                 }
                 break;
@@ -175,24 +175,23 @@ const ListingsBlockInterface = (props) => {
         if (listingsManager.listingsEngine.listingsContext.loaded) {
             return;
         }
+        if (!validateAccessControl(accessControlReq)) {
+            return;
+        }
+
         switch (accessControlReq) {
             case 'protected':
-                if (!validateAccessControl('protected')) {
-                    return false;
-                }
                 if (!session[SESSION_AUTHENTICATED]) {
-                    return false;
-                }
-                break;
-            case 'public':
-                if (accessControl !== 'public') {
                     return;
                 }
                 break;
         }
-        return true;
+        listingsManager.init(data);
+        setProviders();
+        listingsManager.listingsEngine.updateContext({key: 'loaded', value: true})
 
     }
+
     function canValidate(accessControlReq) {
         if (!app[APP_LOADED]) {
             return;
@@ -200,19 +199,15 @@ const ListingsBlockInterface = (props) => {
         if (!listingsManager.listingsEngine.listingsContext.loaded) {
             return;
         }
-        switch (accessControlReq) {
-            case 'protected':
-                if (accessControl !== 'protected') {
-                    return;
-                }
-                break;
-            case 'public':
-                if (accessControl !== 'public') {
-                    return;
-                }
-                break;
+
+
+        if (!validateAccessControl(accessControlReq)) {
+            return;
         }
-        return true;
+        if (!listingsManager.validateInitData()) {
+            return;
+        }
+        listingsManager.searchEngine.updateContext({key: 'searchOperation', value: SEARCH_REQUEST_NEW})
 
     }
     function canPrepareSearch(accessControlReq) {
@@ -225,77 +220,14 @@ const ListingsBlockInterface = (props) => {
         if (!listingsManager.searchEngine.searchContext.searchStatus) {
             return;
         }
-        switch (accessControlReq) {
-            case 'protected':
-                if (accessControl !== 'protected') {
-                    return;
-                }
-                break;
-            case 'public':
-                if (accessControl !== 'public') {
-                    return;
-                }
-                break;
+        if (!validateAccessControl(accessControlReq)) {
+            return;
         }
-        return true;
+
+        listingsManager.prepareSearch('listDisplay news');
 
     }
-    useEffect(() => {
-        if (!canInitialise('protected')) {
-            return;
-        }
-        listingsManager.init(data);
-        setProviders();
-        listingsManager.listingsEngine.updateContext({key: 'loaded', value: true})
-    }, [
-        app[APP_LOADED],
-        session[SESSION_IS_AUTHENTICATING],
-        session[SESSION_AUTHENTICATED],
-        data?.source,
-        listingsManager.listingsEngine.listingsContext.loaded
-    ])
-
-    useEffect(() => {
-        if (!canInitialise('public')) {
-            return;
-        }
-        listingsManager.init(data);
-        setProviders();
-        listingsManager.listingsEngine.updateContext({key: 'loaded', value: true})
-    }, [
-        app[APP_LOADED],
-        session[SESSION_IS_AUTHENTICATING],
-        data?.source,
-        listingsManager.listingsEngine.listingsContext.loaded
-    ])
-
-    useEffect(() => {
-        if (!canValidate('protected')) {
-            return;
-        }
-        if (!listingsManager.validateInitData()) {
-            return;
-        }
-        listingsManager.searchEngine.updateContext({key: 'searchOperation', value: SEARCH_REQUEST_NEW})
-    }, [
-        session[SESSION_AUTHENTICATED],
-        listingsManager.listingsEngine.listingsContext.providers,
-        listingsManager.listingsEngine.listingsContext.loaded,
-    ]);
-    useEffect(() => {
-        if (!canValidate('public')) {
-            return;
-        }
-        if (!listingsManager.validateInitData()) {
-            return;
-        }
-        listingsManager.searchEngine.updateContext({key: 'searchOperation', value: SEARCH_REQUEST_NEW})
-    }, [
-        listingsManager.listingsEngine.listingsContext.providers,
-        listingsManager.listingsEngine.listingsContext.loaded,
-    ]);
-
-    useEffect(() => {
+    function canRunSearch(accessControlReq) {
         if (!app[APP_LOADED]) {
             return;
         }
@@ -306,57 +238,12 @@ const ListingsBlockInterface = (props) => {
             return;
         }
 
-        listingsManager.prepareSearch('listDisplay news');
-    }, [
-        listingsManager.listingsEngine.listingsContext.loaded,
-        listingsManager.searchEngine.searchContext.initialRequestHasRun,
-        listingsManager.searchEngine.searchContext.searchStatus,
-        listingsManager.searchEngine.searchContext.searchOperation,
-    ]);
-
-    useEffect(() => {
-        if (!app[APP_LOADED]) {
+        if (!validateAccessControl(accessControlReq)) {
             return;
         }
-        if (!session[SESSION_AUTHENTICATED]) {
-            return;
-        }
-        if (!listingsManager.listingsEngine.listingsContext.loaded) {
-            return;
-        }
-        if (!listingsManager.searchEngine.searchContext.searchStatus) {
-            return;
-        }
-
-        listingsManager.prepareSearch('listDisplay news');
-    }, [
-        listingsManager.listingsEngine.listingsContext.loaded,
-        session[SESSION_AUTHENTICATED],
-        listingsManager.searchEngine.searchContext.initialRequestHasRun,
-        listingsManager.searchEngine.searchContext.searchStatus,
-        listingsManager.searchEngine.searchContext.searchOperation,
-    ]);
-
-    useEffect(() => {
-        if (!app[APP_LOADED]) {
-            return;
-        }
-        if (!listingsManager.listingsEngine.listingsContext.loaded) {
-            return;
-        }
-        if (!listingsManager.searchEngine.searchContext.searchStatus) {
-            return;
-        }
-
         listingsManager.runSearch();
-    }, [
-        listingsManager.listingsEngine.listingsContext.loaded,
-        listingsManager.searchEngine.searchContext.initialRequestHasRun,
-        listingsManager.searchEngine.searchContext.searchStatus,
-        listingsManager.searchEngine.searchContext.searchOperation,
-    ]);
-
-    useEffect(() => {
+    }
+    function userDataRequestForList() {
         if (!app[APP_LOADED]) {
             return;
         }
@@ -366,9 +253,86 @@ const ListingsBlockInterface = (props) => {
         if (!listingsManager.searchEngine.searchContext.userDataFetchStatus) {
             return;
         }
-        // listingsManager.userDataRequestForList();
-
+        if (!validateAccessControl('protected')) {
+            return;
+        }
+        listingsManager.userDataRequestForList();
+    }
+    useEffect(() => {
+        canInitialise('protected');
     }, [
+        app[APP_LOADED],
+        session[SESSION_IS_AUTHENTICATING],
+        session[SESSION_AUTHENTICATED],
+        data?.source,
+        listingsManager.listingsEngine.listingsContext.loaded
+    ])
+
+    useEffect(() => {
+        canInitialise('public');
+    }, [
+        app[APP_LOADED],
+        session[SESSION_IS_AUTHENTICATING],
+        data?.source,
+        listingsManager.listingsEngine.listingsContext.loaded
+    ])
+
+    useEffect(() => {
+        canValidate('protected');
+    }, [
+        session[SESSION_AUTHENTICATED],
+        listingsManager.listingsEngine.listingsContext.providers,
+        listingsManager.listingsEngine.listingsContext.loaded,
+    ]);
+    useEffect(() => {
+        canValidate('public');
+    }, [
+        listingsManager.listingsEngine.listingsContext.providers,
+        listingsManager.listingsEngine.listingsContext.loaded,
+    ]);
+
+    useEffect(() => {
+        canPrepareSearch('protected');
+    }, [
+        session[SESSION_AUTHENTICATED],
+        listingsManager.listingsEngine.listingsContext.loaded,
+        listingsManager.searchEngine.searchContext.initialRequestHasRun,
+        listingsManager.searchEngine.searchContext.searchStatus,
+        listingsManager.searchEngine.searchContext.searchOperation,
+    ]);
+
+    useEffect(() => {
+        canPrepareSearch('public');
+    }, [
+        listingsManager.listingsEngine.listingsContext.loaded,
+        listingsManager.searchEngine.searchContext.initialRequestHasRun,
+        listingsManager.searchEngine.searchContext.searchStatus,
+        listingsManager.searchEngine.searchContext.searchOperation,
+    ]);
+
+    useEffect(() => {
+        canRunSearch('protected');
+    }, [
+        session[SESSION_AUTHENTICATED],
+        listingsManager.listingsEngine.listingsContext.loaded,
+        listingsManager.searchEngine.searchContext.initialRequestHasRun,
+        listingsManager.searchEngine.searchContext.searchStatus,
+        listingsManager.searchEngine.searchContext.searchOperation,
+    ]);
+
+    useEffect(() => {
+        canRunSearch('public');
+    }, [
+        listingsManager.listingsEngine.listingsContext.loaded,
+        listingsManager.searchEngine.searchContext.initialRequestHasRun,
+        listingsManager.searchEngine.searchContext.searchStatus,
+        listingsManager.searchEngine.searchContext.searchOperation,
+    ]);
+
+    useEffect(() => {
+        userDataRequestForList();
+    }, [
+        session[SESSION_AUTHENTICATED],
         listingsManager.listingsEngine.listingsContext.loaded,
         listingsManager.searchEngine.searchContext.initialRequestHasRun,
         listingsManager.searchEngine.searchContext.searchStatus,

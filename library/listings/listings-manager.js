@@ -138,10 +138,6 @@ export class ListingsManager extends ListingsManagerBase {
 
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
-                const response = await this.wpDataSource.savedItemsRequest()
-                const data = await response.json();
-                console.log('savedItemsRequests', data)
-                break;
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 await this.wpDataSource.prepareSearch();
                 break;
@@ -172,17 +168,12 @@ export class ListingsManager extends ListingsManagerBase {
             return;
         }
         switch (listingsDataState?.source) {
-            case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
-                // await this.fetcherDataSource.fet(
-                //     data?.savedItems
-                // )
-                console.log('runSearchsaveditems')
-                break;
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
-                await this.wpDataSource.runSearch()
+                await this.wpDataSource.runSearch();
                 break;
             case LISTINGS_BLOCK_SOURCE_API:
-                await this.fetcherDataSource.runSearch()
+            case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
+                await this.fetcherDataSource.runSearch();
                 break;
             default:
                 console.warn('Invalid listings source...')

@@ -1,7 +1,7 @@
 import {DataSourceBase} from "@/truvoicer-base/library/listings/engine/source/data-source-base";
 import {isNotEmpty, isObject, isObjectEmpty, isSet} from "@/truvoicer-base/library/utils";
 import {
-    DISPLAY_AS,
+    DISPLAY_AS, LISTINGS_BLOCK_SOURCE_API, LISTINGS_BLOCK_SOURCE_SAVED_ITEMS, LISTINGS_BLOCK_SOURCE_WORDPRESS,
     LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST,
     LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
 } from "@/truvoicer-base/redux/constants/general_constants";
@@ -106,15 +106,37 @@ export class WpDataSource extends DataSourceBase {
         this.listingsEngine.updateContext({key: "providers", value: []})
     }
 
-    prepareSearch() {
-        switch (this.listingsEngine?.listingsContext?.listingsData?.wordpress_data_source) {
-            case LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST:
-                this.listItemsRequestInit()
+    async prepareSearch() {
+        switch (this.listingsEngine?.listingsContext?.listingsData?.source) {
+            case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
+                await this.prepareSavedItemsRequest();
                 break;
-            case LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS:
-                this.postRequestInit()
+            default:
+                switch (this.listingsEngine?.listingsContext?.listingsData?.wordpress_data_source) {
+                    case LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST:
+                        this.listItemsRequestInit()
+                        break;
+                    case LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS:
+                        this.postRequestInit()
+                        break;
+                }
                 break;
         }
+    }
+
+    async prepareSavedItemsRequest() {
+        const response = await this.savedItemsRequest();
+        const data = await response.json();
+        const savedItems = data?.savedItems || [];
+        const itemRatings = data?.itemRatings || [];
+        if (Array.isArray(data?.savedItems)) {
+            this.searchEngine.updateContext({key: 'savedItemsList', value: data?.savedItems});
+        }
+        if (Array.isArray(data?.itemRatings)) {
+            this.searchEngine.updateContext({key: 'itemRatingsList', value: data?.itemRatings});
+        }
+
+        let query = {};
     }
 
     postRequestInit() {

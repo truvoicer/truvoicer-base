@@ -13,7 +13,7 @@ import {
 } from "@/truvoicer-base/redux/constants/search-constants";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import {
-    LISTINGS_BLOCK_SOURCE_API,
+    LISTINGS_BLOCK_SOURCE_API, LISTINGS_BLOCK_SOURCE_SAVED_ITEMS,
     LISTINGS_BLOCK_SOURCE_WORDPRESS,
     LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST, LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
 } from "@/truvoicer-base/redux/constants/general_constants";
@@ -209,7 +209,41 @@ export class FetcherDataSource extends DataSourceBase {
         console.log(itemList)
     }
     async runSearch() {
-        await this.runFetcherApiListingsSearch()
+        switch (this.listingsEngine?.listingsContext?.listingsData?.source) {
+            case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
+                console.log('runSearchsaveditems', this.searchEngine.searchContext)
+                const providers = this.searchEngine.searchContext.savedItemsList.filter(item => {
+                    return isNotEmpty(item?.provider_name) && isNotEmpty(item?.item_id);
+                }).map(item => {
+                    return {
+                        name: item.provider_name,
+                        item_id: item.item_id
+                    }
+                });
+                const response = await this.fetcherApiMiddleware.fetchData(
+                    "operation",
+                    ['search', "mixed"],
+                    {},
+                    {
+                        api_fetch_type: 'mixed',
+                        service: siteConfig.internalCategory,
+                        provider: providers,
+                    },
+                    REQUEST_POST
+                );
+
+                if (response?.status === "success") {
+                    this.searchResponseHandler(response.data, true);
+                } else {
+                    this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
+                    this.searchEngine.setSearchRequestErrorAction(response?.message)
+                }
+                console.log('runSearchsaveditems')
+                break;
+            default:
+                await this.runFetcherApiListingsSearch()
+                break;
+        }
     }
 
     validateInitData() {
