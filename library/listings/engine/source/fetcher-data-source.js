@@ -216,7 +216,7 @@ export class FetcherDataSource extends DataSourceBase {
                     return isNotEmpty(item?.provider_name) && isNotEmpty(item?.item_id);
                 }).map(item => {
                     return {
-                        name: item.provider_name,
+                        provider_name: item.provider_name,
                         item_id: item.item_id
                     }
                 });
