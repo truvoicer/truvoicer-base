@@ -76,6 +76,7 @@ export class ListingsManager extends ListingsManagerBase {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 return this.wpDataSource.getUserItemsListAction();
             case LISTINGS_BLOCK_SOURCE_API:
+            case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
                 return this.fetcherDataSource.getUserItemsListAction();
             default:
                 console.warn('Invalid source...');

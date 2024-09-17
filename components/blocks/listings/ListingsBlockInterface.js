@@ -24,7 +24,7 @@ import {tr} from "date-fns/locale";
 
 const ListingsBlockInterface = (props) => {
     const {data, session, app} = props;
-    console.log(data)
+
     const listingsGrid = new ListingsGrid();
 
     let cloneListingsData = {...listingsData};
