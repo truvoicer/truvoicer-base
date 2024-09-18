@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {Suspense, useContext, useEffect} from 'react';
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
@@ -33,9 +33,11 @@ const ComparisonDisplay = (props) => {
                         {searchContext?.searchList?.length > 0 && searchContext?.searchStatus === SEARCH_STATUS_COMPLETED ?
                             <>
                                 {templateManager.render(<ListingsSortBar/>)}
-                                {listingsContext?.listingsData?.load_more_type === "pagination" &&
-                                    templateManager.render(<Paginate/>)
-                                }
+                                <Suspense>
+                                    {listingsContext?.listingsData?.load_more_type === "pagination" &&
+                                        templateManager.render(<Paginate/>)
+                                    }
+                                </Suspense>
                                 {listingsContext?.listingsData?.load_more_type === "infinite_scroll" &&
                                     templateManager.render(<ListingsInfiniteScroll/>)
                                 }

@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {Suspense, useContext} from 'react';
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
@@ -31,9 +31,11 @@ const ListDisplay = (props) => {
                         {searchContext?.searchList?.length > 0 ?
                             <>
                                 {templateManager.render(<ListingsSortBar/>)}
-                                {listingsContext?.listingsData?.load_more_type === "pagination" &&
-                                    templateManager.render(<Paginate/>)
-                                }
+                                <Suspense>
+                                    {listingsContext?.listingsData?.load_more_type === "pagination" &&
+                                        templateManager.render(<Paginate/>)
+                                    }
+                                </Suspense>
                                 {listingsContext?.listingsData?.load_more_type === "infinite_scroll" &&
                                     templateManager.render(<ListingsInfiniteScroll/>)
                                 }
