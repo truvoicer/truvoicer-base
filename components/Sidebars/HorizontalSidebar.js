@@ -56,7 +56,7 @@ const HorizontalSidebar = ({sidebarName}) => {
                                                 {parse(item.custom_html.content)}
                                             </div>
                                         }
-                                        {item?.nav_menu && item.nav_menu?.menu_slug && !item.nav_menu.menu_slug.endsWith('mobile') &&
+                                        {item?.nav_menu && item.nav_menu?.menu_slug && (!item.nav_menu.menu_slug.endsWith('mobile') && item.nav_menu.menu_slug !== 'mobile-menu') &&
                                             <div className="col-lg-6 col-xl-7">
                                                 {templateManager.render(<HeaderMenu data={item.nav_menu}/>)}
                                             </div>

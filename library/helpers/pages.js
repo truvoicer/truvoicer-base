@@ -47,7 +47,7 @@ export const getSidebarMobileMenuItem = (sidebarData) => {
         return (
             isSet(item.nav_menu) &&
             item.nav_menu.menu_slug &&
-            item.nav_menu.menu_slug.endsWith('mobile')
+            (item.nav_menu.menu_slug.endsWith('mobile') || item.nav_menu.menu_slug === 'mobile-menu')
         )
     });
     if (getItem.length > 0) {
