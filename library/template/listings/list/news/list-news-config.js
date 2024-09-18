@@ -17,6 +17,7 @@ export default {
             },
             modal: NewsInfoModal,
             layout: NewsListDisplay,
+            savedItems: null,
         }
     }
 };

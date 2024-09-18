@@ -17,6 +17,7 @@ export default {
             },
             modal: CamsInfoModal,
             layout: CamsListDisplay,
+            savedItems: null,
         }
     }
 };

@@ -15,6 +15,7 @@ export default {
                 [LISTINGS_GRID_DETAILED]: NewsSidebarPostItem,
             },
             layout: NewsSidebarDisplay,
+            savedItems: null,
         }
     }
 };

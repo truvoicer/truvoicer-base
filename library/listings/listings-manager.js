@@ -189,6 +189,7 @@ export class ListingsManager extends ListingsManagerBase {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 return this.wpDataSource.getCategory(item);
             case LISTINGS_BLOCK_SOURCE_API:
+            case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
                 return this.fetcherDataSource.getCategory(item);
             default:
                 return false;

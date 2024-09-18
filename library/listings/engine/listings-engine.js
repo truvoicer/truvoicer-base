@@ -173,29 +173,40 @@ export class ListingsEngine extends EngineBase {
             console.warn("Can't build item href | No item data");
             return null;
         }
+        let itemId, serviceRequestType, provider;
 
-        let serviceRequest = this.extractServiceRequest({
-            type: 'detail',
-            item,
-            requestResponseKeys: ['item_id']
-        });
-        if (!isNotEmpty(serviceRequest?.data) || isObject(serviceRequest.data) || Array.isArray(serviceRequest.data)) {
-            console.warn("Can't build item href | No item item_id");
-            return null;
-        }
-        if (!isNotEmpty(serviceRequest?.request_item?.request_type)) {
-            console.warn("Can't build item href | No request type");
-            return null;
-        }
-        if (!isNotEmpty(serviceRequest?.request_item?.provider_name)) {
-            console.warn("Can't build item href | No provider name");
-            return null;
+        if (isNotEmpty(item?.item_id) && (typeof item?.item_id == "string" || typeof item?.item_id === "number")) {
+            itemId = item?.item_id;
+            serviceRequestType = 'detail';
+            provider = item?.provider;
+        } else {
+            let serviceRequest = this.extractServiceRequest({
+                type: 'detail',
+                item,
+                requestResponseKeys: ['item_id']
+            });
+
+            if (!isNotEmpty(serviceRequest?.data) || isObject(serviceRequest.data) || Array.isArray(serviceRequest.data)) {
+                console.warn("Can't build item href | No item item_id");
+                return null;
+            }
+            if (!isNotEmpty(serviceRequest?.request_item?.request_type)) {
+                console.warn("Can't build item href | No request type");
+                return null;
+            }
+            if (!isNotEmpty(serviceRequest?.request_item?.provider_name)) {
+                console.warn("Can't build item href | No provider name");
+                return null;
+            }
+            itemId = serviceRequest.data;
+            serviceRequestType = serviceRequest.request_item.request_type;
+            provider = serviceRequest.request_item.provider_name;
         }
         let data = {
             service: category,
-            service_request: serviceRequest.request_item.request_type,
-            item_id: serviceRequest.data,
-            provider: serviceRequest.request_item.provider_name
+            service_request: serviceRequestType,
+            item_id: itemId,
+            provider: provider
         }
 
         switch (displayAs) {

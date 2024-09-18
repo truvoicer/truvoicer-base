@@ -17,6 +17,7 @@ export default {
             },
             modal: CamsPostInfoModal,
             layout: CamsListDisplay,
+            savedItems: null,
         }
     }
 }

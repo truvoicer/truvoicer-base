@@ -15,6 +15,7 @@ export default {
                 [LISTINGS_GRID_DETAILED]: CamsSidebarItemList,
             },
             layout: CamsSidebarDisplay,
+            savedItems: null,
         }
     }
 };

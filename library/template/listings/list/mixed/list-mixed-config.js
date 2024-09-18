@@ -7,6 +7,7 @@ import ItemList from "@/views/Components/Blocks/Listings/Templates/Recruitment/L
 import InfoModal from "@/views/Components/Blocks/Listings/Templates/Recruitment/List/InfoModal";
 import ListDisplay from "@/views/Components/Blocks/Listings/Templates/Recruitment/Layout/ListDisplay";
 import ItemView from "@/views/Components/Blocks/Listings/Templates/Recruitment/List/ItemView";
+import SavedItemsDisplay from "@/views/Components/Blocks/Listings/Templates/Mixed/SavedItemsDisplay";
 
 export default {
     templates: {
@@ -19,7 +20,7 @@ export default {
             modal: InfoModal,
             layout: ListDisplay,
             itemView: ItemView,
-            savedItems: null,
+            savedItems: SavedItemsDisplay,
         }
     }
 };

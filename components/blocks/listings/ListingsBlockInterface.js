@@ -108,16 +108,26 @@ const ListingsBlockInterface = (props) => {
         }
 
         const service = getListingService(data);
+        let category = 'mixed';
+        let component;
+        if (service) {
+            category = service;
+        }
 
-        if (!service) {
-            return null;
+        switch (data?.source) {
+            case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
+                component = 'savedItems';
+                break;
+            default:
+                component = 'layout';
+                break;
         }
 
         const layoutComponent = listingsGrid.getTemplateListingComponent({
             displayAs: data[DISPLAY_AS],
-            category: service,
+            category,
             template: data?.template,
-            component: 'layout',
+            component,
             props: props
         });
 
