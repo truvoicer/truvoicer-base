@@ -30,6 +30,7 @@ const ListingsFilterListItem = (props) => {
             listingsManager.getSearchEngine().removeItemFromQueryArray(props.data.name, e.target.value, true)
         }
     }
+
     const filterList = buildFilterList(props?.data?.filter_list_id)
 
     // useEffect(() => {

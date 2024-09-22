@@ -57,17 +57,21 @@ const ListDisplay = (props) => {
                         ?
                         <>
                             {filtersPosition === 'left' &&
-                                <div className="col-lg-4 col-sm-12">
-                                    {templateManager.render(<ListingsFilterInterface/>)}
+                                <div className="col-md-3 col-sm-12">
+                                    <div className="sidebar">
+                                        {templateManager.render(<ListingsFilterInterface/>)}
+                                    </div>
                                 </div>
                             }
-                            <div className="col-lg-8 col-md-12">
+                            <div className="col-md-9 col-sm-12">
                                 {getListingsBlock()}
                             </div>
 
                             {filtersPosition === 'right' &&
-                                <div className="col-lg-4 col-sm-12">
-                                    {templateManager.render(<ListingsFilterInterface/>)}
+                                <div className="col-md-3 col-sm-12">
+                                    <div className="sidebar">
+                                        {templateManager.render(<ListingsFilterInterface/>)}
+                                    </div>
                                 </div>
                             }
                         </>

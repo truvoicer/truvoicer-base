@@ -15,7 +15,7 @@ import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manage
 import {connect} from "react-redux";
 import {ListingsManagerBase} from "@/truvoicer-base/library/listings/listings-manager-base";
 import {
-    SEARCH_REQUEST_NEW,
+    SEARCH_REQUEST_NEW, SEARCH_STATUS_IDLE,
 } from "@/truvoicer-base/redux/constants/search-constants";
 import {APP_LOADED, APP_STATE} from "@/truvoicer-base/redux/constants/app-constants";
 import ListingsBlockContainer from "@/truvoicer-base/components/blocks/listings/ListingsBlockContainer";
@@ -82,10 +82,10 @@ const ListingsBlockInterface = (props) => {
     }
 
 
-    const myRef = useRef(null)
-    if (listingsManager.listingsEngine?.listingsContext?.listingsScrollTop) {
-        scrollToRef(myRef)
-    }
+    // const myRef = useRef(null)
+    // if (listingsManager.listingsEngine?.listingsContext?.listingsScrollTop) {
+    //     scrollToRef(myRef)
+    // }
 
     function getListingService(data) {
         switch (data?.source) {
@@ -263,7 +263,12 @@ const ListingsBlockInterface = (props) => {
         if (!listingsManager.searchEngine.searchContext.userDataFetchStatus) {
             return;
         }
-        if (!validateAccessControl('protected')) {
+        if (
+            listingsManager.searchEngine.searchContext.userDataFetchStatus !== SEARCH_STATUS_IDLE &&
+            !session[SESSION_IS_AUTHENTICATING] &&
+            !session[SESSION_AUTHENTICATED]
+        ) {
+            listingsManager.searchEngine.setUserDataFetchStatusAction(SEARCH_STATUS_IDLE);
             return;
         }
         listingsManager.userDataRequestForList();

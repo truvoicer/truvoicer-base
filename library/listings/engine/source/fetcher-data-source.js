@@ -132,7 +132,6 @@ export class FetcherDataSource extends DataSourceBase {
         if (isObject(this.searchEngine.searchContext.query)) {
             query = {...this.searchEngine.searchContext.query};
         }
-
         const searchLimit = this.getInitialSearchLimit(data);
         const providers = await this.getSearchProviders();
         const filterProviders = this.searchEngine.filterSearchProviders(providers);
@@ -238,7 +237,6 @@ export class FetcherDataSource extends DataSourceBase {
                     this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
                     this.searchEngine.setSearchRequestErrorAction(response?.message)
                 }
-                console.log('runSearchsaveditems')
                 break;
             default:
                 await this.runFetcherApiListingsSearch()
