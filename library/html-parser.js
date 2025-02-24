@@ -1,6 +1,12 @@
 import React from "react";
+import { domToReact } from 'html-react-parser';
 import {blockComponentsConfig} from "../config/block-components-config";
-
+const htmlParserOptions = {
+        decodeEntities: true,
+        replace: (node, index) => {
+            return filterHtml(node, index)
+        }
+    }
 function getWidget(id, data, index) {
     const Component = blockComponentsConfig.components[id].component;
     return <Component key={index} data={data}/>;
@@ -17,6 +23,19 @@ function getWidget(id, data, index) {
  */
 export const filterHtml = (node, index, callback) => {
     if (node.type === 'tag' && node.name === 'div') {
+        //TODO: create parent container/row/class divs
+        if (node?.attribs?.class && node.attribs.class.includes('wp-block-columns') && node?.parent === null) {
+        
+            return (
+                <div className="container">
+                    <div className="row">
+                        <div className="col">
+                            {domToReact(node.children, htmlParserOptions)}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
         if(typeof node.attribs.id !== "undefined" &&
             typeof blockComponentsConfig.components[node.attribs.id] !== "undefined")
         {
