@@ -289,4 +289,50 @@ export class ListingsManager extends ListingsManagerBase {
         }
         return true;
     }
+
+    getThumbnail(item) {
+        const listingsData = this.listingsEngine?.listingsContext?.listingsData;
+        
+        let data = {
+            type: listingsData?.thumbnail_type,
+        }
+        switch (listingsData?.thumbnail_type) {
+            case 'image':
+                if (isNotEmpty(listingsData?.thumbnail_url)) {
+                    data.value = listingsData.thumbnail_url;
+                    return data;
+                }
+                break;
+            case 'data_key':
+                if (
+                    isNotEmpty(listingsData?.thumbnail_key) &&
+                    isNotEmpty(item?.[listingsData.thumbnail_key])
+                ) {
+                    data.value = item[listingsData.thumbnail_key];
+                    return data;
+                }
+                break;
+            case 'bg':
+                if (isNotEmpty(listingsData?.thumbnail_bg)) {
+                    data.value = listingsData.thumbnail_bg;
+                    return data;
+                }
+                break;
+        }
+        return null;
+    }
+
+    getThumbnailImgStyle() {
+        let styleObject = {};
+        const listingsData = this.listingsEngine?.listingsContext?.listingsData;
+        const thumbnailWidth = listingsData?.thumbnail_width;
+        const thumbnailHeight = listingsData?.thumbnail_height;
+        if (thumbnailWidth) {
+            styleObject.width = parseInt(thumbnailWidth);
+        }
+        if (thumbnailHeight) {
+            styleObject.height = parseInt(thumbnailHeight);
+        }
+        return styleObject;
+    }
 }
