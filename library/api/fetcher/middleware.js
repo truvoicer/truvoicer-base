@@ -45,7 +45,8 @@ export class FetcherApiMiddleware {
             const response = await this.fetchFromApi(endpoint, operation, queryData, data, method);
             return await response.json();
         } catch (e) {
-            console.error(e)
+            console.error(e);
+            console.log(e)
             return false;
         }
     }
@@ -75,6 +76,7 @@ export class FetcherApiMiddleware {
                 };
                 break;
         }
+        console.log({url, config})
         return await fetch(url, config)
     }
 

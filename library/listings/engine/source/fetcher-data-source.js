@@ -305,9 +305,9 @@ export class FetcherDataSource extends DataSourceBase {
             this.searchEngine.searchContext.query,
             REQUEST_POST
         );
-
-        if (response?.status === "success") {
-            this.searchResponseHandler(response.data, true);
+        
+        if (response) {
+            this.searchResponseHandler(response, true);
         } else {
             this.searchEngine.setSearchRequestStatusAction(SEARCH_REQUEST_ERROR);
             this.searchEngine.setSearchRequestErrorAction(response?.message)

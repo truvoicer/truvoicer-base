@@ -33,7 +33,6 @@ const ListingsPaginate = (props) => {
 
     const listingsGrid = new ListingsGrid();
     listingsGrid.setKeyMap(listingsContext?.listingsData?.keymap);
-    const grid = listingsContext?.listingsGrid;
     const lastPageNumber = getLastPageNumber();
 
     const paginationClickHandler = (e, pageNumber) => {
@@ -66,48 +65,38 @@ const ListingsPaginate = (props) => {
     }
 
     const getpadding = (currentPage) => {
-        let range = [];
+        let right = [];
+        let left = [];
         if (currentPage >= lastPageNumber) {
+            right = [];
             for (let i = currentPage - padding; i < currentPage; i++) {
                 if (i > 1 && i < lastPageNumber) {
-                    range.push(i)
+                    left.push(i)
                 }
             }
         } else if (currentPage <= 1) {
+            left = [];
             for (let i = currentPage + 1; i < currentPage + padding + 1; i++) {
                 if (i > 1 && i < lastPageNumber) {
-                    range.push(i)
+                    right.push(i)
                 }
             }
         } else {
             for (let i = currentPage - padding; i <= currentPage; i++) {
                 if (i > 1 && i < lastPageNumber) {
-                    range.push(i)
+                    left.push(i)
                 }
             }
             for (let i = currentPage + 1; i < currentPage + padding + 1; i++) {
                 if (i > 1 && i < lastPageNumber) {
-                    range.push(i)
+                    right.push(i)
                 }
             }
         }
-        return range;
-    }
-
-    function getNextPageNumber() {
-        const nextPageNumber = pageNumber + 1;
-        if (nextPageNumber > lastPageNumber) {
-            return lastPageNumber;
-        }
-        return nextPageNumber;
-    }
-
-    function getPreviousPageNumber() {
-        const previousPageNumber = pageNumber - 1;
-        if (previousPageNumber < 1) {
-            return 1;
-        }
-        return previousPageNumber;
+        return {
+            left,
+            right
+        };
     }
 
     function getPageListItemProps(page) {
@@ -130,18 +119,15 @@ const ListingsPaginate = (props) => {
         }
     }
 
-    const nextPageNumber = getNextPageNumber();
-    const previousPageNumber = getPreviousPageNumber();
-
     useEffect(() => {
         setPageNumber(getCurrentPageNumber());
     }, []);
+    
     const GetPagination = () => {
-        let range = getpadding(pageNumber);
+        let {left, right} = getpadding(pageNumber);
         return (
             <div className="paging">
                 <ul className="pagination">
-
                     <li {...getPageListItemProps(1)}>
                         <Link
                             className={""}
@@ -150,16 +136,7 @@ const ListingsPaginate = (props) => {
                             <span>1</span>
                         </Link>
                     </li>
-                    {range[0] > padding &&
-                        <li className="">
-                            <Link
-                                className={""}
-                                {...getPageLinkProps(previousPageNumber)}>
-                                <span>{'<<'}</span>
-                            </Link>
-                        </li>
-                    }
-                    {range.map((num, index) => (
+                    {left.map((num, index) => (
                         <li key={index} {...getPageListItemProps(num)}>
                             <Link
                                 className={""}
@@ -169,15 +146,16 @@ const ListingsPaginate = (props) => {
                             </Link>
                         </li>
                     ))}
-                    {range[range.length - 1] <= lastPageNumber - padding &&
-                        <li className="">
+                    {right.map((num, index) => (
+                        <li key={index} {...getPageListItemProps(num)}>
                             <Link
-                                {...getPageLinkProps(nextPageNumber)}
+                                className={""}
+                                {...getPageLinkProps(num)}
                             >
-                                <span>{'>>'}</span>
+                                <span>{num}</span>
                             </Link>
                         </li>
-                    }
+                    ))}
                     {lastPageNumber > 1 &&
                         <li {...getPageListItemProps(lastPageNumber)}>
                             <Link
