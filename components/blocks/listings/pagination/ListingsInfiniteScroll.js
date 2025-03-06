@@ -21,6 +21,7 @@ import Col from "react-bootstrap/Col";
 import {getGridItemColumns} from "@/truvoicer-base/redux/actions/item-actions";
 import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
 import {SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
+import ListingsItemsLoader from "../items/ListingsItemsLoader";
 
 const ListingsInfiniteScroll = (props) => {
 
@@ -57,31 +58,7 @@ const ListingsInfiniteScroll = (props) => {
 
 
     return (
-        <InfiniteScroll
-            pageStart={0}
-            initialLoad={false}
-            loadMore={loadMore}
-            hasMore={searchContext.pageControls[PAGE_CONTROL_HAS_MORE]}
-            loader={templateManager.render(<LoaderComponent key={"loader"}/>)}
-        >
-            <Row>
-                {/*{itemsContext.items.map((item, index) => (*/}
-                {/*    <React.Fragment key={index}>*/}
-                {/*        <Col {...getGridItemColumns(grid)}>*/}
-                {/*            {listingsGrid.getGridItem({*/}
-                {/*                item,*/}
-                {/*                displayAs: listingsContext?.listingsData?.[DISPLAY_AS],*/}
-                {/*                category: searchContext.category,*/}
-                {/*                listingsGrid: grid,*/}
-                {/*                userId: props.user[SESSION_USER_ID],*/}
-                {/*                index*/}
-                {/*            })}*/}
-                {/*        </Col>*/}
-                {/*    </React.Fragment>*/}
-                {/*))}*/}
-            </Row>
-        </InfiniteScroll>
-
+        <ListingsItemsLoader infiniteScroll={true}/>
     )
 }
 

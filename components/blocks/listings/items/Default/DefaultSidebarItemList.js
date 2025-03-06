@@ -36,22 +36,41 @@ const DefaultItemList = (props) => {
                 user_email: props.user[SESSION_USER_EMAIL] || "unregistered",
             },
         }
-    })
+    });
+    const thumbnailData = listingsManager.getThumbnail(data);
 
     return (
         <div className="post-block-style clearfix d-flex gap-3 justify-content-start align-items-center">
-            <div className="post-thumb">
-                <Link {...linkProps}>
-                    <img
-                        className="img-fluid"
-                        src={data.item_image ? data.item_image : "/img/pticon.png"}
-                        alt=""
-                    />
-                </Link>
-                {props.data.provider && (
-                    <Link className="post-cat" {...linkProps}>{data.provider}</Link>
-                )}
-            </div>
+            {thumbnailData?.type === 'data_key' &&
+                    <div className="post-thumb">
+                        <Link {...linkProps}>
+                            <img className="img-fluid"
+                                style={listingsManager.getThumbnailImgStyle(data)}
+                                src={thumbnailData?.value ? thumbnailData.value : "/img/pticon.png"} alt=""/>
+                        </Link>
+                    </div>
+                }
+                {thumbnailData?.type === 'bg' &&
+                    // <div>
+                        <Link {...linkProps} 
+                            className="post-thumb" 
+                            style={{
+                                ...listingsManager.getThumbnailImgStyle(data),
+                                backgroundColor: thumbnailData?.value || '#eeeeee'
+                            }}>
+                                
+                        </Link>
+                    // </div>
+                }
+                {thumbnailData?.type === 'image' &&
+                    <div className="post-thumb">
+                        <Link {...linkProps}>
+                            <img className="img-fluid"
+                                style={listingsManager.getThumbnailImgStyle(data)}
+                                src={thumbnailData?.value ? thumbnailData.value : "/img/pticon.png"} alt=""/>
+                        </Link>
+                    </div>
+                }
 
 
             <div className="post-content">

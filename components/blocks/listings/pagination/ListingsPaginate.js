@@ -121,7 +121,7 @@ const ListingsPaginate = (props) => {
 
     useEffect(() => {
         setPageNumber(getCurrentPageNumber());
-    }, []);
+    }, [searchContext?.pageControls?.[PAGINATION_PAGE_NUMBER]]);
     
     const GetPagination = () => {
         let {left, right} = getpadding(pageNumber);

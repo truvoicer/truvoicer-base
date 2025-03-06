@@ -36,18 +36,40 @@ const DefaultItemList = (props) => {
             },
         }
     })
+    const thumbnailData = listingsManager.getThumbnail(data);
     return (
         <>
             <div className="post-block-style post-float-half clearfix">
-                <div className="post-thumb">
-                    <Link {...linkProps}>
-                        <img  className="img-fluid"
-                             src={data?.item_image ? data.item_image : "/img/pticon.png"} alt=""/>
-                    </Link>
-                </div>
-                {data.provider && (
-                    <Link className="post-cat" {...linkProps}>{data.provider}</Link>
-                )}
+            {thumbnailData?.type === 'data_key' &&
+                    <div className="post-thumb">
+                        <Link {...linkProps}>
+                            <img className="img-fluid"
+                                style={listingsManager.getThumbnailImgStyle(data)}
+                                src={thumbnailData?.value ? thumbnailData.value : "/img/pticon.png"} alt=""/>
+                        </Link>
+                    </div>
+                }
+                {thumbnailData?.type === 'bg' &&
+                    // <div>
+                        <Link {...linkProps} 
+                            className="post-thumb" 
+                            style={{
+                                ...listingsManager.getThumbnailImgStyle(data),
+                                backgroundColor: thumbnailData?.value || '#eeeeee'
+                            }}>
+                                
+                        </Link>
+                    // </div>
+                }
+                {thumbnailData?.type === 'image' &&
+                    <div className="post-thumb">
+                        <Link {...linkProps}>
+                            <img className="img-fluid"
+                                style={listingsManager.getThumbnailImgStyle(data)}
+                                src={thumbnailData?.value ? thumbnailData.value : "/img/pticon.png"} alt=""/>
+                        </Link>
+                    </div>
+                }
                 <div className="post-content">
                     <h2 className="post-title">
                         <Link {...linkProps}>{data.item_title}</Link>

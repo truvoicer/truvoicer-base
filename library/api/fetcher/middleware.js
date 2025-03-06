@@ -76,7 +76,6 @@ export class FetcherApiMiddleware {
                 };
                 break;
         }
-        console.log({url, config})
         return await fetch(url, config)
     }
 
