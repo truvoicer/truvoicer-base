@@ -17,6 +17,8 @@ import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/Listin
 import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {DISPLAY_AS} from "@/truvoicer-base/redux/constants/general_constants";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faComments } from "@fortawesome/free-solid-svg-icons";
 
 const PostItemListPost = (props) => {
     const {data, nextPost, prevPost, postIndex} = props;
@@ -68,7 +70,7 @@ const PostItemListPost = (props) => {
                     <div className="post-meta">
                         <span className="post-author"><a href="#">John Doe</a></span>
                         <span className="post-date">{formatDate(data.post_modified)}</span>
-                        <span className="post-comment pull-right"><i className="fa fa-comments-o"></i>
+                        <span className="post-comment pull-right"><FontAwesomeIcon icon={faComments} />
                             <a href="#" className="comments-link"><span>03</span></a></span>
                     </div>
                     <p>{parse(data.post_excerpt)}</p>

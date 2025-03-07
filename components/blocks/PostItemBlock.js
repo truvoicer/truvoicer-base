@@ -10,7 +10,7 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import ItemViewComments from "@/truvoicer-base/components/comments/ItemViewComments";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faHeart} from "@fortawesome/free-solid-svg-icons";
+import {faClock, faComments, faEye, faHeart} from "@fortawesome/free-solid-svg-icons";
 import {faBehance, faDribbble, faFacebookF, faTwitter} from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import {getExtraDataValue} from "@/truvoicer-base/library/helpers/pages";
@@ -78,12 +78,16 @@ const PostItemBlock = (props) => {
 								</span>
                                     {post?.date_modified &&
                                         <span className="post-date">
-                                            <i className="fa fa-clock-o"></i>
+                                            <FontAwesomeIcon icon={faClock} />
                                             {formatDate(post.date_modified)}
                                         </span>
                                     }
-                                    <span className="post-hits"><i className="fa fa-eye"></i> 21</span>
-                                    <span className="post-comment"><i className="fa fa-comments-o"></i>
+                                    <span className="post-hits">
+                                        <FontAwesomeIcon icon={faEye} />
+                                        21
+                                    </span>
+                                    <span className="post-comment">
+                                        <FontAwesomeIcon icon={faComments} />
 								<a href="#" className="comments-link"><span>01</span></a></span>
                                 </div>
                             </div>

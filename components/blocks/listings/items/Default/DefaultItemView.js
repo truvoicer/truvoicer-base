@@ -12,6 +12,8 @@ import SavedItemToggle from "@/truvoicer-base/components/blocks/listings/widgets
 import {SESSION_USER, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
 import {connect} from "react-redux";
 import ItemRatings from "@/truvoicer-base/components/blocks/listings/widgets/ItemRatings";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClock, faComments, faEye } from '@fortawesome/free-solid-svg-icons';
 
 const DefaultItemView = (props) => {
     const {data, item, userItemData} = props;
@@ -39,13 +41,18 @@ const DefaultItemView = (props) => {
 								</span>
                                     {data.item_date &&
                                         <span className="post-date">
-                                            <i className="fa fa-clock-o"></i>
+                                            <FontAwesomeIcon icon={faClock} />
                                             {formatDate(props.data.item_date)}
                                         </span>
                                     }
-                                    <span className="post-hits"><i className="fa fa-eye"></i> 21</span>
-                                    <span className="post-comment"><i className="fa fa-comments-o"></i>
-								    <a href="#" className="comments-link"><span>01</span></a></span>
+
+                                    <span className="post-hits">
+                                        <FontAwesomeIcon icon={faEye} />
+                                        21
+                                    </span>
+                                    <span className="post-comment">
+                                        <FontAwesomeIcon icon={faComments} />
+                                    <a href="#" className="comments-link"><span>01</span></a></span>
 
                                     <SavedItemToggle
                                         provider={item.provider}

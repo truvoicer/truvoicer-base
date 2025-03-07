@@ -19,8 +19,8 @@ import { ListingsGrid } from "@/truvoicer-base/library/listings/grid/listings-gr
 import { DISPLAY_AS } from "@/truvoicer-base/redux/constants/general_constants";
 import { SESSION_USER, SESSION_USER_ID } from "@/truvoicer-base/redux/constants/session-constants";
 import { getGridItemColumns } from "@/truvoicer-base/redux/actions/item-actions";
-import InfiniteScroll from "react-infinite-scroller";
 import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
+import ListingsInfiniteScroll from "../pagination/ListingsInfiniteScroll";
 
 const ListingsItemsLoader = ({
     user,
@@ -79,6 +79,7 @@ const ListingsItemsLoader = ({
     }
 
     function getContainerProps() {
+        console.log(listingsContext?.listingsData?.container_css);
         return {
             style: {
                 width: listingsContext?.listingsData?.container_width || 'auto',
@@ -91,17 +92,19 @@ const ListingsItemsLoader = ({
         return (
             <div className="listings--block listings--block--infinite-scroll"
                 {...getContainerProps()}>
-                <InfiniteScroll
+                    <ListingsInfiniteScroll>
+                    <ContainerComponent>
+                        {renderListItems()}
+                    </ContainerComponent>
+                    </ListingsInfiniteScroll>
+                {/* <InfiniteScroll
                     pageStart={0}
                     initialLoad={false}
                     loadMore={loadMore}
                     hasMore={searchContext.pageControls[PAGE_CONTROL_HAS_MORE]}
                     loader={templateManager.render(<LoaderComponent key={"loader"} />)}
                 >
-                    <ContainerComponent>
-                        {renderListItems()}
-                    </ContainerComponent>
-                </InfiniteScroll>
+                </InfiniteScroll> */}
             </div>
         );
     }
@@ -125,10 +128,7 @@ const ListingsItemsLoader = ({
     }
     return (
         <>
-            {infiniteScroll
-                ? renderInfiniteScroll()
-                : renderDefault()
-            }
+            {renderDefault()}
 
             {children ? children : null}
         </>

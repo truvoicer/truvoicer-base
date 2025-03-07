@@ -10,7 +10,7 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import ItemViewComments from "@/truvoicer-base/components/comments/ItemViewComments";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faHeart} from "@fortawesome/free-solid-svg-icons";
+import {faAngleLeft, faAngleRight, faHeart} from "@fortawesome/free-solid-svg-icons";
 import {faBehance, faDribbble, faFacebookF, faTwitter} from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
@@ -84,7 +84,7 @@ const PostNavigation = ({
             <nav className="post-navigation clearfix">
                 <div className="post-previous">
                     <Link {...getItemUrl(prevPost)}>
-                        <span><i className="fa fa-angle-left"></i>Previous Post</span>
+                        <span><FontAwesomeIcon icon={faAngleLeft} />Previous Post</span>
                         <h3>
                             {prevPost?.post_title}
                         </h3>
@@ -92,7 +92,7 @@ const PostNavigation = ({
                 </div>
                 <div className="post-next">
                     <Link {...getItemUrl(nextPost)}>
-                        <span>Next Post <i className="fa fa-angle-right"></i></span>
+                        <span>Next Post <FontAwesomeIcon icon={faAngleRight} /></span>
                         {/*<img className="img-fluid"*/}
                         {/*     src={nextPost?.featured_image}*/}
                         {/*     alt=""/>*/}

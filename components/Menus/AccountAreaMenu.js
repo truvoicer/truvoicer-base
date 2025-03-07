@@ -15,6 +15,8 @@ import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manage
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDashboard } from "@fortawesome/free-solid-svg-icons";
 
 const AccountAreaMenu = (props) => {
     const router = useRouter();
@@ -77,7 +79,7 @@ const AccountAreaMenu = (props) => {
                     className="bg-dark list-group-item list-group-item-action flex-column align-items-start"
                 >
                     <div className="d-flex w-100 justify-content-start align-items-center">
-                        <span className="fa fa-dashboard fa-fw mr-3"/>
+                        <FontAwesomeIcon icon={faDashboard} className="fa-fw mr-3" />
                         <span className="menu-collapsed">{item.menu_title}</span>
                         <span className="submenu-icon ml-auto"/>
                     </div>

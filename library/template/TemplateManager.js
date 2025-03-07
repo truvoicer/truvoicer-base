@@ -68,7 +68,10 @@ export class TemplateManager {
         }
         if (
             typeof component?.$$typeof === 'symbol' &&
-            component.$$typeof.toString() === 'Symbol(react.element)' &&
+            (
+                component.$$typeof.toString() === 'Symbol(react.element)' ||
+                component.$$typeof.toString() === 'Symbol(react.transitional.element)'
+            ) &&
             component.type.category &&
             component.type.templateId
         ) {

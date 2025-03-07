@@ -2,7 +2,7 @@ import {
     configureStore,
 } from "@reduxjs/toolkit";
 
-import thunk from "redux-thunk";
+import {thunk}  from "redux-thunk";
 import {pageReducer} from "../reducers/page-reducer";
 import {sessionReducer} from "../reducers/session-reducer";
 import {itemReducer} from "../reducers/item-reducer";
@@ -22,7 +22,7 @@ const defaultReducers = {
 const reducer = getStoreReducers(defaultReducers);
 const store = configureStore({
     reducer,
-    middleware,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(middleware),
 });
 
 export default store;
