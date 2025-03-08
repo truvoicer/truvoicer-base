@@ -87,7 +87,6 @@ export class DataSourceBase {
     }
 
     userItemsDataListResponseHandler(responseData) {
-
         if (!Array.isArray(this.searchEngine.searchContext.searchList)) {
             return;
         }
@@ -98,7 +97,7 @@ export class DataSourceBase {
         searchList = this.searchEngine.setSavedItemsListAction(responseData?.savedItems || [], searchList);
         searchList = this.searchEngine.setItemRatingsListAction(responseData?.itemRatings || [], searchList);
 
-        this.searchEngine.updateContext({key: "searchList", value: searchList})
+        this.searchEngine.updateContext({key: "searchList", value: searchList});
         this.searchEngine.setUserDataFetchStatusAction(SEARCH_STATUS_IDLE);
     }
 

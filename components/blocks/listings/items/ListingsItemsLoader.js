@@ -27,7 +27,6 @@ const ListingsItemsLoader = ({
     children,
     containerComponent = null,
     containerItemComponent = null,
-    infiniteScroll = false,
 }) => {
 
     const templateManager = new TemplateManager(useContext(TemplateContext));
@@ -79,34 +78,12 @@ const ListingsItemsLoader = ({
     }
 
     function getContainerProps() {
-        console.log(listingsContext?.listingsData?.container_css);
         return {
             style: {
                 width: listingsContext?.listingsData?.container_width || 'auto',
                 height: listingsContext?.listingsData?.container_height || 'auto',
             }
         }
-    }
-
-    function renderInfiniteScroll() {
-        return (
-            <div className="listings--block listings--block--infinite-scroll"
-                {...getContainerProps()}>
-                    <ListingsInfiniteScroll>
-                    <ContainerComponent>
-                        {renderListItems()}
-                    </ContainerComponent>
-                    </ListingsInfiniteScroll>
-                {/* <InfiniteScroll
-                    pageStart={0}
-                    initialLoad={false}
-                    loadMore={loadMore}
-                    hasMore={searchContext.pageControls[PAGE_CONTROL_HAS_MORE]}
-                    loader={templateManager.render(<LoaderComponent key={"loader"} />)}
-                >
-                </InfiniteScroll> */}
-            </div>
-        );
     }
 
     function renderDefault() {

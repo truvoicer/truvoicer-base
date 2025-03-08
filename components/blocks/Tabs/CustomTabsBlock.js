@@ -47,7 +47,7 @@ const CustomTabsBlock = (props) => {
                 defaultActiveKey={defaultActiveKey}
                 onSelect={onSelect}
             >
-                <div className="container">
+                <div className="container section-block">
                     {isNotEmpty(props?.data?.heading) &&
                         <div className="row">
                             <div className="col-12">

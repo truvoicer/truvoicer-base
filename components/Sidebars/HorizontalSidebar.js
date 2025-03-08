@@ -40,7 +40,7 @@ const HorizontalSidebar = ({sidebarName}) => {
 
     return (
         <div className="main-nav clearfix">
-            <div className="container">
+            <div className="container section-block">
                     <div className="row">
                         {Array.isArray(data) && data.length > 0 &&
                             <>

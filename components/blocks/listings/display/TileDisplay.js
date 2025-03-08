@@ -93,7 +93,7 @@ const TileDisplay = (props) => {
     const items = getItems();
     return (
         <section className="featured-post-area">
-            <div className="container">
+            <div className="container section-block">
                 <div className="row">
                     <div className="col-lg-7 col-md-12 pad-r">
                         <div id="featured-slider" className="owl-carousel owl-theme featured-slider">

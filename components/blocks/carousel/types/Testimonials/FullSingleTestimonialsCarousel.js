@@ -31,7 +31,7 @@ const FullSingleTestimonialsCarousel = (props) => {
 
         return (
             <div className="testimonial_area  ">
-                <div className="container">
+                <div className="container section-block">
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="section_title text-center mb-40">

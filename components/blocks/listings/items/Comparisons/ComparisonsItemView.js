@@ -10,7 +10,7 @@ const ComparisonsItemView = (props) => {
     const extraData = props.data?.extra_data;
     return (
         <div className="job_details_area">
-            <div className="container">
+            <div className="container section-block">
                 <div className="row">
                     <div className="col-lg-8">
                         <div className="job_details_header">

@@ -245,14 +245,14 @@ export class SearchEngine extends EngineBase {
 
     setPageControlsAction(extraData) {
         let pageControlsState = this.searchContext?.pageControls;
-        const hasMorePages = this.hasMore(pageControlsState, extraData);
+        // const hasMorePages = this.hasMore(pageControlsState, extraData);
         const totalItems = this.getTotalItems(pageControlsState, extraData);
         const totalPages = this.getTotalPages(pageControlsState, extraData);
 
         this.setPageControlObjectAction({
             ...extraData,
             ...{
-                [PAGE_CONTROL_HAS_MORE]: hasMorePages,
+                // [PAGE_CONTROL_HAS_MORE]: hasMorePages,
                 [PAGINATION_TOTAL_ITEMS]: totalItems,
                 [PAGINATION_TOTAL_PAGES]: totalPages
             }

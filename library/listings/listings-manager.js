@@ -161,6 +161,7 @@ export class ListingsManager extends ListingsManagerBase {
         if (![SEARCH_REQUEST_NEW, SEARCH_REQUEST_APPEND].includes(searchOperation)) {
             return;
         }
+        
         if (searchStatus !== SEARCH_STATUS_STARTED) {
             return;
         }

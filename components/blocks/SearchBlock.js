@@ -123,7 +123,7 @@ const SearchBlock = (props) => {
             {showSearch &&
                 <div className="catagory_area">
                     <form onSubmit={formSubmitHandler}>
-                        <div className="container">
+                        <div className="container section-block">
                             <div className="row cat_search">
                                 <div className="col-lg-3 col-md-4">
                                     <div className="single_input">

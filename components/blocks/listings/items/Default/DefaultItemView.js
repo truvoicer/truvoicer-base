@@ -22,7 +22,7 @@ const DefaultItemView = (props) => {
 
     return (
         <section className="block-wrapper">
-            <div className="container">
+            <div className="container section-block">
                 <div className="row">
                     <div className="col-12">
 

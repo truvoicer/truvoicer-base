@@ -333,6 +333,7 @@ const ListingsBlockInterface = (props) => {
         listingsManager.searchEngine.searchContext.initialRequestHasRun,
         listingsManager.searchEngine.searchContext.searchStatus,
         listingsManager.searchEngine.searchContext.searchOperation,
+        listingsManager.searchEngine.searchContext.userDataFetchStatus,
     ]);
 
     useEffect(() => {
@@ -342,6 +343,7 @@ const ListingsBlockInterface = (props) => {
         listingsManager.searchEngine.searchContext.initialRequestHasRun,
         listingsManager.searchEngine.searchContext.searchStatus,
         listingsManager.searchEngine.searchContext.searchOperation,
+        listingsManager.searchEngine.searchContext.userDataFetchStatus,
     ]);
 
     useEffect(() => {

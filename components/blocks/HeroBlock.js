@@ -49,7 +49,7 @@ const HeroBlock = (props) => {
                     className="bradcam_area"
                     style={{backgroundImage: `url(${breadcrumbBgUrl})`}}
                 >
-                    <div className="container">
+                    <div className="container section-block">
                         <div className="row">
                             <div className="col-xl-12">
                                 <div className="bradcam_text">
@@ -66,7 +66,7 @@ const HeroBlock = (props) => {
                         className="single_slider  d-flex align-items-center slider_bg_1"
                         style={{backgroundImage: `url(${primaryBgUrl})`}}
                     >
-                        <div className="container">
+                        <div className="container section-block">
                             <div className="row align-items-center">
                                 <div className="col-lg-7 col-md-6">
                                     <div className="slider_text">

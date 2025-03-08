@@ -31,6 +31,7 @@ export const searchData = {
         initialized: false,
         paginationRequest: false,
         hasMore: false,
+        loading: false,
         total_items: 0,
         total_pages: 0,
         current_page: 1,

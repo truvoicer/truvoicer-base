@@ -35,7 +35,7 @@ const FullWidthTemplate = (props) => {
                     position={NOTIFICATION_POSITION_TOP_CENTER}
                 />
                 {app[APP_LOADED] && templateManager.render(<Header showSidebar={true} sidebarName={siteConfig.navBarName}/>)}
-                <>
+                <div className="main-content">
                     {app[APP_LOADED] && typeof pageData?.post_content === "string" && pageData
                         ?
                         <>
@@ -45,7 +45,7 @@ const FullWidthTemplate = (props) => {
                         :
                         templateManager.render(<Loader></Loader>)
                     }
-                </>
+                </div>
                 {templateManager.render(<Footer/>)}
             </div>
             <NotificationLoader

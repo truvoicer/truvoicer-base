@@ -85,7 +85,7 @@ const ListingsSortBar = (props) => {
 
         return (
             <div className="listings--sortbar white-bg mb-3">
-                <div className="container">
+                <div className="container section-block">
                     <div className="row cat_search">
                         <div className="col-lg-3 col-md-4">
                             <div className="single_input">

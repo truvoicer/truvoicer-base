@@ -8,11 +8,15 @@ import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext"
 import ListingsItemsContext from "@/truvoicer-base/components/blocks/listings/contexts/ListingsItemsContext";
 import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
 import ListingsItemsLoader from "../items/ListingsItemsLoader";
+import { BlockContext } from "../../contexts/BlockContext";
+import { PAGE_CONTROL_HAS_MORE, PAGINATION_PAGE_NUMBER, SEARCH_REQUEST_APPEND, SEARCH_STATUS_COMPLETED } from "@/truvoicer-base/redux/constants/search-constants";
+import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
 
 const ListingsInfiniteScroll = ({children}) => {
 
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
+    const blockContext = useContext(BlockContext);
 
     const listingsManager = new ListingsManager(listingsContext, searchContext)
     const templateManager = new TemplateManager(useContext(TemplateContext));
@@ -22,37 +26,47 @@ const ListingsInfiniteScroll = ({children}) => {
     listingsGrid.setKeyMap(listingsContext?.listingsData?.keymap);
     const grid = listingsContext?.listingsGrid;
 
-    const loadMore = () => {
-        // if (searchContext.searchStatus !== SEARCH_STATUS_COMPLETED) {
-        //     return false;
-        // }
-        // listingsManager.getSearchEngine().setSearchEntity('listingsInfiniteScroll');
-        // listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_APPEND);
-        // listingsManager.loadNextPageNumberMiddleware(searchContext.pageControls[PAGINATION_PAGE_NUMBER] + 1);
+    const loadMore = (searchObj) => {
+        if (!searchObj?.pageControls[PAGE_CONTROL_HAS_MORE]) {
+            return false;
+        }
+        if (searchObj.pageControls.loading) {
+            return false;
+        }
+        if (searchObj.searchStatus !== SEARCH_STATUS_COMPLETED) {
+            return false;
+        }
+
+        listingsManager.getSearchEngine().updatePageControls({key: 'loading', value: true});
+        listingsManager.getSearchEngine().setSearchEntity('listingsInfiniteScroll');
+        listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_APPEND);
+        listingsManager.loadNextPageNumberMiddleware(searchObj.pageControls[PAGINATION_PAGE_NUMBER] + 1);
     }
-    const handleScroll = () => {
-        const bottom =
-          Math.ceil(window.innerHeight + window.scrollY) >=
-          document.documentElement.scrollHeight - 200;
+    const handleScroll = (searchObj, blockContext, listingsObj) => {
+        const ele = blockContext?.ref?.current;
+        const bottom = Math.ceil(ele.scrollTop) >= ele.scrollHeight - ele.clientHeight;
         if (bottom) {
-            loadMore()
-        //   setPage((prevPage) => {
-        //     const nextPage = prevPage + 1;
-        //     fetchData(nextPage);
-        //     return nextPage;
-        //   });
+            loadMore(searchObj, listingsObj);
         }
       };
       
-    //   useEffect(() => {
-    //     window.addEventListener("scroll", handleScroll);
-    //     return () => {
-    //       window.removeEventListener("scroll", handleScroll);
-    //     };
-    //   }, []);
-
+      useEffect(() => {
+        if (!blockContext?.ref?.current) {
+            return;
+        }
+        let listener = (e) => {
+            e.stopImmediatePropagation();
+            handleScroll(searchContext, blockContext, listingsContext);
+          };
+        blockContext.ref.current.addEventListener("scroll", listener);
+        return () => {
+            blockContext.ref.current.removeEventListener("scroll", listener);
+        };
+      }, [blockContext, searchContext, listingsContext]);
     return (
-        <ListingsItemsLoader infiniteScroll={true}/>
+        <ListingsItemsLoader infiniteScroll={true}>
+            {searchContext?.pageControls?.loading && <LoaderComponent key={"loader"}/>}
+        </ListingsItemsLoader>
     )
 }
 

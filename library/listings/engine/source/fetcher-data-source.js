@@ -3,28 +3,21 @@ import {isNotEmpty, isObject, isObjectEmpty, isSet} from "@/truvoicer-base/libra
 import {FetcherApiMiddleware} from "@/truvoicer-base/library/api/fetcher/middleware";
 import {
     SEARCH_REQUEST_IDLE,
-    SEARCH_REQUEST_NEW,
     PAGE_CONTROL_HAS_MORE,
     PAGE_CONTROL_PAGINATION_REQUEST,
     PAGE_CONTROL_REQ_PAGINATION_TYPE,
-    PAGINATION_PAGE_NUMBER, SEARCH_STATUS_COMPLETED,
+    PAGINATION_PAGE_NUMBER,
     SEARCH_REQUEST_ERROR, SEARCH_STATUS_IDLE,
-    SEARCH_STATUS_STARTED, SORT_BY, PAGINATION_OFFSET, PAGINATION_PAGE_SIZE, SORT_ORDER, DATE_KEY
+    SEARCH_STATUS_STARTED, SORT_BY, SORT_ORDER, DATE_KEY
 } from "@/truvoicer-base/redux/constants/search-constants";
 import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
 import {
-    LISTINGS_BLOCK_SOURCE_API, LISTINGS_BLOCK_SOURCE_SAVED_ITEMS,
-    LISTINGS_BLOCK_SOURCE_WORDPRESS,
-    LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST, LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
+    LISTINGS_BLOCK_SOURCE_SAVED_ITEMS,
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {REQUEST_POST} from "@/truvoicer-base/library/constants/request-constants";
-import {getSiteSettings} from "@/truvoicer-base/library/api/wp/middleware";
 import {siteConfig} from "@/config/site-config";
 import store from "@/truvoicer-base/redux/store";
-import {SESSION_AUTHENTICATED, SESSION_USER, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
 import {ListingsEngine} from "@/truvoicer-base/library/listings/engine/listings-engine";
-import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
-import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
 
 export class FetcherDataSource extends DataSourceBase {
 
@@ -204,13 +197,9 @@ export class FetcherDataSource extends DataSourceBase {
         return listingsProviders
     }
 
-    async fet(itemList  = []) {
-        console.log(itemList)
-    }
     async runSearch() {
         switch (this.listingsEngine?.listingsContext?.listingsData?.source) {
             case LISTINGS_BLOCK_SOURCE_SAVED_ITEMS:
-                console.log('runSearchsaveditems', this.searchEngine.searchContext)
                 const providers = this.searchEngine.searchContext.savedItemsList.filter(item => {
                     return isNotEmpty(item?.provider_name) && isNotEmpty(item?.item_id);
                 }).map(item => {
@@ -334,7 +323,8 @@ export class FetcherDataSource extends DataSourceBase {
         this.searchEngine.setSearchListDataAction(results);
 
         let pageControlData = {
-            [PAGE_CONTROL_REQ_PAGINATION_TYPE]: null
+            [PAGE_CONTROL_REQ_PAGINATION_TYPE]: null,
+            loading: false
         };
         if (isNotEmpty(pagination) && isObject(pagination)) {
             pageControlData = {...pageControlData, ...pagination};

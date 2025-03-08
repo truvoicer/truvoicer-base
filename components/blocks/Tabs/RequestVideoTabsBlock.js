@@ -100,7 +100,7 @@ const RequestVideoTabsBlock = (props) => {
             <>
                 <Tab.Container id="left-tabs-example" defaultActiveKey={0}>
                     <div className="egames-video-area section-padding-100 bg-pattern2">
-                        <div className="container">
+                        <div className="container section-block">
                             <h2 className="section-title mb-40 wow fadeInUp" data-wow-delay="100ms">
                                 {props.data.tabs_block_heading}
                             </h2>

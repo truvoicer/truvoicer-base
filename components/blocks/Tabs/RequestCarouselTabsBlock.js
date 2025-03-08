@@ -51,7 +51,7 @@ const RequestCarouselTabsBlock = (props) => {
             <>
                 <Tab.Container id="left-tabs-example" defaultActiveKey={0}>
                     <section className="monthly-picks-area section-padding-100 bg-pattern">
-                        <div className="container">
+                        <div className="container section-block">
                             <div className="row">
                                 <div className="col-12">
                                     <div className="left-right-pattern"/>
@@ -59,7 +59,7 @@ const RequestCarouselTabsBlock = (props) => {
                             </div>
                         </div>
 
-                        <div className="container">
+                        <div className="container section-block">
                             <div className="row">
                                 <div className="col-12">
                                     <h2 className="section-title mb-70 wow fadeInUp" data-wow-delay="100ms">

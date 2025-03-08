@@ -28,7 +28,6 @@ const SidebarTemplate = (props) => {
     const leftSidebar = templateManager.getHorizontalSidebarName(pageData, 'left');
     const rightSidebar = templateManager.getHorizontalSidebarName(pageData, 'right');
 
-    console.log({topSidebar, bottomSidebar, leftSidebar, rightSidebar});
     return (
         <div className={'body-inner'}>
             <div id={"public_area"}>
@@ -49,7 +48,7 @@ const SidebarTemplate = (props) => {
                     }
                 })}
                 <section className="block-wrapper">
-                    <div className="container">
+                    <div className="container section-block">
                         <div className="row">
                             {pageData
                                 ?

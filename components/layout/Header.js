@@ -31,7 +31,7 @@ const Header = ({
         <>
             {/*<TopSidebar />*/}
             <header ref={ref} id="header" className="header">
-                <div className="container">
+                <div className="container section-block">
                     <div className="row justify-content-center">
                         <div className="col-md-3 col-sm-12">
                             <div className="logo">

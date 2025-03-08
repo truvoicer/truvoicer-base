@@ -59,7 +59,7 @@ const PostItemBlock = (props) => {
     const linkProps = getItemUrl(post);
     return (
         <section className="block-wrapper">
-            <div className="container">
+            <div className="container section-block">
                 <div className="row">
                     <div className="col-12">
 

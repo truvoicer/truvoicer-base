@@ -40,7 +40,7 @@ const LoginBlock = ({heading = null}) => {
 
         return (
             <div className="site-section bg-light">
-                <div className="container">
+                <div className="container section-block">
                     <div className="row justify-content-center">
                         <div className="col-md-7 mt-5 mb-5" data-aos="fade">
                             {isNotEmpty(heading) &&

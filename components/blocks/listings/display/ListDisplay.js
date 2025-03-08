@@ -51,7 +51,7 @@ const ListDisplay = (props) => {
 
     return (
         <section className="block-wrapper">
-            <div className="container">
+            <div className="container section-block">
                 <div className="row">
                     {listingsManager.listingsEngine.showSidebar()
                         ?

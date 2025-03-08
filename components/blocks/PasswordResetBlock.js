@@ -58,7 +58,7 @@ const PasswordResetBlock = (props) => {
 
     return (
         <div className="site-section">
-            <div className="container">
+            <div className="container section-block">
                 <div className="row justify-content-center">
                     <div className="col-md-7 mb-5" data-aos="fade">
                         <div className="row form-group bg-light">

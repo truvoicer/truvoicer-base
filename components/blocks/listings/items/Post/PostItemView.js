@@ -13,7 +13,7 @@ const PostItemView = (props) => {
                     <FontAwesomeIcon icon={faLongArrowAltLeft} /> Go Back
                 </a>
             </div>
-            <div className="container">
+            <div className="container section-block">
                 <div className="row">
                     <div className="col-lg-12 posts-list">
                         <div className="single-post">
