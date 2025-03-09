@@ -22,7 +22,6 @@ function UserSavedItemsBlock({session, data, ...otherProps}) {
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const templateManager = new TemplateManager(useContext(TemplateContext));
 
-    console.log('UserSavedItemsBlock', data);
 
     async function getUserSavedItems(isCancelled = false) {
         // const response = await protectedApiRequest(

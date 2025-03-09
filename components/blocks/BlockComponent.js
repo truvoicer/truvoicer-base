@@ -4,6 +4,7 @@ import { BlockContext, blockContextData } from './contexts/BlockContext';
 function BlockComponent({
     styles,
     classes,
+    data = {},
     children
 }) {
     const [blockConTextState, setBlockContextState] = useState({
@@ -18,8 +19,14 @@ function BlockComponent({
             return cloneState;
         });
     }, [blockRef]);
+    
     return (
         <BlockContext.Provider value={blockConTextState}>
+            {data?.title &&
+                <h3 className="block-title">
+                    <span>{data.title}</span>
+                </h3>
+            }
             <div ref={blockRef} className={`${classes}`} style={styles}>
                 {children}
             </div>

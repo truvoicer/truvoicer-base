@@ -87,7 +87,6 @@ const ItemViewBlock = (props) => {
                 userData.rating = findRating;
             }
         }
-        console.log(userData);
         setUserItemData(userData);
     }
 
