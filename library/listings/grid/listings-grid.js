@@ -11,37 +11,39 @@ export class ListingsGrid {
         this.keyMap = keyMap;
     }
 
-    buildTemplateComponentConfigIdentifier({displayAs, category, template = 'default', component}) {
-        return `listings.grid.${displayAs}.${category}.templates.${template}.${component}`;
+    buildTemplateComponentConfigIdentifier({displayAs, template = 'default', style = 'default', component}) {
+        return `listings.grid.${displayAs}.${template}.templates.${style}.${component}`;
     }
-    buildTemplateConfigIdentifier({displayAs, category, listingsGrid, template = 'default'}) {
-        return `listings.grid.${displayAs}.${category}.templates.${template}.gridItems.${listingsGrid}`;
+    buildTemplateConfigIdentifier({displayAs, listingsGrid, template = 'default', style = 'default'}) {
+        return `listings.grid.${displayAs}.${template}.templates.${style}.gridItems.${listingsGrid}`;
     }
-    findTemplateGridItemComponent({displayAs, category, listingsGrid, template = 'default'}) {
+    findTemplateGridItemComponent({displayAs, category, listingsGrid, template = 'default', style = 'default'}) {
         const gridConfig = templateConfig();
         return findInObject(
             this.buildTemplateConfigIdentifier({
                 displayAs,
                 category,
                 listingsGrid,
-                template
+                template,
+                style
             }),
             gridConfig
         );
     }
-    findTemplateListingComponent({displayAs, category, component, template = 'default'}) {
+    findTemplateListingComponent({displayAs, category, component, template = 'default', style = 'default'}) {
         const gridConfig = templateConfig();
         return findInObject(
             this.buildTemplateComponentConfigIdentifier({
                 displayAs,
                 category,
                 template,
-                component
+                component,
+                style
             }),
             gridConfig
         );
     }
-    findGridTemplateConfig({displayAs, template = 'default'}) {
+    findGridTemplateConfig({displayAs, template = 'default', style = 'default'}) {
         if (!isSet(listingsGridConfig[displayAs])) {
             console.warn("No grid config for displayAs", displayAs);
             return false;
@@ -54,10 +56,14 @@ export class ListingsGrid {
             console.warn(`Invalid grid config for (displayAs ${displayAs}) | template ${template} not set`);
             return false;
         }
-        return listingsGridConfig[displayAs].templates[template];
+        if (!isSet(listingsGridConfig[displayAs]?.templates[template]?.[style])) {
+            console.warn(`Invalid grid config for (displayAs ${displayAs}) | style ${style} not set`);
+            return false;
+        }
+        return listingsGridConfig[displayAs].templates[template][style];
     }
-    findDefaultGridItemComponent({displayAs, template = 'default', listingsGrid}) {
-        const templateConfig = this.findGridTemplateConfig({displayAs, template});
+    findDefaultGridItemComponent({displayAs, template = 'default', style = 'default', listingsGrid}) {
+        const templateConfig = this.findGridTemplateConfig({displayAs, template, style});
         if (!templateConfig) {
             return null;
         }
@@ -73,7 +79,7 @@ export class ListingsGrid {
         return listingsGridConfig[displayAs]?.templates[template].gridItems[listingsGrid];
     }
 
-    getGridItem({item, displayAs, category, listingsGrid, template, index}) {
+    getGridItem({item, displayAs, category, listingsGrid, template, style, index}) {
         let gridItem = {...item};
         if (isSet(gridItem.image_list)) {
             gridItem.image_list = convertImageObjectsToArray(gridItem.image_list);
@@ -84,14 +90,16 @@ export class ListingsGrid {
             displayAs,
             category,
             listingsGrid,
-            template
+            template,
+            style
         });
         if (!GridItemComponent) {
             GridItemComponent = this.findDefaultGridItemComponent({
                 displayAs,
                 category,
                 listingsGrid,
-                template
+                template,
+                style
             });
         }
         if (!GridItemComponent) {
@@ -107,12 +115,13 @@ export class ListingsGrid {
             />
         )
     }
-    getTemplateListingComponent({displayAs, category, template, component, props}) {
+    getTemplateListingComponent({displayAs, category, template, style, component, props}) {
         let GridLayoutComponent = this.findTemplateListingComponent({
             displayAs,
             category,
             template,
-            component
+            component,
+            style
         });
         if (!GridLayoutComponent) {
             console.warn("No template layout component found for", displayAs, category);

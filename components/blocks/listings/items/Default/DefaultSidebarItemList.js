@@ -21,22 +21,36 @@ const DefaultItemList = (props) => {
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const itemId = listingsManager.listingsEngine.extractItemId(props.data);
 
-    const linkProps = listingsManager.getListingsEngine().getListingsItemLinkProps({
-        displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
-        category: props.searchCategory,
-        item: props.data,
-        showInfoCallback: props.showInfoCallback,
-        trackData: {
-            dataLayerName: "listItemClick",
-            dataLayer: {
-                provider: props.data.provider,
-                category: props.searchCategory,
-                item_id: props.data.item_id,
-                user_id: props.user[SESSION_USER_ID] || "unregistered",
-                user_email: props.user[SESSION_USER_EMAIL] || "unregistered",
-            },
+    function getLinkProps() {
+        switch (listingsContext?.listingsData?.link_type) {
+            case 'view':
+                return listingsManager.getListingsEngine().getListingsItemLinkProps({
+                    displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
+                    category: listingsManager.getCategory(data),
+                    item: data,
+                    showInfoCallback: props.showInfoCallback,
+                    trackData: {
+                        dataLayerName: "listItemClick",
+                        dataLayer: {
+                            provider: data.provider,
+                            category: props.searchCategory,
+                            item_id: data.item_id,
+                            user_id: props.user[SESSION_USER_ID] || "unregistered",
+                            user_email: props.user[SESSION_USER_EMAIL] || "unregistered",
+                        },
+                    }
+                });
+
+            default:
+                return {
+                    href: listingsManager.getDataKeyValue(data, 'url_key') || '#'
+                };
         }
-    });
+    }
+
+    const linkProps = getLinkProps();
+    const date = listingsManager.getDataKeyValue(data, 'date_key');
+
     const thumbnailData = listingsManager.getThumbnail(data);
 
     return (
@@ -77,12 +91,12 @@ const DefaultItemList = (props) => {
                 <h2 className="post-title title-small">
 
                     <Link {...linkProps}>
-                        {data?.item_title || ""}
+                        {listingsManager.getDataKeyValue(data, 'title_key') || ""}
                     </Link>
                 </h2>
                 <div className="post-meta d-flex align-items-center gap-1">
                         <span
-                            className="me-0 pe-0 post-date">{isNotEmpty(data?.item_date) ? formatDate(data.item_date) : ""}</span>
+                            className="me-0 pe-0 post-date">{isNotEmpty(date) ? formatDate(date) : ""}</span>
                 </div>
                 <div className="d-flex align-items-center gap-1">
                     <SavedItemToggle

@@ -5,6 +5,7 @@ import {
 import {
     DISPLAY_AS_COMPARISONS,
     DISPLAY_AS_LIST,
+    DISPLAY_AS_POST,
     DISPLAY_AS_POST_LIST, DISPLAY_AS_SIDEBAR_LIST, DISPLAY_AS_SIDEBAR_POST, DISPLAY_AS_TILES
 } from "@/truvoicer-base/redux/constants/general_constants";
 import PostItemListPost from "@/truvoicer-base/components/blocks/listings/items/Post/PostItemListPost";
@@ -26,7 +27,35 @@ import ComparisonsItemView from "@/truvoicer-base/components/blocks/listings/ite
 export const defaultListingsGrid = LISTINGS_GRID_LIST;
 
 export const listingsGridConfig = {
-        [DISPLAY_AS_POST_LIST]: {
+        [DISPLAY_AS_LIST]: {
+            default: {
+
+            },
+            sidebar: {
+
+            },
+            tiles: {
+
+            },
+            comparisons: {
+
+            },
+        },
+        [DISPLAY_AS_POST]: {
+            default: {
+
+            },
+            sidebar: {
+
+            },
+            tiles: {
+
+            },
+            comparisons: {
+                
+            },
+        },
+        [DISPLAY_AS_POST]: {
             templates: {
                 default: {
                     gridItems: {

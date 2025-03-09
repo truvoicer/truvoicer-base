@@ -3,10 +3,9 @@ import {
     LISTINGS_GRID_DETAILED,
     LISTINGS_GRID_LIST
 } from "@/truvoicer-base/redux/constants/listings-constants";
-import ItemList from "@/views/Components/Blocks/Listings/Templates/Recruitment/List/ItemList";
-import InfoModal from "@/views/Components/Blocks/Listings/Templates/Recruitment/List/InfoModal";
-import ListDisplay from "@/views/Components/Blocks/Listings/Templates/Recruitment/Layout/ListDisplay";
-import ItemView from "@/views/Components/Blocks/Listings/Templates/Recruitment/List/ItemView";
+import ItemList from "@/views/Components/Blocks/Listings/Templates/Default/List/ItemList";
+import InfoModal from "@/views/Components/Blocks/Listings/Templates/Default/List/InfoModal";
+import ListDisplay from "@/views/Components/Blocks/Listings/Templates/Default/Layout/ListDisplay";
 
 export default {
     templates: {
@@ -18,7 +17,6 @@ export default {
             },
             modal: InfoModal,
             layout: ListDisplay,
-            itemView: ItemView,
             savedItems: null,
         }
     }
