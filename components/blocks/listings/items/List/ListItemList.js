@@ -13,7 +13,7 @@ import SavedItemToggle from "@/truvoicer-base/components/blocks/listings/widgets
 import ItemRatings from "@/truvoicer-base/components/blocks/listings/widgets/ItemRatings";
 import { DISPLAY_AS } from "@/truvoicer-base/redux/constants/general_constants";
 
-const DefaultItemList = (props) => {
+const ListItemList = (props) => {
     const { data } = props;
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
@@ -127,7 +127,9 @@ function mapStateToProps(state) {
     };
 }
 
+ListItemList.category = 'listings';
+ListItemList.templateId = 'listItemList';
 export default connect(
     mapStateToProps,
     null
-)(DefaultItemList);
+)(ListItemList);

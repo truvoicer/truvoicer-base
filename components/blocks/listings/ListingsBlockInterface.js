@@ -1,6 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
     DISPLAY_AS, LISTINGS_BLOCK_SOURCE_API, LISTINGS_BLOCK_SOURCE_SAVED_ITEMS, LISTINGS_BLOCK_SOURCE_WORDPRESS,
+    STYLE,
+    TEMPLATE,
 } from "@/truvoicer-base/redux/constants/general_constants";
 import {ListingsContext, listingsData} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import {SearchContext, searchData} from "@/truvoicer-base/library/listings/contexts/SearchContext";
@@ -124,9 +126,10 @@ const ListingsBlockInterface = (props) => {
         }
 
         const layoutComponent = listingsGrid.getTemplateListingComponent({
-            displayAs: data[DISPLAY_AS],
+            displayAs: data?.[DISPLAY_AS],
+            style: data?.[STYLE],
+            template: data?.[TEMPLATE],
             category,
-            template: data?.template,
             component,
             props: props
         });

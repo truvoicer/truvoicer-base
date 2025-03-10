@@ -1,3 +1,4 @@
+import { LISTINGS_GRID_LIST } from "@/truvoicer-base/redux/constants/listings-constants";
 import ComparisonDisplay from "@/views/Components/Blocks/Listings/Templates/Comparisons/Layout/ComparisonDisplay";
 import HorizontalComparisons from "@/views/Components/Blocks/Listings/Templates/Comparisons/Layout/HorizontalComparisons";
 import ComparisonsInfoModal from "@/views/Components/Blocks/Listings/Templates/Comparisons/List/ComparisonsInfoModal";

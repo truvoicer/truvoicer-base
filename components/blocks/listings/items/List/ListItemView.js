@@ -15,7 +15,7 @@ import ItemRatings from "@/truvoicer-base/components/blocks/listings/widgets/Ite
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faComments, faEye } from '@fortawesome/free-solid-svg-icons';
 
-const DefaultItemView = (props) => {
+const ListItemView = (props) => {
     const {data, item, userItemData} = props;
     const extraData = data?.extra_data;
     const templateManager = new TemplateManager(useContext(TemplateContext));
@@ -140,6 +140,6 @@ const DefaultItemView = (props) => {
         </section>
     );
 }
-DefaultItemView.category = 'views';
-DefaultItemView.templateId = 'defaultItemView';
-export default DefaultItemView;
+ListItemView.category = 'listings';
+ListItemView.templateId = 'listItemView';
+export default ListItemView;

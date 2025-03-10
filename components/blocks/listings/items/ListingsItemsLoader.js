@@ -16,7 +16,7 @@ import ListingsItemsContext from "@/truvoicer-base/components/blocks/listings/co
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { ListingsGrid } from "@/truvoicer-base/library/listings/grid/listings-grid";
-import { DISPLAY_AS } from "@/truvoicer-base/redux/constants/general_constants";
+import { DISPLAY_AS, STYLE, TEMPLATE } from "@/truvoicer-base/redux/constants/general_constants";
 import { SESSION_USER, SESSION_USER_ID } from "@/truvoicer-base/redux/constants/session-constants";
 import { getGridItemColumns } from "@/truvoicer-base/redux/actions/item-actions";
 import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
@@ -100,6 +100,8 @@ const ListingsItemsLoader = ({
 
     let gridItemsProps = {
         displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
+        style: listingsContext?.listingsData?.[STYLE],
+        template: listingsContext?.listingsData?.[TEMPLATE],
         listingsGrid: grid,
         userId: user[SESSION_USER_ID],
     }

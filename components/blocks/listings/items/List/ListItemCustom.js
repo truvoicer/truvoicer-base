@@ -4,7 +4,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faClock, faMapMarker} from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 
-const DefaultItemCustom = (props) => {
+const ListItemCustom = (props) => {
     return (
 
         <div className="single_jobs white-bg d-flex justify-content-between">
@@ -55,8 +55,9 @@ const DefaultItemCustom = (props) => {
     )
 }
 
-
+ListItemCustom.category = 'listings';
+ListItemCustom.templateId = 'listItemCustom';
 export default connect(
     null,
     null
-)(DefaultItemCustom);
+)(ListItemCustom);

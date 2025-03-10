@@ -17,12 +17,11 @@ export class ListingsGrid {
     buildTemplateConfigIdentifier({displayAs, listingsGrid, template = 'default', style = 'default'}) {
         return `listings.grid.${displayAs}.${template}.templates.${style}.gridItems.${listingsGrid}`;
     }
-    findTemplateGridItemComponent({displayAs, category, listingsGrid, template = 'default', style = 'default'}) {
+    findTemplateGridItemComponent({displayAs, listingsGrid, template = 'default', style = 'default'}) {
         const gridConfig = templateConfig();
         return findInObject(
             this.buildTemplateConfigIdentifier({
                 displayAs,
-                category,
                 listingsGrid,
                 template,
                 style
@@ -30,12 +29,11 @@ export class ListingsGrid {
             gridConfig
         );
     }
-    findTemplateListingComponent({displayAs, category, component, template = 'default', style = 'default'}) {
+    findTemplateListingComponent({displayAs, component, template = 'default', style = 'default'}) {
         const gridConfig = templateConfig();
         return findInObject(
             this.buildTemplateComponentConfigIdentifier({
                 displayAs,
-                category,
                 template,
                 component,
                 style
@@ -48,19 +46,19 @@ export class ListingsGrid {
             console.warn("No grid config for displayAs", displayAs);
             return false;
         }
-        if (!isSet(listingsGridConfig[displayAs]?.templates)) {
-            console.warn(`Invalid grid config for (displayAs ${displayAs}) | templates object not set`);
-            return false;
-        }
-        if (!isSet(listingsGridConfig[displayAs]?.templates?.[template])) {
+        if (!isSet(listingsGridConfig[displayAs]?.[template])) {
             console.warn(`Invalid grid config for (displayAs ${displayAs}) | template ${template} not set`);
             return false;
         }
-        if (!isSet(listingsGridConfig[displayAs]?.templates[template]?.[style])) {
+        if (!isSet(listingsGridConfig[displayAs][template]?.templates)) {
+            console.warn(`Invalid grid config for (displayAs ${displayAs}) | templates object not set`);
+            return false;
+        }
+        if (!isSet(listingsGridConfig[displayAs][template].templates?.[style])) {
             console.warn(`Invalid grid config for (displayAs ${displayAs}) | style ${style} not set`);
             return false;
         }
-        return listingsGridConfig[displayAs].templates[template][style];
+        return listingsGridConfig[displayAs][template].templates[style];
     }
     findDefaultGridItemComponent({displayAs, template = 'default', style = 'default', listingsGrid}) {
         const templateConfig = this.findGridTemplateConfig({displayAs, template, style});
@@ -115,16 +113,15 @@ export class ListingsGrid {
             />
         )
     }
-    getTemplateListingComponent({displayAs, category, template, style, component, props}) {
+    getTemplateListingComponent({displayAs, template, style, component, props}) {
         let GridLayoutComponent = this.findTemplateListingComponent({
             displayAs,
-            category,
             template,
             component,
             style
         });
         if (!GridLayoutComponent) {
-            console.warn("No template layout component found for", displayAs, category);
+            console.warn("No template layout component found for", {displayAs, template, style});
             return null;
         }
 

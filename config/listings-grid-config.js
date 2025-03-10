@@ -3,141 +3,166 @@ import {
     LISTINGS_GRID_LIST
 } from "@/truvoicer-base/redux/constants/listings-constants";
 import {
-    DISPLAY_AS_COMPARISONS,
     DISPLAY_AS_LIST,
     DISPLAY_AS_POST,
-    DISPLAY_AS_POST_LIST, DISPLAY_AS_SIDEBAR_LIST, DISPLAY_AS_SIDEBAR_POST, DISPLAY_AS_TILES
 } from "@/truvoicer-base/redux/constants/general_constants";
-import PostItemListPost from "@/truvoicer-base/components/blocks/listings/items/Post/PostItemListPost";
-import DefaultItemList from "@/truvoicer-base/components/blocks/listings/items/Default/DefaultItemList";
-import PostInfoModal from "@/truvoicer-base/components/blocks/listings/items/Post/PostInfoModal";
-import DefaultInfoModal from "@/truvoicer-base/components/blocks/listings/items/Default/DefaultInfoModal";
-import ComparisonsItemList from "@/truvoicer-base/components/blocks/listings/items/Comparisons/ComparisonsItemList";
-import DefaultSidebarItemList from "@/truvoicer-base/components/blocks/listings/items/Default/DefaultSidebarItemList";
-import DefaultSidebarPostItem from "@/truvoicer-base/components/blocks/listings/items/Post/DefaultSidebarPostItem";
-import HorizontalComparisons
-    from "@/truvoicer-base/components/blocks/listings/display/comparisons/HorizontalComparisons";
-import TileDisplay from "@/truvoicer-base/components/blocks/listings/display/TileDisplay";
-import ListDisplay from "@/truvoicer-base/components/blocks/listings/display/ListDisplay";
-import SidebarDisplay from "@/truvoicer-base/components/blocks/listings/display/SidebarDisplay";
-import ComparisonDisplay from "@/truvoicer-base/components/blocks/listings/display/comparisons/ComparisonDisplay";
-import ComparisonsInfoModal from "@/truvoicer-base/components/blocks/listings/items/Comparisons/ComparisonsInfoModal";
-import ComparisonsItemView from "@/truvoicer-base/components/blocks/listings/items/Comparisons/ComparisonsItemView";
-
+import ListItemList from "@/truvoicer-base/components/blocks/listings/items/List/ListItemList";
+import ListInfoModal from "@/truvoicer-base/components/blocks/listings/items/List/ListInfoModal";
+import ListSidebarItemList from "../components/blocks/listings/items/List/ListSidebarItemList";
+import ListDisplay from "../components/blocks/listings/items/List/layouts/ListDisplay";
+import ListSidebarDisplay from "../components/blocks/listings/items/List/layouts/SidebarDisplay";
+import ListTileDisplay from "../components/blocks/listings/items/List/layouts/TileDisplay";
+import ListComparisonsItemList from "../components/blocks/listings/items/List/Comparisons/ComparisonsItemList";
+import ListComparisonDisplay from "../components/blocks/listings/items/List/layouts/comparisons/ComparisonDisplay";
+import ListComparisonsInfoModal from "../components/blocks/listings/items/List/Comparisons/ComparisonsInfoModal";
+import ListComparisonsItemView from "../components/blocks/listings/items/List/Comparisons/ComparisonsItemView";
+import ListHorizontalComparisons from "../components/blocks/listings/items/List/layouts/comparisons/HorizontalComparisons";
+import PostItemList from "../components/blocks/listings/items/Post/PostItemList";
+import PostInfoModal from "../components/blocks/listings/items/Post/PostInfoModal";
+import PostListDisplay from "../components/blocks/listings/items/Post/layouts/ListDisplay";
+import PostSidebarDisplay from "../components/blocks/listings/items/Post/layouts/SidebarDisplay";
+import DefaultSidebarPostItem from "../components/blocks/listings/items/Post/DefaultSidebarPostItem";
+import PostTileDisplay from "../components/blocks/listings/items/Post/layouts/TileDisplay";
+import PostComparisonsItemList from "../components/blocks/listings/items/Post/Comparisons/ComparisonsItemList";
+import PostComparisonDisplay from "../components/blocks/listings/items/Post/layouts/comparisons/ComparisonDisplay";
+import PostComparisonsInfoModal from "../components/blocks/listings/items/Post/Comparisons/ComparisonsInfoModal";
+import PostComparisonsItemView from "../components/blocks/listings/items/Post/Comparisons/ComparisonsItemView";
+import PostHorizontalComparisons from "../components/blocks/listings/items/Post/layouts/comparisons/HorizontalComparisons";
 export const defaultListingsGrid = LISTINGS_GRID_LIST;
 
 export const listingsGridConfig = {
         [DISPLAY_AS_LIST]: {
             default: {
-
+                templates: {
+                    default: {
+                        gridItems: {
+                            [LISTINGS_GRID_LIST]: ListItemList,
+                            [LISTINGS_GRID_COMPACT]: ListItemList,
+                            [LISTINGS_GRID_DETAILED]: ListItemList,
+                        },
+                        modal: ListInfoModal,
+                        layout: ListDisplay,
+                        savedItems: null,
+                    }
+                }
             },
             sidebar: {
-
+                templates: {
+                    default: {
+                        gridItems: {
+                            [LISTINGS_GRID_LIST]: ListSidebarItemList,
+                            [LISTINGS_GRID_COMPACT]: ListSidebarItemList,
+                            [LISTINGS_GRID_DETAILED]: ListSidebarItemList,
+                        },
+                        modal: ListInfoModal,
+                        layout: ListSidebarDisplay,
+                        savedItems: null,
+                    }
+                }
             },
             tiles: {
-
+                templates: {
+                    default: {
+                        modal: ListInfoModal,
+                        layout: ListTileDisplay,
+                        savedItems: null,
+                    }
+                }
             },
             comparisons: {
-
+                templates: {
+                    default: {
+                        gridItems: {
+                            [LISTINGS_GRID_LIST]: ListComparisonsItemList,
+                        },
+                        layout: ListComparisonDisplay,
+                        modal: ListComparisonsInfoModal,
+                        single: ListComparisonsItemView
+                    },
+                    'vertical_desc_slide': {
+                        gridItems: {
+                            [LISTINGS_GRID_LIST]: ListComparisonsItemList,
+                        },
+                        layout: ListComparisonDisplay,
+                        modal: ListComparisonsInfoModal,
+                        single: ListComparisonsItemView
+                    },
+                    'horizontal_compare': {
+                        gridItems: {
+                            [LISTINGS_GRID_LIST]: ListComparisonsItemList,
+                        },
+                        layout: ListHorizontalComparisons,
+                        modal: ListComparisonsInfoModal,
+                        single: ListComparisonsItemView
+                    },
+                }
             },
         },
         [DISPLAY_AS_POST]: {
             default: {
-
+                templates: {
+                    default: {
+                        gridItems: {
+                            [LISTINGS_GRID_LIST]: PostItemList,
+                            [LISTINGS_GRID_COMPACT]: PostItemList,
+                            [LISTINGS_GRID_DETAILED]: PostItemList,
+                        },
+                        modal: PostInfoModal,
+                        layout: PostListDisplay,
+                        savedItems: null,
+                    }
+                }
             },
             sidebar: {
-
+                templates: {
+                    default: {
+                        gridItems: {
+                            [LISTINGS_GRID_LIST]: DefaultSidebarPostItem,
+                            [LISTINGS_GRID_COMPACT]: DefaultSidebarPostItem,
+                            [LISTINGS_GRID_DETAILED]: DefaultSidebarPostItem,
+                        },
+                        modal: PostInfoModal,
+                        layout: PostSidebarDisplay,
+                        savedItems: null,
+                    }
+                }
             },
             tiles: {
-
+                templates: {
+                    default: {
+                        modal: PostInfoModal,
+                        layout: PostTileDisplay,
+                        savedItems: null,
+                    }
+                }
             },
             comparisons: {
-                
+                templates: {
+                    default: {
+                        gridItems: {
+                            [LISTINGS_GRID_LIST]: PostComparisonsItemList,
+                        },
+                        layout: PostComparisonDisplay,
+                        modal: PostComparisonsInfoModal,
+                        single: PostComparisonsItemView
+                    },
+                    'vertical_desc_slide': {
+                        gridItems: {
+                            [LISTINGS_GRID_LIST]: PostComparisonsItemList,
+                        },
+                        layout: PostComparisonDisplay,
+                        modal: PostComparisonsInfoModal,
+                        single: PostComparisonsItemView
+                    },
+                    'horizontal_compare': {
+                        gridItems: {
+                            [LISTINGS_GRID_LIST]: PostComparisonsItemList,
+                        },
+                        layout: PostHorizontalComparisons,
+                        modal: PostComparisonsInfoModal,
+                        single: PostComparisonsItemView
+                    },
+                }
             },
-        },
-        [DISPLAY_AS_POST]: {
-            templates: {
-                default: {
-                    gridItems: {
-                        [LISTINGS_GRID_LIST]: PostItemListPost,
-                        [LISTINGS_GRID_COMPACT]: PostItemListPost,
-                        [LISTINGS_GRID_DETAILED]: PostItemListPost,
-                    },
-                    modal: PostInfoModal,
-                    layout: ListDisplay,
-                }
-            }
-        },
-        [DISPLAY_AS_LIST]: {
-            templates: {
-                default: {
-                    gridItems: {
-                        [LISTINGS_GRID_LIST]: DefaultItemList,
-                        [LISTINGS_GRID_COMPACT]: DefaultItemList,
-                        [LISTINGS_GRID_DETAILED]: DefaultItemList,
-                    },
-                    modal: DefaultInfoModal,
-                    layout: ListDisplay,
-                }
-            }
-        },
-        [DISPLAY_AS_SIDEBAR_LIST]: {
-            templates: {
-                default: {
-                    gridItems: {
-                        [LISTINGS_GRID_LIST]: DefaultSidebarItemList,
-                        [LISTINGS_GRID_COMPACT]: DefaultSidebarItemList,
-                        [LISTINGS_GRID_DETAILED]: DefaultSidebarItemList,
-                    },
-                    layout: SidebarDisplay,
-                }
-            }
-        },
-        [DISPLAY_AS_SIDEBAR_POST]: {
-            templates: {
-                default: {
-                    gridItems: {
-                        [LISTINGS_GRID_LIST]: DefaultSidebarPostItem,
-                        [LISTINGS_GRID_COMPACT]: DefaultSidebarPostItem,
-                        [LISTINGS_GRID_DETAILED]: DefaultSidebarPostItem,
-                    },
-                    layout: SidebarDisplay,
-                }
-            }
-        },
-        [DISPLAY_AS_COMPARISONS]: {
-            templates: {
-                default: {
-                    gridItems: {
-                        [LISTINGS_GRID_LIST]: ComparisonsItemList,
-                    },
-                    layout: ComparisonDisplay,
-                    modal: ComparisonsInfoModal,
-                    single: ComparisonsItemView
-                },
-                'vertical_desc_slide': {
-                    gridItems: {
-                        [LISTINGS_GRID_LIST]: ComparisonsItemList,
-                    },
-                    layout: ComparisonDisplay,
-                    modal: ComparisonsInfoModal,
-                    single: ComparisonsItemView
-                },
-                'horizontal_compare': {
-                    gridItems: {
-                        [LISTINGS_GRID_LIST]: ComparisonsItemList,
-                    },
-                    layout: HorizontalComparisons,
-                    modal: ComparisonsInfoModal,
-                    single: ComparisonsItemView
-                },
-            }
-        },
-        [DISPLAY_AS_TILES]: {
-            templates: {
-                default: {
-                    layout: TileDisplay,
-                }
-            }
         },
     }

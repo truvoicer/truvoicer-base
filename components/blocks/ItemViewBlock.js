@@ -6,12 +6,8 @@ import Head from "next/head";
 import {getItemViewPageTitle} from "@/truvoicer-base/library/helpers/pages";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
-import {DISPLAY_AS, DISPLAY_AS_LIST, DISPLAY_AS_POST_LIST} from "@/truvoicer-base/redux/constants/general_constants";
-import DefaultItemView from "@/truvoicer-base/components/blocks/listings/items/Default/DefaultItemView";
+import {DISPLAY_AS, STYLE, TEMPLATE} from "@/truvoicer-base/redux/constants/general_constants";
 import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
-import {wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
-import {wpApiConfig} from "@/truvoicer-base/config/wp-api-config";
-import {REQUEST_POST} from "@/truvoicer-base/library/constants/request-constants";
 import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
 import {SESSION_AUTHENTICATED, SESSION_IS_AUTHENTICATING} from "@/truvoicer-base/redux/constants/session-constants";
 
@@ -100,7 +96,9 @@ const ItemViewBlock = (props) => {
             return false;
         }
         const layoutComponent = listingsGrid.getTemplateListingComponent({
-            displayAs: props.item[DISPLAY_AS],
+            displayAs: props?.item?.[DISPLAY_AS],
+            template: props?.item?.[TEMPLATE],
+            style: props?.item?.[STYLE],
             category: getService(item),
             component: 'itemView',
             props: {

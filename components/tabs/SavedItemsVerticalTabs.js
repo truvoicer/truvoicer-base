@@ -173,6 +173,8 @@ const SavedItemsVerticalTabs = (props) => {
                                 {listingsGridManager.getGridItem({
                                     item,
                                     displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
+                                    style: listingsContext?.listingsData?.[STYLE],
+                                    template: listingsContext?.listingsData?.[TEMPLATE],
                                     category: item?.service?.name || listingsManager.getCategory(),
                                     listingsGrid,
                                     userId: props.user[SESSION_USER_ID],
