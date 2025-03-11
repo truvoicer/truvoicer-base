@@ -120,7 +120,7 @@ const MenuList = (props) => {
                         if (getCallback) {
                             getCallback(e);
                         } else {
-                            pageClickHandler(e, item, true);
+                            pageClickHandler(e, item);
                         }
                     }}>
                     {item.post_title}

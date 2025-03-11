@@ -356,18 +356,17 @@ export class FetcherDataSource extends DataSourceBase {
         const listingsContext = await this.listingsEngine?.listingsContext;
         const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
         let providers = [];
-
         if (!Array.isArray(queryDataState?.providers) || queryDataState.providers.length === 0) {
-            if  (
-                Array.isArray(listingsContext?.providers) &&
-                listingsContext.providers.length
-            )  {
-                providers = listingsContext.providers;
-            } else if  (
+             if  (
                 Array.isArray(listingsDataState?.providers_list) &&
                 listingsDataState.providers_list.length
             )  {
                 providers = listingsDataState.providers_list;
+            } else if  (
+                Array.isArray(listingsContext?.providers) &&
+                listingsContext.providers.length
+            )  {
+                providers = listingsContext.providers;
             }
         } else {
             providers = this.buildProviderPostData(queryDataState.providers)
