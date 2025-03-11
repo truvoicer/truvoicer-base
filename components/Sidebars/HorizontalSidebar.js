@@ -10,8 +10,10 @@ import ProfileMenu from "@/truvoicer-base/components/Menus/ProfileMenu";
 import {getSidebarMenuItem, getSidebarMobileMenuItem} from "@/truvoicer-base/library/helpers/pages";
 import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
-import {fetchSidebarRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
+import {fetchSidebarRequest, wpResourceRequest} from "@/truvoicer-base/library/api/wordpress/middleware";
 import {isNotEmpty} from "@/truvoicer-base/library/utils";
+import { wpApiConfig } from "@/truvoicer-base/config/wp-api-config";
+import {sprintf} from "sprintf-js";
 
 const HorizontalSidebar = ({sidebarName}) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));

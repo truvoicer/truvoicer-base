@@ -1,52 +1,33 @@
-const CryptoJS = require("crypto-js");
+const defaultHeader = { name: "HMAC", hash: "SHA-256" };
 
-const defaultHeader = {
-    "alg": "HS256",
-    "typ": "JWT"
-};
-
-function base64url(source) {
-    let encodedSource;
-    // Encode in classical base64
-    encodedSource = CryptoJS.enc.Base64.stringify(source);
-
-    // Remove padding equal characters
-    encodedSource = encodedSource.replace(/=+$/, '');
-
-    // Replace characters according to base64url specifications
-    encodedSource = encodedSource.replace(/\+/g, '-');
-    encodedSource = encodedSource.replace(/\//g, '_');
-
-    return encodedSource;
-}
-
-function getDataString(data) {
-    return CryptoJS.enc.Utf8.parse(JSON.stringify(data));
-}
-
-function getEncodedData(dataString) {
-    return base64url(dataString);
-}
-
-function buildJwt(encodedHeader, encodedData) {
-    return `${encodedHeader}.${encodedData}`;
-}
-
-function buildSignature(token, secret) {
-    const signature = CryptoJS.HmacSHA256(token, secret);
-    return base64url(signature);
-}
-
-export function getSignedJwt({
+export async function getSignedJwt({
     secret,
     payload,
     headerData = defaultHeader
 }) {
-    const headerString = getDataString(headerData);
-    const encodedHeader = getEncodedData(headerString);
-    const payloadString = getDataString(payload);
-    const encodedPayload = getEncodedData(payloadString);
-    const token = buildJwt(encodedHeader, encodedPayload);
-    const signature = buildSignature(token, secret);
-    return `${token}.${signature}`;
+    const enc = new TextEncoder();
+    const algorithm = headerData;
+
+    const key = await crypto.subtle.importKey(
+        "raw",
+        enc.encode(secret),
+        algorithm,
+        false,
+        ["sign", "verify"]
+    );
+
+    const signature = await crypto.subtle.sign(
+        algorithm.name,
+        key,
+        enc.encode(payload)
+    );
+
+    // convert buffer to byte array
+    const hashArray = Array.from(new Uint8Array(signature));
+
+    // convert bytes to hex string
+    const digest = hashArray
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+    return digest;
 }
