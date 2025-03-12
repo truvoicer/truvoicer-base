@@ -6,28 +6,32 @@ import {
     DISPLAY_AS_LIST,
     DISPLAY_AS_POST,
 } from "@/truvoicer-base/redux/constants/general_constants";
-import ListItemList from "@/truvoicer-base/components/blocks/listings/items/List/ListItemList";
-import ListInfoModal from "@/truvoicer-base/components/blocks/listings/items/List/ListInfoModal";
-import ListSidebarItemList from "../components/blocks/listings/items/List/ListSidebarItemList";
-import ListDisplay from "../components/blocks/listings/items/List/layouts/ListDisplay";
-import ListSidebarDisplay from "../components/blocks/listings/items/List/layouts/SidebarDisplay";
-import ListTileDisplay from "../components/blocks/listings/items/List/layouts/TileDisplay";
-import ListComparisonsItemList from "../components/blocks/listings/items/List/Comparisons/ComparisonsItemList";
-import ListComparisonDisplay from "../components/blocks/listings/items/List/layouts/comparisons/ComparisonDisplay";
-import ListComparisonsInfoModal from "../components/blocks/listings/items/List/Comparisons/ComparisonsInfoModal";
-import ListComparisonsItemView from "../components/blocks/listings/items/List/Comparisons/ComparisonsItemView";
-import ListHorizontalComparisons from "../components/blocks/listings/items/List/layouts/comparisons/HorizontalComparisons";
-import PostItemList from "../components/blocks/listings/items/Post/PostItemList";
-import PostInfoModal from "../components/blocks/listings/items/Post/PostInfoModal";
-import PostListDisplay from "../components/blocks/listings/items/Post/layouts/ListDisplay";
-import PostSidebarDisplay from "../components/blocks/listings/items/Post/layouts/SidebarDisplay";
-import DefaultSidebarPostItem from "../components/blocks/listings/items/Post/DefaultSidebarPostItem";
-import PostTileDisplay from "../components/blocks/listings/items/Post/layouts/TileDisplay";
-import PostComparisonsItemList from "../components/blocks/listings/items/Post/Comparisons/ComparisonsItemList";
-import PostComparisonDisplay from "../components/blocks/listings/items/Post/layouts/comparisons/ComparisonDisplay";
-import PostComparisonsInfoModal from "../components/blocks/listings/items/Post/Comparisons/ComparisonsInfoModal";
-import PostComparisonsItemView from "../components/blocks/listings/items/Post/Comparisons/ComparisonsItemView";
-import PostHorizontalComparisons from "../components/blocks/listings/items/Post/layouts/comparisons/HorizontalComparisons";
+
+import ListItemList from "../components/blocks/listings/items/DisplayAs/List/Templates/Default/ListItemList";
+import ListInfoModal from "../components/blocks/listings/items/DisplayAs/List/Templates/Default/ListInfoModal";
+import ListDisplay from "../components/blocks/listings/items/DisplayAs/List/Templates/Default/Layout/ListDisplay";
+import ListSidebarItemList from "../components/blocks/listings/items/DisplayAs/List/Templates/Sidebar/ListSidebarItemList";
+import ListSidebarDisplay from "../components/blocks/listings/items/DisplayAs/List/Templates/Sidebar/Layout/SidebarDisplay";
+import ListTileDisplay from "../components/blocks/listings/items/DisplayAs/List/Templates/Tiles/Layout/TileDisplay";
+import ListComparisonsItemList from "../components/blocks/listings/items/DisplayAs/List/Templates/Comparisons/ComparisonsItemList";
+import ListComparisonDisplay from "../components/blocks/listings/items/DisplayAs/List/Templates/Comparisons/Layout/ComparisonDisplay";
+import ListComparisonsInfoModal from "../components/blocks/listings/items/DisplayAs/List/Templates/Comparisons/ComparisonsInfoModal";
+import ListComparisonsItemView from "../components/blocks/listings/items/DisplayAs/List/Templates/Comparisons/ComparisonsItemView";
+import ListHorizontalComparisons from "../components/blocks/listings/items/DisplayAs/List/Templates/Comparisons/Layout/HorizontalComparisons";
+import PostItemList from "../components/blocks/listings/items/DisplayAs/Post/Templates/Default/PostItemList";
+import PostInfoModal from "../components/blocks/listings/items/DisplayAs/Post/Templates/Default/PostInfoModal";
+import PostListDisplay from "../components/blocks/listings/items/DisplayAs/Post/Templates/Default/Layout/ListDisplay";
+import PostSidebarDisplay from "../components/blocks/listings/items/DisplayAs/Post/Templates/Sidebar/Layout/SidebarDisplay";
+
+import DefaultSidebarPostItem from "../components/blocks/listings/items/DisplayAs/Post/Templates/Sidebar/DefaultSidebarPostItem";
+import PostTileDisplay from "../components/blocks/listings/items/DisplayAs/Post/Templates/Tiles/Layout/TileDisplay";
+import PostComparisonsItemList from "../components/blocks/listings/items/DisplayAs/Post/Templates/Comparisons/ComparisonsItemList";
+
+import PostComparisonDisplay from "../components/blocks/listings/items/DisplayAs/Post/Templates/Comparisons/Layout/ComparisonDisplay";
+import PostComparisonsInfoModal from "../components/blocks/listings/items/DisplayAs/Post/Templates/Comparisons/ComparisonsInfoModal";
+import PostComparisonsItemView from "../components/blocks/listings/items/DisplayAs/Post/Templates/Comparisons/ComparisonsItemView";
+import PostHorizontalComparisons from "../components/blocks/listings/items/DisplayAs/Post/Templates/Comparisons/Layout/HorizontalComparisons";
+
 export const defaultListingsGrid = LISTINGS_GRID_LIST;
 
 export const listingsGridConfig = {

@@ -3,9 +3,9 @@ import {
     LISTINGS_GRID_DETAILED,
     LISTINGS_GRID_LIST
 } from "@/truvoicer-base/redux/constants/listings-constants";
-import PostItemList from "@/views/Components/Blocks/Listings/Templates/Default/Post/PostItemList";
-import PostInfoModal from "@/views/Components/Blocks/Listings/Templates/Default/Post/PostInfoModal";
-import ListDisplay from "@/views/Components/Blocks/Listings/Templates/Default/Layout/ListDisplay";
+import PostItemList from "@/views/Components/Blocks/Listings/DisplayAs/Post/Templates/Default/PostItemList";
+import PostInfoModal from "@/views/Components/Blocks/Listings/DisplayAs/Post/Templates/Default/PostInfoModal";
+import ListDisplay from "@/views/Components/Blocks/Listings/DisplayAs/Post/Templates/Default/Layout/ListDisplay";
 
 export default {
     templates: {

@@ -10,36 +10,75 @@ export class ListingsGrid {
     setKeyMap(keyMap) {
         this.keyMap = keyMap;
     }
-
+    validateGridConfigStyle({displayAs, template = 'default', style = 'default'}) {
+        const gridConfig = templateConfig();
+        if (!isSet(gridConfig?.listings)) {
+            console.warn("No grid config for displayAs", displayAs);
+            return false;
+        }
+        if (!isSet(gridConfig.listings?.grid)) {
+            console.warn("No grid config for displayAs", displayAs);
+            return false;
+        }
+        if (!isSet(gridConfig.listings.grid?.[displayAs])) {
+            console.warn("No grid config for displayAs", displayAs);
+            return false;
+        }
+        if (!isSet(gridConfig.listings.grid[displayAs]?.[template])) {
+            console.warn(`Invalid grid config for (displayAs ${displayAs}) | template ${template} not set`);
+            return false;
+        }
+        if (!isSet(gridConfig.listings.grid[displayAs][template]?.templates)) {
+            console.warn(`Invalid grid config for (displayAs ${displayAs}) | templates object not set`);
+            return false;
+        }
+        if (!isSet(gridConfig.listings.grid[displayAs][template].templates?.[style])) {
+            console.warn(`Invalid grid config for (displayAs ${displayAs}) | style ${style} not set`);
+            return false;
+        }
+        return true;
+    }
     buildTemplateComponentConfigIdentifier({displayAs, template = 'default', style = 'default', component}) {
-        return `listings.grid.${displayAs}.${template}.templates.${style}.${component}`;
+        const gridConfig = templateConfig();
+        if (!this.validateGridConfigStyle({displayAs, template, style})) {
+            return false;
+        }
+        if (!isSet(gridConfig.listings.grid[displayAs][template].templates[style]?.[component])) {
+            console.warn(`Invalid grid config for (displayAs ${displayAs}) | component ${component} not set`);
+            return false;
+        }
+        return gridConfig.listings.grid[displayAs][template].templates[style][component];
     }
     buildTemplateConfigIdentifier({displayAs, listingsGrid, template = 'default', style = 'default'}) {
-        return `listings.grid.${displayAs}.${template}.templates.${style}.gridItems.${listingsGrid}`;
+        const gridConfig = templateConfig();
+        if (!this.validateGridConfigStyle({displayAs, template, style})) {
+            return false;
+        }
+        if (!isSet(gridConfig.listings.grid[displayAs][template].templates[style]?.gridItems)) {
+            console.warn(`Invalid grid config for (displayAs ${displayAs}) | gridItems object not set`);
+            return false;
+        }
+        if (!isSet(gridConfig.listings.grid[displayAs][template].templates[style].gridItems?.[listingsGrid])) {
+            console.warn(`Invalid grid config for (displayAs ${displayAs}) | gridItems ${listingsGrid} not set`);
+            return false;
+        }
+        return gridConfig.listings.grid[displayAs][template].templates[style].gridItems[listingsGrid];
     }
     findTemplateGridItemComponent({displayAs, listingsGrid, template = 'default', style = 'default'}) {
-        const gridConfig = templateConfig();
-        return findInObject(
-            this.buildTemplateConfigIdentifier({
-                displayAs,
-                listingsGrid,
-                template,
-                style
-            }),
-            gridConfig
-        );
+        return this.buildTemplateConfigIdentifier({
+            displayAs,
+            listingsGrid,
+            template,
+            style
+        });
     }
     findTemplateListingComponent({displayAs, component, template = 'default', style = 'default'}) {
-        const gridConfig = templateConfig();
-        return findInObject(
-            this.buildTemplateComponentConfigIdentifier({
-                displayAs,
-                template,
-                component,
-                style
-            }),
-            gridConfig
-        );
+        return this.buildTemplateComponentConfigIdentifier({
+            displayAs,
+            template,
+            component,
+            style
+        });
     }
     findGridTemplateConfig({displayAs, template = 'default', style = 'default'}) {
         if (!isSet(listingsGridConfig[displayAs])) {

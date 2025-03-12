@@ -1,5 +1,5 @@
-import PostInfoModal from "@/views/Components/Blocks/Listings/Templates/Tiles/Post/PostInfoModal";
-import TileDisplay from "@/views/Components/Blocks/Listings/Templates/Tiles/Layout/TileDisplay";
+import PostInfoModal from "@/views/Components/Blocks/Listings/DisplayAs/Post/Templates/Sidebar/PostInfoModal";
+import TileDisplay from "@/views/Components/Blocks/Listings/DisplayAs/Post/Templates/Tiles/Layout/TileDisplay";
 
 export default {
     templates: {

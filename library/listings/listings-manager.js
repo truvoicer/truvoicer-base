@@ -295,6 +295,7 @@ export class ListingsManager extends ListingsManagerBase {
         const listingsData = this.listingsEngine?.listingsContext?.listingsData;
         if (
             isNotEmpty(key) &&
+            isNotEmpty(listingsData?.[key]) &&
             isNotEmpty(item?.[listingsData[key]])
         ) {
             return item[listingsData[key]];
@@ -304,7 +305,6 @@ export class ListingsManager extends ListingsManagerBase {
 
     getThumbnail(item) {
         const listingsData = this.listingsEngine?.listingsContext?.listingsData;
-        
         let data = {
             type: listingsData?.thumbnail_type,
         }
@@ -316,7 +316,13 @@ export class ListingsManager extends ListingsManagerBase {
                 }
                 break;
             case 'data_key':
-                return this.getDataKeyValue(item, listingsData?.thumbnail_key);
+                    if (
+                        isNotEmpty(listingsData?.thumbnail_key) &&
+                        isNotEmpty(item?.[listingsData.thumbnail_key])
+                    ) {
+                        data.value = item[listingsData.thumbnail_key];
+                        return data;
+                    }
             case 'bg':
                 if (isNotEmpty(listingsData?.thumbnail_bg)) {
                     data.value = listingsData.thumbnail_bg;

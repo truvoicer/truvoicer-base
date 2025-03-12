@@ -3,9 +3,9 @@ import {
     LISTINGS_GRID_DETAILED,
     LISTINGS_GRID_LIST
 } from "@/truvoicer-base/redux/constants/listings-constants";
-import SidebarItemList from "@/views/Components/Blocks/Listings/Templates/Sidebar/List/SidebarItemList";
-import InfoModal from "@/views/Components/Blocks/Listings/Templates/Sidebar/List/InfoModal";
-import SidebarDisplay from "@/views/Components/Blocks/Listings/Templates/Sidebar/Layout/SidebarDisplay";
+import SidebarItemList from "@/views/Components/Blocks/Listings/DisplayAs/List/Templates/Sidebar/SidebarItemList";
+import InfoModal from "@/views/Components/Blocks/Listings/DisplayAs/List/Templates/Sidebar/InfoModal";
+import SidebarDisplay from "@/views/Components/Blocks/Listings/DisplayAs/List/Templates/Sidebar/Layout/SidebarDisplay";
 
 export default {
     templates: {

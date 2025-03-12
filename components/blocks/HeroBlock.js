@@ -1,12 +1,12 @@
-import React, {useContext} from "react";
-import {connect} from "react-redux";
-import {itemDataTextFilter} from "../../library/helpers/items";
-import {isNotEmpty, isValidImageSrc} from "../../library/utils";
-import {getExtraDataValue} from "../../library/helpers/pages";
-import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
-import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
-import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
-import {AppModalContext} from "@/truvoicer-base/config/contexts/AppModalContext";
+import React, { useContext } from "react";
+import { connect } from "react-redux";
+import { itemDataTextFilter } from "../../library/helpers/items";
+import { isNotEmpty, isValidImageSrc } from "../../library/utils";
+import { getExtraDataValue } from "../../library/helpers/pages";
+import { blockComponentsConfig } from "@/truvoicer-base/config/block-components-config";
+import { TemplateManager } from "@/truvoicer-base/library/template/TemplateManager";
+import { TemplateContext } from "@/truvoicer-base/config/contexts/TemplateContext";
+import { AppModalContext } from "@/truvoicer-base/config/contexts/AppModalContext";
 import Image from "next/image";
 
 const HeroBlock = (props) => {
@@ -20,12 +20,12 @@ const HeroBlock = (props) => {
         if (!props.data.images.length) {
             return null;
         }
-         if (!props.data.images?.[index]?.src) {
-             return null;
-         }
-         return isValidImageSrc(props.data.images[index].src) ? props.data.images[index].src : null;
+        if (!props.data.images?.[index]?.src) {
+            return null;
+        }
+        return isValidImageSrc(props.data.images[index].src) ? props.data.images[index].src : null;
     }
-    const primaryBgUrl = getImageSrc(0)  || "/img/banner/banner.png";
+    const primaryBgUrl = getImageSrc(0) || "/img/banner/banner.png";
     const secondaryBgUrl = getImageSrc(1) || "";
     const breadcrumbBgUrl = getImageSrc(2) || "/img/banner/bradcam.png";
     if (isNotEmpty(props?.data?.hero_type)) {
@@ -47,7 +47,7 @@ const HeroBlock = (props) => {
             {heroType === "breadcrumb_hero" &&
                 <div
                     className="bradcam_area"
-                    style={{backgroundImage: `url(${breadcrumbBgUrl})`}}
+                    style={{ backgroundImage: `url(${breadcrumbBgUrl})` }}
                 >
                     <div className="container section-block">
                         <div className="row">
@@ -64,7 +64,7 @@ const HeroBlock = (props) => {
                 <div className="slider_area">
                     <div
                         className="single_slider  d-flex align-items-center slider_bg_1"
-                        style={{backgroundImage: `url(${primaryBgUrl})`}}
+                        style={{ backgroundImage: `url(${primaryBgUrl})` }}
                     >
                         <div className="container section-block">
                             <div className="row align-items-center">
@@ -80,9 +80,9 @@ const HeroBlock = (props) => {
                                             {props.data && props.data.hero_text ? props.data.hero_text : ""}
                                         </p>
                                         <div className="sldier_btn wow fadeInLeft" data-wow-duration="1s"
-                                             data-wow-delay=".5s">
+                                            data-wow-delay=".5s">
                                             <a onClick={buttonClickHandler} className="boxed-btn3">
-                                                {isNotEmpty(buttonLabel)? buttonLabel : defaultButtonLabel}
+                                                {isNotEmpty(buttonLabel) ? buttonLabel : defaultButtonLabel}
                                             </a>
                                         </div>
                                     </div>
@@ -91,8 +91,10 @@ const HeroBlock = (props) => {
                         </div>
                     </div>
                     <div className="ilstration_img wow fadeInRight d-none d-lg-block text-right" data-wow-duration="1s"
-                         data-wow-delay=".2s">
-                        <img   src={secondaryBgUrl} alt=""/>
+                        data-wow-delay=".2s">
+                        {secondaryBgUrl &&
+                            <img src={secondaryBgUrl} alt="" />
+                        }
                     </div>
                 </div>
             }

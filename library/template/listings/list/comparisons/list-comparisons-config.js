@@ -1,9 +1,9 @@
 import { LISTINGS_GRID_LIST } from "@/truvoicer-base/redux/constants/listings-constants";
-import ComparisonDisplay from "@/views/Components/Blocks/Listings/Templates/Comparisons/Layout/ComparisonDisplay";
-import HorizontalComparisons from "@/views/Components/Blocks/Listings/Templates/Comparisons/Layout/HorizontalComparisons";
-import ComparisonsInfoModal from "@/views/Components/Blocks/Listings/Templates/Comparisons/List/ComparisonsInfoModal";
-import ComparisonsItemList from "@/views/Components/Blocks/Listings/Templates/Comparisons/List/ComparisonsItemList";
-import ComparisonsItemView from "@/views/Components/Blocks/Listings/Templates/Comparisons/List/ComparisonsItemView";
+import ComparisonDisplay from "@/views/Components/Blocks/Listings/DisplayAs/List/Templates/Comparisons/Layout/ComparisonDisplay";
+import HorizontalComparisons from "@/views/Components/Blocks/Listings/DisplayAs/List/Templates/Comparisons/Layout/HorizontalComparisons";
+import ComparisonsInfoModal from "@/views/Components/Blocks/Listings/DisplayAs/List/Templates/Comparisons/ComparisonsInfoModal";
+import ComparisonsItemList from "@/views/Components/Blocks/Listings/DisplayAs/List/Templates/Comparisons/ComparisonsItemList";
+import ComparisonsItemView from "@/views/Components/Blocks/Listings/DisplayAs/List/Templates/Comparisons/ComparisonsItemView";
 
 export default {
     templates: {

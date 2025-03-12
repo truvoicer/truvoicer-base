@@ -1,5 +1,5 @@
-import InfoModal from "@/views/Components/Blocks/Listings/Templates/Tiles/List/InfoModal";
-import TileDisplay from "@/views/Components/Blocks/Listings/Templates/Tiles/Layout/TileDisplay";
+import InfoModal from "@/views/Components/Blocks/Listings/DisplayAs/List/Templates/Tiles/InfoModal";
+import TileDisplay from "@/views/Components/Blocks/Listings/DisplayAs/List/Templates/Tiles/Layout/TileDisplay";
 
 export default {
     templates: {
