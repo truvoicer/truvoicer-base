@@ -22,10 +22,6 @@ const ListDisplay = (props) => {
     const getListingsBlock = () => {
         return (
             <div className="block category-listing">
-                {isNotEmpty(listingsContext?.listingsData?.heading) &&
-                    <h3 className="block-title"><span>{listingsContext.listingsData.heading}</span></h3>
-                }
-
                 <div className="row">
                     <div className="col-md-12">
                         {searchContext?.searchList?.length > 0 ?
@@ -51,7 +47,7 @@ const ListDisplay = (props) => {
 
     return (
         <section className="block-wrapper">
-            <div className="container section-block">
+            <div className="container">
                 <div className="row">
                     {listingsManager.listingsEngine.showSidebar()
                         ?
@@ -63,7 +59,7 @@ const ListDisplay = (props) => {
                                     </div>
                                 </div>
                             }
-                            <div className="col-md-9 col-sm-12">
+                            <div className="col-md-8 col-sm-12">
                                 {getListingsBlock()}
                             </div>
 

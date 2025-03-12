@@ -14,7 +14,7 @@ import ItemRatings from "@/truvoicer-base/components/blocks/listings/widgets/Ite
 import { DISPLAY_AS } from "@/truvoicer-base/redux/constants/general_constants";
 
 const ListItemList = (props) => {
-    const { data } = props;
+    const {data,} = props;
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const listingsManager = new ListingsManager(listingsContext, searchContext);
@@ -39,7 +39,7 @@ const ListItemList = (props) => {
                         },
                     }
                 });
-
+                
             default:
                 return {
                     href: listingsManager.getDataKeyValue(data, 'url_key') || '#'
@@ -48,6 +48,7 @@ const ListItemList = (props) => {
     }
     const linkProps = getLinkProps();
     const date = listingsManager.getDataKeyValue(data, 'date_key');
+    
     const thumbnailData = listingsManager.getThumbnail(data);
     return (
         <>
@@ -57,20 +58,20 @@ const ListItemList = (props) => {
                         <Link {...linkProps}>
                             <img className="img-fluid"
                                 style={listingsManager.getThumbnailImgStyle(data)}
-                                src={thumbnailData?.value ? thumbnailData.value : "/img/pticon.png"} alt="" />
+                                src={thumbnailData?.value ? thumbnailData.value : "/img/pticon.png"} alt=""/>
                         </Link>
                     </div>
                 }
                 {thumbnailData?.type === 'bg' &&
                     // <div>
-                    <Link {...linkProps}
-                        className="post-thumb"
-                        style={{
-                            ...listingsManager.getThumbnailImgStyle(data),
-                            backgroundColor: thumbnailData?.value || '#eeeeee'
-                        }}>
-
-                    </Link>
+                        <Link {...linkProps} 
+                            className="post-thumb" 
+                            style={{
+                                ...listingsManager.getThumbnailImgStyle(data),
+                                backgroundColor: thumbnailData?.value || '#eeeeee'
+                            }}>
+                                
+                        </Link>
                     // </div>
                 }
                 {thumbnailData?.type === 'image' &&
@@ -78,15 +79,13 @@ const ListItemList = (props) => {
                         <Link {...linkProps}>
                             <img className="img-fluid"
                                 style={listingsManager.getThumbnailImgStyle(data)}
-                                src={thumbnailData?.value ? thumbnailData.value : "/img/pticon.png"} alt="" />
+                                src={thumbnailData?.value ? thumbnailData.value : "/img/pticon.png"} alt=""/>
                         </Link>
                     </div>
                 }
                 <div className="post-content">
                     <h2 className="post-title">
-                        <Link {...linkProps}>
-                            {listingsManager.getDataKeyValue(data, 'title_key')}
-                        </Link>
+                        <Link {...linkProps}>{listingsManager.getDataKeyValue(data, 'title_key')}</Link>
                     </h2>
                     <div className="post-meta">
                         <span className="post-author"><a href="#">{data.provider}</a></span>

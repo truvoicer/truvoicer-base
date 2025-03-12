@@ -13,7 +13,7 @@ import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager
 import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
 import {getSiteSettings} from "@/truvoicer-base/library/api/wp/middleware";
 
-const ListInfoModal = (props) => {
+const InfoModal = (props) => {
     const router = useRouter();
 
     const [data, setData] = useState({})
@@ -77,9 +77,10 @@ const ListInfoModal = (props) => {
                 }
             </Modal.Body>
         </Modal>
-    );
+    )
 }
 
-ListInfoModal.category = 'listings';
-ListInfoModal.templateId = 'listInfoModal';
-export default ListInfoModal;
+InfoModal.category = 'listings';
+InfoModal.templateId = 'infoModal';
+
+export default InfoModal;

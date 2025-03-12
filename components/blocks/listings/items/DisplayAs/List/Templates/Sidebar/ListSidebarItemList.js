@@ -21,6 +21,7 @@ const ListSidebarItemList = (props) => {
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const itemId = listingsManager.listingsEngine.extractItemId(props.data);
 
+
     function getLinkProps() {
         switch (listingsContext?.listingsData?.link_type) {
             case 'view':
@@ -52,7 +53,6 @@ const ListSidebarItemList = (props) => {
     const date = listingsManager.getDataKeyValue(data, 'date_key');
 
     const thumbnailData = listingsManager.getThumbnail(data);
-
     return (
         <div className="post-block-style clearfix d-flex gap-3 justify-content-start align-items-center">
             {thumbnailData?.type === 'data_key' &&

@@ -56,7 +56,7 @@ const SidebarDisplay = (props) => {
                 templateManager.render(<LoaderComponent key={"loader"}/>)
             }
         </>
-    )
+    );
 };
 
 SidebarDisplay.category = 'listings';

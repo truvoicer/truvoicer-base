@@ -1,7 +1,10 @@
 import React from "react";
 import {connect} from "react-redux";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faClock, faMapMarker} from "@fortawesome/free-solid-svg-icons";
+import Image from "next/image";
 
-const ListItemCustom = (props) => {
+const ItemCustom = (props) => {
     return (
 
         <div className="single_jobs white-bg d-flex justify-content-between">
@@ -52,9 +55,11 @@ const ListItemCustom = (props) => {
     )
 }
 
-ListItemCustom.category = 'listings';
-ListItemCustom.templateId = 'listItemCustom';
+ItemCustom.category = 'listings';
+ItemCustom.templateId = 'itemCustom';
+
+
 export default connect(
     null,
     null
-)(ListItemCustom);
+)(ItemCustom);
