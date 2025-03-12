@@ -73,7 +73,7 @@ const PostInfoModal = (props) => {
                 }
             </Modal.Body>
         </Modal>
-    );
+    )
 }
 
 export default PostInfoModal;

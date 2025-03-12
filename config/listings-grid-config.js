@@ -17,19 +17,19 @@ import ListComparisonDisplay from "../components/blocks/listings/items/DisplayAs
 import ListComparisonsInfoModal from "../components/blocks/listings/items/DisplayAs/List/Templates/Comparisons/ComparisonsInfoModal";
 import ListComparisonsItemView from "../components/blocks/listings/items/DisplayAs/List/Templates/Comparisons/ComparisonsItemView";
 import ListHorizontalComparisons from "../components/blocks/listings/items/DisplayAs/List/Templates/Comparisons/Layout/HorizontalComparisons";
-import PostItemList from "../components/blocks/listings/items/DisplayAs/Post/Templates/Default/PostItemList";
+
 import PostInfoModal from "../components/blocks/listings/items/DisplayAs/Post/Templates/Default/PostInfoModal";
 import PostListDisplay from "../components/blocks/listings/items/DisplayAs/Post/Templates/Default/Layout/ListDisplay";
 import PostSidebarDisplay from "../components/blocks/listings/items/DisplayAs/Post/Templates/Sidebar/Layout/SidebarDisplay";
 
 import DefaultSidebarPostItem from "../components/blocks/listings/items/DisplayAs/Post/Templates/Sidebar/DefaultSidebarPostItem";
 import PostTileDisplay from "../components/blocks/listings/items/DisplayAs/Post/Templates/Tiles/Layout/TileDisplay";
-import PostComparisonsItemList from "../components/blocks/listings/items/DisplayAs/Post/Templates/Comparisons/ComparisonsItemList";
 
 import PostComparisonDisplay from "../components/blocks/listings/items/DisplayAs/Post/Templates/Comparisons/Layout/ComparisonDisplay";
 import PostComparisonsInfoModal from "../components/blocks/listings/items/DisplayAs/Post/Templates/Comparisons/ComparisonsInfoModal";
 import PostComparisonsItemView from "../components/blocks/listings/items/DisplayAs/Post/Templates/Comparisons/ComparisonsItemView";
 import PostHorizontalComparisons from "../components/blocks/listings/items/DisplayAs/Post/Templates/Comparisons/Layout/HorizontalComparisons";
+import PostItemListPost from "../components/blocks/listings/items/DisplayAs/Post/Templates/Default/PostItemListPost";
 
 export const defaultListingsGrid = LISTINGS_GRID_LIST;
 
@@ -97,9 +97,9 @@ export const listingsGridConfig = {
                 templates: {
                     default: {
                         gridItems: {
-                            [LISTINGS_GRID_LIST]: PostItemList,
-                            [LISTINGS_GRID_COMPACT]: PostItemList,
-                            [LISTINGS_GRID_DETAILED]: PostItemList,
+                            [LISTINGS_GRID_LIST]: PostItemListPost,
+                            [LISTINGS_GRID_COMPACT]: PostItemListPost,
+                            [LISTINGS_GRID_DETAILED]: PostItemListPost,
                         },
                         modal: PostInfoModal,
                         layout: PostListDisplay,
@@ -133,25 +133,16 @@ export const listingsGridConfig = {
             comparisons: {
                 templates: {
                     default: {
-                        gridItems: {
-                            [LISTINGS_GRID_LIST]: PostComparisonsItemList,
-                        },
                         layout: PostComparisonDisplay,
                         modal: PostComparisonsInfoModal,
                         single: PostComparisonsItemView
                     },
                     'vertical_desc_slide': {
-                        gridItems: {
-                            [LISTINGS_GRID_LIST]: PostComparisonsItemList,
-                        },
                         layout: PostComparisonDisplay,
                         modal: PostComparisonsInfoModal,
                         single: PostComparisonsItemView
                     },
                     'horizontal_compare': {
-                        gridItems: {
-                            [LISTINGS_GRID_LIST]: PostComparisonsItemList,
-                        },
                         layout: PostHorizontalComparisons,
                         modal: PostComparisonsInfoModal,
                         single: PostComparisonsItemView

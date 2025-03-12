@@ -1,5 +1,8 @@
 import React from "react";
 import {connect} from "react-redux";
+import {faClock, faMapMarker} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 
 const PostItemCustom = (props) => {
     return (
@@ -49,8 +52,9 @@ const PostItemCustom = (props) => {
                 </div>
             </div>
         </div>
-    );
+    )
 }
+
 
 export default connect(
     null,
