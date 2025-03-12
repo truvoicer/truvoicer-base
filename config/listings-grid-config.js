@@ -13,7 +13,6 @@ import ListDisplay from "../components/blocks/listings/items/DisplayAs/List/Temp
 import ListSidebarItemList from "../components/blocks/listings/items/DisplayAs/List/Templates/Sidebar/ListSidebarItemList";
 import ListSidebarDisplay from "../components/blocks/listings/items/DisplayAs/List/Templates/Sidebar/Layout/SidebarDisplay";
 import ListTileDisplay from "../components/blocks/listings/items/DisplayAs/List/Templates/Tiles/Layout/TileDisplay";
-import ListComparisonsItemList from "../components/blocks/listings/items/DisplayAs/List/Templates/Comparisons/ComparisonsItemList";
 import ListComparisonDisplay from "../components/blocks/listings/items/DisplayAs/List/Templates/Comparisons/Layout/ComparisonDisplay";
 import ListComparisonsInfoModal from "../components/blocks/listings/items/DisplayAs/List/Templates/Comparisons/ComparisonsInfoModal";
 import ListComparisonsItemView from "../components/blocks/listings/items/DisplayAs/List/Templates/Comparisons/ComparisonsItemView";
@@ -76,25 +75,16 @@ export const listingsGridConfig = {
             comparisons: {
                 templates: {
                     default: {
-                        gridItems: {
-                            [LISTINGS_GRID_LIST]: ListComparisonsItemList,
-                        },
                         layout: ListComparisonDisplay,
                         modal: ListComparisonsInfoModal,
                         single: ListComparisonsItemView
                     },
                     'vertical_desc_slide': {
-                        gridItems: {
-                            [LISTINGS_GRID_LIST]: ListComparisonsItemList,
-                        },
                         layout: ListComparisonDisplay,
                         modal: ListComparisonsInfoModal,
                         single: ListComparisonsItemView
                     },
                     'horizontal_compare': {
-                        gridItems: {
-                            [LISTINGS_GRID_LIST]: ListComparisonsItemList,
-                        },
                         layout: ListHorizontalComparisons,
                         modal: ListComparisonsInfoModal,
                         single: ListComparisonsItemView
