@@ -1,16 +1,18 @@
-import React, {Suspense, useContext} from 'react';
-import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
-import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
-import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
-import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
+import React, { Suspense, useContext } from 'react';
+import { TemplateManager } from "@/truvoicer-base/library/template/TemplateManager";
+import { TemplateContext } from "@/truvoicer-base/config/contexts/TemplateContext";
+import { ListingsContext } from "@/truvoicer-base/library/listings/contexts/ListingsContext";
+import { SearchContext } from "@/truvoicer-base/library/listings/contexts/SearchContext";
 import ListingsSortBar from "@/truvoicer-base/components/blocks/listings/components/ListingsSortBar";
 import Paginate from "@/truvoicer-base/components/blocks/listings/pagination/ListingsPaginate";
 import ListingsInfiniteScroll from "@/truvoicer-base/components/blocks/listings/pagination/ListingsInfiniteScroll";
 import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
-import {isNotEmpty} from "@/truvoicer-base/library/utils";
-import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
-import {connect} from "react-redux";
+import { isNotEmpty } from "@/truvoicer-base/library/utils";
+import { ListingsManager } from "@/truvoicer-base/library/listings/listings-manager";
+import { connect } from "react-redux";
 import ListingsFilterInterface from "@/truvoicer-base/components/blocks/listings/sidebars/ListingsFilterInterface";
+import ListingsItemsLoader from '../../../../../ListingsItemsLoader';
+import ListingsPaginate from '@/truvoicer-base/components/blocks/listings/pagination/ListingsPaginate';
 
 const ListDisplay = (props) => {
     const templateManager = new TemplateManager(useContext(TemplateContext));
@@ -26,18 +28,26 @@ const ListDisplay = (props) => {
                     <div className="col-md-12">
                         {searchContext?.searchList?.length > 0 ?
                             <>
-                                {templateManager.render(<ListingsSortBar/>)}
+                                {templateManager.render(<ListingsSortBar />)}
                                 <Suspense>
                                     {listingsContext?.listingsData?.load_more_type === "pagination" &&
-                                        templateManager.render(<Paginate/>)
+                                        templateManager.render(
+                                            <ListingsPaginate>
+                                                <ListingsItemsLoader />
+                                            </ListingsPaginate>
+                                        )
                                     }
                                 </Suspense>
                                 {listingsContext?.listingsData?.load_more_type === "infinite_scroll" &&
-                                    templateManager.render(<ListingsInfiniteScroll/>)
+                                    templateManager.render(
+                                        <ListingsInfiniteScroll>
+                                            <ListingsItemsLoader />
+                                        </ListingsInfiniteScroll>
+                                    )
                                 }
                             </>
                             :
-                            templateManager.render(<LoaderComponent key={"loader"}/>)
+                            templateManager.render(<LoaderComponent key={"loader"} />)
                         }
                     </div>
                 </div>
@@ -55,7 +65,7 @@ const ListDisplay = (props) => {
                             {filtersPosition === 'left' &&
                                 <div className="col-md-3 col-sm-12">
                                     <div className="sidebar">
-                                        {templateManager.render(<ListingsFilterInterface/>)}
+                                        {templateManager.render(<ListingsFilterInterface />)}
                                     </div>
                                 </div>
                             }
@@ -66,7 +76,7 @@ const ListDisplay = (props) => {
                             {filtersPosition === 'right' &&
                                 <div className="col-md-3 col-sm-12">
                                     <div className="sidebar">
-                                        {templateManager.render(<ListingsFilterInterface/>)}
+                                        {templateManager.render(<ListingsFilterInterface />)}
                                     </div>
                                 </div>
                             }

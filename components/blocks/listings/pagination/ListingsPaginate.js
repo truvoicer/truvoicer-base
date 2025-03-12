@@ -1,26 +1,24 @@
-import React, {useContext, useEffect, useState} from "react";
-import {connect} from "react-redux";
+import React, { Children, useContext, useEffect, useState } from "react";
+import { connect } from "react-redux";
 import {
     SEARCH_REQUEST_NEW, PAGINATION_LAST_PAGE,
     PAGINATION_PAGE_NUMBER, PAGINATION_PAGE_SIZE, PAGINATION_TOTAL_ITEMS,
     PAGINATION_TOTAL_PAGES,
 } from "@/truvoicer-base/redux/constants/search-constants";
-import {SearchContext} from "@/truvoicer-base/library/listings/contexts/SearchContext";
-import {ListingsContext} from "@/truvoicer-base/library/listings/contexts/ListingsContext";
-import {ListingsManager} from "@/truvoicer-base/library/listings/listings-manager";
-import {TemplateManager} from "@/truvoicer-base/library/template/TemplateManager";
-import {TemplateContext} from "@/truvoicer-base/config/contexts/TemplateContext";
-import {ListingsGrid} from "@/truvoicer-base/library/listings/grid/listings-grid";
-import {SESSION_USER, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
-import ListingsItemsLoader from "@/truvoicer-base/components/blocks/listings/items/ListingsItemsLoader";
+import { SearchContext } from "@/truvoicer-base/library/listings/contexts/SearchContext";
+import { ListingsContext } from "@/truvoicer-base/library/listings/contexts/ListingsContext";
+import { ListingsManager } from "@/truvoicer-base/library/listings/listings-manager";
+import { TemplateManager } from "@/truvoicer-base/library/template/TemplateManager";
+import { TemplateContext } from "@/truvoicer-base/config/contexts/TemplateContext";
+import { ListingsGrid } from "@/truvoicer-base/library/listings/grid/listings-grid";
+import { SESSION_USER, SESSION_USER_ID } from "@/truvoicer-base/redux/constants/session-constants";
 import Link from "next/link";
-import {useSearchParams} from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const ListingsPaginate = (props) => {
     const {
-        containerComponent = null,
-        containerItemComponent = null,
         showIndicator = true,
+        children
     } = props;
     const [padding, setPadding] = useState(2);
     const [pageNumber, setPageNumber] = useState(1);
@@ -122,68 +120,61 @@ const ListingsPaginate = (props) => {
     useEffect(() => {
         setPageNumber(getCurrentPageNumber());
     }, [searchContext?.pageControls?.[PAGINATION_PAGE_NUMBER]]);
-    
-    const GetPagination = () => {
-        let {left, right} = getpadding(pageNumber);
-        return (
-            <div className="paging">
-                <ul className="pagination">
-                    <li {...getPageListItemProps(1)}>
+
+    let { left, right } = getpadding(pageNumber);
+    return (
+        <>
+        {children}
+        <div className="paging">
+            <ul className="pagination">
+                <li {...getPageListItemProps(1)}>
+                    <Link
+                        className={""}
+                        {...getPageLinkProps(1)}
+                    >
+                        <span>1</span>
+                    </Link>
+                </li>
+                {left.map((num, index) => (
+                    <li key={index} {...getPageListItemProps(num)}>
                         <Link
                             className={""}
-                            {...getPageLinkProps(1)}
+                            {...getPageLinkProps(num)}
                         >
-                            <span>1</span>
+                            <span>{num}</span>
                         </Link>
                     </li>
-                    {left.map((num, index) => (
-                        <li key={index} {...getPageListItemProps(num)}>
-                            <Link
-                                className={""}
-                                {...getPageLinkProps(num)}
-                            >
-                                <span>{num}</span>
-                            </Link>
-                        </li>
-                    ))}
-                    {right.map((num, index) => (
-                        <li key={index} {...getPageListItemProps(num)}>
-                            <Link
-                                className={""}
-                                {...getPageLinkProps(num)}
-                            >
-                                <span>{num}</span>
-                            </Link>
-                        </li>
-                    ))}
-                    {lastPageNumber > 1 &&
-                        <li {...getPageListItemProps(lastPageNumber)}>
-                            <Link
-                                {...getPageLinkProps(lastPageNumber)}
-                            >
-                                <span>{lastPageNumber}</span>
-                            </Link>
-                        </li>
-                    }
-                    {showIndicator &&
-                        <li>
-                            <span className="page-numbers">
-                                {`Page ${pageNumber} of ${lastPageNumber}`}
-                            </span>
-                        </li>
-                    }
-                </ul>
-            </div>
-        )
-    }
-
-    return templateManager.render(
-        <ListingsItemsLoader
-            containerComponent={containerComponent}
-            containerItemComponent={containerItemComponent}>
-            <GetPagination/>
-        </ListingsItemsLoader>
-    )
+                ))}
+                {right.map((num, index) => (
+                    <li key={index} {...getPageListItemProps(num)}>
+                        <Link
+                            className={""}
+                            {...getPageLinkProps(num)}
+                        >
+                            <span>{num}</span>
+                        </Link>
+                    </li>
+                ))}
+                {lastPageNumber > 1 &&
+                    <li {...getPageListItemProps(lastPageNumber)}>
+                        <Link
+                            {...getPageLinkProps(lastPageNumber)}
+                        >
+                            <span>{lastPageNumber}</span>
+                        </Link>
+                    </li>
+                }
+                {showIndicator &&
+                    <li>
+                        <span className="page-numbers">
+                            {`Page ${pageNumber} of ${lastPageNumber}`}
+                        </span>
+                    </li>
+                }
+            </ul>
+        </div>
+        </>
+    );
 }
 ListingsPaginate.category = 'listings';
 ListingsPaginate.templateId = 'listingsPaginate';

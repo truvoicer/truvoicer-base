@@ -69,8 +69,8 @@ const ListingsInfiniteScroll = ({ children }) => {
     return (
         <ListingsItemsLoader infiniteScroll={true}>
             {/* {searchContext?.pageControls?.loading && <LoaderComponent key={"loader"}/>} */}
+            {children}
             {searchContext?.pageControls?.loading && <p>Loading more...</p>}
-
             {!searchContext?.pageControls?.loading && searchContext?.pageControls[PAGE_CONTROL_HAS_MORE] && <p>Scroll down to load more...</p>}
         </ListingsItemsLoader>
     )

@@ -54,9 +54,20 @@ const ListingsItemsLoader = ({
     }
 
     function renderListItems() {
+        console.log('itemsContext.items', itemsContext.items)
         return itemsContext.items.map((item, index) => {
             let cloneGridItemObj = { ...gridItemsProps };
             cloneGridItemObj.category = listingsManager.getCategory(item);
+            console.log(
+                'ss',
+                listingsGrid.getGridItem({
+                    ...cloneGridItemObj,
+                    ...{
+                        item,
+                        index
+                    }
+                })
+            )
             return (
                 <ContainerItemComponent key={index} {...getGridItemColumns(grid)}>
                     {listingsGrid.getGridItem({
@@ -71,20 +82,6 @@ const ListingsItemsLoader = ({
         })
     }
 
-    const loadMore = () => {
-        listingsManager.getSearchEngine().setSearchEntity('listingsPaginate');
-        listingsManager.loadNextPageNumberMiddleware(searchContext.pageControls[PAGINATION_PAGE_NUMBER] + 1);
-        listingsManager.searchEngine.setSearchRequestOperationMiddleware(SEARCH_REQUEST_NEW);
-    }
-
-    function getContainerProps() {
-        return {
-            style: {
-                width: listingsContext?.listingsData?.container_width || 'auto',
-                height: listingsContext?.listingsData?.container_height || 'auto',
-            }
-        }
-    }
 
     function renderDefault() {
         return (
@@ -105,6 +102,7 @@ const ListingsItemsLoader = ({
         listingsGrid: grid,
         userId: user[SESSION_USER_ID],
     }
+    console.log('gridItemsProps', gridItemsProps)
     return (
         <>
             {renderDefault()}
