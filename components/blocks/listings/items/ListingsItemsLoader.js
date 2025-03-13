@@ -52,22 +52,11 @@ const ListingsItemsLoader = ({
         }
         return containerItemComponent;
     }
-
+    
     function renderListItems() {
-        console.log('itemsContext.items', itemsContext.items)
         return itemsContext.items.map((item, index) => {
             let cloneGridItemObj = { ...gridItemsProps };
             cloneGridItemObj.category = listingsManager.getCategory(item);
-            console.log(
-                'ss',
-                listingsGrid.getGridItem({
-                    ...cloneGridItemObj,
-                    ...{
-                        item,
-                        index
-                    }
-                })
-            )
             return (
                 <ContainerItemComponent key={index} {...getGridItemColumns(grid)}>
                     {listingsGrid.getGridItem({
@@ -102,7 +91,6 @@ const ListingsItemsLoader = ({
         listingsGrid: grid,
         userId: user[SESSION_USER_ID],
     }
-    console.log('gridItemsProps', gridItemsProps)
     return (
         <>
             {renderDefault()}

@@ -1,5 +1,5 @@
 import {ListingsManagerBase} from "@/truvoicer-base/library/listings/listings-manager-base";
-import {isEmpty, isNotEmpty, isObject, isObjectEmpty, isSet} from "@/truvoicer-base/library/utils";
+import { isEmpty, isNotEmpty, isObject, isObjectEmpty, isSet, objStringToArray} from "@/truvoicer-base/library/utils";
 import {
     LISTINGS_BLOCK_SOURCE_API, LISTINGS_BLOCK_SOURCE_SAVED_ITEMS,
     LISTINGS_BLOCK_SOURCE_WORDPRESS, LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST, LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
@@ -345,5 +345,14 @@ export class ListingsManager extends ListingsManagerBase {
             styleObject.height = parseInt(thumbnailHeight);
         }
         return styleObject;
+    }
+    configStrToArray(key) {
+        const listingsData = this.listingsEngine?.listingsContext?.listingsData;
+        const listingsDataDefault = objStringToArray(key, listingsData);
+        const configDefault = objStringToArray(key, siteConfig);
+        if (!listingsDataDefault) {
+            return configDefault;
+        }
+        return listingsDataDefault;
     }
 }

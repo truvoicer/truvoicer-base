@@ -223,3 +223,10 @@ export function getNextArrayIndex(array) {
     }
     return index;
 }
+export function objStringToArray(key, config, split = ' ') {
+    const value = config?.[key];
+    if (!value) {
+        return null;
+    }
+    return value.split(split);
+}

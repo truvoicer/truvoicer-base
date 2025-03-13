@@ -12,6 +12,19 @@ function BlockComponent({
     });
     const blockRef = useRef(null);
 
+    function getBlockProps() {
+        let blockProps = {
+            ref: blockRef,
+        };
+        if (typeof styles === 'object') {
+            blockProps.style = styles;
+        }
+        if (typeof classes === 'string') {
+            blockProps.className = classes;
+        }
+        return blockProps;
+    }
+
     useEffect(() => {
         setBlockContextState(prevState => {
             let cloneState = { ...prevState };
@@ -27,7 +40,7 @@ function BlockComponent({
                     <span>{data.title}</span>
                 </h3>
             }
-            <div ref={blockRef} className={`${classes}`} style={styles}>
+            <div {...getBlockProps()}>
                 {children}
             </div>
         </BlockContext.Provider>

@@ -24,9 +24,6 @@ const ComparisonDisplay = (props) => {
     const getListingsBlock = () => {
         return (
             <div className="block category-listing">
-                {isNotEmpty(listingsContext?.listingsData?.heading) &&
-                    <h3 className="block-title"><span>{listingsContext.listingsData.heading}</span></h3>
-                }
 
                 <div className="row">
                     <div className="col-md-12">

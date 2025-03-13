@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { ListingsContext } from "@/truvoicer-base/library/listings/contexts/ListingsContext";
 import { SearchContext } from "@/truvoicer-base/library/listings/contexts/SearchContext";
@@ -11,9 +11,12 @@ import ListingsItemsLoader from "../items/ListingsItemsLoader";
 import { BlockContext } from "../../contexts/BlockContext";
 import { PAGE_CONTROL_HAS_MORE, PAGINATION_PAGE_NUMBER, SEARCH_REQUEST_APPEND, SEARCH_STATUS_COMPLETED } from "@/truvoicer-base/redux/constants/search-constants";
 import LoaderComponent from "@/truvoicer-base/components/loaders/Loader";
+import { set } from "date-fns";
+import { siteConfig } from "@/config/site-config";
+import { objStringToArray } from "@/truvoicer-base/library/utils";
 
 const ListingsInfiniteScroll = ({ children }) => {
-
+    const [scrollType, setScrollType] = useState(null);
     const listingsContext = useContext(ListingsContext);
     const searchContext = useContext(SearchContext);
     const blockContext = useContext(BlockContext);
@@ -42,43 +45,95 @@ const ListingsInfiniteScroll = ({ children }) => {
         listingsManager.getSearchEngine().setSearchRequestOperationMiddleware(SEARCH_REQUEST_APPEND);
         listingsManager.loadNextPageNumberMiddleware(searchObj.pageControls[PAGINATION_PAGE_NUMBER] + 1);
     }
-    const handleScroll = (searchObj, blockContext, listingsObj) => {
+    const handleBlockScroll = (searchObj, blockContext, listingsObj) => {
         const ele = blockContext?.ref?.current;
         const bottom = Math.ceil(ele.scrollTop) >= ele.scrollHeight - ele.clientHeight;
         if (bottom) {
             loadMore(searchObj, listingsObj);
         }
     };
+    const handleWindowScroll = (searchObj, blockContext, listingsObj) => {
+        const ele = blockContext?.ref?.current;
+        const bottom = Math.ceil(window.innerHeight + window.scrollY) >= ele.scrollHeight;
+        if (bottom) {
+            loadMore(searchObj, listingsObj);
+        }
+    };
+    
+    function getScrollType() {
+        const scrollClassNames = listingsManager.configStrToArray('overflow_classes');
+        const scrollStyles = listingsManager.configStrToArray('overflow_styles');
+        
+        const blockClassNames = blockContext?.ref?.current?.classList;
+        const hasScrollClass = scrollClassNames.some((className) => blockClassNames.contains(className));
+        const hasScrollStyle = scrollStyles.some((style) => blockContext?.ref?.current?.style[style] === 'scroll');
+        if (!hasScrollClass && !hasScrollStyle) {
+            setScrollType('document');
+        } else {
+            setScrollType('block');
+        }
+    }
 
     useEffect(() => {
         if (!blockContext?.ref?.current) {
             return;
         }
-        let listener = (e) => {
+
+        getScrollType();
+
+    }, [blockContext]);
+
+    useEffect(() => {
+        if (!scrollType) {
+            return;
+        }
+
+        let windowListener = (e) => {
             e.stopImmediatePropagation();
-            handleScroll(searchContext, blockContext, listingsContext);
+            handleWindowScroll(searchContext, blockContext, listingsContext);
         };
-        blockContext.ref.current.addEventListener("scroll", listener);
+        let blockListener = (e) => {
+            e.stopImmediatePropagation();
+            handleBlockScroll(searchContext, blockContext, listingsContext);
+        };
+        switch (scrollType) {
+            case 'document':
+                document.addEventListener("scroll", windowListener);
+                break;
+            case 'block':
+                blockContext.ref.current.addEventListener("scroll", blockListener);
+                break;
+            default:
+                break;
+        }
         return () => {
-            if (!blockContext?.ref?.current) {
-                return;
+            switch (scrollType) {
+                case 'document':
+                    document.removeEventListener("scroll", windowListener);
+                    break;
+                case 'block':
+                    blockContext.ref.current.removeEventListener("scroll", blockListener);
+                    break;
+                default:
+                    break;
             }
-            blockContext.ref.current.removeEventListener("scroll", listener);
-        };
-    }, [blockContext, searchContext, listingsContext]);
+        }
+    }, [searchContext, listingsContext, scrollType]);
+
+
     return (
-        <ListingsItemsLoader infiniteScroll={true}>
+        <>
             {/* {searchContext?.pageControls?.loading && <LoaderComponent key={"loader"}/>} */}
             {children}
             {searchContext?.pageControls?.loading && <p>Loading more...</p>}
             {!searchContext?.pageControls?.loading && searchContext?.pageControls[PAGE_CONTROL_HAS_MORE] && <p>Scroll down to load more...</p>}
-        </ListingsItemsLoader>
+        </>
     )
 }
 
 function mapStateToProps(state) {
     return {
-        user: state.session.user
+        user: state.session.user,
     };
 }
 

@@ -62,7 +62,6 @@ const ListItemList = (props) => {
                 />
                 <div className="post-content">
                     <h2 className="post-title">
-                        a
                         <Link {...linkProps}>{listingsManager.getDataKeyValue(data, 'title_key')}</Link>
                     </h2>
                     <div className="post-meta">
