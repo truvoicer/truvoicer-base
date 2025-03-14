@@ -52,31 +52,6 @@ const TileDisplay = (props) => {
         return items;
     }
 
-    function getPostOverlayClasses(item) {
-        let overlayProps = {
-            className: 'post-overaly-style contentTop hot-post-top clearfix d-flex hide-gradient',
-            style: { width: '100%', height: '100%' }
-        };
-
-        const thumbnailData = listingsManager.getThumbnail(item);
-        if (!isNotEmpty(thumbnailData) || !isNotEmpty(thumbnailData?.type)) {
-            overlayProps.className = overlayProps.className + ' no-image'
-            return overlayProps;
-        }
-        switch (thumbnailData.type) {
-            case 'bg':
-                overlayProps.className = overlayProps.className + ' with-image';
-                overlayProps.style = {
-                    ...overlayProps.style,
-                    backgroundColor: thumbnailData.value
-                };
-                return overlayProps;
-        }
-
-        overlayProps.className = overlayProps.className + ' no-image'
-        return overlayProps;
-    }
-
     function getLinkProps(item) {
         return {
             href: item?.link || '#'

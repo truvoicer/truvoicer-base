@@ -21,35 +21,17 @@ const ListSidebarItemList = (props) => {
     const listingsManager = new ListingsManager(listingsContext, searchContext);
     const itemId = listingsManager.listingsEngine.extractItemId(props.data);
 
-
-    function getLinkProps() {
-        switch (listingsContext?.listingsData?.link_type) {
-            case 'view':
-                return listingsManager.getListingsEngine().getListingsItemLinkProps({
-                    displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
-                    category: listingsManager.getCategory(data),
-                    item: data,
-                    showInfoCallback: props.showInfoCallback,
-                    trackData: {
-                        dataLayerName: "listItemClick",
-                        dataLayer: {
-                            provider: data.provider,
-                            category: props.searchCategory,
-                            item_id: data.item_id,
-                            user_id: props.user[SESSION_USER_ID] || "unregistered",
-                            user_email: props.user[SESSION_USER_EMAIL] || "unregistered",
-                        },
-                    }
-                });
-
-            default:
-                return {
-                    href: listingsManager.getDataKeyValue(data, 'url_key') || '#'
-                };
+    const linkProps = listingsManager.getLinkProps({
+        data: data,
+        searchCategory: props.searchCategory,
+        userId: props.user[SESSION_USER_ID],
+        userEmail: props.user[SESSION_USER_EMAIL],
+        showInfoCallback: props?.showInfoCallback,
+        otherTrackData: {
+            dataLayerName: "defaultSidebarListItemClick",
         }
-    }
-
-    const linkProps = getLinkProps();
+    });
+    
     const date = listingsManager.getDataKeyValue(data, 'date_key');
 
     const thumbnailData = listingsManager.getThumbnail(data);

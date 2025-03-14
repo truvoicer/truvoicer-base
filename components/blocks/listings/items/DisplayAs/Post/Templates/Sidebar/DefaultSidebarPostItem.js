@@ -31,10 +31,16 @@ const DefaultSidebarPostItem = (props) => {
     }
 
     const category = getCategory();
-    const linkProps = listingsManager.getListingsEngine().getListingsItemLinkProps({
-        displayAs: listingsContext?.listingsData?.[DISPLAY_AS],
-        category: category?.slug,
-        item: props.data,
+    
+    const linkProps = listingsManager.getLinkProps({
+        data: props.data,
+        searchCategory: category?.slug,
+        userId: props.user[SESSION_USER_ID],
+        userEmail: props.user[SESSION_USER_EMAIL],
+        showInfoCallback: props?.showInfoCallback,
+        otherTrackData: {
+            dataLayerName: "defaultSidebarPostItemClick",
+        }
     })
 
     return (

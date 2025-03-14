@@ -1,6 +1,7 @@
-import {ListingsManagerBase} from "@/truvoicer-base/library/listings/listings-manager-base";
-import { isEmpty, isNotEmpty, isObject, isObjectEmpty, isSet, objStringToArray} from "@/truvoicer-base/library/utils";
+import { ListingsManagerBase } from "@/truvoicer-base/library/listings/listings-manager-base";
+import { isEmpty, isNotEmpty, isObject, isObjectEmpty, isSet, objStringToArray } from "@/truvoicer-base/library/utils";
 import {
+    DISPLAY_AS,
     LISTINGS_BLOCK_SOURCE_API, LISTINGS_BLOCK_SOURCE_SAVED_ITEMS,
     LISTINGS_BLOCK_SOURCE_WORDPRESS, LISTINGS_BLOCK_WP_DATA_SOURCE_ITEM_LIST, LISTINGS_BLOCK_WP_DATA_SOURCE_POSTS
 } from "@/truvoicer-base/redux/constants/general_constants";
@@ -18,14 +19,14 @@ import {
     SEARCH_STATUS_IDLE,
     SEARCH_REQUEST_IDLE
 } from "@/truvoicer-base/redux/constants/search-constants";
-import {fetcherApiConfig} from "@/truvoicer-base/config/fetcher-api-config";
+import { fetcherApiConfig } from "@/truvoicer-base/config/fetcher-api-config";
 import store from "@/truvoicer-base/redux/store";
-import {siteConfig} from "@/config/site-config";
-import {SESSION_AUTHENTICATED, SESSION_USER, SESSION_USER_ID} from "@/truvoicer-base/redux/constants/session-constants";
-import {blockComponentsConfig} from "@/truvoicer-base/config/block-components-config";
-import {WpDataSource} from "@/truvoicer-base/library/listings/engine/source/wp-data-source";
-import {FetcherDataSource} from "@/truvoicer-base/library/listings/engine/source/fetcher-data-source";
-import {da} from "date-fns/locale";
+import { siteConfig } from "@/config/site-config";
+import { SESSION_AUTHENTICATED, SESSION_USER, SESSION_USER_ID } from "@/truvoicer-base/redux/constants/session-constants";
+import { blockComponentsConfig } from "@/truvoicer-base/config/block-components-config";
+import { WpDataSource } from "@/truvoicer-base/library/listings/engine/source/wp-data-source";
+import { FetcherDataSource } from "@/truvoicer-base/library/listings/engine/source/fetcher-data-source";
+import { da } from "date-fns/locale";
 
 export class ListingsManager extends ListingsManagerBase {
 
@@ -37,12 +38,13 @@ export class ListingsManager extends ListingsManagerBase {
 
     }
     init(data) {
-         this.setListingsBlocksDataAction(data);
+        this.setListingsBlocksDataAction(data);
 
         if (!this.validateInitData()) {
             return false;
         }
         return this.validateSearchParams();
+
 
     }
     getSourceByType(type) {
@@ -71,7 +73,7 @@ export class ListingsManager extends ListingsManagerBase {
         if (userDataFetchStatus !== SEARCH_STATUS_STARTED) {
             return;
         }
-        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
+        const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 return this.wpDataSource.getUserItemsListAction();
@@ -84,7 +86,7 @@ export class ListingsManager extends ListingsManagerBase {
         }
     }
     getListingsPostsPerPage() {
-        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
+        const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
         const postsPerPage = this.searchEngine?.searchContext?.query?.posts_per_page;
         if (isNotEmpty(postsPerPage)) {
             return parseInt(postsPerPage);
@@ -103,7 +105,7 @@ export class ListingsManager extends ListingsManagerBase {
             return false;
         }
 
-        let cloneData = {...data}
+        let cloneData = { ...data }
         if (Array.isArray(cloneData?.listings_category_id)) {
             cloneData.listings_category = cloneData.listings_category_id[0]?.slug
         }
@@ -161,12 +163,12 @@ export class ListingsManager extends ListingsManagerBase {
         if (![SEARCH_REQUEST_NEW, SEARCH_REQUEST_APPEND].includes(searchOperation)) {
             return;
         }
-        
+
         if (searchStatus !== SEARCH_STATUS_STARTED) {
             return;
         }
 
-        if ( userDataFetchStatus !== SEARCH_STATUS_IDLE) {
+        if (userDataFetchStatus !== SEARCH_STATUS_IDLE) {
             return;
         }
         switch (listingsDataState?.source) {
@@ -184,7 +186,7 @@ export class ListingsManager extends ListingsManagerBase {
     }
 
     getCategory(item = null) {
-        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
+        const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
 
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
@@ -197,7 +199,7 @@ export class ListingsManager extends ListingsManagerBase {
         }
     }
     validateInitData() {
-        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
+        const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
 
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
@@ -210,18 +212,18 @@ export class ListingsManager extends ListingsManagerBase {
                 return false;
         }
     }
-    getListingsProviders({api_listings_service, select_providers, providers_list}, endpoint = "providers", callback) {
-        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
+    getListingsProviders({ api_listings_service, select_providers, providers_list }, endpoint = "providers", callback) {
+        const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
 
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
                 return this.wpDataSource.getListingsProviders(
-                    {api_listings_service, select_providers, providers_list},
+                    { api_listings_service, select_providers, providers_list },
                     endpoint = "providers", callback
                 );
             case LISTINGS_BLOCK_SOURCE_API:
                 return this.fetcherDataSource.getListingsProviders(
-                    {api_listings_service, select_providers, providers_list},
+                    { api_listings_service, select_providers, providers_list },
                     endpoint = "providers",
                     callback
                 );
@@ -242,14 +244,14 @@ export class ListingsManager extends ListingsManagerBase {
                 return true;
             case LISTINGS_BLOCK_SOURCE_API:
                 return await this.fetcherDataSource.setListingsProviders(
-                    {api_listings_service, select_providers, providers_list},
+                    { api_listings_service, select_providers, providers_list },
                 );
             default:
                 return false;
         }
     }
     validateSearchParams() {
-        const listingsDataState =  this.listingsEngine?.listingsContext?.listingsData;
+        const listingsDataState = this.listingsEngine?.listingsContext?.listingsData;
 
         switch (listingsDataState?.source) {
             case LISTINGS_BLOCK_SOURCE_WORDPRESS:
@@ -316,13 +318,13 @@ export class ListingsManager extends ListingsManagerBase {
                 }
                 break;
             case 'data_key':
-                    if (
-                        isNotEmpty(listingsData?.thumbnail_key) &&
-                        isNotEmpty(item?.[listingsData.thumbnail_key])
-                    ) {
-                        data.value = item[listingsData.thumbnail_key];
-                        return data;
-                    }
+                if (
+                    isNotEmpty(listingsData?.thumbnail_key) &&
+                    isNotEmpty(item?.[listingsData.thumbnail_key])
+                ) {
+                    data.value = item[listingsData.thumbnail_key];
+                    return data;
+                }
             case 'bg':
                 if (isNotEmpty(listingsData?.thumbnail_bg)) {
                     data.value = listingsData.thumbnail_bg;
@@ -354,5 +356,43 @@ export class ListingsManager extends ListingsManagerBase {
             return configDefault;
         }
         return listingsDataDefault;
+    }
+
+    getLinkProps({
+        data,
+        showInfoCallback,
+        searchCategory,
+        userId,
+        userEmail,
+        otherTrackData = {},
+        otherTrackDataLayer = {}
+    }) {
+        const listingsData = this.listingsEngine?.listingsContext?.listingsData;
+        switch (listingsData?.link_type) {
+            case 'view':
+                return this.getListingsEngine().getListingsItemLinkProps({
+                    displayAs: listingsData?.[DISPLAY_AS],
+                    category: this.getCategory(data),
+                    item: data,
+                    showInfoCallback,
+                    trackData: {
+                        dataLayerName: "listItemClick",
+                        dataLayer: {
+                            provider: data.provider,
+                            category: searchCategory,
+                            item_id: data.item_id,
+                            user_id: userId || "unregistered",
+                            user_email: userEmail || "unregistered",
+                            ...otherTrackDataLayer
+                        },
+                        ...otherTrackData
+                    }
+                });
+
+            default:
+                return {
+                    href: this.getDataKeyValue(data, 'url_key') || '#'
+                };
+        }
     }
 }

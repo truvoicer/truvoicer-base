@@ -30,6 +30,7 @@ function GoogleAuthProvider({children, siteSettings, page}) {
         logout: logout
     });
     async function handleCredentialResponse(response) {
+        console.log('response', response);
         const tokenResponse = await getSessionTokenMiddleware(
             wpApiConfig.endpoints.auth.login,
             {
@@ -59,7 +60,8 @@ function GoogleAuthProvider({children, siteSettings, page}) {
         script.onload = () => {
             window.google.accounts.id.initialize({
                 client_id: siteSettings?.google_login_client_id,
-                callback: handleCredentialResponse
+                callback: handleCredentialResponse,
+                use_fedcm_for_prompt: true
             });
             updateState({
                 clientId: siteSettings?.google_login_client_id,

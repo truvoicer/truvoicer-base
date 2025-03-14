@@ -77,10 +77,18 @@ const TileDisplay = (props) => {
         return overlayProps;
     }
 
+    
     function getLinkProps(item) {
-        return {
-            href: item?.link || '#'
-        };
+        return listingsManager.getLinkProps({
+            data: item,
+            searchCategory: props.searchCategory,
+            userId: props.user[SESSION_USER_ID],
+            userEmail: props.user[SESSION_USER_EMAIL],
+            showInfoCallback: props?.showInfoCallback,
+            otherTrackData: {
+                dataLayerName: "defaultTileListItemClick",
+            }
+        });
     }
     function getContainer(type, containerProps, eles) {
         switch (type) {

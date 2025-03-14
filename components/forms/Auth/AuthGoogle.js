@@ -7,10 +7,10 @@ import SocialButton from "@/truvoicer-base/components/forms/Buttons/SocialButton
 
 const AuthGoogle = (props) => {
     const gAuthContext = useContext(GoogleAuthContext);
-
+    console.log('gAuthContext', gAuthContext);
     const onClickHandler = (response) => {
         gAuthContext.google.accounts.id.prompt((notification) => {
-
+            console.log('notification', notification);
         });
     }
     useEffect(() => {

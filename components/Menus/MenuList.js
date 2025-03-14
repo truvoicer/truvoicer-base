@@ -210,7 +210,7 @@ const MenuList = (props) => {
                 return false;
         }
     }
-
+    
     return (
         <ul className="nav navbar-nav">
             {/*<ul className="site-menu js-clone-nav mr-auto d-none d-lg-block">*/}
