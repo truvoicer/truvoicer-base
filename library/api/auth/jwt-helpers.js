@@ -1,4 +1,4 @@
-const CryptoJS = require("crypto-js");
+const defaultAlgorithm = { name: "HMAC", hash: "SHA-256" };
 
 const defaultHeader = {
     "alg": "HS256",
@@ -8,7 +8,7 @@ const defaultHeader = {
 function base64url(source) {
     let encodedSource;
     // Encode in classical base64
-    encodedSource = CryptoJS.enc.Base64.stringify(source);
+    encodedSource = btoa(source);
 
     // Remove padding equal characters
     encodedSource = encodedSource.replace(/=+$/, '');
@@ -21,7 +21,7 @@ function base64url(source) {
 }
 
 function getDataString(data) {
-    return CryptoJS.enc.Utf8.parse(JSON.stringify(data));
+    return JSON.stringify(data);
 }
 
 function getEncodedData(dataString) {
@@ -33,15 +33,42 @@ function buildJwt(encodedHeader, encodedData) {
 }
 
 function buildSignature(token, secret) {
-    const signature = CryptoJS.HmacSHA256(token, secret);
+    const signature = HmacSHA256(token, secret);
     return base64url(signature);
 }
 
-export function getSignedJwt({
+async function HmacSHA256(payload, secret) {
+ 
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+        "raw",
+        enc.encode(secret),
+        defaultAlgorithm,
+        false,
+        ["sign", "verify"]
+    );
+
+    const signature = await crypto.subtle.sign(
+        defaultAlgorithm.name,
+        key,
+        enc.encode(payload)
+    );
+
+    // convert buffer to byte array
+    const hashArray = Array.from(new Uint8Array(signature));
+
+    // convert bytes to hex string
+    const digest = hashArray
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+    return digest;
+}
+export async function getSignedJwt({
     secret,
     payload,
     headerData = defaultHeader
 }) {
+
     const headerString = getDataString(headerData);
     const encodedHeader = getEncodedData(headerString);
     const payloadString = getDataString(payload);
@@ -49,4 +76,6 @@ export function getSignedJwt({
     const token = buildJwt(encodedHeader, encodedPayload);
     const signature = buildSignature(token, secret);
     return `${token}.${signature}`;
+
+
 }
