@@ -137,8 +137,8 @@ function buildHeaders({
     upload = false,
     config,
     headers = null,
-}) {
-    let buildHeadersData = isObject(headers)? headers : getHeaders(config, upload);
+}) {  
+    let buildHeadersData = (isObject(headers) && headers !== null) ? headers : this.getHeaders(upload);
     const authHeader = getAuthHeader(protectedReq);
     if (!authHeader) {
         return false;

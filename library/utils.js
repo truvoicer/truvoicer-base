@@ -2,16 +2,6 @@ import moment from 'moment';
 import {menuIcons} from "../../config/menu-icons";
 import {isFunction} from "underscore";
 
-export function findInObjectByIndex(obj,i) {
-    if (!obj) {
-        return null;
-    }
-    return obj[i];
-}
-export function findInObject(str, obj) {
-    return str.split('.').reduce(findInObjectByIndex, obj)
-}
-
 export const formatDate = (dateString, formatString = "Do MMMM YYYY") => {
     // let dateFormatSpec;
     // const dateRegexes = [
@@ -58,24 +48,6 @@ export const formatDate = (dateString, formatString = "Do MMMM YYYY") => {
     return dateString
 }
 
-export const isEmpty = (object) => {
-    for(let key in object) {
-        if(object.hasOwnProperty(key))
-            return false;
-    }
-    return true;
-}
-
-export const isSet = (item) => {
-    return typeof item !== "undefined";
-}
-export const isFile = (item) => {
-    return Object.prototype.toString.call(item) === "[object File]";
-}
-
-export const isNotEmpty = (item) => {
-    return typeof item !== "undefined" && item !== null && item !== "" && item !== false;
-}
 
 export const imageSelector = (imageSize = "medium", imageArray = []) => {
 
@@ -123,6 +95,37 @@ export const getDefaultImage = (item) => {
     }
     return null;
 }
+
+
+export function findInObjectByIndex(obj,i) {
+    if (!obj) {
+        return null;
+    }
+    return obj[i];
+}
+export function findInObject(str, obj) {
+    return str.split('.').reduce(findInObjectByIndex, obj)
+}
+
+export const isEmpty = (object) => {
+    for(let key in object) {
+        if(object.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}
+
+export const isSet = (item) => {
+    return typeof item !== "undefined";
+}
+export const isFile = (item) => {
+    return Object.prototype.toString.call(item) === "[object File]";
+}
+
+export const isNotEmpty = (item) => {
+    return typeof item !== "undefined" && item !== null && item !== "" && item !== false;
+}
+
 
 export const uCaseFirst = (string) => {
     if (!isNotEmpty(string)) {
